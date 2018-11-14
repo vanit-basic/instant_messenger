@@ -1,0 +1,74 @@
+user{
+id
+firstname
+lastname
+mail
+birth_date
+gender
+login
+
+}
+
+group{
+id
+owner_id
+name
+group_members
+}
+
+API
+Requests{
+registration -> :action:registration:firstname:Valod:lastname:Valodyan:gender:male:login:v_valodyan:birth_date:12-12-1912:
+
+login -> :action:login:{login:v_valodyan:password:"asfdafdas":}
+
+logout ->:action:logout:{id:"1"}
+
+send_to_user -> :action:send_to_user:send_id:"1":reciever_id:"2":message:"Hello!":
+
+send_to_group -> :action:send_to_group:send_id:"1":group_id:"3":message:"Hello group":
+
+join_group-> :action:join_user:user_id:"1":group_id:"3":message:"Hello group!":
+
+invite_to_group-> :action:user_id:"1":group_id:"2":message:"Hi"
+
+create_group-> :action:owner_id:"1": name:"Vahag's group":
+
+delete_group-> :action:owner_id:"1": group_id:
+
+delete_account-> :action:user_id:"1":
+}
+
+status_codes {
+//Registration
+"OK"
+"INVALID_EMAIL"
+"UNKNOWN_GENDER"
+"LOGIN_EXIST"
+"INVALID_FIRSTNAME""
+"INVALID_LASTNAME"
+"INVALID_BIRTH_DATE"
+
+//Login
+"INVALID_CREDENTIALS"
+"LAST_ATTEMPT"
+//Invite
+
+//General
+"SERVER_TIME_OUT"
+}
+
+Responses{
+registration
+if OK
+:action:register::STATUS_CODE:OK:user_id:123:
+else
+:action:register::STATUS_CODE:INVALID_EMAIL:error_message:"email should contains only alphabetical characters":
+
+}
+
+
+format
+key:value:
+:action:action_name:field_name:field_value:...:
+
