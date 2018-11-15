@@ -6,7 +6,7 @@ mail
 birth_date
 gender
 login
-
+conversations
 }
 
 group{
@@ -14,15 +14,32 @@ id
 owner_id
 name
 group_members
+messages
+}
+
+message {
+from_id
+to_id
+grp_id
+date
+text
+}
+
+conversation {
+id
+from_id
+to_usr
+to_grp
+messages
 }
 
 API
 Requests{
-registration -> :action:registration:firstname:Valod:lastname:Valodyan:gender:male:login:v_valodyan:birth_date:12-12-1912:
+registration -> :action:signup:firstname:Valod:lastname:Valodyan:gender:male:login:v_valodyan:birth_date:12-12-1912:
 
-login -> :action:login:{login:v_valodyan:password:"asfdafdas":}
+login -> :action:signin:login:v_valodyan:password:"asfdafdas":
 
-logout ->:action:logout:{id:"1"}
+logout ->:action:signout:{id:"1"}
 
 send_to_user -> :action:send_to_user:send_id:"1":reciever_id:"2":message:"Hello!":
 
@@ -30,11 +47,11 @@ send_to_group -> :action:send_to_group:send_id:"1":group_id:"3":message:"Hello g
 
 join_group-> :action:join_user:user_id:"1":group_id:"3":message:"Hello group!":
 
-invite_to_group-> :action:user_id:"1":group_id:"2":message:"Hi"
+invite_to_group-> :action:invite_to_group:user_id:"1":group_id:"2":message:"Hi"
 
-create_group-> :action:owner_id:"1": name:"Vahag's group":
+create_group-> :action:create_group:owner_id:"1": name:"Vahag's group":
 
-delete_group-> :action:owner_id:"1": group_id:
+delete_group-> :action:owner_id:"1":group_id:2:
 
 delete_account-> :action:user_id:"1":
 }
@@ -61,9 +78,9 @@ status_codes {
 Responses{
 registration
 if OK
-:action:register::STATUS_CODE:OK:user_id:123:
+:action:register:STATUS_CODE:OK:user_id:123:
 else
-:action:register::STATUS_CODE:INVALID_EMAIL:error_message:"email should contains only alphabetical characters":
+:action:register:STATUS_CODE:INVALID_EMAIL:error_message:"email should contains only alphabetical characters":
 
 }
 

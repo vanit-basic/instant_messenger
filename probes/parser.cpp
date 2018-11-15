@@ -1,6 +1,8 @@
 #include <iostream>
 #include <regex>
 
+std::string signin(":action:signup:firstname:Valod:lastname:Valodyan:gender:male:login:v_valodyan:birth_date:18798797978:");
+
 typedef std::map<std::string, std::string> map_s;
 typedef map_s::iterator map_iter;
 
@@ -10,12 +12,6 @@ void printMap(map_s m) {
 	for (; cur != end; cur++) {
 		std::cout << cur->first << ":" << cur->second << std::endl;
 	}
-}
-
-map_s messageToMap(std::string message) {
-	map_s result;
-	result[std::string("key")] = std::string("value");
-	return result;
 }
 
 std::string getValueByKey (std::string key, std::string input) {
@@ -29,14 +25,25 @@ std::string getValueByKey (std::string key, std::string input) {
 	return result;
 }
 
+map_s messageToMap(std::string message) {
+	map_s result;
+	std::string pattern = ":(\\w+):";
+	std::regex rgx(pattern.c_str());
+	auto it = std::sregex_iterator(message.begin(), message.end(), rgx);
+	auto it_end = std::sregex_iterator();
+	while(it != it_end) {
+		std::smatch match = *it;
+		std::string key = match[1].str();
+		std::string value = getValueByKey(key, signin);
+		result[key] = value;
+		it++;
+	}
+	return result;
+}
 
 int main (int argc, char** argv) {
-	if (argc < 3) {
-		std::cerr << "key input" << std::endl;
-		return -1;
-	}
-	std::cout << getValueByKey(std::string(argv[1]), std::string(argv[2])) << std::endl;
-	map_s m = messageToMap(std::string(argv[2]));
+	map_s m = messageToMap(signin);
 	printMap(m);
+	std::cout << m["action"] << std::endl;
 	return 0;
 }
