@@ -1,0 +1,74 @@
+#include "connection.hpp"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <iostream>
+#include <list>
+#include <map>
+
+std::map<std::string,std::string> string_to_map(std::string str)
+{
+	std::map<std::string,std::string> mymap;
+	str.erase(0,1);
+	std::string first="";
+	std::string second="";
+	while(str!="")
+	{
+		first=str.substr(0,str.find(":"));
+		str.erase(0,str.find(":")+1);
+		second=str.substr(0,str.find(":"));
+		str.erase(0,str.find(":")+1);
+		mymap.insert ( std::pair<std::string,std::string>(first,second));
+	}
+	return mymap;
+		
+
+}
+std::string map_to_string(std::map<std::string,std::string> mymap)
+{
+	std::map<std::string,std::string>::iterator it;
+	std::string str=":";
+	for (it=mymap.begin(); it!=mymap.end(); ++it)
+		str+=it->first+":"+it->second+":"; 
+	return str;
+}
+
+static int value=0;
+
+std::list<connection*> connections;
+
+void recieve(connection* c, std::string msg) {
+	std::cout << "from client : " << msg << std::endl;
+
+	std::map<std::string,std::string> mymap=string_to_map(msg);
+	for (auto it=mymap.begin(); it!=mymap.end(); ++it)
+		std::cout << it->first << " => " << it->second << "\n";
+
+	msg=map_to_string(mymap);
+	c->send(msg);
+}
+
+void binder_recieve(connection* c, std::string msg)
+{
+	if(msg=="first message")
+	{
+		value++;
+		std::string fifo1="C"+std::to_string(value);
+		std::string fifo2="S"+std::to_string(value);
+		connection* s=new connection(fifo1,fifo2);
+		s->setRecvMessageCallback(recieve);
+		connections.push_back(s);
+		fifo2=fifo2+":"+fifo1;
+		c->send(fifo2);
+		c->send("q");
+	} 
+}
+
+int main()
+{
+	connection binder(std::string("out"),std::string("in"));
+	binder.setRecvMessageCallback(binder_recieve);
+        remove("busy.lock");
+	
+	return 0;
+}
