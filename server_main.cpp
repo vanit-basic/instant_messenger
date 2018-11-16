@@ -4,18 +4,35 @@
 #include <list>
 #include "connection.hpp"
 #include <unistd.h>
+#include <map>
 static int i=0;
-static std::list<connection*> connections;// connection-ner parunakox list vortex pahvelu en clientnerin hamapatasxan stexcvac connectionner@
-
+static std::list<connection*> connections;
+static std::map<std::string, std::string> datebase;
 void recv_message(connection* c, std::string message) 
-//kardalu hamar te ardyoq client@ inch vor hraman uxarkela te voch nor stexcvac(amen clienti hamar ir) fifo fileri mijocov ev patasxanum e
 {
 	std::cout << "from client : "<< c->getId()<<":   " << message << std::endl;
+	std::string key = "";
+	std::string value = "";
+	std::string msg = message;
+	msg.erase(0,1);
+	while(msg!="")
+	{
+		key = msg.substr(0, msg.find(':'));
+		msg.erase(0, msg.find(':')+1);
+		value = msg.substr(0, msg.find(':'));
+		msg.erase(0, msg.find(':')+1);
+		datebase.emplace(key, value);
+	}
+/*	std::map<std::string, std::string>::iterator k=datebase.begin();
+        for(; k != datebase.end(); ++k)
+        {
+                std::cout<<k->first<<": "<<k->second<<"\n";
+        }
+*/
 	c->send(message);
 }
 
 void recv_message_binder(connection* c, std::string message) 
-//uxarkuma nor clientin ira hamar sarqac fifo fileri annunner@, ogtagorcvuma binderi poxaren
 {
 	if(message=="new client")
 	{
@@ -27,12 +44,10 @@ void recv_message_binder(connection* c, std::string message)
 		str = fifo_name1 + ":" + fifo_name2;
 		c->send(str);
 		c->send("quit");
-		connection* s=new connection(fifo_name2, fifo_name1);//nor connection-i stexcum@ client avelanalu depqum
-		s->setId(fifo_name1);//clientin veragrum e id
-		s->setRecvMessageCallback(recv_message);//ashxatacnum e nor clienti hamar stexcvac connection@
-		connections.push_back(s);//nor stexcvac connection@ gcum e listi mej
-		//uxarkuma "quit", vorpesi client@ haskana vor binder connection@ avartela ira gorc@ ev clienti mot jnji binder connection@
-		//qani vor connection.cpp-i mej read() funkciayi nkaragrutyan mej while(true) averj ciklic durs e galis erb handipum e "q"
+		connection* s=new connection(fifo_name2, fifo_name1);
+		s->setId(fifo_name1);
+		s->setRecvMessageCallback(recv_message);
+		connections.push_back(s);
 	}
 }
 
@@ -41,8 +56,8 @@ int main ()
 	connection binder(std::string("out"), std::string("in"));
 	binder.setRecvMessageCallback(recv_message_binder);
 	std::list<connection*>::iterator k=connections.begin();
-	for(k=connections.begin(); k!=connections.end();++k)//cragri verjum jnjum enq stexcvac new connectionner@
-        {
+	for(k=connections.begin(); k!=connections.end();++k)
+ 	{
                 delete [](*k);
         }
 
