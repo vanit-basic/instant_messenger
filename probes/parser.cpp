@@ -1,7 +1,7 @@
 #include <iostream>
 #include <regex>
 
-std::string signin(":action:signup:firstname:Valod:lastname:Valodyan:gender:male:login:v_valodyan:birth_date:18798797978:");
+std::string signup(":action:signup:firstname:Valod:lastname:Valodyan:gender:male:login:v_valodyan:birth_date:18798797978:");
 
 typedef std::map<std::string, std::string> map_s;
 typedef map_s::iterator map_iter;
@@ -34,7 +34,7 @@ map_s messageToMap(std::string message) {
 	while(it != it_end) {
 		std::smatch match = *it;
 		std::string key = match[1].str();
-		std::string value = getValueByKey(key, signin);
+		std::string value = getValueByKey(key, signup);
 		result[key] = value;
 		it++;
 	}
@@ -42,7 +42,7 @@ map_s messageToMap(std::string message) {
 }
 
 int main (int argc, char** argv) {
-	map_s m = messageToMap(signin);
+	map_s m = messageToMap(signup);
 	printMap(m);
 	std::cout << m["action"] << std::endl;
 	return 0;
