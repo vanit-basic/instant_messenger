@@ -75,3 +75,64 @@ connection::~connection() {
 	std::remove(output_name.c_str());
 	}	
 }
+void user::setFirstName(std::string firstname) {
+	this->FirstName = firstname;
+}
+void user::setLastName(std::string lastname) {
+	this->LastName = lastname;
+}
+void user::setBirthDate(std::string birthdate) {
+	this->BirthDate = birthdate;
+}
+void user::setLogin(std::string login) {
+	this->Login = login;
+}
+void user::setGender(std::string gender) {
+	this->Gender = gender;
+}
+void user::setEmail(std::string email) {
+	this->Email = email;
+}
+void user::setId(std::string id) {
+	this->Id = id;
+}
+std::string user::getFirstName() {
+	return this->FisrtName;
+}
+std::string user::getLastName() {
+	return this->LastName;
+}
+std::string user::getBirthDate() {
+	return this->BirthDate;
+}
+std::string user::getLogin() {
+	return this->Login;
+}
+std::string user::getGender() {
+	return this->Gender;
+}
+std::string user::getEmail() {
+	return this->Email;
+}
+std::string user::getId() {
+	return this->Id;
+}
+user::user(std::map<std::string, std::string> userInfo) {
+	std::map<std::string, std::string>::iterator it = userInfo.begin();
+	while(it != userInfo.end()) {
+		if(it->first == "FirstName")
+			this->FirstName = it->second;
+		if(it->first == "LastName")
+			this->LastName = it->second;
+		if(it->first == "BirthDate")
+			this->BirthDate = it->second;
+		if(it->first == "Login")
+			this->Login = it->second;
+		if(it->first == "Gender")
+			this->Gender = it->second;
+		if(it->first == "Email")
+			this->Email = it->second;
+		if(it->first == "Id")
+			this->Id = it->second;
+	}
+}
