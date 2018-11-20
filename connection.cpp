@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
 #include "connection.hpp"
 
 bool isFileExist(std::string fileName) {
@@ -55,12 +54,10 @@ connection::connection(std::string in , std::string out) {
 
 	readerThread = std::thread(&connection::read, this);
 }
-void connection::setId(std::string ID)
-{
+void connection::setId(std::string ID) {
 	this->id=ID;
 }
-std::string connection::getId()
-{
+std::string connection::getId() {
 	return this->id;
 }
 connection::~connection() {
@@ -97,7 +94,7 @@ void user::setId(std::string id) {
 	this->Id = id;
 }
 std::string user::getFirstName() {
-	return this->FisrtName;
+	return this->FirstName;
 }
 std::string user::getLastName() {
 	return this->LastName;

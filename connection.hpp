@@ -59,6 +59,6 @@ class user {
 		std::string getId();
 		user(std::map<std::string, std::string>);
 		~user();
-}
+};
 #endif
 
