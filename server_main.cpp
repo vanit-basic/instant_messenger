@@ -4,7 +4,6 @@
 #include "utils.hpp"
 #include <unistd.h>
 #include <map>
-//#include <regex>
 
 static std::map<std::string, std::string> datebase;
 static std::map<std::string, std::string> LogAndPass;
@@ -46,24 +45,9 @@ void recv_message(connection* c, std::string message)
 						ID++;
 						std::string log="";
 						std::string pass="";
-						msg=message + "Id:" + std::to_string(ID) + ":";
+						msg=message + "Id:" + "user_" + std::to_string(ID) + ":";
 						msg.erase(0,26);
-						while(msg!="")
-						{
-							key = msg.substr(0, msg.find(':'));
-							msg.erase(0, msg.find(':')+1);
-							value = msg.substr(0, msg.find(':'));
-							msg.erase(0, msg.find(':')+1);
-							if(key=="Login")
-							{
-								log=value;
-							}
-							if(key=="Password")
-							{
-								pass=value;
-							}
-							datebase.emplace(key, value);
-						}
+						string_to_map_and_log_pass(datebase, msg, log, pass);
 						LogAndPass.emplace(log, pass);
 						user* u = new user(datebase);
 						users.emplace(std::to_string(ID), u);
@@ -80,13 +64,6 @@ void recv_message(connection* c, std::string message)
 			}
 		}
 	}
-	/*	std::map<std::string, std::string>::iterator k=datebase.begin();
-		for(; k != datebase.end(); ++k)
-		{
-		std::cout<<k->first<<": "<<k->second<<"\n";
-		}
-		
-	c->send(message);*/
 }
 
 void recv_message_binder(connection* c, std::string message) 

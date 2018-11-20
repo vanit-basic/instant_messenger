@@ -2,7 +2,57 @@
 #include <regex>
 #include <cmath>
 #include <iostream>
+#include <map>
 
+void string_to_map(std::map<std::string, std::string>, std::string msg)
+{
+	std::string key="";
+	std::string value="";
+	std::map<std::string, std::string> datebase;
+	while(msg!="")
+	{
+		key = msg.substr(0, msg.find(':'));
+		msg.erase(0, msg.find(':')+1);
+		value = msg.substr(0, msg.find(':'));
+		msg.erase(0, msg.find(':')+1);
+		datebase.emplace(key, value);
+	}
+
+}
+std::string map_to_string(std::map<std::string, std::string> datebase)
+{
+	std::string message="";
+	std::map<std::string, std::string>::iterator k=datebase.begin();
+        for(; k != datebase.end(); ++k)
+	{
+		message=message +":" + k->first + ":" + k->second;
+	}
+	message = message + ":";
+	return message;
+}
+void string_to_map_and_log_pass(std::map<std::string, std::string>, std::string msg, std::string& log, std::string& pass)
+{
+	std::string key="";
+	std::string value="";
+	std::map<std::string, std::string> datebase;
+	while(msg!="")
+	{
+		key = msg.substr(0, msg.find(':'));
+		msg.erase(0, msg.find(':')+1);
+		value = msg.substr(0, msg.find(':'));
+		msg.erase(0, msg.find(':')+1);
+		if(key=="Login")
+		{
+			log=value;
+		}
+		if(key=="Password")
+		{
+			pass=value;
+		}
+		datebase.emplace(key, value);
+	}
+
+}
 bool isValidE_mail(std::string mail)
 {
 	bool isValid = true;
