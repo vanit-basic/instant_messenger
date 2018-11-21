@@ -3,12 +3,16 @@
 #include <cmath>
 #include <iostream>
 #include <map>
-
-void string_to_map(std::map<std::string, std::string>, std::string msg)
+std::string user_information(std::map<std::string, user*> datebase, std::string key)
+{
+	std::string inf="";
+	inf=":FirstName:" + datebase[key]->getFirstName() + ":LastName:" + datebase[key]->getLastName() + ":BirthDate:" + datebase[key]->getBirthDate() + ":Gender:" + datebase[key]->getGender() + ":Email:" + datebase[key]->getEmail() + ":Login:" + datebase[key]->getLogin() + ":Id:" + datebase[key]->getId() + ":";
+	return inf;
+}
+void string_to_map(std::map<std::string, std::string> datebase , std::string msg)
 {
 	std::string key="";
 	std::string value="";
-	std::map<std::string, std::string> datebase;
 	while(msg!="")
 	{
 		key = msg.substr(0, msg.find(':'));
@@ -30,11 +34,10 @@ std::string map_to_string(std::map<std::string, std::string> datebase)
 	message = message + ":";
 	return message;
 }
-void string_to_map_and_log_pass(std::map<std::string, std::string>, std::string msg, std::string& log, std::string& pass)
+void string_to_map_and_log_pass(std::map<std::string, std::string>& datebase, std::string msg, std::string& log, std::string& pass)
 {
 	std::string key="";
 	std::string value="";
-	std::map<std::string, std::string> datebase;
 	while(msg!="")
 	{
 		key = msg.substr(0, msg.find(':'));
@@ -53,6 +56,22 @@ void string_to_map_and_log_pass(std::map<std::string, std::string>, std::string 
 	}
 
 }
+bool isValidSignIn(std::map<std::string, std::pair<std::string, std::string>*> datebase, std::string log, std::string pass, std::string& id)
+{
+        bool isValid=false;
+        std::map<std::string, std::pair<std::string, std::string>*>::iterator k=datebase.begin();
+                for(; k != datebase.end(); ++k)
+                {
+                        if(((k->second->first)==log) && ((k->second->second)==pass))
+                        {
+				id=(k->first);
+                                isValid=true;
+                                break;
+                        }
+                }
+                return isValid;
+}
+
 bool isValidE_mail(std::string mail)
 {
 	bool isValid = true;
@@ -182,7 +201,7 @@ bool isValidBirthDate(std::string date)
 	}
 	return isValid;
 }
-bool isValidLogin(std::string login)
+bool isValidLogin1(std::string login)
 {
 	bool isValid=true;
 	std::string log=login;
@@ -216,6 +235,21 @@ bool isValidLogin(std::string login)
 	}
 	return isValid;
 }
+bool isValidLogin2(std::map<std::string, std::pair<std::string, std::string>*> datebase, std::string str)
+{
+        bool isValid=true;
+        std::map<std::string, std::pair<std::string, std::string>*>::iterator k=datebase.begin();
+                for(; k != datebase.end(); ++k)
+                {
+                        if((k->second->first)==str)
+                        {
+                                isValid=false;
+                                break;
+                        }
+                }
+                return isValid;
+}
+
 bool isValidGender(std::string gender)
 {
 	bool isValid = true;
@@ -228,9 +262,6 @@ bool isValidGender(std::string gender)
 bool isValidPassword(std::string password)
 {
 	bool isValid=true;
-	bool l=false;
-	bool s=false;
-	bool n=false;
 	std::string copypass=password;
 	if((8 > copypass.size()) || (16 < copypass.size()))
 	{
@@ -324,7 +355,7 @@ bool test(std::string& str, std::string msg)
 		}
 		if("Login"==key)
 		{
-			if(!isValidLogin(value))
+			if(!isValidLogin1(value))
 			{
 				str = str.erase(str.find(key)-1, key.size()+value.size()+2);
 				str=str + key + ":" + "INVALID" + ":";

@@ -5,8 +5,8 @@
 #include <unistd.h>
 #include <map>
 
-static std::map<std::string, std::string> datebase;
-static std::map<std::string, std::string> LogAndPass;
+
+static std::map<std::string, std::pair<std::string, std::string>*> Id_Log_Pass;
 static std::map<std::string, user*> users;
 static int i=0;
 static int ID=0;
@@ -17,6 +17,9 @@ void recv_message(connection* c, std::string message)
 	std::cout << "from client : "<< c->getId()<<":   " << message << std::endl;
 	std::string key = "";
 	std::string value = "";
+	std::string log = "";
+	std::string pass = "";
+	std::string id = "";
 	std::string msg = message;
 	std::string tests=message;
 	if (message==":action:registration:")
@@ -27,6 +30,7 @@ void recv_message(connection* c, std::string message)
 	{
 		if (message==":action:login:")
 		{
+			c->send("Enter your login end password for sign in");
 		}
 		else
 		{
@@ -36,30 +40,67 @@ void recv_message(connection* c, std::string message)
 			}
 			else
 			{
-				if((message.find(":registration:information:"))>=0)
+				if((message.find(":registration:information:")>=0)&&(message.find(":registration:information:")<message.size()))
 				{
-
-					msg.erase(0,1);
-					if (test(tests, msg)==true)
+					msg = msg.erase(0, msg.find(":Login:")+7);
+					log = msg.substr(0, msg.find(':'));
+					if(!isValidLogin1(log))
 					{
-						ID++;
-						std::string log="";
-						std::string pass="";
-						msg=message + "Id:" + "user_" + std::to_string(ID) + ":";
-						msg.erase(0,26);
-						string_to_map_and_log_pass(datebase, msg, log, pass);
-						LogAndPass.emplace(log, pass);
-						user* u = new user(datebase);
-						users.emplace(std::to_string(ID), u);
-						c->send("OK");
+						msg = message;
+						msg = msg.erase(msg.find(":Login:"), 7+log.size());
+						msg = msg + "Login:INVALID1:";
+						c->send(msg);
 					}
 					else
 					{
-						c->send(tests);
+						if(!isValidLogin2(Id_Log_Pass, log))
+						{
+							msg = message;
+							msg = msg.erase(msg.find(":Login:"), 7+log.size());
+							msg = msg + "Login:INVALID2:";
+							c->send(msg);
+
+						}
+						else
+						{
+							std::map<std::string, std::string> datebase;
+							ID++;
+							id="user_"+std::to_string(ID);
+							msg=message + "Id:" + id + ":";
+							msg.erase(0,26);
+							string_to_map_and_log_pass(datebase, msg, log, pass);
+							std::pair<std::string,std::string>* p=new std::pair<std::string,std::string>(log, pass);
+							Id_Log_Pass.emplace(id,p);
+							user* u = new user(datebase);
+							users.emplace(id, u);
+							id=":your_id:"+id;
+							c->send(id);
+							c->send("You allowed three action: registration, login or quit");
+						}
 					}
 				}
 				else
-				{}
+				{
+					if((message.find(":action:signin:")>=0)&&(message.find(":action:signin:")<message.size()))
+					{
+						msg = msg.erase(msg.find(":action:signin:"),msg.find(":action:signin:")+21);
+						log = msg.substr(0, msg.find(':'));
+						msg = msg.erase(0,msg.find(':')+10);
+						pass=msg.substr(0, msg.find(':'));
+						std::string uid="";
+						if(isValidSignIn(Id_Log_Pass, log, pass, uid))
+						{
+							std::string in="";
+							in = ":your_information" + user_information(users, uid);
+							c->send(in);
+						}
+						else
+						{
+							c->send("There is no such combination of login and password");
+							c->send("You allowed three action: registration, login or quit");
+						}
+					}
+				}
 
 			}
 		}

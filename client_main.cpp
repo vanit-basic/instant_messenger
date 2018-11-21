@@ -4,8 +4,10 @@
 #include "connectionAndUser.hpp"
 #include "utils.hpp"
 
+static std::map<std::string, std::string> information;
 static std::string fifo_name1="";
 static std::string fifo_name2="";
+static std::string id="";
 static std::mutex m;
 void recv_message_binder(connection* c, std::string message)
 {
@@ -25,7 +27,7 @@ void recv_message(connection* c, std::string message)
 	{
 		std::string act="";
 		std::cout<<"for registration enter 1, for login enter 2, for quit enter 3"<<std::endl;
-		std::cin>>act;
+		std::getline(std::cin, act);
 		while(!(act=="1" ||act=="2" || act=="3"))
 		{
 			std::cout<<"Invalid action, for registration enter 1, for login enter 2, for quit enter 3"<<std::endl;
@@ -50,86 +52,111 @@ void recv_message(connection* c, std::string message)
 			std::string actual="";
 			std::string pass="";
 			std::cout<<"Enter your first name, the name must begin with a capital letter and must contain only letters"<<std::endl;
-			std::cin>>actual;
+			std::getline(std::cin, actual);
+			while(!isValidName(actual))
+			{
+				std::cout<<"Invalid first name, please enter new name, the name must begin with a capital letter and must contain only letters"<<std::endl;
+				std::getline(std::cin, actual);
+			}
 			inf = ":FirstName:" + actual;
 			std::cout<<"Enter your last name, the name must begin with a capital letter and must contain only letters"<<std::endl;
-			std::cin>>actual;
+			std::getline(std::cin, actual);
+			while(!isValidName(actual))
+			{
+				std::cout<<"Invalid last name, please enter new name, the name must begin with a capital letter and must contain only letters"<<std::endl;
+				std::getline(std::cin, actual);
+			}
 			inf =inf + ":LastName:" + actual;
-			std::cout<<"Enter your birth date, date of birth must contain only numbers and character '.'"<<std::endl;
-			std::cin>>actual;
+			std::cout<<"Enter your birth date, date of birth must contain only numbers and character '.'(xx.xx.xxxx)"<<std::endl;
+			std::getline(std::cin, actual);
+			while(!isValidBirthDate(actual))
+			{
+				std::cout<<"Invalid birth date,please enter new birth date xx.xx.xxxx"<<std::endl;
+				std::getline(std::cin, actual);
+			}
 			inf = inf + ":BirthDate:" + actual;
 			std::cout<<"Enter your gender, male or female"<<std::endl;
-			std::cin>>actual;
+			std::getline(std::cin, actual);
+			while(!isValidGender(actual))
+			{
+				std::cout<<"Invalid gender, enter male or female"<<std::endl;
+				std::getline(std::cin, actual);
+			}
 			inf = inf + ":Gender:" + actual;
 			std::cout<<"Enter your E-mail, Email must contain only numbers, letters and characters '@, ., _, -'"<<std::endl;
-			std::cin>>actual;
+			std::getline(std::cin, actual);
+			while(!isValidE_mail(actual))
+			{
+				std::cout<<"Invalid Email, please enter new Email"<<std::endl;
+				std::getline(std::cin, actual);
+			}
 			inf = inf + ":Email:" + actual;
 			std::cout<<"Enter login,login must contain only numbers, letters and characters '@, ., _, -'"<<std::endl;
-			std::cin>>actual;
+			std::getline(std::cin, actual);
 			inf = inf + ":Login:" + actual;
 			std::cout<<"Choose password, password must contain minimum eight, maximum sixteen numbers or letters and must contain minimum one capital letter, one number and one small leter"<<std::endl;
-			std::cin>>actual;
+			std::getline(std::cin, actual);
 			std::cout<<"Confirm password"<<std::endl;
-			std::cin>>pass;
-			while(actual!=pass)
+			std::getline(std::cin, pass);
+			while(actual!=pass || (!isValidPassword(actual)))
 			{
-				std::cout<<"Password does not match, enter password, password  must contain minimum eight, maximum sixteen numbers or letters and must contain minimum one capital letter, one number and one small leter"<<std::endl;
-				std::cin>>actual;
+				std::cout<<"Invalid Password, enter password, password  must contain minimum eight, maximum sixteen numbers or letters and must contain minimum one capital letter, one number and one small leter"<<std::endl;
+				std::getline(std::cin, actual);
 				std::cout<<"Confirm password"<<std::endl;
-				std::cin>>pass;
+				std::getline(std::cin, pass);
 			}
 			inf =":registration:information" + inf + ":Password:" + actual + ":";
 			c->send(inf);
 		}
 		else
 		{
-			if(message.find("INVALID") < 0)
+			if((message.find(":Login:INVALID1:") >= 0) && (message.find(":Login:INVALID1:") < message.size()))
 			{
+				message = message.erase(message.find(":Login:INVALID1:"),16);
+				std::string l1 = "";
+				std::cout<<"Invalid login, please enter new login"<<std::endl;
+				std::getline(std::cin, l1);
+				message=message  + ":Login:" + l1 +":";
 				std::cout<<message<<std::endl;
+				c->send(message);
 			}
 			else
 			{
-				if((message.find(":registration:information:"))>=0)
+				if((message.find(":Login:INVALID2:") >= 0) && (message.find(":Login:INVALID2:") < message.size()))
 				{
-					std::string msg=message;
-					msg.erase(0,26);
-
-					while(msg!="")
-					{
-						std::string key;
-						std::string value;
-						std::string pass;
-						key = msg.substr(0, msg.find(':'));
-						msg.erase(0, msg.find(':')+1);
-						value = msg.substr(0, msg.find(':'));
-						msg.erase(0, msg.find(':')+1);
-						if (value=="INVALID")
-						{
-							std::string attempt="";
-							message = message.erase(message.find(key), key.size()+value.size()+2);
-							if(key=="Password")
-							{
-								std::cout<<"INVALID Password, please enter new Password"<<std::endl;
-								std::cin>>attempt;
-								std::cout<<"Confirm password"<<std::endl;
-								std::cin>>pass;
-								while(attempt!=pass)
-								{
-									std::cout<<"Password does not match, enter password"<<std::endl;
-									std::cin>>attempt;
-									std::cout<<"Confirm password"<<std::endl;
-									std::cin>>pass;
-								}
-							}
-							else
-							{
-								std::cout<<"INVALID "<<key<<", please enter new "<<key<<std::endl;
-								std::cin >> attempt;
-							}
-							message=message + key + ":" + attempt + ":";
-						}
-					}
+					message = message.erase(message.find(":Login:INVALID2:"),16);
+					std::string l2="";
+					std::cout<<"Such login already exists, enter another login"<<std::endl;
+					std::getline(std::cin, l2);
+					message=message  + ":Login:" + l2 +":";
+					std::cout<<message<<std::endl;
 					c->send(message);
+				}
+				else
+				{
+					if(message=="Enter your login end password for sign in")
+					{
+						std::string str="";
+						std::string msg="";
+						std::cout<<"Enter your login"<<std::endl;
+						std::getline(std::cin, str);
+						msg = ":action:signin:login:" + str + ":";
+						std::cout<<"Enter your password"<<std::endl;
+						std::getline(std::cin, str);
+						msg = msg +"Password:" + str + ":";
+						c->send(msg);
+					}
+					else
+					{
+						if((message.find(":your_information:")>=0)&&(message.find(":your_information:")<message.size()))
+						{
+							std::string msg = message;
+							msg = msg.erase(0, 18);
+							string_to_map(information, msg);
+						}
+						else
+						{}
+					}
 				}
 			}
 		}
