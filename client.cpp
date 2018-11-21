@@ -113,10 +113,6 @@ void recv_message_c(connection* c, std::string message) {
                 c->send(info);
                 return;
         }
-
-
-
-//      std::string msg=":action:registration:firstname:Valod:lastname:Valodyan:mail:valod_valodyan@mail.ru:birth_date:12-12-1977:gender:male:login:valod1212:";
 }
 
 void binder_recv_message(connection* c, std::string message) {

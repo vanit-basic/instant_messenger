@@ -9,7 +9,6 @@
 #include <list>
 #include <map>
 static int id=9;
-//std::map<std::string,std::string> log_passw;
 std::map<std::string,std::string> current_user;
 std::map<std::string,std::pair<std::string,std::string>> user_info;
 std::map<int,user> id_ob;
