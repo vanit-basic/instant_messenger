@@ -1,10 +1,15 @@
+// Server  side C/C++ program to demonstrate Socket programming 
 #include <unistd.h> 
 #include <stdio.h> 
 #include <sys/socket.h> 
 #include <stdlib.h> 
 #include <netinet/in.h> 
 #include <string.h> 
-#define PORT 8080 
+#define PORT 1234
+
+
+
+
 int main(int argc, char const *argv[]) 
 { 
 	int server_fd, new_socket, valread; 
@@ -32,7 +37,7 @@ int main(int argc, char const *argv[])
 	address.sin_addr.s_addr = INADDR_ANY; 
 	address.sin_port = htons( PORT ); 
 
-	// Forcefully attaching socket to the port 8080 
+	// Forcefully attaching socket to the port 1234 
 	if (bind(server_fd, (struct sockaddr *)&address, 
 				sizeof(address))<0) 
 	{ 
@@ -53,7 +58,7 @@ int main(int argc, char const *argv[])
 		} else {
 			valread = read( new_socket , buffer, 1024); 
 			printf("%s\n",buffer ); 
-			usleep(10000);
+			usleep(1000000);
 			send(new_socket , hello , strlen(hello) , 0 ); 
 			printf("Hello message sent\n"); 
 		}

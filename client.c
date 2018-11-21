@@ -4,12 +4,12 @@
 #include <stdlib.h> 
 #include <netinet/in.h> 
 #include <string.h> 
-#define PORT 8080 
+#define PORT 1234
 
 int main(int argc, char const *argv[]) 
 { 
 	struct sockaddr_in address; 
-	int sock = 0, valread; 
+	int sock = 0, valread, opt = 1; 
 	struct sockaddr_in serv_addr; 
 	char *hello = "Hello from client"; 
 	char buffer[1024] = {0}; 
@@ -17,6 +17,12 @@ int main(int argc, char const *argv[])
 	{ 
 		printf("\n Socket creation error \n"); 
 		return -1; 
+	} 
+	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, 
+				&opt, sizeof(opt))) 
+	{ 
+		perror("setsockopt"); 
+		exit(EXIT_FAILURE); 
 	} 
 
 	memset(&serv_addr, '0', sizeof(serv_addr)); 
@@ -36,11 +42,16 @@ int main(int argc, char const *argv[])
 		printf("\nConnection Failed \n"); 
 		return -1; 
 	} 
-	send(sock , hello , strlen(hello) , 0 ); 
-	usleep(10000);
-	printf("Hello message sent\n"); 
-	valread = read( sock , buffer, 1024); 
-	printf("%s\n",buffer );
+	while (1) {
+		send(sock , hello , strlen(hello) , 0 ); 
+		usleep(10000);
+		printf("Hello message sent\n"); 
+		valread = read( sock , buffer, 1024); 
+		if(valread) {
+			printf("%s\n",buffer );
+			send(sock , hello , strlen(hello) , 0 ); 
+		}
+	}
 	return 0; 
 } 
 
