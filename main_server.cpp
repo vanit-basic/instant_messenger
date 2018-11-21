@@ -25,14 +25,27 @@ std::string map_to_string (std::map<std::string, std::string> mymap)
 {
 	std::map<std::string,std::string>::iterator it;
 	std::string str = ":";
-	for (it=mymap.begin(); it!=mymap.end(); ++it)
+	for (it = mymap.begin(); it != mymap.end(); ++it)
 		str += it->first + ":" + it->second + ":";
 	return str;
 }
 
 void recv_message(connection* c, std::string message) {
+	std::map<std::string, std::pair<std::string, std::string>> Id_Login_Pass ;
 	std::cout << "Sent : " << message  << std::endl;
-	std::map<std::string, std::string> maps;
+	std::string s = "";
+	s.substr(0,6);
+	if(s == ":Login") {
+	s = message.substr(message.rfind(":") + 1, message.length() - message.rfind(":"));
+	it = p.begin();
+	int k = 0;
+	while(k != p.size()) {
+		if(s == it->first) {
+			
+		}
+	}
+	
+	}	
         maps = string_to_map(message);
 	std::string str = map_to_string(maps);
 	c->send(str);

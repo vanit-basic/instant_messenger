@@ -23,11 +23,12 @@ void binder_recv_message(connection* c, std::string message) {
 		mainConnection -> setRecvMessageCallback(recv_message);
 //		mainConnection -> send("Hello");
 	}
+	static int Id = 0;
 	int a = 0;
 	std::cout << "For login enter 1, for registration enter 2" << "\n";
 	std::cin >> a;
 	if(a == 2) {
-		std::string info = "";
+		std::string info = ":action:registration";
 		std::string temp = "";
 		while(true) {
 			std::cout << "Enter Firstname(Valod) : " << "\n";
@@ -73,8 +74,8 @@ void binder_recv_message(connection* c, std::string message) {
 			std::cout << "Enter login : " << "\n";
 			std::cin >> temp;
 			if(valid_login(temp)) {
-				info = info + ":Login:" + temp;
-				break;
+				temp = ":Login:" + temp;
+				c->send(temp);	
 			}
 
 		}
