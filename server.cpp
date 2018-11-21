@@ -4,15 +4,41 @@
 #include <list>
 #include "connection.hpp"
 #include <unistd.h>
+#include <map>
+#include "user.h"
 static int id=0;
 static std::string name1;
 static std::string name2;
 static std::string name3;
 static std::list<connection*> connections;
 
+std::map<std::string,std::string> StringtoMap (std::string str){
+        str.erase(0,1);
+         std::map<std::string,std::string>myMap;
+        while(str.length() != 0){
+        int pos=str.find(':');
+        std::string key="";
+        key=str.substr(0,pos);
+        str.erase(0,pos+1);
+        pos=str.find(':');
+        std::string value="";
+        value=str.substr(0,pos);
+        str.erase(0,pos+1);
+        myMap.insert(std::pair<std::string,std::string>(key,value));
+        }
+
+        return myMap;
+
+}
+
 void recv_message(connection* c, std::string message) 
 {
+	std::map<std::string, std::string> myMap;
 	std::cout << "from client : "<< c->getId()<<":   " << message << std::endl;
+	myMap = StringtoMap(message);
+	for(auto  it=myMap.begin();it!=myMap.end();it++){
+                std::cout<<it->first<<" : "<<it->second<<std::endl;
+        }
 	c->send(message);
 }
 

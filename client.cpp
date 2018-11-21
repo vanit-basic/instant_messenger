@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <mutex>
 #include "connection.hpp"
-
+#include "user.h"
 static std::string name1="";
 static std::string name2="";
 static std::mutex m;
@@ -50,20 +50,82 @@ int main ()
 		connection c(name1,name2);
                 c.setId(name1);
                 m.unlock();
-		std::cout<<"Id: "<<c.getId()<<std::endl;
+		std::cout<<"Register<R>"<<std::endl;
                 c.setRecvMessageCallback(recv_message);
-
 
 	while (true)
 	{
 		std::string str="";
 		std::getline(std::cin,str);
-		c.send(str);
 		if(str=="q")
 		{
 			break;
 		}
-		usleep(1000);
+	if(str=="R" || str=="r"){
+	 std::string FirstName;
+        std::cout<<"First Name : ";
+        std::cin>>FirstName;
+        user Fname;
+
+        while(Fname.nameValid(FirstName)==false){
+                 std::cout<<"First Name : ";
+                 std::cin>>FirstName;
+
+        }
+        std::string LastName;
+        std::cout<<"Last Name : ";
+        std::cin>>LastName;
+        user Lname;
+
+        while(Lname.nameValid(LastName)==false){
+                std::cout<<"Last Name : ";
+                std::cin>>LastName;
+        }
+        std::string BirthDate;
+        std::cout<<"Birth Date : ";
+        std::cin>>BirthDate;
+        user Bdate;
+         while(Bdate.dateValid(BirthDate)==false){
+                std::cout<<"Birth Date : ";
+                std::cin>>BirthDate;
+        }
+
+        std::string Gender;
+        std::cout<<"Gender : ";
+        std::cin>>Gender;
+        user gender;
+         while(gender.genderValid(Gender)==false){
+                std::cout<<"Gender : ";
+                std::cin>>Gender;
+        }
+
+        std::string Login;
+        std::cout<<"Login : ";
+        std::cin>>Login;
+        user login;
+         while(login.loginValid(Login)==false){
+                std::cout<<"Login : ";
+                std::cin>>Login;
+        }
+
+        std::string Id;
+
+        std::string Mail;
+         std::cout<<"Mail : ";
+        std::cin>>Mail;
+        user mail;
+         while(mail.mailValid(Mail)==false){
+                std::cout<<"Mail : ";
+                std::cin>>Mail;
+        }
+         user person;
+	 std::string history="";
+	 history+=":FirstName:"+FirstName+":LastName:"+LastName+":BirtDate:"+BirthDate+":Gender:"+Gender+":Login:"+Login+":Id:"+Id+":Mail:"+Mail+":";
+	c.send(history);	 
+	}else
+	
+	c.send(str);
+	
 	}
 	return 0;
 }
