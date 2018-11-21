@@ -62,9 +62,9 @@ bool isValidSignIn(std::map<std::string, std::pair<std::string, std::string>*> d
         std::map<std::string, std::pair<std::string, std::string>*>::iterator k=datebase.begin();
                 for(; k != datebase.end(); ++k)
                 {
-                        if(((k->second->first)==log) && ((k->second->second)==pass))
+                        if(((k->first)==log) && ((k->second->second)==pass))
                         {
-				id=(k->first);
+				id=(k->second->first);
                                 isValid=true;
                                 break;
                         }
@@ -72,7 +72,7 @@ bool isValidSignIn(std::map<std::string, std::pair<std::string, std::string>*> d
                 return isValid;
 }
 
-bool isValidE_mail(std::string mail)
+bool isValidE_mail1(std::string mail)
 {
 	bool isValid = true;
 	int k=0, n=0, s=0;
@@ -121,6 +121,20 @@ bool isValidE_mail(std::string mail)
 
 	}
 	return isValid;
+}
+bool isValidE_mail2(std::map<std::string, bool> datebase, std::string str)
+{
+        bool isValid=true;
+        std::map<std::string, bool>::iterator k=datebase.begin();
+                for(; k != datebase.end(); ++k)
+                {
+                        if((k->first)==str)
+                        {
+                                isValid=false;
+                                break;
+                        }
+                }
+                return isValid;
 }
 bool isValidName(std::string name)
 {
@@ -241,7 +255,7 @@ bool isValidLogin2(std::map<std::string, std::pair<std::string, std::string>*> d
         std::map<std::string, std::pair<std::string, std::string>*>::iterator k=datebase.begin();
                 for(; k != datebase.end(); ++k)
                 {
-                        if((k->second->first)==str)
+                        if((k->first)==str)
                         {
                                 isValid=false;
                                 break;
@@ -346,7 +360,7 @@ bool test(std::string& str, std::string msg)
 		}
 		if("Email"==key)
 		{
-			if(!isValidE_mail(value))
+			if(!isValidE_mail1(value))
 			{
 				str = str.erase(str.find(key)-1, key.size()+value.size()+2);
 				str=str + key + ":" + "INVALID" + ":";

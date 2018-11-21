@@ -8,6 +8,7 @@
 
 static std::map<std::string, std::pair<std::string, std::string>*> Id_Log_Pass;
 static std::map<std::string, user*> users;
+static std::map<std::string, bool> mail;
 static int i=0;
 static int ID=0;
 static std::list<connection*> connections;
@@ -18,6 +19,7 @@ void recv_message(connection* c, std::string message)
 	std::string key = "";
 	std::string value = "";
 	std::string log = "";
+	std::string email = "";
 	std::string pass = "";
 	std::string id = "";
 	std::string msg = message;
@@ -42,41 +44,42 @@ void recv_message(connection* c, std::string message)
 			{
 				if((message.find(":registration:information:")>=0)&&(message.find(":registration:information:")<message.size()))
 				{
+					msg = msg.erase(0, msg.find(":Email:")+7);
+					email = msg.substr(0, msg.find(':'));
 					msg = msg.erase(0, msg.find(":Login:")+7);
 					log = msg.substr(0, msg.find(':'));
-					if(!isValidLogin1(log))
-					{
-						msg = message;
-						msg = msg.erase(msg.find(":Login:"), 7+log.size());
-						msg = msg + "Login:INVALID1:";
-						c->send(msg);
-					}
-					else
+					if(!(isValidLogin2(Id_Log_Pass, log) || isValidE_mail2(mail, email)))
 					{
 						if(!isValidLogin2(Id_Log_Pass, log))
 						{
 							msg = message;
 							msg = msg.erase(msg.find(":Login:"), 7+log.size());
-							msg = msg + "Login:INVALID2:";
-							c->send(msg);
-
+							msg = msg + "Login:INVALID:";
 						}
-						else
+						if(!isValidE_mail2(mail, email))
 						{
-							std::map<std::string, std::string> datebase;
-							ID++;
-							id="user_"+std::to_string(ID);
-							msg=message + "Id:" + id + ":user_connection:" +(c->getId()) + ":";
-							msg.erase(0,26);
-							string_to_map_and_log_pass(datebase, msg, log, pass);
-							std::pair<std::string,std::string>* p=new std::pair<std::string,std::string>(log, pass);
-							Id_Log_Pass.emplace(id,p);
-							user* u = new user(datebase);
-							users.emplace(id, u);
-							id=":your_id:"+id;
-							c->send(id);
-							c->send("You allowed three action: registration, login or quit");
+							msg = message;
+							msg = msg.erase(msg.find(":Email:"), 7+log.size());
+							msg = msg + "Email:INVALID:";
 						}
+						c->send(msg);
+					}
+					else
+					{
+						std::map<std::string, std::string> datebase;
+						ID++;
+						id="user_"+std::to_string(ID);
+						msg=message + "Id:" + id + ":user_connection:" +(c->getId()) + ":";
+						msg.erase(0,26);
+						string_to_map_and_log_pass(datebase, msg, log, pass);
+						std::pair<std::string,std::string>* p=new std::pair<std::string,std::string>(id, pass);
+						Id_Log_Pass.emplace(log,p);
+						mail.emplace(email, 0);
+						user* u = new user(datebase);
+						users.emplace(id, u);
+						id=":your_id:"+id;
+						c->send(id);
+						c->send("You allowed three action: registration, login or quit");
 					}
 				}
 				else
