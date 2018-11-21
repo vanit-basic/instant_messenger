@@ -63,24 +63,5 @@ connection::~connection() {
 
  //       std::remove(input_name.c_str());
  //       std::remove(output_name.c_str());
+}
 
-}
-class user
-{
-       private:
-               std::strind id;
-               std::string firstname;
-               std::string lastname;
-               std::string mail;
-               std::string birth_date;
-               std::string gender;
-               std::string login;
-       pubic: 
-	       user(std::string,std::string,std::string,std::string,std::string,std::string,std::string);
-               ~user();
-               static bool isvalid_firstname(std::string);
-               static bool isvalid_lastname(std::string);
-               static bool isvalid_mail(std::string);
-               static bool isvalid_gender(std::string);
-               static bool isvalid_login(std::string);
-}
