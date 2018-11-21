@@ -25,10 +25,10 @@ bool isvalid_birth_date(std::string date)
 {
         if(!std::regex_match(date,std::regex("[[:digit:]]+(\\.)[[:digit:]]+(\\.)[[:digit:]]+")))
                 return false;
-        int day=stoi(date.substr(0,date.find("-")));
-        date.erase(0,date.find("-")+1);
-        int month=stoi(date.substr(0,date.find("-")));
-        date.erase(0,date.find("-")+1);
+        int day=stoi(date.substr(0,date.find(".")));
+        date.erase(0,date.find(".")+1);
+        int month=stoi(date.substr(0,date.find(".")));
+        date.erase(0,date.find(".")+1);
         int year=stoi(date);
         if(day<1 || day>31 || month<1 || month>12 || year>2002 || year<1958)
                 return false;
