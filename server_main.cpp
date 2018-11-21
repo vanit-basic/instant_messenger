@@ -66,7 +66,7 @@ void recv_message(connection* c, std::string message)
 							std::map<std::string, std::string> datebase;
 							ID++;
 							id="user_"+std::to_string(ID);
-							msg=message + "Id:" + id + ":";
+							msg=message + "Id:" + id + ":user_connection:" +(c->getId()) + ":";
 							msg.erase(0,26);
 							string_to_map_and_log_pass(datebase, msg, log, pass);
 							std::pair<std::string,std::string>* p=new std::pair<std::string,std::string>(log, pass);
@@ -93,6 +93,7 @@ void recv_message(connection* c, std::string message)
 							std::string in="";
 							in = ":your_information" + user_information(users, uid);
 							c->send(in);
+							c->send("You allowed following action: send message another user, create a new group, send message to group or quit");
 						}
 						else
 						{
@@ -100,6 +101,8 @@ void recv_message(connection* c, std::string message)
 							c->send("You allowed three action: registration, login or quit");
 						}
 					}
+					else
+					{}
 				}
 
 			}

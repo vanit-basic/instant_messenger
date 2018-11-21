@@ -4,7 +4,7 @@
 #include "connectionAndUser.hpp"
 #include "utils.hpp"
 
-static std::map<std::string, std::string> information;
+static std::map<std::string, std::string> my_information;
 static std::string fifo_name1="";
 static std::string fifo_name2="";
 static std::string id="";
@@ -152,10 +152,36 @@ void recv_message(connection* c, std::string message)
 						{
 							std::string msg = message;
 							msg = msg.erase(0, 18);
-							string_to_map(information, msg);
+							string_to_map(my_information, msg);
 						}
 						else
-						{}
+						{
+							if(message == "You allowed following action: send message another user, create a new group, send message to group or quit")
+							{
+								std::string act="";
+								std::cout<<"for send message another user enter 1, for creat a new group enter 2,for send message to group enter 3 for quit enter 4"<<std::endl;
+								std::getline(std::cin, act);
+								while(!(act=="1" ||act=="2" || act=="3" || act=="4"))
+								{
+									std::cout<<"for send message another user enter 1, for creat a new group enter 2,for send message to group enter 3 for quit enter 4"<<std::endl;
+									std::cin>>act;
+								}
+								int act1 = stoi(act);
+								switch(act1)
+								{
+									case 1: c->send(":action:send_message_anoter_user:");
+										break;
+									case 2: c->send(":action:creat_a_new_group:");
+										break;
+									case 3: c->send(":action:send_message_to_group:");
+										break;
+									case 4:c->send("quit");
+									       break;
+								}
+							}
+							else
+							{}
+						}
 					}
 				}
 			}

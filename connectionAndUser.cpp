@@ -137,6 +137,14 @@ std::string user::getId()
 {
         return this -> id;
 }
+void user::setUser_connection(std::string con)
+{
+	this-> user_connection = con;
+}
+std::string user::getUser_connection()
+{
+	return this->user_connection;
+}
 
 user::user(std::map<std::string, std::string> datebase)
 {
@@ -170,6 +178,10 @@ user::user(std::map<std::string, std::string> datebase)
 		if((k->first)=="Id")
 		{
 			this->id = (k->second);
+		}
+		if ((k->first)=="user_connection")
+		{
+			this->user_connection = (k->second);
 		}
         }
 }
