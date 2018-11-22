@@ -15,14 +15,13 @@ bool valid_name(std::string name) {
 	}
 	return f;
 }
-bool valid_login(std::string login) {
-	bool f = false;
-	if(login.length() >= 8 && login.length() <= 32) {
-		std::regex reg("[A-Za-z0-9]+");
-		if(std::regex_match(login,reg))
-			f = true;
-	}
-	return f;
+bool valid_login(std::string log) {
+	std::regex reg("[[:upper:]]");
+        if(!std::regex_search(log,reg) || log.size()<8 || log.size()>16)
+                return false;
+        std::regex rgx("[[:alnum:]]+(\\.|_|-|@)");
+        log=std::regex_replace(log,rgx,"");
+        return (log=="" || std::regex_replace(log,std::regex("[[:alnum:]]"),"")=="")?true:false;
 } 
 bool valid_gender(std::string gender) {
 	bool f = false;
@@ -31,7 +30,18 @@ bool valid_gender(std::string gender) {
 	return f;
 }
 bool valid_birthdate(std::string date) {
-	
+if(!std::regex_match(date,std::regex("[[:digit:]]+(\\.)[[:digit:]]+(\\.)[[:digit:]]+")))
+                return false;
+        int day=stoi(date.substr(0,date.find(".")));
+        date.erase(0,date.find(".")+1);
+        int month=stoi(date.substr(0,date.find(".")));
+        date.erase(0,date.find(".")+1);
+        int year=stoi(date);
+        if(day<1 || day>31 || month<1 || month>12 || year>2002 || year<1958)
+                return false;
+        if ((month==2 && day>29) || (month==4 && day>30) || (month==6 && day>30) || (month==9 && day>30) || (month==11 && day>30) || (year%4!=0 && month==2 && day>28))
+                return false;
+return true;	
 }
 std::string replace_before_dog(std::string mail) {
        std::regex e("[[:alnum:]]+(\\.|_|-)");
@@ -61,4 +71,33 @@ bool valid_mail(std::string mail) {
        if(std::regex_match(sub_before_dog,start) && std::regex_match(sub_after_dog_before_point,middle) && after_point == "")
                return true;
        return false;
+}
+bool valid_password(std::string password) {
+	bool isValid=true;
+	std::string copypass=password;
+	if((8 > copypass.size()) || (16 < copypass.size()))
+	{
+		isValid = false;
+	}
+	else
+	{
+		std::regex p("[A-Za-z0-9]+");
+		copypass=std::regex_replace(copypass, p, "");
+		if(copypass!="")
+		{
+			isValid=false;
+		}
+		else
+		{
+			copypass=password;
+			std::regex l("[A-Z]");
+			std::regex s("[a-z]");
+			std::regex n("[0-9]");
+			if(!(regex_search(password, l) && regex_search(password, s) && regex_search(password, n)))
+			{
+				isValid=false;
+			}
+		}
+	}
+	return isValid;
 }

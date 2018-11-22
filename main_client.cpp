@@ -2,34 +2,24 @@
 #include <unistd.h>
 #include "connection.hpp"
 #include "validation.hpp"
+
 connection* mainConnection = NULL;
+std::string info = ":action:registration";
+std::string temp = "";
+
 void recv_message(connection* c, std::string message)  {
-	std::cout << "Sent : " << message  << std::endl;
-	std::string command;
-	std::cin >> command;
-	c -> send(command);
-}
-
-void binder_recv_message(connection* c, std::string message) {
-	size_t pos = message.find(":");
-	std::cout << "Sent : " << message  << std::endl;
-	if(message != "q" && message != "")
-	{
-		std::string name1 = message.substr(0, message.find(":"));
-
-		std::string name2 = message.substr(message.find(":")+1);
-
-		mainConnection = new connection(name1, name2);
-		mainConnection -> setRecvMessageCallback(recv_message);
-//		mainConnection -> send("Hello");
-	}
-	static int Id = 0;
 	int a = 0;
-	std::cout << "For login enter 1, for registration enter 2" << "\n";
-	std::cin >> a;
-	if(a == 2) {
-		std::string info = ":action:registration";
-		std::string temp = "";
+	if(message == "Sign in(Enter 1) or Registration(Enter 2)") {
+		std::string s1 = "";
+		while(true){
+		std::cin >> s1;
+		if(s1 == "1" || s1 == "2") {
+			c->send(s1);
+			break;
+		}
+	}
+	}
+	if(message == "Enter your info") {
 		while(true) {
 			std::cout << "Enter Firstname(Valod) : " << "\n";
 			std::cin >> temp;
@@ -71,15 +61,49 @@ void binder_recv_message(connection* c, std::string message) {
 			}
 		}
 		while(true) {
+			std::cout << "Enter password : " << "\n";
+			std::cin >> temp;
+			if(valid_password(temp)) {
+				info = info + ":Password:" + temp;
+				break;
+			}
+		}
+		while(true) {
 			std::cout << "Enter login : " << "\n";
 			std::cin >> temp;
 			if(valid_login(temp)) {
-				temp = ":Login:" + temp;
+				std::string stri = ":Login:" + temp;
 				c->send(temp);	
+				break;
 			}
-
 		}
-		c->send(info);
+	}
+		if(message == "Invalid_Login") {
+			while(!valid_login(temp)) {
+                        std::cout << "Enter login : " << "\n";
+                        std::cin >> temp;
+			c->send(temp);
+			}
+		}
+		if(message == "Valid_Login") {
+			info = info + ":Login:" + temp;
+			c->send(info);
+		}
+}
+
+void binder_recv_message(connection* c, std::string message) {
+	size_t pos = message.find(":");
+	static int Id = 0;
+	std::cout << "Sent : " << message  << std::endl;
+	if(message != "q" && message != "")
+	{
+		std::string name1 = message.substr(0, message.find(":"));
+
+		std::string name2 = message.substr(message.find(":")+1);
+
+		mainConnection = new connection(name1, name2);
+		mainConnection -> setRecvMessageCallback(recv_message);
+		mainConnection -> send("help");
 	}
 }
 

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include "connection.hpp"
 #include <map>
 static int a = 0;
@@ -31,24 +32,37 @@ std::string map_to_string (std::map<std::string, std::string> mymap)
 }
 
 void recv_message(connection* c, std::string message) {
-	std::map<std::string, std::pair<std::string, std::string>> Id_Login_Pass ;
+	std::map<std::string, std::pair<std::string, std::string>> Login_Id_Pass ;
+	std::map<std::string, std::pair<std::string, std::string>>::iterator it;
 	std::cout << "Sent : " << message  << std::endl;
+	if(message == "help") {
+		c->send("Sign in(Enter 1) or Registration(Enter 2)");
+	}
+	if(message == "2") {
+		c->send("Enter your info");
+	}
 	std::string s = "";
-	s.substr(0,6);
-	if(s == ":Login") {
+	if(message.substr(0,7) == ":Login:") {
 	s = message.substr(message.rfind(":") + 1, message.length() - message.rfind(":"));
-	it = p.begin();
+		std::cout << "ifi mej" << "\n";
+	it = Login_Id_Pass.begin();
 	int k = 0;
-	while(k != p.size()) {
+	while(it != Login_Id_Pass.end()) {
+		std::cout << "whilei mej" << "\n";
 		if(s == it->first) {
-			
+			c->send("Invalid_Login");
+			k++;
 		}
 	}
-	
+	if(k == 0) {
+	c->send("Valid_Login");
+	}
+	}
+	if(message.substr(0,20) == ":action:registration") {
+		message.erase(0,20);
+		std::map<std::string, std::string> users = string_to_map(message);
+		//user u(users);
 	}	
-        maps = string_to_map(message);
-	std::string str = map_to_string(maps);
-	c->send(str);
 }
 
 void binder_recv_message(connection* c, std::string message) {
