@@ -58,11 +58,11 @@ void recv_message(connection* c, std::string message)
 						std::getline(std::cin, actual);
 					}
 					inf =inf + ":LastName:" + actual;
-					std::cout<<"Enter your birth date, date of birth must contain only numbers and character '.'(xx.xx.xxxx)"<<std::endl;
+					std::cout<<"Enter your birth date, date of birth must contain only numbers and character '.'(dd.mm.yyyy)"<<std::endl;
 					std::getline(std::cin, actual);
 					while(!isValidBirthDate(actual))
 					{
-						std::cout<<"Invalid birth date,please enter new birth date xx.xx.xxxx"<<std::endl;
+						std::cout<<"Invalid birth date,please enter new birth date dd.mm.yyyy"<<std::endl;
 						std::getline(std::cin, actual);
 					}
 					inf = inf + ":BirthDate:" + actual;
@@ -130,9 +130,9 @@ void recv_message(connection* c, std::string message)
 	}
 	else
 	{
-		if(((message.find(":Email:INVALID:") >= 0) && (message.find(":Email:INVALID:") < message.size())) || ((message.find(":Login:INVALID:") >= 0) && (message.find(":Login:INVALID:") < message.size())))
+		if(!((message.find(":Email:INVALID:") == std::string::npos) || (message.find(":Login:INVALID:") == std::string::npos)))
 		{
-			if((message.find(":Email:INVALID:") >= 0) && (message.find(":Email:INVALID:") < message.size()))
+			if(!(message.find(":Email:INVALID:") == std::string::npos))
 			{
 				message = message.erase(message.find(":Email:INVALID:")+1,14);
 				std::string l2="";
@@ -140,7 +140,7 @@ void recv_message(connection* c, std::string message)
 				std::getline(std::cin, l2);
 				message=message  + "Email:" + l2 +":";
 			}
-			if((message.find(":Login:INVALID:") >= 0) && (message.find(":Login:INVALID:") < message.size()))
+			if(!(message.find(":Login:INVALID:") == std::string::npos))
 			{
 				message = message.erase(message.find(":Login:INVALID:")+1,14);
 				std::string l2="";
@@ -152,11 +152,11 @@ void recv_message(connection* c, std::string message)
 		}
 		else
 		{
-			if((message.find(":your_information:")>=0)&&(message.find(":your_information:")<message.size()))
+			if(!(message.find(":your_information:") == std::string::npos))
 			{
 				std::string msg = message;
 				msg = msg.erase(0, 18);
-				my_information = string_to_map( msg);
+				my_information = string_to_map(msg);
 			}
 			else
 			{

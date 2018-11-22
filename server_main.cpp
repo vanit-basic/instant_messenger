@@ -41,7 +41,7 @@ void recv_message(connection* c, std::string message)
                         }
                         else
                         {
-                                if((message.find(":registration:information:")>=0)&&(message.find(":registration:information:")<message.size()))
+                                if(!(message.find(":registration:information:") == std::string::npos))
                                 {
                                         msg = msg.erase(0, msg.find(":Email:")+7);
                                         email = msg.substr(0, msg.find(':'));
@@ -64,15 +64,17 @@ void recv_message(connection* c, std::string message)
                                         }
                                         else
 					{
-						std::map<std::string, std::string> datebase;
+						std::map<std::string, std::string> database;
 						ID++;
 						id="user_"+std::to_string(ID);
 						msg=message + "Id:" + id + ":user_connection:" +(c->getId()) + ":";
 						msg.erase(0,26);
-						datebase=string_to_map_and_log_pass( msg, log, pass);
-						Log_Id_Pass.emplace(log,std::make_pair(id, pass));
+						database=string_to_map(msg);
+						log = database["Login"];
+						pass = database["Password"];
+						Log_Id_Pass.emplace(log, std::make_pair(id, pass));
 						mail.emplace(email, 0);
-						user u(datebase);
+						user u(database);
 						users.emplace(id, u);
 						id=":your_id:"+id;
 						c->send(id);
@@ -81,7 +83,7 @@ void recv_message(connection* c, std::string message)
                                 }
                                 else
                                 {
-                                        if((message.find(":action:signin:")>=0)&&(message.find(":action:signin:")<message.size()))
+                                        if(!(message.find(":action:signin:")==std::string::npos))
                                         {
                                                 msg = msg.erase(msg.find(":action:signin:"),msg.find(":action:signin:")+21);
                                                 log = msg.substr(0, msg.find(':'));
