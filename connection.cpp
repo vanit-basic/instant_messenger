@@ -14,11 +14,12 @@ void connection::read() {
 		std::string msg = "";
 		while(true) {
 			getline(input, msg);
-		//	if("" != msg) {
-				recvMessageCallback(this, msg);
 				if("q" == msg) {
 					break;
 				}
+		//	if("" != msg) {
+				recvMessageCallback(this, msg);
+
 			//}
 			usleep(100000);
 		}
@@ -115,21 +116,11 @@ std::string user::getId() {
 	return this->Id;
 }
 user::user(std::map<std::string, std::string> userInfo) {
-	std::map<std::string, std::string>::iterator it = userInfo.begin();
-	while(it != userInfo.end()) {
-		if(it->first == "FirstName")
-			this->FirstName = it->second;
-		if(it->first == "LastName")
-			this->LastName = it->second;
-		if(it->first == "BirthDate")
-			this->BirthDate = it->second;
-		if(it->first == "Login")
-			this->Login = it->second;
-		if(it->first == "Gender")
-			this->Gender = it->second;
-		if(it->first == "Email")
-			this->Email = it->second;
-		if(it->first == "Id")
-			this->Id = it->second;
-	}
+	this->FirstName = userInfo["Firstname"];
+	this->LastName = userInfo["Lastname"];
+	this->BirthDate = userInfo["BirthDate"];
+	this->Login = userInfo["Login"];
+	this->Gender = userInfo["Gender"];
+	this->Email = userInfo["Email"];
+	this->Id = userInfo["ID"];
 }

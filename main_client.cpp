@@ -9,7 +9,9 @@ std::string temp = "";
 
 void recv_message(connection* c, std::string message)  {
 	int a = 0;
+	std::cout<<"Server : "<< message <<std::endl;
 	if(message == "Sign in(Enter 1) or Registration(Enter 2)") {
+		
 		std::string s1 = "";
 		while(true){
 		std::cin >> s1;
@@ -21,15 +23,15 @@ void recv_message(connection* c, std::string message)  {
 	}
 	if(message == "Enter your info") {
 		while(true) {
-			std::cout << "Enter Firstname(Valod) : " << "\n";
+			std::cout << "Enter Firstname(Valod) : ";
 			std::cin >> temp;
 			if(valid_name(temp) == true) {
-				info = ":FirstName:" + temp;
+				info = info +  ":FirstName:" + temp;
 				break;
 			}
 		}
 		while(true) {
-			std::cout << "Enter Lastname(Valodyan) : " << "\n";
+			std::cout << "Enter Lastname(Valodyan) : ";
 			std::cin >> temp;
 			if(valid_name(temp)) {
 				info = info + ":LastName:" + temp;
@@ -37,7 +39,7 @@ void recv_message(connection* c, std::string message)  {
 			}
 		}
 		while(true) {
-			std::cout << "Enter Gender(male or female) : " << "\n";
+			std::cout << "Enter Gender(male or female) : ";
 			std::cin >> temp;
 			if(valid_gender(temp)) {
 				info = info + ":Gender:" + temp;
@@ -45,7 +47,7 @@ void recv_message(connection* c, std::string message)  {
 			}
 		}
 		while(true) {
-			std::cout << "Enter Birthdate(25-12-1999) : " << "\n";
+			std::cout << "Enter Birthdate(25-12-1999) : ";
 			std::cin >> temp;
 			if(valid_birthdate(temp)) {
 				info = info + ":BirthDate:" + temp;
@@ -53,7 +55,7 @@ void recv_message(connection* c, std::string message)  {
 			}
 		}
 		while(true) {
-			std::cout << "Enter email : " << "\n";
+			std::cout << "Enter email : ";
 			std::cin >> temp;
 			if(valid_mail(temp)) {
 				info = info + ":Email:" + temp;
@@ -61,7 +63,7 @@ void recv_message(connection* c, std::string message)  {
 			}
 		}
 		while(true) {
-			std::cout << "Enter password : " << "\n";
+			std::cout << "Enter password : ";
 			std::cin >> temp;
 			if(valid_password(temp)) {
 				info = info + ":Password:" + temp;
@@ -69,26 +71,32 @@ void recv_message(connection* c, std::string message)  {
 			}
 		}
 		while(true) {
-			std::cout << "Enter login : " << "\n";
+			std::cout << "Enter login : ";
 			std::cin >> temp;
 			if(valid_login(temp)) {
 				std::string stri = ":Login:" + temp;
-				c->send(temp);	
+				c->send(stri);	
 				break;
 			}
 		}
 	}
+	std::string stri="";
 		if(message == "Invalid_Login") {
-			while(!valid_login(temp)) {
-                        std::cout << "Enter login : " << "\n";
+			do
+			{
+                        std::cout << "Enter login : ";
                         std::cin >> temp;
-			c->send(temp);
+			stri = ":Login:" + temp;
 			}
+			while(!valid_login(temp));
+			c->send(stri);
+			
 		}
 		if(message == "Valid_Login") {
-			info = info + ":Login:" + temp;
+			info = info + ":Login:" + temp + ":";
 			c->send(info);
 		}
+		std::cout<<"verj\n";
 }
 
 void binder_recv_message(connection* c, std::string message) {

@@ -6,9 +6,13 @@ bool valid_name(std::string name) {
 		if('A' <= name[0] && name[0] <= 'Z') {
 			int i = 1;
 			while(i < name.length()) {
-				if('a' <= name[i] && name[0] <= 'z'){
+				if('a' <= name[i] && name[i] <= 'z'){
 					f = true;
 					i++;
+				}
+				else
+				{	f=false;
+					break;
 				}
 			}
 		}

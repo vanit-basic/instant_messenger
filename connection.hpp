@@ -58,7 +58,7 @@ class user {
 		std::string getEmail();
 		std::string getId();
 		user(std::map<std::string, std::string>);
-		~user();
+		~user(){}
 };
 #endif
 
