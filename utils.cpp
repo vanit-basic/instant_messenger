@@ -36,31 +36,6 @@ std::string map_to_string(std::map<std::string, std::string> datebase)
         message = message + ":";
         return message;
 }
-
-std::map<std::string, std::string> string_to_map_and_log_pass( std::string msg, std::string& log, std::string& pass)
-{
-        std::map<std::string, std::string> datebase;
-        std::string key="";
-        std::string value="";
-        while(msg!="")
-        {
-                key = msg.substr(0, msg.find(':'));
-                msg.erase(0, msg.find(':')+1);
-                value = msg.substr(0, msg.find(':'));
-                msg.erase(0, msg.find(':')+1);
-                if(key=="Login")
-                {
-                        log=value;
-                }
-                if(key=="Password")
-                {
-                        pass=value;
-                }
-                datebase.emplace(key, value);
-        }
-        return datebase;
-}
-
 bool isValidSignIn(std::map<std::string, std::pair<std::string, std::string>> datebase, std::string log, std::string pass, std::string& id)
 {
         bool isValid=false;
