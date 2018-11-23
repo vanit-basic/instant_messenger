@@ -137,14 +137,6 @@ std::string user::getId()
 {
         return this -> id;
 }
-void user::setUser_connection(std::string con)
-{
-        this-> user_connection = con;
-}
-std::string user::getUser_connection()
-{
-        return this->user_connection;
-}
 
 user::user(std::map<std::string, std::string> datebase)
 {
@@ -155,5 +147,4 @@ user::user(std::map<std::string, std::string> datebase)
         this->login = datebase["Login"];
         this->email = datebase["Email"];
         this->id = datebase["Id"];
-        this->user_connection = datebase["user_connection"];
 }

@@ -44,7 +44,6 @@ class user
                 std::string login;
                 std::string email;
                 std::string id;
-                std::string user_connection;
         public:
                 void setFirstName(std::string);
                 std::string getFirstName();
@@ -60,8 +59,6 @@ class user
                 std::string getEmail();
                 void setId(std::string);
                 std::string getId();
-                void setUser_connection(std::string);
-                std::string getUser_connection();
                 user(std::map<std::string, std::string>);
                 user(){}
                 ~user(){}

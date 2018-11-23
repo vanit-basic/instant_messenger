@@ -9,9 +9,9 @@ static std::map<std::string, user> users;
 static std::map<std::string, bool> mail;
 static std::map<std::string, bool> joined;
 static std::map<std::string, connection*> connections;
+static std::map<std::string, std::string> id_connection;
 static int i=0;
 static int ID=0;
-//static std::list<connection*> connections;
 
 void recv_message(connection* c, std::string message)
 {
@@ -62,7 +62,7 @@ void recv_message(connection* c, std::string message)
 					std::map<std::string, std::string> database;
 					ID++;
 					id="user_"+std::to_string(ID);
-					msg=message + "Id:" + id + ":user_connection:" +(c->getId()) + ":";
+					msg=message + "Id:" + id + ":";
 					msg.erase(0,26);
 					database=string_to_map(msg);
 					log = database["Login"];
@@ -100,6 +100,7 @@ void recv_message(connection* c, std::string message)
 							inf1 = ":your_information" + user_information(users, uid);
 							c->send(inf1);
 							inf1 = Log_Id_Pass[log].first;
+							id_connection.emplace(inf1, c->getId());
 							inf2 = ":update_users_data:" + us_inf(users, inf1);
 							std::map<std::string, connection*>::iterator k=connections.begin();
 							for(k=connections.begin(); k!=connections.end();++k)
@@ -123,10 +124,7 @@ void recv_message(connection* c, std::string message)
 						std::map<std::string, user>::iterator k=users.begin();
 						for(; k != users.end(); ++k)
 						{
-							if(!isValidJoined(joined, k->second.getLogin()))
-							{
 							user_data = user_data + us_inf(users, k->first);
-							}
 						}
 						c->send(user_data);
 					}
@@ -149,10 +147,10 @@ void recv_message(connection* c, std::string message)
 								msg = msg.erase(0, us_id.size()+9);
 								value =":message_from_user:"+us_inf(users, us_id)+":"+ msg.substr(0, msg.find(':')) + ":";
 								std::cout<<"uxarkvac sms  "<<value<<std::endl;
-								con_n = users[key].getUser_connection();
+								con_n = id_connection[key];
 								std::cout<<"conention id  "<< con_n<<std::endl;
 								connections[con_n]->send(value);
-								connections[con_n]->send("You allowed following action:view user data, send message another user, create a new group, send message to group, update users data or quit");
+								//connections[con_n]->send("You allowed following action:view user data, send message another user, create a new group, send message to group, update users data or quit");
 								//c->send(":Your_message_sent:");
 								//c->send("You allowed following action:view user data, send message another user, create a new group, send message to group, update users data or quit");
 							}
@@ -182,7 +180,6 @@ void recv_message_binder(connection* c, std::string message)
                 s->setId(fifo_name1);
                 s->setRecvMessageCallback(recv_message);
                 s->send("You allowed three action: registration, login or quit");
-                //connections.push_back(s);
 		connections.emplace(fifo_name1, s);
         }
 }
