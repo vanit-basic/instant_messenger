@@ -45,8 +45,8 @@ std::string map_to_string(std::map<std::string, std::string> datebase)
 }
 std::string us_inf(std::map<std::string, user> database, std::string id)
 {
-	std::string inf="";
-        inf="Name:" + (database[id]).getFirstName() + "_" + (database[id]).getLastName()  + ":Id:" + (database[id]).getId() + ":";
+	std::string inf = "";
+        inf = "Name:" + (database[id]).getFirstName() + " " + (database[id]).getLastName()  + ":Id:" + (database[id]).getId() +  ":";
         return inf;
 }
 

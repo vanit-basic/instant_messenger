@@ -107,7 +107,7 @@ void recv_message(connection* c, std::string message)
 							{
 								(k->second)->send(inf2);
 							}
-							c->send("You allowed following action:view user data, send message another user, create a new group, send message to group, update users data or quit");
+							c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");
 						}
 					}
 					else
@@ -131,7 +131,7 @@ void recv_message(connection* c, std::string message)
 					else
 					{
 						if(message==":return1:")
-						{c->send("You allowed following action:view user data, send message another user, create a new group, send message to group, update users data or quit");  }
+						{c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");  }
 						else
 						{
 							if(!(message.find(":send_message_user:")==std::string::npos))
@@ -140,19 +140,15 @@ void recv_message(connection* c, std::string message)
 								std::string us_id="";
 								msg = msg.erase(0,26);
 								key = msg.substr(0, msg.find(':'));
-								std::cout<<"user id  "<< key<<std::endl;
 								msg = msg.erase(0, key.size()+7);
 								us_id= msg.substr(0, msg.find(':'));
-								std::cout<<"my id  "<< us_id<<std::endl;
 								msg = msg.erase(0, us_id.size()+9);
-								value =":message_from_user:"+us_inf(users, us_id)+":"+ msg.substr(0, msg.find(':')) + ":";
-								std::cout<<"uxarkvac sms  "<<value<<std::endl;
+								value =":message_from_user:"+us_inf(users, us_id) + msg.substr(0, msg.find(':')) + ":";
 								con_n = id_connection[key];
-								std::cout<<"conention id  "<< con_n<<std::endl;
 								connections[con_n]->send(value);
-								//connections[con_n]->send("You allowed following action:view user data, send message another user, create a new group, send message to group, update users data or quit");
-								//c->send(":Your_message_sent:");
-								//c->send("You allowed following action:view user data, send message another user, create a new group, send message to group, update users data or quit");
+								/*connections[con_n]->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");
+								c->send(":Your_message_sent:");
+								c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");*/
 							}
 							else{}
 						}

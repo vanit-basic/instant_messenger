@@ -10,6 +10,72 @@ static std::string fifo_name1="";
 static std::string fifo_name2="";
 static std::string id="";
 static std::mutex m;
+static std::mutex m1;
+void sender(connection* c)
+{
+	m1.lock();
+	std::string act="";
+	std::cout<<"for view users data enter 1 for send message another user enter 2, for creat a new group enter 3,for send message to group enter 4, for quit enter 5"<<std::endl;
+	std::getline(std::cin, act);
+	while(!(act=="1" ||act=="2" || act=="3" || act=="4" || act=="5" || act == "6"))
+	{
+		std::cout<<"for view users data enter 1 for send message another user enter 2, for creat a new group enter 3,for send message to group enter 4, for quit enter 5"<<std::endl;
+		std::cin>>act;
+	}
+	int act1 = stoi(act);
+	switch(act1)
+	{
+		case 1:{
+			if(!users_inf.empty())
+			{
+				print_map(users_inf);
+			}
+			else
+			{std::cout<<"No users logged in yet"<<std::endl;}
+			c->send(":return1:");
+			break;
+		       }
+
+		case 2:{
+			if(!users_inf.empty())
+			{
+			       std::string us_id="";
+			       std::string us_msg="";
+			       std::cout<<"Enter the User Id to whom you want to send a message"<<std::endl;
+			       print_map(users_inf);
+			       std::getline(std::cin, us_id);
+			       while(!isValidUser(users_inf, us_id))
+			       {
+				       std::cout<<"Invalid User, enter the User Id from the list"<<std::endl;
+				       print_map(users_inf);
+				       std::getline(std::cin, us_id);
+			       }
+			       std::cout<<"Enter the message"<<std::endl;
+			       std::getline(std::cin, us_msg);
+			       us_msg=":send_message_user:userId:" + us_id +":my_Id:" +my_information["Id"] + ":message:" + us_msg + ":";
+			       c->send(us_msg);
+			}
+			else
+			{std::cout<<"No users logged in yet, update users data"<<std::endl;
+			c->send(":return1:");
+			}
+			break;
+		       }
+		case 3:{
+			c->send(":action:creat_a_new_group:");
+			break;
+		       }
+		case 4:{
+			       c->send(":action:send_message_to_group:");
+			       break;
+		       }
+		case 5:{
+			       c->send("quit");
+			       break;
+		       }
+	}
+m1.unlock();
+}
 void recv_message_binder(connection* c, std::string message)
 {
         if(message!="quit" && message !="")
@@ -23,9 +89,6 @@ void recv_message_binder(connection* c, std::string message)
 
 void recv_message(connection* c, std::string message)
 {
-	std::cout << "from server : " << message << std::endl;
-	std::cout << std::endl;
-	std::cout << std::endl;
 	if ("You allowed three action: registration, login or quit"==message)
 	{
 		std::string act="";
@@ -157,6 +220,7 @@ void recv_message(connection* c, std::string message)
 		{
 			if(!(message.find(":your_information:") == std::string::npos))
 			{
+				std::cout << "from server : " << message << std::endl;
 				std::string msg = message;
 				msg = msg.erase(0, 18);
 				my_information = string_to_map(msg);
@@ -164,71 +228,8 @@ void recv_message(connection* c, std::string message)
 			}
 			else
 			{
-				if(message == "You allowed following action:view user data, send message another user, create a new group, send message to group, update users data or quit")
-				{
-					std::string act="";
-					std::cout<<"for view users data enter 1 for send message another user enter 2, for creat a new group enter 3,for send message to group enter 4, for update users data enter 5 for quit enter 6"<<std::endl;
-					std::getline(std::cin, act);
-					while(!(act=="1" ||act=="2" || act=="3" || act=="4" || act=="5" || act == "6"))
-					{
-						std::cout<<"for view users data enter 1 for send message another user enter 2, for creat a new group enter 3,for send message to group enter 4, for update users data enter 5 for quit enter 6"<<std::endl;
-						std::cin>>act;
-					}
-					int act1 = stoi(act);
-					switch(act1)
-					{
-						case 1:{
-							if(!users_inf.empty())
-							{
-								print_map(users_inf);
-							}
-							else
-							{std::cout<<"No users logged in yet"<<std::endl;}
-						       c->send(":return1:");
-						       break;
-						       }
-						case 2:{
-							if(!users_inf.empty())
-							{
-							std::string us_id="";
-							std::string us_msg="";
-							std::cout<<"Enter the User Id to whom you want to send a message"<<std::endl;
-							print_map(users_inf);
-							std::getline(std::cin, us_id);
-							while(!isValidUser(users_inf, us_id))
-							{
-							std::cout<<"Invalid User, enter the User Id from the list"<<std::endl;
-							print_map(users_inf);
-							std::getline(std::cin, us_id);
-							}
-							std::cout<<"Enter the message"<<std::endl;
-							std::getline(std::cin, us_msg);
-							us_msg=":send_message_user:userId:" + us_id +":my_Id:" +my_information["Id"] + ":message:" + us_msg + ":";
-						       	c->send(us_msg);
-							}
-							else
-							{std::cout<<"No users logged in yet, update users data"<<std::endl;
-						       	c->send(":return1:");
-							}
-							break;
-						       }
-						case 3:{ 
-						       c->send(":action:creat_a_new_group:");
-							break;
-						       }
-						case 4:{ 
-						       c->send(":action:send_message_to_group:");
-							break;
-						       }
-						case 5:{ 
-						       c->send(":update_users_data:");
-							break;
-						       }
-						case 6:{
-						       c->send("quit");
-						       break;
-						       }
-					}
+				if(message == "You allowed following action:view user data, send message another user, create a new group, send message to group or quit")
+				{ std::thread* t = new std::thread(sender, c);
 				}
 				else
 				{
@@ -253,9 +254,15 @@ void recv_message(connection* c, std::string message)
 					{
 						if(!(message.find(":message_from_user:")==std::string::npos))
 						{
+							std::cout << "from server:  " << message << std::endl;
 							c->send(":return1:");
 						}
-						else{}
+						else
+						{
+							if(message == "There is no such combination of login and password")
+							{std::cout << "from server:  " << message << std::endl;}
+							else{}
+						}
 					}
 				}
 			}
@@ -291,21 +298,6 @@ int main ()
                 m.unlock();
                 std::cout<<"Id: "<<c.getId()<<"\n";
                 c.setRecvMessageCallback(recv_message);
-/*
-        while (true)
-        {
-
-                std::string str="";
-                usleep(10000);
-                std::cout<<"mutqagreq hraman, cragir@ verjacnelu hamar mutqagreq 'quit'\n";
-                std::getline(std::cin,str);
-                c.send(str);
-                if(str=="quit")
-                {
-                        break;
-                }
-
-        }
-*/      return 0;
+	return 0;
 }
 
