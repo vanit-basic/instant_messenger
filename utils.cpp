@@ -2,7 +2,14 @@
 #include <cmath>
 #include <iostream>
 #include "utils.hpp"
-
+void print_map(std::map<std::string, std::string>  users)
+{
+	std::map<std::string, std::string>::iterator k=users.begin();
+	for(; k != users.end(); ++k)
+	{
+		std::cout<<"id :"<<k->first<<"  name:"<<k->second<<std::endl;
+	}
+}
 std::string user_information(std::map<std::string, user> datebase, std::string key)
 {
         std::string inf="";
@@ -36,6 +43,13 @@ std::string map_to_string(std::map<std::string, std::string> datebase)
         message = message + ":";
         return message;
 }
+std::string us_inf(std::map<std::string, user> database, std::string id)
+{
+	std::string inf="";
+        inf="Name:" + (database[id]).getFirstName() + "_" + (database[id]).getLastName()  + ":Id:" + (database[id]).getId() + ":";
+        return inf;
+}
+
 bool isValidSignIn(std::map<std::string, std::pair<std::string, std::string>> datebase, std::string log, std::string pass, std::string& id)
 {
         bool isValid=false;
@@ -61,6 +75,20 @@ bool isValidJoined(std::map<std::string, bool> joined, std::string log)
         return isValid;
 }
 
+bool isValidUser(std::map<std::string, std::string> users, std::string id)
+{
+        bool isValid=false;
+        std::map<std::string, std::string>::iterator k=users.begin();
+        for(; k != users.end(); ++k)
+        {
+                if(((k->first)==id))
+                {
+                        isValid=true;
+                        break;
+                }
+        }
+        return isValid;
+}
 bool isValidE_mail1(std::string mail)
 {
         bool isValid = true;
