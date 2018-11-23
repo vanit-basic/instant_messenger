@@ -74,6 +74,7 @@ user::user(std::map<std::string,std::string> usermap)
 	this->phone=usermap["phone"];
 	this->gender=usermap["gender"];
 	this->login=usermap["login"];
+	this->user_id=usermap["user_id"];
 }
 user::~user()
 {

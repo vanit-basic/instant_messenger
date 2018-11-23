@@ -146,7 +146,19 @@ void recv_message(connection* c1,std::string message){
 		sign_in = "sign_in:"+login+":"+password;
 		c1->send(sign_in);
 	}
+	while(message == "YOUR LOGIN OR PASSWORD ARE NOT WRONG,PLEASE ENTER RIGHT INFORMATION"){
+		std::cout<<message<<std::endl;
+		std::cout<<"Enter your LOGIN*"<<std::endl;
+                getline(std::cin,login);
+
+                std::cout<<"Enter your PASSWORD*"<<std::endl;
+                getline(std::cin,password);
+
+                sign_in = "sign_in:"+login+":"+password;
+                c1->send(sign_in);
+
         }
+}
 void binder_recv_message(connection* c, std::string firstMessage) {
         if(firstMessage!="q")
         {std::cout<<firstMessage<<std::endl;

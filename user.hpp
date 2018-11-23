@@ -31,6 +31,7 @@ class user
 		std::string get_birthday();
 		std::string get_phone();
 		std::string get_gender();
+		user(){}
                 user(std::map<std::string,std::string>);
                 ~user();
 };

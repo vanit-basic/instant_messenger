@@ -21,6 +21,13 @@ std::map<std::string,std::string> user_info;
 std::map<std::string,std::pair<int,std::string>>::iterator itr;
 std::map<std::string,std::string>::iterator itrMail;
 std::map<int,user>::iterator itrUser;
+std::string userToString(std::map<int,user> id_user,int user_id){
+	std::string client_back = "";
+	client_back ="Login:"+id_user[user_id].get_login()+ "Name:"+id_user[user_id].get_name()+"Surname:"+id_user[user_id].get_surname()+"Email:"+id_user[user_id].get_email()+"Birthday:"+id_user[user_id].get_birthday()+"Phone:"+ id_user[user_id].get_phone()+"Gender:"+id_user[user_id].get_gender()+"User_id:"+id_user[user_id].get_user_id();
+	return client_back;
+
+}
+		
 std::map<std::string,std::string> stringToMap(std::string keyValue1){
 std::map<std::string,std::string> myMap;
        	int size1 = keyValue1.size();
@@ -53,7 +60,6 @@ void recv_message(connection* s1, std::string message) {
         }
         if(message.find("email1:") != std::string::npos){
 		email = message.substr(message.find(":")+1,message.size()-message.find(":")-2);
-		std::cout<<"||||||||||"<<email<<std::endl;
 		for(itrMail = mail.begin();itrMail !=mail.end();++itrMail){
 			if((*itrMail).first == email){
 				s1->send("YOUR EMAIL IS BUSY,PLEASE ENTER ANOTHER EMAIL");
@@ -80,6 +86,7 @@ void recv_message(connection* s1, std::string message) {
 		profInfo = message.substr(message.find(":")+1);
 		logIdPass.emplace(keylog,std::make_pair(user_id,value_pass));
 		mail.insert(std::pair<std::string,std::string>(email,""));
+		profInfo = profInfo+"user_id:"+std::to_string(user_id)+":";
 		user_info = stringToMap(profInfo);
 		user us(user_info);
 		id_user.insert(std::pair<int,user>(user_id,us));
@@ -96,24 +103,25 @@ void recv_message(connection* s1, std::string message) {
 		std::string log_pass = message.substr(message.find(":")+1);
 		std::string wrong_log = log_pass.substr(0,log_pass.find(":"));
 		std::string wrong_pass= log_pass.substr(log_pass.find(":")+1);
+		std::cout<<wrong_log<<"::::::::::::::"<<wrong_pass<<std::endl;
 		for(itr=logIdPass.begin();itr !=logIdPass.end();++itr){
-                        if((*itr).first == wrong_log){
-				if((*itr).second.second ==wrong_pass){
+                        if(itr->first == wrong_log){
+				if(itr->second.second ==wrong_pass){
 					for(itrUser = id_user.begin();itrUser !=id_user.end();++itrUser){
-						if((*itr).second.first = (*itrUser).first){
+						if(itr->second.first = (*itrUser).first){
 							break;
 						}
-						user for_user = (*itrUser).second;
-						s1->send(for_user);
+						std::string back ="Your information:"+ userToString(id_user,(*itrUser).first);
+						s1->send(back);
 					}
 					}
 				else{
-					s1->send("PLEASE ENTER CORRECTLY PASSWORD");
+				s1->send("YOUR LOGIN OR PASSWORD ARE NOT WRONG,PLEASE ENTER RIGHT INFORMATION");
 				}
 
 				}
 			else{
-				s1->send("YOUR LOGIN ARE NOT FOUND,PLEASE ENTER WRONG LOGIN");
+				s1->send("YOUR LOGIN OR PASSWORD ARE NOT WRONG,PLEASE ENTER RIGHT INFORMATION");
 
 	}
 }
