@@ -1,8 +1,9 @@
+#include "connection.hpp"
+
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "connection.hpp"
 
 bool isFileExist(std::string fileName) {
 	struct stat buffer;

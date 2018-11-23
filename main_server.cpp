@@ -1,10 +1,14 @@
+#include "connection.hpp"
+
 #include <iostream>
 #include <unistd.h>
-#include "connection.hpp"
 #include <map>
+
 static int a = 0;
 static int id=0;
 	std::map<std::string, std::pair<std::string, std::string>> Login_Id_Pass ;
+	std::map< std::string, user> id_user;
+	std::map<std::string, std::string> users;
 
 
 bool verific_login(std::string s)
@@ -59,10 +63,26 @@ void recv_message(connection* c, std::string message) {
 		c->send("Enter your info");
 	}
 	std::string s = "";
-
+	if(message == "1") {
+		c->send("Enter login and password");
+	}
+	if(message.substr(0,7) == "Sign-in") {
+		message.erase(0,8);
+		std::string log = message.substr(0, message.find(":"));
+		message.erase(0, message.find(":") + 1);
+		if(Login_Id_Pass[log].second == message) {
+			std::string id_us = Login_Id_Pass[log].first;
+			std::string inform = ":information" + infos(id_user,id_us);
+			c->send(inform);
+			c->send("For send message to user enter 3, for create new group enter 4, for send message to group enter 5");
+		}
+		else {
+			c->send("wrong login or password");
+			c->send("Enter login and password");
+		}
+	}
 	if( message.substr(0,7) == ":Login:") {
 	s = message.substr(message.rfind(":") + 1, message.length() - message.rfind(":")-1);
-		std::cout << "ifi mej " <<s<< "\n";
 		
 		if(verific_login(s))
 		{
@@ -75,14 +95,13 @@ void recv_message(connection* c, std::string message) {
 	}
 	if(message.substr(0,20) == ":action:registration") {
 		message.erase(0,20);
-		std::cout<<"registr "<<message<<std::endl;
-		std::map<std::string, std::string> users = string_to_map(message);
+		users = string_to_map(message);
 		users.emplace("Id",std::to_string(id));
 		user u(users);
-		Login_Id_Pass.emplace(users["Login"],std::make_pair(std::to_string(id),users["Password"]));
+		id_user.emplace(std::to_string(id), u);
+		Login_Id_Pass.emplace(users["Login"],std::make_pair(std::to_string(++id),users["Password"]));
 		std::map<std::string, std::pair<std::string, std::string>>::iterator it1=Login_Id_Pass.begin();
-		std::cout<<"Mapi skizb@ = "<<it1->first<<std::endl;
-		c->send("OK");
+		c->send("Ok");
 	}	
 }
 

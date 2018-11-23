@@ -1,5 +1,6 @@
 #include <string>
 #include <regex>
+#include "connection.hpp"
 bool valid_name(std::string name) {
 	bool f = false;
 	if(name.length() > 1) {
@@ -104,4 +105,9 @@ bool valid_password(std::string password) {
 		}
 	}
 	return isValid;
+}
+std::string infos(std::map<std::string, user> m_map, std::string id) {
+        std::string data = "";
+        data = ":firstname:" + (m_map[id]).getFirstName() + ":lastname:" + (m_map[id]).getLastName() + ":birth_date:" + (m_map[id]).getBirthDate() + ":gender:" + (m_map[id]).getGender() + ":email:" + (m_map[id]).getEmail() + ":login:" + (m_map[id]).getLogin() + ":id:" + (m_map[id]).getId() + ":";
+        return data;
 }

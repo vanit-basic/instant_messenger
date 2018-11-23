@@ -1,7 +1,7 @@
+#include "connection.hpp"
+
 #include <iostream>
 #include <unistd.h>
-#include "connection.hpp"
-#include "validation.hpp"
 
 connection* mainConnection = NULL;
 std::string info = ":action:registration";
@@ -11,15 +11,29 @@ void recv_message(connection* c, std::string message)  {
 	int a = 0;
 	std::cout<<"Server : "<< message <<std::endl;
 	if(message == "Sign in(Enter 1) or Registration(Enter 2)") {
-		
+
 		std::string s1 = "";
 		while(true){
-		std::cin >> s1;
-		if(s1 == "1" || s1 == "2") {
-			c->send(s1);
-			break;
+			std::cin >> s1;
+			if(s1 == "1" || s1 == "2") {
+				c->send(s1);
+				break;
+			}
 		}
 	}
+	if(message == "Ok") {
+		c->send("help");
+	}
+	if(message == "Enter login and password") {
+		std::string forPass = "";
+		std::string forLoginPass = "";
+		std::cout << "Login : ";
+		std::cin >> temp;
+		std::cout << "Password : ";
+		std::cin >> forPass;
+		forLoginPass = "Sign-in:" + temp + ":" + forPass;
+		c->send(forLoginPass);	
+
 	}
 	if(message == "Enter your info") {
 		while(true) {
@@ -62,10 +76,18 @@ void recv_message(connection* c, std::string message)  {
 				break;
 			}
 		}
+		std::string examp = "";
+		while(true) {
+			std::cout << "Enter password : ";
+			std::cin >> examp;
+			if(valid_password(examp)) {
+				break;
+			}
+		}
 		while(true) {
 			std::cout << "Enter password : ";
 			std::cin >> temp;
-			if(valid_password(temp)) {
+			if(valid_password(temp) && temp == examp) {
 				info = info + ":Password:" + temp;
 				break;
 			}
@@ -81,22 +103,21 @@ void recv_message(connection* c, std::string message)  {
 		}
 	}
 	std::string stri="";
-		if(message == "Invalid_Login") {
-			do
-			{
-                        std::cout << "Enter login : ";
-                        std::cin >> temp;
+	if(message == "Invalid_Login") {
+		do
+		{
+			std::cout << "Enter login : ";
+			std::cin >> temp;
 			stri = ":Login:" + temp;
-			}
-			while(!valid_login(temp));
-			c->send(stri);
-			
 		}
-		if(message == "Valid_Login") {
-			info = info + ":Login:" + temp + ":";
-			c->send(info);
-		}
-		std::cout<<"verj\n";
+		while(!valid_login(temp));
+		c->send(stri);
+
+	}
+	if(message == "Valid_Login") {
+		info = info + ":Login:" + temp + ":";
+		c->send(info);
+	}
 }
 
 void binder_recv_message(connection* c, std::string message) {

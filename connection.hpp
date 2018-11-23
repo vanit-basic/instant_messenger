@@ -7,8 +7,16 @@
 #include <map>
 
 class connection;
-
+class user;
 typedef void (*recvCallback) (connection*, std::string);
+
+bool valid_name(std::string name);
+bool valid_birthdate(std::string date);
+bool valid_login(std::string login);
+bool valid_gender(std::string gender);
+bool valid_mail(std::string mail);
+bool valid_password(std::string password);
+std::string infos(std::map<std::string, user> m_map, std::string id);
 
 class connection {
 	private:
@@ -33,6 +41,7 @@ class connection {
 		connection(std::string, std::string);
 		~connection();
 };
+
 class user {
 	private:
 		std::string FirstName;
@@ -58,6 +67,7 @@ class user {
 		std::string getEmail();
 		std::string getId();
 		user(std::map<std::string, std::string>);
+		user(){}
 		~user(){}
 };
 #endif
