@@ -5,6 +5,7 @@
 #include <stdlib.h> 
 #include <netinet/in.h> 
 #include <string.h> 
+#include <fcntl.h>
 #define PORT 1234
 
 
@@ -49,6 +50,7 @@ int main(int argc, char const *argv[])
 		perror("listen"); 
 		exit(EXIT_FAILURE); 
 	}
+	char fBuff[1024];
 	while(1) {
 		if ((new_socket = accept(server_fd, (struct sockaddr *)&address, 
 						(socklen_t*)&addrlen))<0) 
@@ -58,9 +60,15 @@ int main(int argc, char const *argv[])
 		} else {
 			valread = read( new_socket , buffer, 1024); 
 			printf("%s\n",buffer ); 
-			usleep(1000000);
-			send(new_socket , hello , strlen(hello) , 0 ); 
-			printf("Hello message sent\n"); 
+			int fValread = 0;
+			int filedesc = open("test.xml", O_RDONLY);
+			do {
+				fValread = read(filedesc , fBuff, 1024);
+				send(new_socket, fBuff , fValread , 0);
+			}
+			while(fValread);
+			close(filedesc);
+			close(new_socket);
 		}
 	}
 	return 0; 
