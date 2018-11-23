@@ -82,10 +82,33 @@ void recieve(connection* c, std::string msg) {
                 c->send("Enter your information");
                 return;
         }
+
 	if(msg=="show users id")
 	{
-		c-send(show_id());
+		c->send(show_id());
 	}
+	if(msg.find(":action:send_message:")!=std::string::npos)
+	{
+		msg.erase(0,21);
+		int id=std::stoi(msg.substr(0,msg.find(":")));
+		std::string sms=msg.substr(msg.find(":")+1);
+		if(id_con.find(id)==id_con.end())
+		{
+			c->send("Error id");
+			return;
+		}
+		else
+		{
+			std::string send=":action:send:"+std::to_string(id)+":"+sms;
+			id_con[id]->send(send);
+			return;
+		}
+	}
+
+
+
+
+	
 	if(msg.substr(0,6)=="login:")
 	{
 		if(!search_log(msg.substr(7)))
