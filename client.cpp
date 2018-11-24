@@ -4,6 +4,7 @@
 #include "verification.hpp"
 #include <mutex>
 #include <string>
+#include <thread>
 std::string for_login="";
 std::string fifo1="";
 std::string fifo2="";

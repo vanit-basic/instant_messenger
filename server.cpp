@@ -42,34 +42,7 @@ bool search_log_passw(std::string str)
 	return false;
 
 
-}/*
-std::map<std::string,std::string> string_to_map(std::string str)
-{
-        std::map<std::string,std::string> mymap;
-        str.erase(0,1);
-        std::string first="";
-        std::string second="";
-        while(str!="")
-        {
-                first=str.substr(0,str.find(":"));
-                str.erase(0,str.find(":")+1);
-                second=str.substr(0,str.find(":"));
-                str.erase(0,str.find(":")+1);
-                mymap.insert ( std::pair<std::string,std::string>(first,second));
-        }
-        return mymap;
-
 }
-std::string map_to_string(std::map<std::string,std::string> mymap)
-{
-        std::map<std::string,std::string>::iterator it;
-        std::string str=":";
-        for (it=mymap.begin(); it!=mymap.end(); ++it)
-                str+=it->first+":"+it->second+":";
-        return str;
-}
-*/
-
 void recieve(connection* c, std::string msg) {
         std::cout << "from client : " << msg << std::endl;
         if(":action:help:"==msg)
@@ -77,12 +50,6 @@ void recieve(connection* c, std::string msg) {
                 c->send("<registration> or <sign in>");
                 return;
         }
-        if("registration"==msg)
-        {
-                c->send("Enter your information");
-                return;
-        }
-
 	if(msg=="show users id")
 	{
 		c->send(show_id());
@@ -95,18 +62,17 @@ void recieve(connection* c, std::string msg) {
 		if(id_con.find(id)==id_con.end())
 		{
 			c->send("Error id");
+			c->send("You allowed following action: send message another user, create a new group, send message to group or quit");
 			return;
 		}
 		else
 		{
 			std::string send=":action:send:"+std::to_string(id)+":"+sms;
-			id_con[id]->send(send);
+			id_con[id]->send(send);  
+			c->send("You allowed following action: send message another user, create a new group, send message to group or quit");
 			return;
 		}
 	}
-
-
-
 
 	
 	if(msg.substr(0,6)=="login:")
@@ -116,6 +82,7 @@ void recieve(connection* c, std::string msg) {
 		else
 			c->send("Valid login");
 	}
+
 	if(msg.find(":action:registration")!=std::string::npos)
 	{
 		msg.erase(0,20);
