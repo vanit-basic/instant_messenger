@@ -96,4 +96,30 @@ std::string global(std::map<std::string,std::string> mymap)
         return response;
 
 }
+std::map<std::string,std::string> string_to_map(std::string str)
+{
+        std::map<std::string,std::string> mymap;
+        str.erase(0,1);
+        std::string first="";
+        std::string second="";
+        while(str!="")
+        {
+                first=str.substr(0,str.find(":"));
+                str.erase(0,str.find(":")+1);
+                second=str.substr(0,str.find(":"));
+                str.erase(0,str.find(":")+1);
+                mymap.insert ( std::pair<std::string,std::string>(first,second));
+        }
+        return mymap;
+
+}
+std::string map_to_string(std::map<std::string,std::string> mymap)
+{
+        std::map<std::string,std::string>::iterator it;
+        std::string str=":";
+        for (it=mymap.begin(); it!=mymap.end(); ++it)
+                str+=it->first+":"+it->second+":";
+        return str;
+}
+
 

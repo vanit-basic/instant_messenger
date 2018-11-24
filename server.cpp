@@ -42,7 +42,7 @@ bool search_log_passw(std::string str)
 	return false;
 
 
-}
+}/*
 std::map<std::string,std::string> string_to_map(std::string str)
 {
         std::map<std::string,std::string> mymap;
@@ -68,7 +68,7 @@ std::string map_to_string(std::map<std::string,std::string> mymap)
                 str+=it->first+":"+it->second+":";
         return str;
 }
-
+*/
 
 void recieve(connection* c, std::string msg) {
         std::cout << "from client : " << msg << std::endl;
