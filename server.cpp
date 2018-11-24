@@ -54,7 +54,7 @@ void recieve(connection* c, std::string msg) {
 	{
 		c->send(show_id());
 	}
-	if(msg.find(":action:send_message:")!=std::string::npos)
+	if(msg.substr(0,21)==":action:send_message:")
 	{
 		msg.erase(0,21);
 		int id=std::stoi(msg.substr(0,msg.find(":")));
@@ -68,7 +68,8 @@ void recieve(connection* c, std::string msg) {
 		else
 		{
 			std::string send=":action:send:"+std::to_string(id)+":"+sms;
-			id_con[id]->send(send);  
+			id_con[id]->send(send);
+			c->send(":return:Message sent");
 			c->send("You allowed following action: send message another user, create a new group, send message to group or quit");
 			return;
 		}
@@ -83,41 +84,39 @@ void recieve(connection* c, std::string msg) {
 			c->send("Valid login");
 	}
 
-	if(msg.find(":action:registration")!=std::string::npos)
+	if(msg.substr(0,20)==":action:registration")
 	{
 		msg.erase(0,20);
 		current_user=string_to_map(msg);
-		if(search_log(current_user["login"]))
-		{
+		++id;
+		current_user.insert(std::pair<std::string,std::string>("id",std::to_string(id)));
+		user ob(current_user);
+		id_ob.insert(std::pair<int,user>(id,ob));
+		user_info.emplace(current_user["login"],std::make_pair(std::to_string(id),current_user["password"]));
+		id_con.emplace(id,c);
+		std::string str="your id : "+ std::to_string(id);
+		c->send(str);
+		c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");
+		return;
 
-			++id;
-                        current_user.insert(std::pair<std::string,std::string>("id",std::to_string(id)));
-                        user ob(current_user);
-                        id_ob.insert(std::pair<int,user>(id,ob));
-                        user_info.emplace(current_user["login"],std::make_pair(std::to_string(id),current_user["password"]));
-			id_con.emplace(id,c);
-			std::string str="your id : "+ std::to_string(id);
-                        c->send(str);
-			 c->send("You allowed following action: send message another user, create a new group, send message to group or quit");
-                        return;
-                }
-		else
-			c->send("Login is busy!");
-        }
-        if(msg.find(":action:sign_in")!=std::string::npos)
-        {
+	}
+	if(msg.find(":action:sign_in")!=std::string::npos)
+	{
 		msg.erase(0,16);
 		if(!search_log_passw(msg))
-			c->send("There is no such combination of login and password!");
+		{
+			c->send(":return:There is no such combination of login and password!");
+			c->send("<registration> or <sign in>");
+		}
 		else
 		{
-			std::string s="your information "+ map_to_string(current_user);
-
-			c->send("You allowed following action: send message another user, create a new group, send message to group or quit");
-
+			std::string s=":return:your information "+ map_to_string(current_user);
+			c->send(s);
+		
+			c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");
 		}
-                return;
-        }
+		return;
+	}
 
 }
 

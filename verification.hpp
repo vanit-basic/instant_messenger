@@ -10,4 +10,7 @@ bool isvalid_birth_date(std::string);
 bool isvalid_login(std::string);
 bool isvalid_password(std::string);
 std::string global(std::map<std::string,std::string>);
+
+std::map<std::string,std::string> string_to_map(std::string);
+std::string map_to_string(std::map<std::string,std::string>);
 #endif
