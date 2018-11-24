@@ -112,7 +112,7 @@ void recv_message(connection* c1,std::string message){
                 allInfo = "allinformation:"+email+login+name+surname+birthday+gender+phone+password;
                 c1->send(allInfo);
         }
-	while(message =="YOUR EMAIL IS BUSY,PLEASE ENTER ANOTHER EMAIL"){
+	if(message =="YOUR EMAIL IS BUSY,PLEASE ENTER ANOTHER EMAIL"){
                 getline(std::cin,email);
                 while(isValidEmail(email) !=true){
 		std::cout<<"INVALID EMAIL::Enter your EMAIL again"<<std::endl;
@@ -124,7 +124,8 @@ void recv_message(connection* c1,std::string message){
 	
 	}
 
-	while(message =="YOUR LOGIN IS BUSY,PLEASE ENTER ANOTHER LOGIN"){
+	if(message =="YOUR LOGIN IS BUSY,PLEASE ENTER ANOTHER LOGIN"){
+
                 getline(std::cin,login);
                 while(isValidLogin(login) !=true){
 		std::cout<<"INVALID LOGIN::Enter your LOGIN again"<<std::endl;
@@ -146,7 +147,7 @@ void recv_message(connection* c1,std::string message){
 		sign_in = "sign_in:"+login+":"+password;
 		c1->send(sign_in);
 	}
-	while(message == "YOUR LOGIN OR PASSWORD ARE NOT WRONG,PLEASE ENTER RIGHT INFORMATION"){
+/*	if(message == "YOUR LOGIN OR PASSWORD ARE NOT WRONG,PLEASE ENTER RIGHT INFORMATION"){
 		std::cout<<message<<std::endl;
 		std::cout<<"Enter your LOGIN*"<<std::endl;
                 getline(std::cin,login);
@@ -157,7 +158,7 @@ void recv_message(connection* c1,std::string message){
                 sign_in = "sign_in:"+login+":"+password;
                 c1->send(sign_in);
 
-        }
+        }*/
 }
 void binder_recv_message(connection* c, std::string firstMessage) {
         if(firstMessage!="q")

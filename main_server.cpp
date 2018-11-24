@@ -21,9 +21,13 @@ std::map<std::string,std::string> user_info;
 std::map<std::string,std::pair<int,std::string>>::iterator itr;
 std::map<std::string,std::string>::iterator itrMail;
 std::map<int,user>::iterator itrUser;
+	
+std::string keylog,value_pass,email;
+
 std::string userToString(std::map<int,user> id_user,int user_id){
 	std::string client_back = "";
 	client_back ="Login:"+id_user[user_id].get_login()+ "Name:"+id_user[user_id].get_name()+"Surname:"+id_user[user_id].get_surname()+"Email:"+id_user[user_id].get_email()+"Birthday:"+id_user[user_id].get_birthday()+"Phone:"+ id_user[user_id].get_phone()+"Gender:"+id_user[user_id].get_gender()+"User_id:"+id_user[user_id].get_user_id();
+	std::cout<<"User_to_string: "<<client_back<<std::endl;
 	return client_back;
 
 }
@@ -50,7 +54,7 @@ std::map<std::string,std::string> myMap;
 void recv_message(connection* s1, std::string message) {
         std::cout <<"CLIENT " << message <<std::endl;
         std::string profInfo="";
-	std::string keylog,value_pass,email;
+
         if(message == "barev"){
         s1->send("FOR REGISTRATION ENTER R::FOR LOGIN ENTER L::FOR QUIT ENTER Q");
         }
@@ -70,10 +74,14 @@ void recv_message(connection* s1, std::string message) {
 	}
         if(message.find("login1:") != std::string::npos){
 		keylog =message.substr(message.find(":")+1,message.size()-message.find(":")-2);
+		std::cout<<"!!!!!!!!!!!!!"<<keylog<<std::endl;
 		if(keylog =="")
 			keylog = email;
+		std::cout<<"??????"<<keylog<<std::endl;
+
 		for(itr=logIdPass.begin();itr !=logIdPass.end();++itr){
-			if((*itr).first == keylog){
+			std::cout<<"keylog = "<<keylog<<"it= "<<itr->first<<std::endl;
+			if(itr->first == keylog){
 				s1->send("YOUR LOGIN IS BUSY,PLEASE ENTER ANOTHER LOGIN");
 				break;
 	}
@@ -85,6 +93,7 @@ void recv_message(connection* s1, std::string message) {
         if(message.find("allinformation:") != std::string::npos){
 		profInfo = message.substr(message.find(":")+1);
 		logIdPass.emplace(keylog,std::make_pair(user_id,value_pass));
+		std::cout<<"Keylog "<<keylog<<"KJGKGKI!!! " <<logIdPass[keylog].second<<std::endl;
 		mail.insert(std::pair<std::string,std::string>(email,""));
 		profInfo = profInfo+"user_id:"+std::to_string(user_id)+":";
 		user_info = stringToMap(profInfo);
@@ -104,28 +113,18 @@ void recv_message(connection* s1, std::string message) {
 		std::string wrong_log = log_pass.substr(0,log_pass.find(":"));
 		std::string wrong_pass= log_pass.substr(log_pass.find(":")+1);
 		std::cout<<wrong_log<<"::::::::::::::"<<wrong_pass<<std::endl;
-		for(itr=logIdPass.begin();itr !=logIdPass.end();++itr){
-                        if(itr->first == wrong_log){
-				if(itr->second.second ==wrong_pass){
-					for(itrUser = id_user.begin();itrUser !=id_user.end();++itrUser){
-						if(itr->second.first = (*itrUser).first){
-							break;
-						}
-						std::string back ="Your information:"+ userToString(id_user,(*itrUser).first);
-						s1->send(back);
-					}
-					}
-				else{
-				s1->send("YOUR LOGIN OR PASSWORD ARE NOT WRONG,PLEASE ENTER RIGHT INFORMATION");
-				}
+		if(logIdPass[wrong_log].second == wrong_pass ){
+			std::string back ="Your information:"+ userToString(id_user,logIdPass[log_pass].first);
+			std::cout<<"back = "<<back<<std::endl;
+			s1->send(back);
+		}
+		else{
+			s1->send("YOUR LOGIN OR PASSWORD ARE NOT WRONG,PLEASE ENTER RIGHT INFORMATION");
+			s1->send("FOR REGISTRATION ENTER R::FOR LOGIN ENTER L::FOR QUIT ENTER Q");
+		}
 
-				}
-			else{
-				s1->send("YOUR LOGIN OR PASSWORD ARE NOT WRONG,PLEASE ENTER RIGHT INFORMATION");
 
 	}
-}
-}
 }
 void binder_recv_message(connection* s, std::string firstMessage) {
         std::cout <<"CLIENT:BINDER " << firstMessage <<std::endl;
