@@ -117,17 +117,16 @@ int main ()
                 std::cout<<"password : ";
                 std::cin>>Password;
         }
-        std::string passdef;
+        std::string passDef;
         std::cout<<"password definition : ";
         std::cin>>passdef;
-        while(Password != passdef){
+        while(!Password==passDef){
         std::cout<<"password definition : ";
         std::cin>>passdef;
         }
 
 	std::string history="";
-
-	history+=":FirstName:"+FirstName+":LastName:"+LastName+":BirtDate:"+BirthDate+":Gender:"+Gender+":Login:"+Login+":Mail:"+Mail+":Password:"+Password+":";
+	history+=":FirstName:"+FirstName+":LastName:"+LastName+":BirtDate:"+BirthDate+":Gender:"+Gender+":Login:"+Login+":Mail:"+Mail+":password:"+password+":";
 	c.send(history);	 
 	}else
 	
