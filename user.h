@@ -1,6 +1,6 @@
 #ifndef user_h
 #define user_h
-
+#include<map>
 class user{
 	private:
 		std::string firstname;
@@ -26,15 +26,17 @@ class user{
 		std::string getId	();
 		std::string getMail	();
 		std::string getDetails  ();
-		bool nameValid  (std::string);
-		bool dateValid  (std::string);
-		bool genderValid(std::string);
-		bool loginValid (std::string);
-		bool mailValid  (std::string);	
+		user(std::map<std::string,std::string>);		
 		user(){};
 		~user(){};
 };
-
+		
+bool nameValid  (std::string);
+bool dateValid  (std::string);
+bool genderValid(std::string);
+bool loginValid (std::string);
+bool mailValid  (std::string);	
+bool passValid  (std::string);	
 std::string rba(std::string mail);
 std::string raa(std::string mail);
 #endif

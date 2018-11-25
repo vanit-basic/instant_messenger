@@ -62,12 +62,11 @@ int main ()
 			break;
 		}
 	if(str=="R" || str=="r"){
-	 std::string FirstName;
+	std::string FirstName;
         std::cout<<"First Name : ";
         std::cin>>FirstName;
-        user Fname;
 
-        while(Fname.nameValid(FirstName)==false){
+        while(!nameValid(FirstName)){
                  std::cout<<"First Name : ";
                  std::cin>>FirstName;
 
@@ -75,17 +74,15 @@ int main ()
         std::string LastName;
         std::cout<<"Last Name : ";
         std::cin>>LastName;
-        user Lname;
 
-        while(Lname.nameValid(LastName)==false){
+        while(!nameValid(LastName)){
                 std::cout<<"Last Name : ";
                 std::cin>>LastName;
         }
         std::string BirthDate;
         std::cout<<"Birth Date : ";
         std::cin>>BirthDate;
-        user Bdate;
-         while(Bdate.dateValid(BirthDate)==false){
+        while(!dateValid(BirthDate)){
                 std::cout<<"Birth Date : ";
                 std::cin>>BirthDate;
         }
@@ -93,8 +90,7 @@ int main ()
         std::string Gender;
         std::cout<<"Gender : ";
         std::cin>>Gender;
-        user gender;
-         while(gender.genderValid(Gender)==false){
+        while(!genderValid(Gender)){
                 std::cout<<"Gender : ";
                 std::cin>>Gender;
         }
@@ -102,25 +98,36 @@ int main ()
         std::string Login;
         std::cout<<"Login : ";
         std::cin>>Login;
-        user login;
-         while(login.loginValid(Login)==false){
+        while(!loginValid(Login)){
                 std::cout<<"Login : ";
                 std::cin>>Login;
         }
-
-        std::string Id;
-
+	
         std::string Mail;
-         std::cout<<"Mail : ";
+        std::cout<<"Mail : ";
         std::cin>>Mail;
-        user mail;
-         while(mail.mailValid(Mail)==false){
+        while(!mailValid(Mail)){
                 std::cout<<"Mail : ";
                 std::cin>>Mail;
         }
-         user person;
-	 std::string history="";
-	 history+=":FirstName:"+FirstName+":LastName:"+LastName+":BirtDate:"+BirthDate+":Gender:"+Gender+":Login:"+Login+":Id:"+Id+":Mail:"+Mail+":";
+        std::string Password;
+        std::cout<<"password : ";
+        std::cin>>Password;
+        while(!passValid(Password)){
+                std::cout<<"password : ";
+                std::cin>>Password;
+        }
+        std::string passdef;
+        std::cout<<"password definition : ";
+        std::cin>>passdef;
+        while(Password != passdef){
+        std::cout<<"password definition : ";
+        std::cin>>passdef;
+        }
+
+	std::string history="";
+
+	history+=":FirstName:"+FirstName+":LastName:"+LastName+":BirtDate:"+BirthDate+":Gender:"+Gender+":Login:"+Login+":Mail:"+Mail+":Password:"+Password+":";
 	c.send(history);	 
 	}else
 	

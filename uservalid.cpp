@@ -1,8 +1,7 @@
 #include <iostream>
 #include <string>
 #include <regex>
-#include "user.h"
-bool user::nameValid(std::string name){
+bool nameValid(std::string name){
 
  bool flag=true;
         if((int(name[0])>=65)&&(int(name[0])<=90))
@@ -21,7 +20,7 @@ bool user::nameValid(std::string name){
 
         return flag;
 }
-bool user::dateValid(std::string str){
+bool dateValid(std::string str){
 
         char first=str[2];
         char last=str[5];
@@ -69,7 +68,7 @@ bool user::dateValid(std::string str){
                 return false;
 
 }
-bool user::genderValid(std::string gen){
+bool genderValid(std::string gen){
 
 	 if(gen=="male" || gen =="female"){
 		 return true;
@@ -77,7 +76,7 @@ bool user::genderValid(std::string gen){
 	else 	
 		return false;	
 }
-bool user::loginValid(std::string log){
+bool loginValid(std::string log){
         for(int i = 0; i < log.length(); i++){
 		int a=int(log[i]);
 		if((a>47 && a<58) || (a>64 && a<91)||(a>96 && a<123)|| a==46 ||a==95 || a==45){
@@ -97,7 +96,7 @@ std::string raa (std::string mail) {
         return std::regex_replace (mail, e, "");
 }
 
-bool user::mailValid(std::string mail)
+bool mailValid(std::string mail)
 {
         std::regex reg_s("[[:alnum:]]+@");
         std::regex reg("[[:alnum:]]+");
@@ -157,3 +156,33 @@ std::map<std::string,std::string> StringtoMap (std::string str){
 
 }
 
+bool passValid(std::string pas){
+	bool f=true;
+	bool l=false;
+	bool a=false;
+	bool g=false;
+	if(pas.length()>=8 && pas.length()<=16){
+		
+		for(int i=0;i<pas.length();i++){
+
+			if(int(pas[i])>47 && int(pas[i])<58){
+				l=true;
+			}
+			else if(int(pas[i])>64 && int(pas[i])<91){
+				a=true;
+			}	
+			else if(int(pas[i])>96 && int(pas[i])<123){
+				g=true;
+			}
+			else{
+				f=false;
+				break;
+			}
+		}
+	}
+	else{
+		f=false;
+
+	}
+	return f &&  l && a && g;  
+}
