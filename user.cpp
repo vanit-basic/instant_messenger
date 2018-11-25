@@ -44,3 +44,13 @@ std::string user::getId(){
 std::string user::getMail(){
         return mail;
 }
+user::user(std::map<std::string,std::string> datebase){
+	this->firstname = datebase["FirstName"];
+        this->lastname = datebase["LastName"];
+        this->birthdate = datebase["BirhDate"];
+        this->gender = datebase["Gender"];
+        this->login = datebase["Login"];
+        this->mail = datebase["Email"];
+        this->id = datebase["Id"];
+
+}

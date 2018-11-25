@@ -6,15 +6,19 @@
 #include <unistd.h>
 #include <map>
 #include "user.h"
+#include <iterator>
+
 static int idclient=0;
+static int iduser=100000;
 static std::string name1;
 static std::string name2;
 static std::string name3;
 static std::list<connection*> connections;
 static std::map<std::string, std::pair<std::string, std::string>> loginMap;
-static std::map<std::string, user>> usersMap;
-
-
+static std::map<std::string, user> userMap;
+static std::map<std::string, std::pair<std::string, std::string>>::iterator it;
+static std::map<std::string, std::string> my;
+static std::map<std::string, std::string> mail;
 std::map<std::string,std::string> StringtoMap (std::string str){
         str.erase(0,1);
         std::map<std::string,std::string>myMap;
@@ -35,31 +39,62 @@ std::map<std::string,std::string> StringtoMap (std::string str){
 }
 
 void usercreater(std::map<std::string, std::string> my){
-        user us;
-        us.setFirstName(my.find("firstname")->second);
-        us.setLastName(my.find("lastname")->second);
-        us.setBirthDate(my.find("birthdate")->second);
-        us.setMail(my.find("mail")->second);
-        us.setLogin(my.find("login")->second);
-        us.setId("aaaaaa");
-        us.setGender(my.find("gender")->second);
-	usermap.insert(std::pair<std::string, user>(us.getId(), us));
-	usermap.insert(std::pair<std::string,std::pair<std::string, std::string>(us.getId(),my.find("password")->second)>(us.getLogin()));
+	
+        my.insert(std::pair<std::string,std::string>("Id" , std::to_string(iduser)));
+	user us(my);
+	userMap.insert(std::pair<std::string, user>(us.getId(), us));
+	loginMap.emplace(my["Login"],std::make_pair(std::to_string(iduser),my["Password"]));
+        mail.emplace(my["Login"],my["Mail"]);
+	for(auto it=mail.begin();it !=mail.end();it++){
+		std::cout<<it->first<<it->second<<std::endl;
+		
+	}
+	iduser++;
 }
 
 
-voidclient recv_message(connection* c, std::string message) 
+void recv_message(connection* c, std::string message) 
 {
 	std::map<std::string, std::string> myMap;
 	std::cout << "from client : "<< c->getId()<<":   " << message << std::endl;
 	myMap = StringtoMap(message);
-	if(Mymap.find("action")->second == "register"){
-		usercreater(myMap);
+	bool mi_hat_flag=true;
+	bool erku_hat_flag=true;
+	if(myMap.find("action")->second == "register"){
+		for(auto it = loginMap.begin();it !=loginMap.end();++it){
+			std::cout<<"Barevvv ::::: "<<std::endl;
+			if(it->first == myMap["Login"]){
+				mi_hat_flag=false;
+			}
+		}
+		for(auto it = mail.begin();it != mail.end();++it){
+			if(it->second == myMap["Mail"]){
+				erku_hat_flag=false;
+			}
+		}
+		if(mi_hat_flag==true && erku_hat_flag==true){
+			usercreater(myMap);
+		}
+		else if(mi_hat_flag == false || erku_hat_flag == false){
+			if(erku_hat_flag == false && mi_hat_flag == false){
+				message = "login and mail is busy";		
+				c->send(message);
+			}
+
+			else if(erku_hat_flag == false){
+				message = "mail is busy";		
+				c->send(message);
+			}
+			else{
+				message = "login is busy";	
+				c->send(message);
+			}
+		}
 	}
-	c->send(message);
+
 }
 
-voidclient recv_message_binder(connection* c, std::string message) 
+void recv_message_binder(connection* c, std::string message) 
 {
 	if(message=="new client")
 	{

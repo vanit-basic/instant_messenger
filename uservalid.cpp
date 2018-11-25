@@ -156,4 +156,33 @@ std::map<std::string,std::string> StringtoMap (std::string str){
 
 }
 
+bool passValid(std::string pas){
+	bool f=true;
+	bool l=false;
+	bool a=false;
+	bool g=false;
+	if(pas.length()>=8 && pas.length()<=16){
+		
+		for(int i=0;i<pas.length();i++){
 
+			if(int(pas[i])>47 && int(pas[i])<58){
+				l=true;
+			}
+			else if(int(pas[i])>64 && int(pas[i])<91){
+				a=true;
+			}	
+			else if(int(pas[i])>96 && int(pas[i])<123){
+				g=true;
+			}
+			else{
+				f=false;
+				break;
+			}
+		}
+	}
+	else{
+		f=false;
+
+	}
+	return f &&  l && a && g;  
+}
