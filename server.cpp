@@ -43,17 +43,18 @@ bool search_log_passw(std::string str)
 
 
 }
-void recieve(connection* c, std::string msg) {
-        std::cout << "from client : " << msg << std::endl;
-        if(":action:help:"==msg)
-        {
-                c->send("<registration> or <sign in>");
-                return;
-        }
+void recieve(connection* c, std::string msg)
+{
+	std::cout << "from client : " << msg << std::endl;
+	if(":action:help:"==msg)
+	{
+		c->send("<registration> or <sign in>");
+		return;
+	}
 	if(msg=="show users id")
 	{
 		c->send(show_id());
-		c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");
+		c->send("action");
 		return;
 	}
 	if(msg.substr(0,21)==":action:send_message:")
@@ -64,7 +65,7 @@ void recieve(connection* c, std::string msg) {
 		if(id_con.find(id)==id_con.end())
 		{
 			c->send("Error id");
-			c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");
+			c->send("action");
 			return;
 		}
 		else
@@ -72,19 +73,18 @@ void recieve(connection* c, std::string msg) {
 			std::string send=":action:send:"+std::to_string(id)+":"+sms;
 			id_con[id]->send(send);
 			c->send(":return:Message sent");
-			c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");
+			c->send("action");
 			return;
 		}
 	}
-
 	if(msg.substr(0,7)==":login:")
 	{
 		if(search_log(msg.substr(7)))
-			c->send("Valid login");}
+			c->send("Valid login");
 		else
-			c->send("Invalid login");}
+			c->send("Invalid login");
+		return;
 	}
-
 	if(msg.substr(0,20)==":action:registration")
 	{
 		msg.erase(0,20);
@@ -97,11 +97,9 @@ void recieve(connection* c, std::string msg) {
 		id_con.emplace(id,c);
 		std::string str=":return:your id : "+ std::to_string(id);
 		c->send(str);
-		c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");
+		c->send("action");
 		return;
-
 	}
-
 	if(msg.find(":action:sign_in")!=std::string::npos)
 	{
 		msg.erase(0,16);
@@ -115,8 +113,14 @@ void recieve(connection* c, std::string msg) {
 			//informacian geterov petqa uxarkvi
 			std::string s=":return:your information "+ map_to_string(current_user);
 			c->send(s);
-			c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");
+			c->send("action");
 		}
+		return;
+	}
+	if(msg=="quit")
+	{
+		//hanel online userneri cucakic
+		c->send("return 0");
 		return;
 	}
 
