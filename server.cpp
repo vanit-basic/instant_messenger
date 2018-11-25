@@ -8,13 +8,22 @@
 #include <string>
 #include <list>
 #include <map>
+std::list<int> busy_user;
 static int value=0;
 std::list<connection*> connections;
 static int id=9;
 std::map<std::string,std::string> current_user;
-std::map<std::string,std::pair<std::string,std::string>> user_info;
+std::map<std::string,std::pair<int,std::string>> user_info;
 std::map<int,user> id_ob;
 std::map<int,connection*> id_con;
+std::string ret_info(std::string log)
+{
+	int user_id=user_info[log].first;
+	user u=id_ob[user_id];
+	std::string str=":Name: "+u.get_firstname()+":Surname: "+u.get_lastname()+":Email: "+u.get_mail()+":Birth Date: "+u.get_birth_date()+":Gender: "+u.get_gender()+":Login: "+u.get_login()+":Id: "+std::to_string(u.get_id())+":";
+	return str;
+
+}
 std::string show_id()
 {
 	std::string id="Show id : ";
@@ -26,7 +35,7 @@ std::string show_id()
 }
 bool search_log(std::string log)
 {
-	std::map<std::string,std::pair<std::string,std::string>>::iterator it;
+	std::map<std::string,std::pair<int,std::string>>::iterator it;
 	for(it=user_info.begin();it!=user_info.end();it++)
 		if(it->first==log)
 			return false;
@@ -60,18 +69,22 @@ void recieve(connection* c, std::string msg)
 	if(msg.substr(0,21)==":action:send_message:")
 	{
 		msg.erase(0,21);
-		int id=std::stoi(msg.substr(0,msg.find(":")));
+		//poxel id-n..petq e lini uxaroxi id-n,vochte stacoxi
+		int id_rec=std::stoi(msg.substr(0,msg.find(":")));
+		msg.erase(0,msg.find(":")+1);
+		std::cout<<"id+:+sms ==="<<msg<<std::endl;
+		int id_send=std::stoi(msg.substr(0,msg.find(":")));
 		std::string sms=msg.substr(msg.find(":")+1);
-		if(id_con.find(id)==id_con.end())
+		if(id_con.find(id_rec)==id_con.end())
 		{
-			c->send("Error id");
+			c->send(":return:Error id");
 			c->send("action");
 			return;
 		}
 		else
 		{
-			std::string send=":action:send:"+std::to_string(id)+":"+sms;
-			id_con[id]->send(send);
+			std::string send=":action:send:"+std::to_string(id_send)+":"+sms;
+			id_con[id_rec]->send(send);
 			c->send(":return:Message sent");
 			c->send("action");
 			return;
@@ -93,14 +106,17 @@ void recieve(connection* c, std::string msg)
 		current_user.insert(std::pair<std::string,std::string>("id",std::to_string(id)));
 		user ob(current_user);
 		id_ob.insert(std::pair<int,user>(id,ob));
-		user_info.emplace(current_user["login"],std::make_pair(std::to_string(id),current_user["password"]));
+		user_info.emplace(current_user["login"],std::make_pair(id,current_user["password"]));
 		id_con.emplace(id,c);
-		std::string str=":return:your id : "+ std::to_string(id);
-		c->send(str);
+		std::string s="myinfo"+ret_info(current_user["login"]);
+		c->send(s);
+		s=":return:your information " + ret_info(current_user["login"]);
+		c->send(s);
 		c->send("action");
+
 		return;
 	}
-	if(msg.find(":action:sign_in")!=std::string::npos)
+	if(msg.find(":action:sign_in:")!=std::string::npos)
 	{
 		msg.erase(0,16);
 		if(!search_log_passw(msg))
@@ -110,8 +126,9 @@ void recieve(connection* c, std::string msg)
 		}
 		else
 		{
-			//informacian geterov petqa uxarkvi
-			std::string s=":return:your information "+ map_to_string(current_user);
+			std::string s="myinfo"+ret_info(msg.substr(0,msg.find(":")));
+			c->send(s);
+			s=":return:your information "+ret_info(msg.substr(0,msg.find(":")));
 			c->send(s);
 			c->send("action");
 		}

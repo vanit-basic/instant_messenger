@@ -6,6 +6,7 @@
 #include <mutex>
 #include <string>
 #include <thread>
+#include <map>
 std::string for_login="";
 std::string fifo1="";
 std::string fifo2="";
@@ -13,7 +14,7 @@ connection* mainConnection = NULL;
 std::string info="";
 std::string log="";
 std::string quit="";
-
+std::map<std::string,std::string> my_info;
 void recv_message_c(connection* c, std::string message) {
 	std::string msg1="";
 	std::string confmsg="";
@@ -64,6 +65,14 @@ void recv_message_c(connection* c, std::string message) {
 		message.erase(0,8);
 		std::cout<<message<<std::endl;
 	}
+	if(message.substr(0,6)=="myinfo")
+	{
+		std::cout<<"myinfon uxarkvec\n";
+		message.erase(0,6);
+		my_info=string_to_map(message);
+		setmap(my_info);
+	}
+
 	if(message=="return 0")
 		quit="quit";
 

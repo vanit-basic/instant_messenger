@@ -1,6 +1,12 @@
 #include "verification.hpp"
 #include<iostream>
 #include<string>
+#include<list>
+std::map<std::string,std::string> myinformation;
+void setmap(std::map<std::string,std::string> info)
+{
+	myinformation=info;
+}
 std::string registr()
 {
 	std::string info=":action:registration";
@@ -96,7 +102,7 @@ std::string sign_in()
                         std::cout<<"Invalid password!\n";
         }
         while(!isvalid_password(pass));
-        std::string sign=":action:sign_in:"+log+":"+pass;
+        std::string sign=":action:sign_in:"+myinformation["Id"]+":"+log+":"+pass;
 	return sign;
 }
 void input(connection* c)

@@ -1,7 +1,7 @@
 #include "user.hpp"
 #include <map>
 #include <string>
-void user::set_id(std::string id)
+void user::set_id(int id)
 {
 	this->id=id;
 }
@@ -30,7 +30,7 @@ void user::set_login(std::string log)
 	this->login=log;
 }
 
-std::string user::get_id()
+int user::get_id()
 {
 	return this->id;
 }
@@ -66,6 +66,7 @@ user::user(std::map<std::string,std::string> mymap)
 	this->birth_date=mymap["birth_date"];
 	this->gender=mymap["gender"];
 	this->login=mymap["login"];
+	this->id=stoi(mymap["id"]);
 }
 user::~user()
 {

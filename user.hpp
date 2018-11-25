@@ -5,7 +5,7 @@
 class user
 {
         private:
-                std::string id;
+                int id;
                 std::string firstname;
                 std::string lastname;
                 std::string mail;
@@ -13,7 +13,7 @@ class user
                 std::string gender;
                 std::string login;
         public:
-		void set_id(std::string);
+		void set_id(int);
 		void set_firstname(std::string);
 		void set_lastname(std::string);
 		void set_mail(std::string);
@@ -21,13 +21,14 @@ class user
 		void set_gender(std::string);
 		void set_login(std::string);
 
-		std::string get_id();
+		int get_id();
 		std::string get_firstname();
 		std::string get_lastname();
 		std::string get_mail();
 		std::string get_birth_date();
 		std::string get_gender();
 		std::string get_login();
+		user(){}
                 user(std::map<std::string,std::string>);
                 ~user();
 };
