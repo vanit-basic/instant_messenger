@@ -15,42 +15,41 @@ static std::map <std::string, std::string> users_info;
 void send_message(connection* c) {
 	mt.lock();
 	std::string str;
+	std::cout << "Enter UD for view users data, MU for send message another user, CG for creat a new group, MG for send message to group or Q for quit\n";
+	std::getline(std::cin, str);
+	while (! ("UD" == str || "MU" == str || "CG" == str || "MG" == str || "Q" == str)) {
 		std::cout << "Enter UD for view users data, MU for send message another user, CG for creat a new group, MG for send message to group or Q for quit\n";
 		std::getline(std::cin, str);
-		while (! ("UD" == str || "MU" == str || "CG" == str || "MG" == str || "Q" == str)) {
-			std::cout << "Enter UD for view users data, MU for send message another user, CG for creat a new group, MG for send message to group or Q for quit\n";
-			std::getline(std::cin, str);
-		}
-		if ("UD" == str) {
-				std::map<std::string, std::string>::iterator it;
-				for (it = users_info.begin(); it != users_info.end(); ++it) {
-					std::cout << "id: " << it->first << ",  name: " << it->second << "\n";
-				}
-				c->send(":return:");
-		}
-		if ("MU" == str) {
-				std::string id;
-				std::string msg;
-
-				std::map<std::string, std::string>::iterator it;
-				for (it = users_info.begin(); it != users_info.end(); ++it) {
-					std::cout << "id: " << it->first << ",  name: " << it->second << "\n";
-				}
-				std::cout << "Enter the user id to whom you want to send a message\n";
-				getline(std::cin, id);
-	//			while ()
-				std::cout << "Enter the message\n";
-				getline(std::cin, msg);
-				std::string user_msg = ":SM_user:id:" + id + ":my_id:" + inform["id"] + ":message:" + msg +":";
-				c->send(user_msg);
-		}
-		if ("CG" == str)
-			c->send(":action:creat_group:");
-		if("MG" == str)
-			c->send(":action:SM_group:");
-		if("Q" == str)
-			c->send("Q");
 	}
+	if ("UD" == str) {
+		print(users_info);
+		c->send(":return:");
+	}
+	if ("MU" == str) {
+		std::string id;
+		std::string msg;
+
+		print(users_info);
+		std::cout << "Enter the user id to whom you want to send a message\n";
+		getline(std::cin, id);
+		while (! id_valid(users_info, id)) {
+			std::cout << "Invlaid user id\n";
+			print(users_info); 
+			getline(std::cin, id);
+		}
+		std::cout << "Enter the message\n";
+		getline(std::cin, msg);
+		std::string user_msg = ":SM_user:id:" + id + ":my_id:" + inform["id"] + ":message:" + msg +":";
+		c->send(user_msg);
+	}
+	if ("CG" == str)
+		c->send(":action:creat_group:");
+	if("MG" == str)
+		c->send(":action:SM_group:");
+	if("Q" == str)
+		c->send("Q");
+	mt.unlock();
+}
 
 void recv_message_binder(connection* c, std::string message) {
 	if ("Q" != message && "" != message) {

@@ -18,5 +18,7 @@ std::string global_validation (std::map<std::string,std::string> m_map);
 std::map<std::string, std::string> strToMap (std::string map_conv);
 std::string mapToStr (std::map<std::string, std::string> m_map);
 std::string info(std::map<std::string, user> m_map, std::string id);
+void print(std::map<std::string, std::string> m_map);
+bool id_valid (std::map<std::string, std::string> m_map, std::string id);
 bool join_valid (std::map<std::string, bool> join, std::string login);
-bool sign_in_valid (std::map<std::string, std::pair<std::string, std::string>> m_map, std::string login, std::string user_id, std::string password);
+bool sign_in_valid (std::map<std::string, std::pair<std::string, std::string>> m_map, std::string login, std::string password);

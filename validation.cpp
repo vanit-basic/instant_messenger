@@ -135,28 +135,52 @@ bool login_valid (std::string login) {
 
 bool login_valid2 (std::map<std::string, std::pair<std::string, std::string>> info_map, std::string login) {
         std::map<std::string, std::pair<std::string, std::string>>::iterator it;
+	bool isValid = true;
         for( it = info_map.begin(); it != info_map.end(); ++it) {
                 if (it->first == login) {
-                        return false;
+                        isValid=false;
+			break;
                 }
         }
+	return isValid;
 }
 
-bool sign_in_valid (std::map<std::string, std::pair<std::string, std::string>> m_map, std::string login, std::string user_id, std::string password) {
-	if (! (m_map[login].second == password))
+bool sign_in_valid (std::map<std::string, std::pair<std::string, std::string>> m_map, std::string login, std::string password) {
+	if ( (m_map[login].second == password))	{
+		return true;
+	}
+	else {
 		return false;
-        user_id = m_map[login].first;
-        return true;
+	}
 }
 
 bool join_valid (std::map<std::string, bool> join, std::string login) {
         std::map<std::string, bool>::iterator it;
+	bool isvalid = true;
         for(it = join.begin(); it != join.end(); ++it) {
                 if(((it->first) == login) && ((it->second) == true)) {
-                        return false;
+                        isvalid = false;
+			break;
                 }
         }
-        return true;
+        return isvalid;
+}
+
+bool id_valid (std::map<std::string, std::string> m_map, std::string id) {
+	std::map<std::string, std::string>::iterator it;
+	for (it = m_map.begin(); it != m_map.end(); ++it) {
+		if (! (it->first == id)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void print (std::map<std::string, std::string> m_map) {
+	std::map<std::string, std::string>::iterator it;
+	for (it = m_map.begin(); it != m_map.end(); ++it) {
+		std::cout << "id: " << it->first << ",  name: " << it->second << "\n";
+	}
 }
 
 std::string info(std::map<std::string, user> m_map, std::string id) {
@@ -224,3 +248,4 @@ std::string mapToStr (std::map<std::string, std::string> m_map) {
         }
         return m_str;
 }
+
