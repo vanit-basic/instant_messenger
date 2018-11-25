@@ -167,13 +167,14 @@ bool join_valid (std::map<std::string, bool> join, std::string login) {
 }
 
 bool id_valid (std::map<std::string, std::string> m_map, std::string id) {
-	std::map<std::string, std::string>::iterator it;
-	for (it = m_map.begin(); it != m_map.end(); ++it) {
-		if (! (it->first == id)) {
-			return false;
-		}
-	}
-	return true;
+        std::map<std::string, std::string>::iterator it;
+        for (it = m_map.begin(); it != m_map.end(); ++it) {
+                if(((it->first) == id)) {
+                        return true;
+                        break;
+                }
+        }
+	return false;
 }
 
 void print (std::map<std::string, std::string> m_map) {

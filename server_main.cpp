@@ -52,8 +52,9 @@ void recv_message(connection* c, std::string message) {
 				c->send(msg);
 			}
 			else {
-				std::string user_id = "User_id: " + std::to_string(id);
+				std::string user_id = "User_id_" + std::to_string(id);
 				++id;
+				data.emplace("id", user_id);
 				user new_user(data);
 				users.emplace(user_id, new_user);
 				log_id_pass.emplace(data["login"], std::make_pair(user_id, data["password"]));
@@ -70,7 +71,7 @@ void recv_message(connection* c, std::string message) {
 			}
 		}
 		else {
-			if (!(message.find(":action:sign_in:") == std::string::npos)) {
+			if (! (message.find(":action:sign_in:") == std::string::npos)) {
 				std::string msg = message;
 				msg = msg.erase(msg.find(":action:sign_in:"), msg.find(":action:sign_in:") + 22);
 				login = msg.substr(0, msg.find(":"));
@@ -108,14 +109,16 @@ void recv_message(connection* c, std::string message) {
 				if (message == ":return:") {
 					c->send("Send message another user || create a new group || send message to group || quit");
 				}
-				else{
-					if(!(message.find(":SM_user:id:") == std::string::npos)){
+				else {
+					if(! (message.find(":SM_user:id:") == std::string::npos)){
 						std::string msg=message;
+						std::cout<<"msg  "<<msg<<"\n";
 						std::string s_u_id;
 						std::string u_id;
 						msg = msg.erase(0,12);
 						s_u_id = msg.substr(0, msg.find(':'));
 						msg = msg.erase(0, s_u_id.size() + 7);
+						std::cout<<"msg  "<<msg<<"\n";
 						u_id = msg.substr(0, msg.find(':'));
 						msg = ":message_from_user:id:" + u_id + msg.erase(0, u_id.size());
 						id_c[uid_cid[s_u_id]]->send(msg);

@@ -22,19 +22,25 @@ void send_message(connection* c) {
 		std::getline(std::cin, str);
 	}
 	if ("UD" == str) {
-		print(users_info);
+		std::map<std::string, std::string>::iterator it;
+		for (it = users_info.begin(); it != users_info.end(); ++it) {
+			std::cout << "id: " << it->first << ",  name: " << it->second << "\n";
+		}
 		c->send(":return:");
 	}
 	if ("MU" == str) {
 		std::string id;
 		std::string msg;
 
-		print(users_info);
+		std::map<std::string, std::string>::iterator it;
+		for (it = users_info.begin(); it != users_info.end(); ++it) {
+			std::cout << "id: " << it->first << ",  name: " << it->second << "\n";
+		}
 		std::cout << "Enter the user id to whom you want to send a message\n";
 		getline(std::cin, id);
 		while (! id_valid(users_info, id)) {
-			std::cout << "Invlaid user id\n";
-			print(users_info); 
+			std::cout << "Invalid user id\n";
+			print(users_info);
 			getline(std::cin, id);
 		}
 		std::cout << "Enter the message\n";
@@ -48,6 +54,7 @@ void send_message(connection* c) {
 		c->send(":action:SM_group:");
 	if("Q" == str)
 		c->send("Q");
+
 	mt.unlock();
 }
 
@@ -61,7 +68,7 @@ void recv_message_binder(connection* c, std::string message) {
 }
 
 void recv_message(connection* c, std::string message) {
-	std::cout << "The server sent: " << message << std::endl;
+
 	if ("Registration || log in || quit" == message) {
 		std::cout << "For registration enter R, for log in - L, for quit - Q\n";
 		std::string action = "";
@@ -163,59 +170,69 @@ void recv_message(connection* c, std::string message) {
 				if ("Q" == action) {
 					c->send("Q");
 				}
-				else {
-					if(!(message.find(":registration:info:") == std::string::npos)) {
-						std::string msg=message;
-						std::string str;
-						if(!(message.find(":mail:INVALID:") == std::string::npos)) {
-							msg.erase(msg.find("mail:INVALID:"), 13);
-							std::cout << "Email is busy, enter new email\n";
-							getline(std::cin, str);
-							while (! email_valid(str)) {
-								std::cout << "Enter the correct email\n";
-								getline(std::cin, str);
-							}
-							msg = msg + "mail:" + str + ":";
-						}
-						if(!(message.find(":login:INVALID:") == std::string::npos)) {
-							msg.erase(msg.find("login:INVALID:"), 14);
-							std::cout << "Login is busy, enter new login\n";
-							getline(std::cin, str);
-							while (! email_valid(str)) {
-								std::cout << "Enter the correct login\n";
-								getline(std::cin, str);
-							}
-							msg = msg + "login:" + str + ":";
-						}
-						c->send(msg);
-					}
+			}
+		}
+	}
+	else {
+		if(!(message.find(":registration:info:") == std::string::npos)) {
+			std::string msg=message;
+			std::string str;
+			if(!(message.find(":mail:INVALID:") == std::string::npos)) {
+				msg.erase(msg.find("mail:INVALID:"), 13);
+				std::cout << "Email is busy, enter new email\n";
+				getline(std::cin, str);
+				while (! email_valid(str)) {
+					std::cout << "Enter the correct email\n";
+					getline(std::cin, str);
+				}
+				msg = msg + "mail:" + str + ":";
+			}
+			if(!(message.find(":login:INVALID:") == std::string::npos)) {
+				msg.erase(msg.find("login:INVALID:"), 14);
+				std::cout << "Login is busy, enter new login\n";
+				getline(std::cin, str);
+				while (! email_valid(str)) {
+					std::cout << "Enter the correct login\n";
+					getline(std::cin, str);
+				}
+				msg = msg + "login:" + str + ":";
+			}
+			c->send(msg);
+		}
 
-					else {
-						if (! (message.find(":information:") == std::string::npos)) {
-							std::string str = message;
-							str = str.erase(0, 13);
-							inform = strToMap(str);
+		else {
+			if (! (message.find(":information:") == std::string::npos)) {
+				std::cout << "The server sent: " << message << std::endl;
+				std::string str = message;
+				str = str.erase(0, 13);
+				inform = strToMap(str);
+			}
+			else {
+				if (!(message.find(":Users_data:") == std::string::npos)) {
+					std::string msg = message;
+					std::string key = "";
+					std::string value = "";
+					msg = msg.erase(0, 12);
+					while(!(msg=="")){
+						msg = msg.erase(0, 3);
+						key = msg.substr(0, msg.find(':'));
+						msg = msg.erase(0, key.size() + 6);
+						value = msg.substr(0, msg.find(':'));
+						msg = msg.erase(0, value.size()+1);
+						users_info.emplace(key, value);
+					}
+					c->send(":return:");
+				}
+				else{
+					if(message=="Send message another user || create a new group || send message to group || quit"){
+						std::thread* t = new std::thread(send_message, c);
+					}
+					else{
+						if(!(message.find(":message_from_user:id:")==std::string::npos)){
+							std::cout << "The server sent: " << message << std::endl;
+							c->send(":return:");
 						}
-						else {
-							if (! (message.find(":Users_data:") == std::string::npos)) {
-								std::cout<<"mtav\n";
-								std::string msg = message;
-								msg = msg.erase(0, 11);
-								users_info = strToMap(msg);
-								c->send(":return:");
-							}
-							else{
-								if(message=="Send message another user || create a new group || send message to group || quit"){
-									std::thread* t = new std::thread(send_message, c);
-								}
-								else{
-									if(!(message.find(":message_from_user:id:")==std::string::npos)){
-											std::cout<<"from server  "<<message<<"\n";
-											c->send(":return:");
-											}
-								}
-							}
-						}
+						else{}
 					}
 				}
 			}
