@@ -16,7 +16,6 @@ std::string log="";
 std::string quit="";
 std::map<std::string,std::string> my_info;
 void recv_message_c(connection* c, std::string message) {
-	std::cout << "recv_message_c" << std::endl;
 	std::string msg1="";
 	std::string confmsg="";
 	if(message.find(":action:send:")!=std::string::npos)
@@ -49,7 +48,7 @@ void recv_message_c(connection* c, std::string message) {
 	}
 	if(message=="Invalid login")
 	{
-		std::cout<<message<<"Enter login\n";
+		std::cout<<message<<" Enter login\n";
 		do
 		{
 			std::cout<<"Login: ";
@@ -68,7 +67,6 @@ void recv_message_c(connection* c, std::string message) {
 	}
 	if(message.substr(0,6)=="myinfo")
 	{
-		std::cout<<"myinfon uxarkvec\n";
 		message.erase(0,6);
 		my_info=string_to_map(message);
 		setmap(my_info);

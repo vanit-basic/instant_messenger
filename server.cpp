@@ -9,7 +9,8 @@
 #include <list>
 #include <map>
 #include <algorithm>
-std::list<std::string> busy_user;
+std::map<std::string,std::list<std::string>> users_mess;
+std::map<std::string,bool> busy_user;
 static int value=0;
 std::list<connection*> connections;
 static int id=9;
@@ -17,6 +18,15 @@ std::map<std::string,std::string> current_user;
 std::map<std::string,std::pair<int,std::string>> user_info;
 std::map<int,user> id_ob;
 std::map<int,connection*> id_con;
+std::string list_to_string(std::list<std::string> l)
+{
+	std::string str="";
+	std::list<std::string>::iterator it;
+	for(it=l.begin();it!=l.end();++it)
+		str+=*it;
+	return str;
+
+}
 std::string ret_info(std::string log)
 {
 	int user_id=user_info[log].first;
@@ -27,10 +37,10 @@ std::string ret_info(std::string log)
 }
 std::string show_id()
 {
-	std::string id="Show id : ";
+	std::string id=":return:Show id : ";
 	std::map<int,user>::iterator it;
 	for(it=id_ob.begin();it!=id_ob.end();++it)
-		id+=it->first + " ";
+		id+=std::to_string(it->first) + " : ";
 	return id;
 }
 bool search_log(std::string log)
@@ -45,14 +55,12 @@ bool search_log_passw(std::string str)
 {
 	std::string log=str.substr(0,str.find(":"));
 	std::string passw=str.substr(str.find(":")+1);
-	std::cout<<"login: "<<log<<" Password: "<<passw<<std::endl;
 	if(user_info[log].second==passw)
 		return true;
 	return false;
 }
 void recieve(connection* c, std::string msg)
 {
-	std::cout << "from client : " << msg << std::endl;
 	if(":action:help:"==msg)
 	{
 		c->send("<registration> or <sign in>");
@@ -70,17 +78,24 @@ void recieve(connection* c, std::string msg)
 		int id_rec=std::stoi(msg.substr(0,msg.find(":")));
 		msg.erase(0,msg.find(":")+1);
 
-		std::cout<<"id+:+sms ==="<<msg<<std::endl;
 		int id_send=std::stoi(msg.substr(0,msg.find(":")));
-		if(busy_user.
 		std::string sms=msg.substr(msg.find(":")+1);
-		if(id_con.find(id_rec)==id_con.end())
+		if(id_con.find(id_send)==id_con.end())
 		{
 			c->send(":return:Error id");
 			c->send("action");
 			return;
 		}
-		else
+
+		if(busy_user[std::to_string(id_send)]==false)
+		{
+			users_mess[std::to_string(id_send)].push_back("ID:"+std::to_string(id_rec)+" send message: "+sms+"\n");
+			c->send(":return:Message sent");
+			c->send("action");
+			return;
+		}
+
+		if(id_con.find(id_send)!=id_con.end())
 		{
 			std::string send=":action:send:"+std::to_string(id_rec)+":"+sms;
 			id_con[id_send]->send(send);
@@ -107,6 +122,7 @@ void recieve(connection* c, std::string msg)
 		id_ob.insert(std::pair<int,user>(id,ob));
 		user_info.emplace(current_user["login"],std::make_pair(id,current_user["password"]));
 		id_con.emplace(id,c);
+		busy_user.emplace(std::to_string(id),true);
 		std::string s="myinfo"+ret_info(current_user["login"]);
 		c->send(s);
 		s=":return:your information " + ret_info(current_user["login"]);
@@ -117,7 +133,6 @@ void recieve(connection* c, std::string msg)
 	}
 	if(msg.find(":action:sign_in:")!=std::string::npos)
 	{
-		std::cout<<"sign in ==  "<<msg<<std::endl;
 		msg.erase(0,16);
 		std::string log=msg.substr(0,msg.find(":"));
 		if(!search_log_passw(msg))
@@ -127,18 +142,20 @@ void recieve(connection* c, std::string msg)
 		}
 		else
 		{
-			busy_user.push_back(std::to_string(user_info[log].first));
+			busy_user[std::to_string(user_info[log].first)]=true;
 			std::string s="myinfo"+ret_info(msg.substr(0,msg.find(":")));
 			c->send(s);
 			s=":return:your information "+ret_info(msg.substr(0,msg.find(":")));
 			c->send(s);
+			c->send(":return:"+list_to_string(users_mess[std::to_string(user_info[log].first)]));
+			users_mess[std::to_string(user_info[log].first)].clear();
 			c->send("action");
 		}
 		return;
 	}
 	if(msg.substr(0,4)=="quit")
 	{
-		busy_user.remove(msg.substr(4));
+		busy_user[msg.substr(4)]=false;
 		c->send("return 0");
 		return;
 	}
