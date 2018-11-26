@@ -117,11 +117,11 @@ std::string user::getId() {
 	return this->Id;
 }
 user::user(std::map<std::string, std::string> userInfo) {
-	this->FirstName = userInfo["Firstname"];
-	this->LastName = userInfo["Lastname"];
+	this->FirstName = userInfo["FirstName"];
+	this->LastName = userInfo["LastName"];
 	this->BirthDate = userInfo["BirthDate"];
 	this->Login = userInfo["Login"];
 	this->Gender = userInfo["Gender"];
 	this->Email = userInfo["Email"];
-	this->Id = userInfo["ID"];
+	this->Id = userInfo["Id"];
 }

@@ -7,10 +7,10 @@
 static int a = 0;
 static int id=0;
 	std::map<std::string, std::pair<std::string, std::string>> Login_Id_Pass ;
-	std::map< std::string, user> id_user;
+	std::map<std::string, user> id_user;
 	std::map<std::string, std::string> users;
-
-
+	std::map<std::string, connection*> id_con;
+	std::map<std::string, std::string> us_con_Id;
 bool verific_login(std::string s)
 {
 	std::map<std::string, std::pair<std::string, std::string>>::iterator it=Login_Id_Pass.begin();
@@ -73,6 +73,7 @@ void recv_message(connection* c, std::string message) {
 		if(Login_Id_Pass[log].second == message) {
 			std::string id_us = Login_Id_Pass[log].first;
 			std::string inform = ":information" + infos(id_user,id_us);
+			us_con_Id.emplace(id_us, c->getId());
 			c->send(inform);
 			c->send("For send message to user enter 3, for create new group enter 4, for send message to group enter 5");
 		}
@@ -99,9 +100,18 @@ void recv_message(connection* c, std::string message) {
 		users.emplace("Id",std::to_string(id));
 		user u(users);
 		id_user.emplace(std::to_string(id), u);
-		Login_Id_Pass.emplace(users["Login"],std::make_pair(std::to_string(++id),users["Password"]));
-		std::map<std::string, std::pair<std::string, std::string>>::iterator it1=Login_Id_Pass.begin();
+		Login_Id_Pass.emplace(users["Login"],std::make_pair(std::to_string(id),users["Password"]));
+		std::map<std::string, user>::iterator it1=id_user.begin();
+		++id;
 		c->send("Ok");
+	}
+	if(message == "3") {
+		std::map<std::string, user>::iterator it=id_user.begin();
+		std::string id_name = "";
+		for(int k = 0; k < id; k++) {
+			id_name += ":Id:" + it->first + ":FirstName:" + it->second.getFirstName();
+		}
+		c->send(id_name);
 	}	
 }
 
@@ -112,6 +122,8 @@ void binder_recv_message(connection* c, std::string message) {
 		std::string name2 = "out" + std::to_string(a);
 		a++;
 		connection* neww = new connection(name2, name1);
+		neww->setId(name1);
+		id_con.emplace(name1, neww);		
 		neww->setRecvMessageCallback(recv_message);
 		std::string name = name1 + ":" + name2;
 		c->send(name);

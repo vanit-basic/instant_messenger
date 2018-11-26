@@ -118,6 +118,17 @@ void recv_message(connection* c, std::string message)  {
 		info = info + ":Login:" + temp + ":";
 		c->send(info);
 	}
+	if(message == "For send message to user enter 3, for create new group enter 4, for send message to group enter 5") {
+		std::string s1 = "";
+		std::cin >> s1;
+		c->send(s1);
+	}
+	if(message.substr(0,4) ==":Id:" ) {
+			std::string mess = "";
+			std::cout << " Sent message -> User Id:Message" << "\n";
+			std::cin >> mess;
+			c->send(mess);
+	}
 }
 
 void binder_recv_message(connection* c, std::string message) {
