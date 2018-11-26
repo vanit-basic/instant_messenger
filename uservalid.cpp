@@ -137,25 +137,6 @@ bool mailValid(std::string mail)
 
 }
 
-std::map<std::string,std::string> StringtoMap (std::string str){
-        str.erase(0,1);
-         std::map<std::string,std::string>myMap;
-        while(str.length() != 0){
-        int pos=str.find(':');
-        std::string key="";
-        key=str.substr(0,pos);
-        str.erase(0,pos+1);
-        pos=str.find(':');
-        std::string value="";
-        value=str.substr(0,pos);
-        str.erase(0,pos+1);
-        myMap.insert(std::pair<std::string,std::string>(key,value));
-        }
-
-        return myMap;
-
-}
-
 bool passValid(std::string pas){
 	bool f=true;
 	bool l=false;

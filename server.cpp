@@ -37,6 +37,11 @@ std::map<std::string,std::string> StringtoMap (std::string str){
         return myMap;
 
 }
+void log_in(std::map<std::string,std::string>login){
+	for(auto it=login.begin();it !=login.end();it++){
+		std::cout<<it->first<<it->second<<std::endl;
+	}
+}
 
 void usercreater(std::map<std::string, std::string> my){
 	
@@ -60,6 +65,9 @@ void recv_message(connection* c, std::string message)
 	myMap = StringtoMap(message);
 	bool mi_hat_flag=true;
 	bool erku_hat_flag=true;
+	if(myMap.find("action")->second == "signin"){
+		log_in(myMap);
+	}
 	if(myMap.find("action")->second == "register"){
 		for(auto it = loginMap.begin();it !=loginMap.end();++it){
 			std::cout<<"Barevvv ::::: "<<std::endl;

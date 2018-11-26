@@ -23,6 +23,20 @@ void recv_message(connection* c, std::string message)
 {
 	std::cout << "from server : " << message << std::endl;
 }
+std::string login(){
+	std::string logpas="";
+	std::string Log;
+	std::cout<<"Login : ";
+	std::cin>>Log;
+
+	std::string Pass;
+	std::cout<<"Password : ";
+	std::cin>>Pass;
+
+	logpas+=":action:signin:Login:"+Log+":Password:"+Pass+":";
+	return logpas;
+
+}
 
 int main () 
 {
@@ -50,7 +64,7 @@ int main ()
 		connection c(name1,name2);
                 c.setId(name1);
                 m.unlock();
-		std::cout<<"Register<R>"<<std::endl;
+		std::cout<<"Register<R>:Login<L>:Logout<Lo>"<<std::endl;
                 c.setRecvMessageCallback(recv_message);
 
 		while (true)
@@ -61,7 +75,14 @@ int main ()
 			{
 				break;
 			}
-			if(str=="R" || str=="r"){
+
+			if(str=="L" || str=="l"){
+				std::string logpas = login();
+				std::cout<<logpas<<std::endl;
+				c.send(logpas);
+			}
+			
+				if(str=="R" || str=="r"){
 				std::string FirstName;
 				std::cout<<"First Name : ";
 				std::cin>>FirstName;
