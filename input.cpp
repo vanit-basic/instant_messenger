@@ -102,7 +102,7 @@ std::string sign_in()
                         std::cout<<"Invalid password!\n";
         }
         while(!isvalid_password(pass));
-        std::string sign=":action:sign_in:"+myinformation["Id"]+":"+log+":"+pass;
+        std::string sign=":action:sign_in:"+log+":"+pass;
 	return sign;
 }
 void input(connection* c)
@@ -130,7 +130,7 @@ void input(connection* c)
                 getline(std::cin,user_id);
                 std::cout<<"Enter message: ";
                 getline(std::cin,text);
-                std::string sms=":action:send_message:"+user_id+":"+text;
+                std::string sms=":action:send_message:"+myinformation["Id"]+":"+user_id+":"+text;
                 c->send(sms);
         }
         if(msg1=="group")
@@ -142,6 +142,7 @@ void input(connection* c)
         }
         if(msg1=="quit")
         {
+		msg1+=myinformation["Id"];
                 c->send(msg1);
         }
 

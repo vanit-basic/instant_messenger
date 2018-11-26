@@ -16,6 +16,7 @@ std::string log="";
 std::string quit="";
 std::map<std::string,std::string> my_info;
 void recv_message_c(connection* c, std::string message) {
+	std::cout << "recv_message_c" << std::endl;
 	std::string msg1="";
 	std::string confmsg="";
 	if(message.find(":action:send:")!=std::string::npos)

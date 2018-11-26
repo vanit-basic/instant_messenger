@@ -8,7 +8,8 @@
 #include <string>
 #include <list>
 #include <map>
-std::list<int> busy_user;
+#include <algorithm>
+std::list<std::string> busy_user;
 static int value=0;
 std::list<connection*> connections;
 static int id=9;
@@ -20,7 +21,7 @@ std::string ret_info(std::string log)
 {
 	int user_id=user_info[log].first;
 	user u=id_ob[user_id];
-	std::string str=":Name: "+u.get_firstname()+":Surname: "+u.get_lastname()+":Email: "+u.get_mail()+":Birth Date: "+u.get_birth_date()+":Gender: "+u.get_gender()+":Login: "+u.get_login()+":Id: "+std::to_string(u.get_id())+":";
+	std::string str=":Name:"+u.get_firstname()+":Surname:"+u.get_lastname()+":Email:"+u.get_mail()+":Birth Date:"+u.get_birth_date()+":Gender:"+u.get_gender()+":Login:"+u.get_login()+":Id:"+std::to_string(u.get_id())+":";
 	return str;
 
 }
@@ -31,7 +32,6 @@ std::string show_id()
 	for(it=id_ob.begin();it!=id_ob.end();++it)
 		id+=it->first + " ";
 	return id;
-
 }
 bool search_log(std::string log)
 {
@@ -45,12 +45,10 @@ bool search_log_passw(std::string str)
 {
 	std::string log=str.substr(0,str.find(":"));
 	std::string passw=str.substr(str.find(":")+1);
-	std::cout<<"login: "<<log<<"Password: "<<passw<<std::endl;
+	std::cout<<"login: "<<log<<" Password: "<<passw<<std::endl;
 	if(user_info[log].second==passw)
 		return true;
 	return false;
-
-
 }
 void recieve(connection* c, std::string msg)
 {
@@ -69,11 +67,12 @@ void recieve(connection* c, std::string msg)
 	if(msg.substr(0,21)==":action:send_message:")
 	{
 		msg.erase(0,21);
-		//poxel id-n..petq e lini uxaroxi id-n,vochte stacoxi
 		int id_rec=std::stoi(msg.substr(0,msg.find(":")));
 		msg.erase(0,msg.find(":")+1);
+
 		std::cout<<"id+:+sms ==="<<msg<<std::endl;
 		int id_send=std::stoi(msg.substr(0,msg.find(":")));
+		if(busy_user.
 		std::string sms=msg.substr(msg.find(":")+1);
 		if(id_con.find(id_rec)==id_con.end())
 		{
@@ -83,8 +82,8 @@ void recieve(connection* c, std::string msg)
 		}
 		else
 		{
-			std::string send=":action:send:"+std::to_string(id_send)+":"+sms;
-			id_con[id_rec]->send(send);
+			std::string send=":action:send:"+std::to_string(id_rec)+":"+sms;
+			id_con[id_send]->send(send);
 			c->send(":return:Message sent");
 			c->send("action");
 			return;
@@ -118,7 +117,9 @@ void recieve(connection* c, std::string msg)
 	}
 	if(msg.find(":action:sign_in:")!=std::string::npos)
 	{
+		std::cout<<"sign in ==  "<<msg<<std::endl;
 		msg.erase(0,16);
+		std::string log=msg.substr(0,msg.find(":"));
 		if(!search_log_passw(msg))
 		{
 			c->send(":return:There is no such combination of login and password!");
@@ -126,6 +127,7 @@ void recieve(connection* c, std::string msg)
 		}
 		else
 		{
+			busy_user.push_back(std::to_string(user_info[log].first));
 			std::string s="myinfo"+ret_info(msg.substr(0,msg.find(":")));
 			c->send(s);
 			s=":return:your information "+ret_info(msg.substr(0,msg.find(":")));
@@ -134,9 +136,9 @@ void recieve(connection* c, std::string msg)
 		}
 		return;
 	}
-	if(msg=="quit")
+	if(msg.substr(0,4)=="quit")
 	{
-		//hanel online userneri cucakic
+		busy_user.remove(msg.substr(4));
 		c->send("return 0");
 		return;
 	}
