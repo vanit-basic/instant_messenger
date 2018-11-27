@@ -29,13 +29,11 @@ void reg_valid_log_or_mail(std::string msg, std::string log, std::string email, 
 		msg = msg + "Login:INVALID:";
 	}
 	c->send(msg);
-
 }
 
 
 void reg_inf(std::string message, connection* c)
 {
-
 	std::string msg = message;
 	std::string email = "", log = "", pass = "";
 	msg = msg.erase(0, msg.find(":Email:")+7);
@@ -67,6 +65,7 @@ void reg_inf(std::string message, connection* c)
 		inf2 = ":update_users_data:" + us_inf(users, id);
 		id=":your_id:"+id;
 		c->send(id);
+		c->send(":registration was successful:");
 		c->send("You allowed three action: registration, login or quit");
 		std::map<std::string, connection*>::iterator k=connections.begin();
 		for(k=connections.begin(); k!=connections.end();++k)
@@ -94,15 +93,13 @@ void sign_in_Valid(std::string message, connection* c, std::string log, std::str
 			std::string inf2="";
 			inf1 = ":your_information" + user_information(users, uid);
 			c->send(inf1);
-			inf1 = Log_Id_Pass[log].first;
-			id_log.emplace(inf1, log);
-			std::cout<<"id_msg   "<<id_msg[inf1]<<"  id  "<<inf1<<"\n";
-			id_connection.emplace(inf1, c->getId());
-			if(!(id_msg[inf1]==""))
+			id_log.emplace(uid, log);
+			id_connection.emplace(uid, c->getId());
+			if(!(id_msg[uid]==""))
 			{
 				c->send("You allowed following action:view user data, send message another user, create a new group, send message to group or quit");
-				c->send(id_msg[inf1]);
-				id_msg.erase(inf1);
+				c->send(id_msg[uid]);
+				id_msg.erase(uid);
 			}
 			else
 			{
@@ -242,7 +239,6 @@ int main ()
         {
                 delete [](k->second);
         }
-
 
         return 0;
 }
