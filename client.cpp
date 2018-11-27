@@ -9,319 +9,206 @@
 #include <regex>
 #include <thread>
 
-std::string mapToString(std::map<std::string, std::string> infoMap) {
-	std::string newString = ":";
-	for (auto it = infoMap.begin(); it != infoMap.end(); ++it) {
-		newString += it->first + ":" + it->second + ":";
-	}
-
-	return newString;
-}
-
-bool isValidName(std::string name) {
-	int n = name.length();
-	bool t = true;
-	if (n > 1) {
-		if (name[0] > 'A' && name[0] < 'Z') {
-			t = true;
-		} else {
-			return false;
-		}
-
-		for (int i = 1; i < n; ++i) {
-			if (name[i] > 'a' && name[i] < 'z') {
-				t = true;
-			} else {
-				return false;
-			}
-		}
-	} else {
-		t = false;
-	}
-
-	return t;
-}
-
-bool isValidSurname(std::string surname) {
-	int n = surname.length();
-	bool t = true;
-	if (n > 1) {
-		if (surname[0] > 'A' && surname[0] < 'a') {
-			t = true;
-		} else {
-			return false;
-		}
-
-		for (int i = 1; i < n; ++i) {
-			if (surname[i] > 'a' && surname[i] < 'z') {
-				t = true;
-			} else {
-				return false;
-			}
-		}
-	} else {
-		t = false;
-	}
-
-	return t;
-}
-
-bool isValidBirthdate(std::string birthdate) {
-	int n = birthdate.length();
-	if (n == 10) {
-		std::string day = birthdate;
-		std::string month = birthdate;
-		std::string year = birthdate;
-		day.erase(2, n - 3);
-		month.erase(0, 3);
-		month.erase(3, n - 2);
-		year.erase(0, n - 4);
-		bool t = false;
-
-		if (stoi(year) > 1900 && stoi(year) < 2008) {
-			if (month == "01" || month == "05" || month == "07" || month == "08" || month == "10" || month == "12") {
-				if (stoi(day) <= 31 && stoi(day) > 0) {
-					t = true;
-				}
-			} else if (month == "04" || month == "06" || month == "09" || month == "11") {
-				if (stoi(day) <= 30 && stoi(day) > 0) {
-					t = true;
-				}
-			} else if (month == "02") {
-				if (stoi(year) % 4 == 0 && stoi(day) <= 29) {
-					t = true;
-				} else if (stoi(day) <= 28) {
-					t = true;
-				}
-			}
-		} else {
-			return false;
-		}
-		return t;
-	}
-}
-
-bool isValidGender(std::string gender) {
-	int n = gender.length();
-	if (n >= 4) {
-		if (gender == "male" || gender == "female") {
-			return true;
-		} else {
-			return false;
-		}
-	} else {
-		return false;
-	}
-}
-
-bool isValidLogin(std::string login) {
-	int n = login.length();
-	bool t = true;
-	if (n >= 6) {
-		if (login[0] > 'A' && login[0] < 'a') {
-			t = true;
-		} else {
-			return false;
-		}
-
-		for (int i = 1; i < n; ++i) {
-			if (login[i] > 'a' && login[i] < 'z') {
-				t = true;
-			} else if (login[i] == 45 || login[i] == 46 || login[i] == 64 || login[i] == 95) {
-				t = true;
-			} else {
-				return false;
-			}
-		}
-	} else {
-		t = false;
-	}
-
-	return t;
-}
-
-std::string replaceBeforeDog(std::string mail){
-	std::regex e("[[:alnum:]]+(\\.|-|_)");
-	return std::regex_replace(mail, e, "");
-
-}
-
-std::string replaceAfterDog(std::string mail){
-	std::regex e("[[:alnum:]]+(\\.|-)");
-	return std::regex_replace(mail, e, "");
-}
-
-std::string replaceBeforePoint(std::string mail){
-	std::regex e("[[:alpha:]]");
-	return std::regex_replace(mail, e, "");
-}
-
-
-
-bool isValidMail(std::string mail){
-	int posDog = mail.find("@");
-	int posPoint = mail.rfind(".");
-	if(posDog == -1 || posPoint == -1 || posPoint < posDog || (mail.length() - posPoint - 1) < 2 ) {
-		return false;
-	}
-
-	std::string strBeg = replaceBeforeDog(mail.substr(0, posDog));
-	std::string strMid = replaceAfterDog(mail.substr(posDog + 1, posPoint - posDog - 1));
-	std::string last = replaceBeforePoint(mail.substr(posPoint + 1));
-	std::regex beg("[[:alnum:]]+");
-	std::regex mid("[[:alnum:]]+");
-	if (std::regex_match(strBeg, beg) && std::regex_match(strMid, mid) && last == "" ) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-static int id = 0;
 std::mutex m;
+static std::string id = "0";
 static std::string name1 = "";
 static std::string name2 = "";
 static std::string str = "";
 
+std::string mapToString(std::map<std::string, std::string> infoMap) {
+    std::string newString = ":";
+    for (auto it = infoMap.begin(); it != infoMap.end(); ++it) {
+        newString += it->first + ":" + it->second + ":";
+    }
+
+    return newString;
+}
+
 void recv_message_server(connection* c, std::string message) {
-	if(message!="") {
-		m.lock();
-		str = message;
-		m.unlock();
-	}
+    if (message != "") {
+        m.lock();
+        str = message;
+        m.unlock();
+    }
 }
 
 void recv_message(connection* c, std::string message) {
-	std::cout << "from server" << message << std::endl;
+    std::cout << "from server: " << message << std::endl;
+    std::string login = "";
+    std::string pass = "";
+    std::string mail = "";
+    std::string s = "";
+
+    usleep(100);
+    if (message == "Enter s (for signin), r (for registration) or q (for quit): ") {
+        while (!(s == "s" || s == "r" || s == "q")) {
+            std::cout << "Enter s (for signin), r (for registration) or q (for quit): " << std::endl;
+            std::cin >> s;
+        }
+
+        if (s == "s") {
+            std::cout << "Enter login: ";
+            std::cin >> login;
+            std::cout << "Enter password: ";
+            std::cin >> pass;
+            s = ":action:signin:login:" + login + ":password:" + pass + ":";
+            c->send(s);
+        } else if (s == "r") {
+            std::cout << "Enter your e-mail adress: ";
+            std::cin >> mail;
+
+            while (! isValidMail(mail) ) {
+                std::cout << "Your e-mail adress is not Valid. Please, enter again: ";
+                std::cin >> mail;
+            }
+
+            std::cout << "Enter login: ";
+            std::cin >> login;
+
+            while (! isValidLogin(login) ) {
+                std::cout << "Your login is not valid. Please, enter again: ";
+                std::cin >> mail;
+            }
+
+            std::string temp = ":check:login:" + login + ":mail:" + mail + ":";
+            c->send(temp);
+
+            while (message == "Your e-mail is busy!") {
+                std::cout << "Your e-mail adress is busy!" << std::endl;
+                std::cout << "Please, enter new e-mail adress: ";
+                std::cin >> mail;
+                c->send(mail);
+            }
+
+            while (message == "Your login is busy!") {
+                std::cout << "Your login is busy!" << std::endl;
+                std::cout << "Please, enter new login: ";
+                std::cin >> login;
+                c->send(login);
+            }
+            s = regist(login, mail);
+
+            c->send(s);
+        }
+    }
+
+    if (message.find("You are already registered! Your ID is") != std::string::npos) {
+        std::cout << message << std::endl;
+    }
+
+    if (message.find(":yourid:") != std::string::npos) {
+        id = message.substr(0, 8);
+        id = id.substr(id.length() - 1, 1);
+        std::cout << "Your id is " << id << std::endl;
+    }
+
+    if (message == "You entered wrong login or password!") {
+        std::cout << "You entered wrong login or password!";
+    }
+
 }
 
-std::string login (std::string login, std::string pass) {
-	std::cout << "Enter login or e-mail: ";
-	std::cin >> login;
-	std::cout << "Enter password: ";
-	std::cin >> pass;
-	std::string s = ":action:signin:login:" + login + ":password:" + pass + ":";
-	return s;
-}
+std::string regist(std::string login, std::string mail) {
+    std::string id = "";
+    std::string name = "";
+    std::string surname = "";
+    std::string birthdate = "";
+    std::string gender = "";
+    std::string pass1 = "";
+    std::string pass2 = "";
+    std::string s = ":action:registration:";
 
-std::string regist(std::string login) {
-	std::string mail = "";
-	std::string id = "";
-	std::string name = "";
-	std::string surname = "";
-	std::string birthdate = "";
-	std::string gender = "";
-	std::string s = ":action:registration:";
+    while (! isValidName(name)) {
+        std::cout << "Enter name: ";
+        std::cin >> name;
+    }
 
-	while (! isValidName(name)) {
-		std::cout << "Enter name: ";
-		std::cin >> name;
-	}
+    s += ":name:" + name;
 
-	s += ":name:" + name;
+    while (! isValidSurname(surname)) {
+        std::cout << "Enter surname: ";
+        std::cin >> surname;
+    }
 
-	while (! isValidSurname(surname)) {
-		std::cout << "Enter surname: ";
-		std::cin >> surname;
-	}
+    s += ":surname:" + surname;
 
-	s += ":surname:" + surname;
+    while (! isValidBirthdate(birthdate)) {
+        std::cout << "Enter birthdate (like dd.mm.yyyy): ";
+        std::cin >> birthdate;
+    }
 
-	while (! isValidBirthdate(birthdate)) {
-		std::cout << "Enter birthdate (like dd.mm.yyyy): ";
-		std::cin >> birthdate;
-	}
+    s += ":birthdate:" + birthdate;
 
-	s += ":birthdate:" + birthdate;
+    while (! isValidGender(gender)) {
+        std::cout << "Enter gender: ";
+        std::cin >> gender;
+    }
 
-	while (! isValidGender(gender)) {
-		std::cout << "Enter gender: ";
-		std::cin >> gender;
-	}
+    s += ":gender:" + gender;
+    s += ":mail:" + mail;
 
-	s += ":gender:" + gender;
+    do {
+        while (! isValidPass(pass1)) {
+            std::cout << "Enter your password: ";
+            std::cin >> pass1;
+        }
 
-	s += ":ID:" + id;
-	id++;
+        while (! isValidPass(pass2)) {
+            std::cout << "Enter your password again for accepting: ";
+            std::cin >> pass2;
+        }
+    } while (pass1 != pass2);
 
-	while (! isValidLogin(login)) {
-		std::cout << "Enter login: ";
-		std::cin >> login;
-	}
+    if (login == "") {
+        login = mail;
+    }
 
-	s += ":login:" + login;
+    s += ":login:" + login;
+    s += ":password:" + pass1 + ":";
 
-	while (! isValidMail(mail)) {
-		std::cout << "Enter mail (like *****@****.***): ";
-		std::cin >> mail;
-	}
-
-	s += ":mail:" + mail + ":";
-	return s;
+    return s;
 }
 
 int main () {
-	std::ifstream busy("busy.lock");
-	if(busy.is_open()) {
-		while(busy.is_open()) {
-			usleep(100);
-		}
-	} else {
-		std::ofstream busy1;
-		busy1.open("busy.lock");
-		connection binder(std::string("in"), std::string("out"));
-		binder.setRecvMessageCallback(recv_message_server);
-		binder.send("connect");
+    std::ifstream busy("busy.lock");
+    if(busy.is_open()) {
+        while(busy.is_open()) {
+            usleep(100);
+        }
+    } else {
+        std::ofstream busy1;
+        busy1.open("busy.lock");
+        connection binder(std::string("in"), std::string("out"));
+        binder.setRecvMessageCallback(recv_message_server);
+        binder.send("connect");
 
-		int i = 0;
-		while (name2=="") {
-			m.lock();
-			if (str != "") {
-				++i;
-				if (i == 1) {
-					name1 = str;
-					str = "";
-				}
-				if (i > 1) {
-					name2 = str;
-					str="";
-				}
 
-			}
-			m.unlock();
+        int i = 0;
+        while (name2 == "") {
+            m.lock();
+            if (str != "") {
+                ++i;
+                if (i == 1) {
+                    name1 = str;
+                    str = "";
+                }
+                if (i > 1) {
+                    name2 = str;
+                    str="";
+                }
 
-		}
+            }
+            m.unlock();
 
-		busy1.close();
-		remove("busy.lock");
-	}
-	connection client(name1, name2);
-	client.setID(name1);
-	client.setRecvMessageCallback(recv_message);
+        }
 
-	std::string s = "";
-	while (true) {
-		std::string login = "";
-		std::string pass = "";
+        busy1.close();
+        remove("busy.lock");
+    }
 
-		usleep(100);
+    connection client(name1, name2);
+    client.setID(name1);
+    client.setRecvMessageCallback(recv_message);
 
-		while (s != "s" || s != "r" || s != "q") {
-			std::cout << "Enter s (for signin), r (for registration) or q (for quit): " << std::endl;
-			std::cin >> s;
-		}
-
-		if (s == "s") {
-			s = login(login, pass);
-			client.send(s);
-		} else if (s == "r") {
-			s = regist(login);
-			client.send(s);
-		} else if (s == "q") {
-			return 0;
-		}
-		std::getline(std::cin, s);
-	}
-
-	return 0;
+    return 0;
 }
