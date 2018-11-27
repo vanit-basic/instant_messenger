@@ -57,45 +57,6 @@ bool isvalid_password(std::string passw)
         passw=std::regex_replace(passw,rgx,"");
         return (passw=="" || std::regex_replace(passw,std::regex("[[:alnum:]]"),"")=="")?true:false;
 }
-std::string global(std::map<std::string,std::string> mymap)
-{
-        std::string response="";
-
-        if(!isvalid_firstname(mymap["firstname"]))
-                response+=":firstname:valid";
-        else
-                response+=":firstname:invalid";
-
-        if(!isvalid_lastname(mymap["lastname"]))
-                response+=":lastname:valid";
-        else
-                response+=":lastname:invalid";
-
-        if(!isvalid_mail(mymap["mail"]))
-                response+=":mail:valid";
-        else
-                response+=":mail:invalid";
-
-        if(!isvalid_gender(mymap["gender"]))
-                response+=":gender:valid";
-        else
-                response+=":gender:invalid";
-
-        if(!isvalid_birth_date(mymap["birth_date"]))
-                response+=":birth_date:valid";
-        else
-                response+=":birth_date:invalid";
-
-        if(!isvalid_login(mymap["login"]))
-                response+=":login:valid";
-        else
-                response+=":login:invalid";
-
-        if(response.find("invalid")==-1)
-                return "OK";
-        return response;
-
-}
 std::map<std::string,std::string> string_to_map(std::string str)
 {
         std::map<std::string,std::string> mymap;
