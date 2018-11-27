@@ -108,6 +108,7 @@ void recv_message(connection* c, std::string message) {
 		std::string id_name = "";
 		for(int k = 0; k < id; k++) {
 			id_name += ":Id:" + it->first + ":FirstName:" + it->second.getFirstName();
+			++it;
 		}
 		c->send(id_name);
 	}
@@ -116,6 +117,7 @@ void recv_message(connection* c, std::string message) {
 		std::string for_id = message.substr(0, message.find(":"));
 		message.erase(0, message.find(":") + 1);
 		id_con[us_con_Id[for_id]]->send(message);
+		c->send("For send message to user enter 3, for create new group enter 4, for send message to group enter 5");
 	}	
 }
 

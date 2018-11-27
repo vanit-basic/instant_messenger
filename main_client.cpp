@@ -6,6 +6,7 @@
 connection* mainConnection = NULL;
 std::string info = ":action:registration";
 std::string temp = "";
+std::string stri = "";
 
 void recv_message(connection* c, std::string message)  {
 	int a = 0;
@@ -61,7 +62,7 @@ void recv_message(connection* c, std::string message)  {
 			}
 		}
 		while(true) {
-			std::cout << "Enter Birthdate(25-12-1999) : ";
+			std::cout << "Enter Birthdate(25.12.1999) : ";
 			std::cin >> temp;
 			if(valid_birthdate(temp)) {
 				info = info + ":BirthDate:" + temp;
@@ -76,6 +77,14 @@ void recv_message(connection* c, std::string message)  {
 				break;
 			}
 		}
+		while(true) {
+			std::cout << "Enter login : ";
+			std::cin >> temp;
+			if(valid_login(temp)) {
+				stri = ":Login:" + temp;
+				break;
+			}
+		}
 		std::string examp = "";
 		while(true) {
 			std::cout << "Enter password : ";
@@ -85,36 +94,29 @@ void recv_message(connection* c, std::string message)  {
 			}
 		}
 		while(true) {
-			std::cout << "Enter password : ";
+			std::cout << "Enter password again : ";
 			std::cin >> temp;
 			if(valid_password(temp) && temp == examp) {
 				info = info + ":Password:" + temp;
-				break;
-			}
-		}
-		while(true) {
-			std::cout << "Enter login : ";
-			std::cin >> temp;
-			if(valid_login(temp)) {
-				std::string stri = ":Login:" + temp;
 				c->send(stri);	
 				break;
 			}
 		}
 	}
-	std::string stri="";
 	if(message == "Invalid_Login") {
 		do
 		{
 			std::cout << "Enter login : ";
-			std::cin >> temp;
-			stri = ":Login:" + temp;
+			std::cin >> stri;
+			stri = ":Login:" + stri;
 		}
 		while(!valid_login(temp));
 		c->send(stri);
-
 	}
 	if(message == "Valid_Login") {
+		if(stri.find(":") == std::string::npos) {
+			stri.erase(0,7);
+		}
 		info = info + ":Login:" + temp + ":";
 		c->send(info);
 	}
