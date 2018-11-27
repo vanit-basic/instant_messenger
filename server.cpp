@@ -108,21 +108,25 @@ void send_mess(std::string msg,connection* c)
                 if(id_con.find(id_send)==id_con.end())
                 {
                         c->send(":return:Error id");
-                        c->send("action");
+			c->send("action");
+			return;
                 }
                 if(busy_user[std::to_string(id_send)]==false)
                 {
                         users_mess[std::to_string(id_send)].push_back("ID:"+std::to_string(id_rec)+" send message: "+sms+"\n");
                         c->send(":return:Message sent");
-                        c->send("action");
+			c->send("action");
+			return;
                 }
                 if(id_con.find(id_send)!=id_con.end())
                 {
                         std::string send=":action:send:"+std::to_string(id_rec)+":"+sms;
                         id_con[id_send]->send(send);
                         c->send(":return:Message sent");
-                        c->send("action");
+			c->send("action");
+			return;
                 }
+
 }
 void recieve(connection* c, std::string msg)
 {

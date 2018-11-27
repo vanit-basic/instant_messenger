@@ -17,49 +17,50 @@ std::string quit="";
 std::map<std::string,std::string> my_info;
 std::string reg_sign_in()
 {
-		do
-                {
-                        std::cout<<"For registration enter 'registration' , for login enter 'sign in'\n";
-                        getline(std::cin,msg1);
-                        if(msg1!="registration" && msg1!="sign in")
-                                std::cout<<"Wrong action!\n";
-                }
-                while(msg1!="registration" && msg1!="sign in");
+	std::string msg1="";
+	do
+	{
+		std::cout<<"For registration enter 'registration' , for login enter 'sign in'\n";
+		getline(std::cin,msg1);
+		if(msg1!="registration" && msg1!="sign in")
+			std::cout<<"Wrong action!\n";
+	}
+	while(msg1!="registration" && msg1!="sign in");
 	return msg1;
 }
 void registration(connection* c)
 {
-		do
-                {
-                        std::cout<<"Login: ";
-                        getline(std::cin,log);
-                        if(!isvalid_login(log))
-                                std::cout<<"Invalid login!\n";
-                }
-                while(!isvalid_login(log));
-                log=":login:"+log;
-                c->send(log);
+	do
+	{
+		std::cout<<"Login: ";
+		getline(std::cin,log);
+		if(!isvalid_login(log))
+			std::cout<<"Invalid login!\n";
+	}
+	while(!isvalid_login(log));
+	log=":login:"+log;
+	c->send(log);
 }
 void action_send(std::string message)
 {
-		 message.erase(0,13);
-                std::string id=message.substr(0,message.find(":"));
-                message.erase(0,message.find(":")+1);
-                std::cout<<"ID:"<<id<<" send message: "<<message<<std::endl;
+	message.erase(0,13);
+	std::string id=message.substr(0,message.find(":"));
+	message.erase(0,message.find(":")+1);
+	std::cout<<"ID:"<<id<<" send message: "<<message<<std::endl;
 }
-void invalid_login(connection* c)
+void invalid_login(std::string message,connection* c)
 {
 	std::cout<<message<<" Enter login\n";
-                do
-                {
-                        std::cout<<"Login: ";
-                        getline(std::cin,log);
-                        if(!isvalid_login(log))
-                                std::cout<<"Invalid login!\n";
-                }
-                while(!isvalid_login(log));
-                log=":login:"+log;
-                c->send(log);
+	do
+	{
+		std::cout<<"Login: ";
+		getline(std::cin,log);
+		if(!isvalid_login(log))
+			std::cout<<"Invalid login!\n";
+	}
+	while(!isvalid_login(log));
+	log=":login:"+log;
+	c->send(log);
 }
 void recv_message_c(connection* c, std::string message) {
 	std::string msg1="";
@@ -69,17 +70,15 @@ void recv_message_c(connection* c, std::string message) {
 
 	if(message=="<registration> or <sign in>")
 		msg1=reg_sign_in();
-	
+
 	if(message=="action")
 		std::thread* t=new std::thread(input,c);
 
 	if(message=="Valid login")
-	{
-		//info+=log + ":";
 		c->send(info+log+":");
-	}
+
 	if(message=="Invalid login")
-		invalid_login(c);
+		invalid_login(message,c);
 
 	if(message.substr(0,8)==":return:")
 	{
