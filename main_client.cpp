@@ -28,7 +28,7 @@ void recv_message(connection* c, std::string message)  {
 		std::string forPass = "";
 		std::string forLoginPass = "";
 		std::cout << "Login : ";
-		std::cin >> temp;
+		std::cin  >> temp;
 		std::cout << "Password : ";
 		std::cin >> forPass;
 		forLoginPass = "Sign-in:" + temp + ":" + forPass;
@@ -125,9 +125,11 @@ void recv_message(connection* c, std::string message)  {
 	}
 	if(message.substr(0,4) ==":Id:" ) {
 			std::string mess = "";
-			std::cout << " Sent message -> User Id:Message" << "\n";
-			std::cin >> mess;
-			c->send(mess);
+			std::cout << " Sent message -> User Id:Your Id:Message" << "\n";
+			std::cin.ignore();
+			std::getline(std::cin,mess);
+			std::string messs = "message" + mess;
+			c->send(messs);
 	}
 }
 

@@ -14,9 +14,7 @@ static int id=0;
 bool verific_login(std::string s)
 {
 	std::map<std::string, std::pair<std::string, std::string>>::iterator it=Login_Id_Pass.begin();
-	std::cout<<"funkciayi mej\n";
 	while(it != Login_Id_Pass.end()) {
-                std::cout << "whilei mej" << "\n";
                 if(s == it->first) {
                         return false;
                         
@@ -112,6 +110,12 @@ void recv_message(connection* c, std::string message) {
 			id_name += ":Id:" + it->first + ":FirstName:" + it->second.getFirstName();
 		}
 		c->send(id_name);
+	}
+	if(!(message.find("message") == std::string::npos)) {
+		message.erase(0,7);
+		std::string for_id = message.substr(0, message.find(":"));
+		message.erase(0, message.find(":") + 1);
+		id_con[us_con_Id[for_id]]->send(message);
 	}	
 }
 
