@@ -71,7 +71,8 @@ void sign_in(std::string str,connection* c)
 	}
 	else
 	{
-		busy_user[std::to_string(user_info[log].first)]=true;
+			busy_user[std::to_string(user_info[log].first)]=true;
+		id_con[user_info[log].first]=c;
 		std::string s="myinfo"+ret_info(str.substr(0,str.find(":")));
 		c->send(s);
 		s=":return:your information "+ret_info(str.substr(0,str.find(":")));
