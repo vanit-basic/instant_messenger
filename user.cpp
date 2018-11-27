@@ -44,13 +44,25 @@ std::string user::getId(){
 std::string user::getMail(){
         return mail;
 }
+std::string user::getDetails(){
+	std::string info = "";
+	info += "ID : " + this->getId() + "\n";
+	info += "firstname : " + this->getFirstName() + "\n";
+	info += "lastname : " + this->getLastName() + "\n";
+	info += "gender : " + this->getGender() + "\n";
+	info += "birth date : " + this->getBirthDate() + "\n";
+	info += "mail : " + this->getMail() + "\n";
+	info += "login : " + this->getLogin() + "\n";
+	return info;
+}
+
 user::user(std::map<std::string,std::string> datebase){
 	this->firstname = datebase["FirstName"];
         this->lastname = datebase["LastName"];
-        this->birthdate = datebase["BirhDate"];
+        this->birthdate = datebase["BirthDate"];
         this->gender = datebase["Gender"];
         this->login = datebase["Login"];
-        this->mail = datebase["Email"];
+        this->mail = datebase["Mail"];
         this->id = datebase["Id"];
-
 }
+

@@ -18,7 +18,10 @@ static std::map<std::string, std::pair<std::string, std::string>> loginMap;
 static std::map<std::string, user> userMap;
 static std::map<std::string, std::pair<std::string, std::string>>::iterator it;
 static std::map<std::string, std::string> my;
-static std::map<std::string, std::string> mail;
+static std::map<std::string, std::string> mails;
+static std::map<std::string, connection*> us_con_mess;
+static std::list<std::string> signins;
+
 std::map<std::string,std::string> StringtoMap (std::string str){
         str.erase(0,1);
         std::map<std::string,std::string>myMap;
@@ -37,11 +40,6 @@ std::map<std::string,std::string> StringtoMap (std::string str){
         return myMap;
 
 }
-void log_in(std::map<std::string,std::string>login){
-	for(auto it=login.begin();it !=login.end();it++){
-		std::cout<<it->first<<it->second<<std::endl;
-	}
-}
 
 void usercreater(std::map<std::string, std::string> my){
 	
@@ -49,8 +47,8 @@ void usercreater(std::map<std::string, std::string> my){
 	user us(my);
 	userMap.insert(std::pair<std::string, user>(us.getId(), us));
 	loginMap.emplace(my["Login"],std::make_pair(std::to_string(iduser),my["Password"]));
-        mail.emplace(my["Login"],my["Mail"]);
-	for(auto it=mail.begin();it !=mail.end();it++){
+        mails.emplace(my["Login"],my["Mail"]);
+	for(auto it=mails.begin();it !=mails.end();it++){
 		std::cout<<it->first<<it->second<<std::endl;
 		
 	}
@@ -65,17 +63,13 @@ void recv_message(connection* c, std::string message)
 	myMap = StringtoMap(message);
 	bool mi_hat_flag=true;
 	bool erku_hat_flag=true;
-	if(myMap.find("action")->second == "signin"){
-		log_in(myMap);
-	}
-	if(myMap.find("action")->second == "register"){
+	if(myMap["action"] == "register"){
 		for(auto it = loginMap.begin();it !=loginMap.end();++it){
-			std::cout<<"Barevvv ::::: "<<std::endl;
 			if(it->first == myMap["Login"]){
 				mi_hat_flag=false;
 			}
 		}
-		for(auto it = mail.begin();it != mail.end();++it){
+		for(auto it = mails.begin();it != mails.end();++it){
 			if(it->second == myMap["Mail"]){
 				erku_hat_flag=false;
 			}
@@ -99,7 +93,35 @@ void recv_message(connection* c, std::string message)
 			}
 		}
 	}
+	if(myMap["action"] == "signin"){
+		bool log = true;
+		for (std::list<std::string>::iterator it = signins.begin(); it != signins.end(); it++){
+			if(myMap["Login"] == *it){
+				log = false;
+			}	
+		}		
+		if(log){		
+			for(auto it = loginMap.begin();it !=loginMap.end();++it){
+				if(it->first == myMap["Login"]){
+					if(it->second.second == myMap["Password"]){
+						signins.push_back(it->second.first);
+						user us = userMap[it->second.first];
+						c->send("Login OK\n" + us.getDetails());
+						us_con_mess.emplace(it->second.first, c);					
+					}
+				}
+			}
+		}
+	}
 
+	if(myMap["action"] == "message"){
+		for (std::list<std::string>::iterator it = signins.begin(); it != signins.end(); it++){
+			if(myMap["id"] == *it){
+				connection* second_user = us_con_mess[myMap["id"]];
+				second_user->send(myMap["text"]);				
+			}	
+		}
+	}
 }
 
 void recv_message_binder(connection* c, std::string message) 
