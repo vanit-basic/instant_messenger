@@ -87,7 +87,6 @@ void sign_in_Valid(std::string message, connection* c, std::string log, std::str
 		else
 		{
 			uid = Log_Id_Pass[log].first;
-			std::cout<<"joined.emplace  "<<log<<"\n";
 			joined.emplace(log, true);
 			std::string inf1="";
 			std::string inf2="";
