@@ -1,1 +1,1 @@
-gcc parse.c `xml2-config --cflags --libs` -o xmlexample
+gcc $1 `xml2-config --cflags --libs` -o $2

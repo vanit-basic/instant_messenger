@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <string.h>
 
 #ifdef LIBXML_TREE_ENABLED
 
@@ -30,15 +31,21 @@
 static void
 print_element_names(xmlNode * a_node)
 {
-    xmlNode *cur_node = NULL;
-
-    for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
-        if (cur_node->type == XML_ELEMENT_NODE) {
-            printf("node type: Element, name: %s\n", cur_node->name);
-        }
-
-        print_element_names(cur_node->children);
-    }
+	xmlNode *cur_node = NULL;
+	for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
+		if (cur_node->type == XML_ELEMENT_NODE) {
+			const char* name = cur_node->name;
+			const char* value = xmlNodeGetContent(cur_node->children);
+			printf("name: %s ", name);
+			if(strcmp(name, "request") != 0) {
+				printf("value: %s", value);
+			} else {
+				printf("%ld %s %d %d", strlen(value), value, value[0] << value[1]);
+			}
+			printf("\n");
+		}
+		print_element_names(cur_node->children);
+	}
 }
 
 
