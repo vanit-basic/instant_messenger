@@ -41,19 +41,26 @@ void sender(connection* c)
 			{
 			       std::string us_id="";
 			       std::string us_msg="";
-			       std::cout<<"Enter the User Id to whom you want to send a message"<<std::endl;
+			       std::cout<<"Enter the User Id to whom you want to send a message, or q for cancel"<<std::endl;
 			       print_map(users_inf);
 			       std::getline(std::cin, us_id);
-			       while(!isValidUser(users_inf, us_id))
+			       while(!(isValidUser(users_inf, us_id) || us_id =="q"))
 			       {
 				       std::cout<<"Invalid User, enter the User Id from the list"<<std::endl;
 				       print_map(users_inf);
 				       std::getline(std::cin, us_id);
 			       }
+			       if(us_id == "q")
+			       {
+			       		c->send("return1");
+			       }
+			       else
+			       {
 			       std::cout<<"Enter the message"<<std::endl;
 			       std::getline(std::cin, us_msg);
 			       us_msg=":send_message_user:userId:" + us_id +":my_Id:" +my_information["Id"] + ":message:" + us_msg + ":";
 			       c->send(us_msg);
+			       }
 			}
 			else
 			{std::cout<<"No users logged in yet, update users data"<<std::endl;
@@ -261,7 +268,11 @@ void recv_message(connection* c, std::string message)
 						{
 							if(message == "There is no such combination of login and password")
 							{std::cout << "from server:  " << message << std::endl;}
-							else{}
+							else
+							{
+								if(message == ":Your_message_sent:")
+								{c->send(":return1:");}
+							}
 						}
 					}
 				}

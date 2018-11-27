@@ -50,13 +50,12 @@ std::string us_inf(std::map<std::string, user> database, std::string id)
         return inf;
 }
 
-bool isValidSignIn(std::map<std::string, std::pair<std::string, std::string>> datebase, std::string log, std::string pass, std::string& id)
+bool isValidSignIn(std::map<std::string, std::pair<std::string, std::string>> datebase, std::string log, std::string pass)
 {
         bool isValid=false;
         if(datebase[log].second==pass)
         {
                 isValid=true;
-                id=(datebase[log].first);
         }
         return isValid;
 }
