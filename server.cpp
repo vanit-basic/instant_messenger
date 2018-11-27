@@ -26,7 +26,7 @@ void recvMessageFromClient (connection* c, std::string message)
 
 	if (message == "Hello")
 	{
-		message == "Hello, for registration enter 1, to sign in enter 2, to quit enter 3 ";	
+		message ="Hello, for registration enter 1, to sign in enter 2, to quit enter 3";	
 
 		c->send(message);
 	}
@@ -44,46 +44,46 @@ void recvMessageFromClient (connection* c, std::string message)
 		}
 	}
 	if (message.find(":E_mail:", 0, 8))
-			{
-			message.erase(0,8); 
-			if (email(message) == false)
-			{
+	{
+		message.erase(0,8); 
+		if (email(message) == false)
+		{
 			c->send("falseLog");
-			}
-			if (email(message) == true)
-			{
-			c->send("trueLog");
-			}
-			}
-
-
-			if (message.find(":registrationInfo:", 0, 18))	
-				{
-				message.erase(0,18);
-				allData = myMap(message);
-				logPassId.emplace(allData["login"],std::make_pair(allData["Id"],allData["password"]));
-				emailId.emplace(allData["E_mail"], allData["Id"]);
-				}	
-
 		}
+		if (email(message) == true)
+		{
+			c->send("trueLog");
+		}
+	}
+
+
+	if (message.find(":registrationInfo:", 0, 18))	
+	{
+		message.erase(0,18);
+		allData = myMap(message);
+		logPassId.emplace(allData["login"],std::make_pair(allData["Id"],allData["password"]));
+		emailId.emplace(allData["E_mail"], allData["Id"]);
+	}	
+
+}
 void recvMessage (connection* c, std::string message)
-				{
-				if(message=="new client")
-				{
-				std::cout << "client: " << message << std::endl;
-				std::string clientServer = "Client" + std::to_string(i);  
-				std::string serverClient = "Server" + std::to_string(i);
+{
+	if(message=="new client")
+	{
+		std::cout << "client: " << message << std::endl;
+		std::string clientServer = "Client" + std::to_string(i);  
+		std::string serverClient = "Server" + std::to_string(i);
 
-				i++;
+		i++;
 
-				connection* c1 = new connection(serverClient, clientServer);
-				c1->setRecvMessageCallback(recvMessageFromClient);
-				connections.push_back(c1);
-				clientServer = clientServer+":"+serverClient;
-				c->send(clientServer);
-				c->send("q");
-				}
-				}
+		connection* c1 = new connection(serverClient, clientServer);
+		c1->setRecvMessageCallback(recvMessageFromClient);
+		connections.push_back(c1);
+		clientServer = clientServer+":"+serverClient;
+		c->send(clientServer);
+		c->send("q");
+	}
+}
 
 int main () {
 

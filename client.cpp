@@ -13,14 +13,17 @@ std::string serverClient="";
 
 connection* main1= NULL;
 std::string userData ="";
-std::string data;
+std::string data = ""; 
+
 
 void recvMessageFromServer(connection* c, std::string message)
 {
 	int action = 0; 
 
-	if (message == "Hello, for registration enter 1, to sign in enter 2, to quit en 3")
-	{	std::cin >> action; 
+
+	if (message == "Hello, for registration enter 1, to sign in enter 2, to quit enter 3")
+	{	std::cout << "Hello, for registration enter 1, to sign in enter 2, to quit enter 3" << std::endl; 
+		std::cin >> action; 
 		while (!(action == 1 || action == 2 || action == 3))
 		{
 			std::cout << "Please enter valid action" << std::endl; 
@@ -30,19 +33,21 @@ void recvMessageFromServer(connection* c, std::string message)
 		if (1 == action)
 		{
 			std::cout << "Enter your first name" << std::endl; 
-			std::getline(std::cin, data); 
-			while(!isValidFirstName(data))
-			{
+			std::cin.ignore(); 
+			std::getline(std::cin,data); 
+			while(! isValidFirstName(data)){
+		//		std::cout<<"data == "<<data<<std::endl;
 				std::cout << "Please enter your name correctly" << std::endl; 
-				std::getline(std::cin, data);
+				std::getline(std::cin,data);
 			}
-			userData = ":firstName:" + data; 
 
+			
+			userData = ":firstName:" + data; 
 			std::cout << "Enter your last name" << std::endl; 
-			std::getline(std::cin, data); 
+			std::getline(std::cin,data); 
 			while(!isValidLastName(data))
 			{
-				std::cout << "Please enter your name correctly" << std::endl; 
+				std::cout << "Please enter your lastname correctly" << std::endl; 
 				std::getline(std::cin, data);
 			}
 			userData += ":lastName:" + data; 
@@ -78,11 +83,13 @@ void recvMessageFromServer(connection* c, std::string message)
 
 			std::cout << "Enter your login" << std::endl;
 			std::getline(std::cin, data);
-			while(login(data))
+
+			while(!isValidLogin(data))
 			{
-				std::cout << "login is busy, enter another login" << std::endl;
+				std::cout << "Please enter another login" << std::endl;
 				std::getline(std::cin, data);
 			}
+
 			data = ":login:" + data; 
 			c->send(data);
 
@@ -142,8 +149,8 @@ userData = ":registrationInfo:" + userData + ":";
 		c->send(userData); 
 	}
 
-
-}}
+}
+}
 void recvMessage(connection* c, std::string message)
 {
 	std::cout<<"client_binder :"<<message<<std::endl;
@@ -157,7 +164,6 @@ void recvMessage(connection* c, std::string message)
 		main1->send("Hello");
 	}
 }
-
 
 
 int main()

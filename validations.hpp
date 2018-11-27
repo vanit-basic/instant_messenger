@@ -12,6 +12,7 @@ bool isValidEmail(std::string);
 bool isValidGender(std::string); 
 bool isValidBirthDate(std::string); 
 bool isValidPassword(std::string); 
+bool isValidLogin(std::string); 
 std::string userInfo (std::string); 
 Map myMap(std::string userInfo);
 std::string userInformation (Map infoMap);

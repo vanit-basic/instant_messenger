@@ -52,6 +52,23 @@ bool isValidBirthDate(std::string date)
 	return true;
 }
 
+bool isValidLogin(std::string l)
+
+{
+        if (l.length() < 4 || l.length() > 32)
+                return false;
+        std::regex upper ("[[:upper:]]");
+        std::regex digit ("[[:digit:]]");
+        std::regex lower ("[[:lower:]]");
+
+        std::regex pattern ("(\\w+)(\\.|_)?");
+        if ( std::regex_search (l, upper) && std::regex_search (l, digit) && std::regex_search (l, lower))
+
+                return std::regex_match(l,pattern);
+        return false;
+}
+
+
 bool isValidPassword(std::string p)
 
 {
