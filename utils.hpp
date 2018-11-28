@@ -3,6 +3,7 @@
 
 #include "connectionAndUser.hpp"
 
+void print_message(std::string);
 void print_map(std::map<std::string, std::string>);
 std::string user_information(std::map<std::string, user> , std::string );
 std::map<std::string, std::string> string_to_map(std::string);

@@ -295,7 +295,7 @@ void recv_message(connection* c, std::string message)
 					{
 						if(!(message.find(":message_from_user:")==std::string::npos))
 						{
-							std::cout << "from server:  " << message << std::endl;
+							print_message (message);
 							c->send(":return1:");
 						}
 						else

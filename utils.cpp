@@ -2,6 +2,27 @@
 #include <cmath>
 #include <iostream>
 #include "utils.hpp"
+
+void print_message(std::string message)
+{
+	std::string msg = message;
+	msg = msg.erase(0, 19);
+	while(true)
+	{
+		std::string sms = "";
+		if(!(msg.find(":message_from_user:") == std::string::npos))
+		{
+			sms = msg.substr(0, msg.find(":message_from_user:"));
+			std::cout<< "message from user " << sms <<std::endl;
+			msg = msg.erase(0, sms.size() + 19);
+		}
+		else
+		{
+			std::cout<<"message from user "<<msg<<std::endl;
+			break;
+		}
+	}
+}
 void print_map(std::map<std::string, std::string>  users)
 {
 	std::map<std::string, std::string>::iterator k=users.begin();
