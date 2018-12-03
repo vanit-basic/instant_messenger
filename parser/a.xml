@@ -1,0 +1,30 @@
+<info>
+    
+    <id1>
+        <user>
+            <name>Mane</name>
+            <age>18</age>
+        </user>
+    </id1>
+    
+    <id2>
+        <user>
+            <name>Mary</name>
+            <age>21</age>
+        </user>
+    </id2>
+    
+    <id3>
+        <user>
+            <name>Lusine</name>
+            <age>19</age>
+        </user>
+    </id3>
+
+    <id4>
+        <user>
+        <name>Aida</name>
+        <age>40</age>
+    </id4>
+
+</info>
