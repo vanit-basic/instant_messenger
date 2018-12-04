@@ -21,6 +21,21 @@
  *gcc `xml2-config --cflags --libs` -o xmlexample libxml2-example.c
  */
 
+xmlChar* getNodeValue(xmlNode * a_node) {
+	xmlChar* value = NULL;
+	if (a_node->type == XML_TEXT_NODE) {
+		value = a_node->content;
+	} else {
+		for (xmlNode * cur_node = a_node->children; cur_node; cur_node = cur_node->next) {
+			if(cur_node->type == XML_TEXT_NODE) {
+				value = cur_node->content; 
+				break;
+			}
+		}
+	}
+	return value;
+}
+
 /**
  * print_element_names:
  * @a_node: the initial xml node to consider.
@@ -35,19 +50,13 @@ print_element_names(xmlNode * a_node)
 	for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
 		if (cur_node->type == XML_ELEMENT_NODE) {
 			const char* name = cur_node->name;
-			const char* value = xmlNodeGetContent(cur_node->children);
-			printf("name: %s ", name);
-			if(strcmp(name, "request") != 0) {
-				printf("value: %s", value);
-			} else {
-				printf("%ld %s %d %d", strlen(value), value, value[0] << value[1]);
-			}
-			printf("\n");
-		}
+			const char* value = getNodeValue(cur_node);
+			printf("name: %s\n", name);
+			if(value) printf("value: %s\n", value);
+		} 
 		print_element_names(cur_node->children);
 	}
 }
-
 
 /**
  * Simple example to parse a file called "file.xml", 
