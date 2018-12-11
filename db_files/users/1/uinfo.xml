@@ -1,9 +1,10 @@
 <user>
 	<id>1</id>
+	<displayName>Vle</displayName>
 	<avatar>resources/avatar.png</avatar>
 	<firstName>Valodik</firstName>
 	<lastName>Valodyan</lastName>
 	<login>v.valodyan</login>
 	<mail>v.valodyan@mail.com</mail>
-	<groups></1></2></groups>
+	<groups><g1/><g2/></groups>
 </user>
