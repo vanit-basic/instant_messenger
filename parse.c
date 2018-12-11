@@ -9,12 +9,11 @@
  * author: Dodji Seketeli
  * copy: see Copyright for the status of this software.
  */
+
+#include <libxml/tree.h>
 #include <stdio.h>
 #include <libxml/parser.h>
-#include <libxml/tree.h>
 #include <string.h>
-
-#ifdef LIBXML_TREE_ENABLED
 
 /*
  *To compile this file using gcc you can type
@@ -43,14 +42,13 @@ xmlChar* getNodeValue(xmlNode * a_node) {
  * Prints the names of the all the xml elements
  * that are siblings or children of a given xml node.
  */
-static void
-print_element_names(xmlNode * a_node)
+void print_element_names(xmlNode * a_node)
 {
 	xmlNode *cur_node = NULL;
 	for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
 		if (cur_node->type == XML_ELEMENT_NODE) {
-			const char* name = cur_node->name;
-			const char* value = getNodeValue(cur_node);
+			const char* name = (char*)cur_node->name;
+			const char* value = (char*)getNodeValue(cur_node);
 			printf("name: %s\n", name);
 			if(value) printf("value: %s\n", value);
 		} 
@@ -58,19 +56,10 @@ print_element_names(xmlNode * a_node)
 	}
 }
 
-/**
- * Simple example to parse a file called "file.xml", 
- * walk down the DOM, and print the name of the 
- * xml elements nodes.
- */
-int
-main(int argc, char **argv)
-{
+void readXMLFile(char* filePath) {
     xmlDoc *doc = NULL;
     xmlNode *root_element = NULL;
 
-    if (argc != 2)
-        return(1);
 
     /*
      * this initialize the library and check potential ABI mismatches
@@ -80,10 +69,10 @@ main(int argc, char **argv)
     LIBXML_TEST_VERSION
 
     /*parse the file and get the DOM */
-    doc = xmlReadFile(argv[1], NULL, 0);
+    doc = xmlReadFile(filePath, NULL, 0);
 
     if (doc == NULL) {
-        printf("error: could not parse file %s\n", argv[1]);
+        printf("error: could not parse file %s\n", filePath);
     }
 
     /*Get the root element node */
@@ -99,13 +88,5 @@ main(int argc, char **argv)
      *have been allocated by the parser.
      */
     xmlCleanupParser();
-
-    return 0;
 }
-#else
-int main(void) {
-    fprintf(stderr, "Tree support not compiled in\n");
-    exit(1);
-}
-#endif
 
