@@ -7,7 +7,7 @@ std::string getGroupInfo(std::string group_id)
 {
 	std::string str="";
 	std::string res="";
-	std::ifstream xml("db_files/groups/g"+group_id+"/ginfo.xml");
+	std::ifstream xml("db_files/groups/"+group_id+"/ginfo.xml");
 	while(xml>>str)
 		res+=str;
 	return res;
