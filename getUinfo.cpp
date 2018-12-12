@@ -1,32 +1,25 @@
 #include <iostream>
-#include <string>
+#include <stdio.h>
+#include <string.h>
 #include <fstream>
 
-std::string getUinfo (std::string user_id) {
-	
-	std::string info = "";
+std::string getUinfo(std::string user_id) {
+	std::string temp = "";
 	std::string str = "";
-	
-	std::ifstream u_info ("db_files/users/"+user_id+"/info.xml");
-	
-	while (u_info >> str) {
-	
-		if (str.substr(0, 7) == "<login>") {
-			break;
+	std::ifstream xml_file("db_files/users/"+user_id+"/info.xml");
+	if(xml_file.is_open()) {
+		while(xml_file >> temp) {
+			if(temp.substr(0, 7) == "<login>") {
+				str += "</info>";
+				break;
+			}
+			str += temp;
 		}
-		
-		info += str;
 	}
-
-	return info;
+	return str;
 }
-
 int main () {
-
-	std::string u_id = "";
-	std::cout << "User id: ";
-	std::cin >> u_id;
-	std::cout << getUinfo(u_id) << "\n";
-	
+	std::string str = getUinfo("u100000");
+	std::cout << str << std::endl;
 	return 0;
 }

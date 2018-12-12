@@ -117,7 +117,7 @@ void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::str
                 bloodhound(cur_node->children, login, mail, password);
         }
 }
-void registration(std::string info)
+void registerUser(std::string info)
 {
 	int length = info.size();
 	const char* inf = info.c_str();
@@ -134,14 +134,16 @@ void registration(std::string info)
 	{
 		std::string ID = "u" + std::to_string(id);
 		id++;
-		std::string passf = "db_files/register/logins/"+login +"/" + password + ".txt";
-		std::ofstream passtxt(passf);
-		if (passtxt.is_open())
+		std::string credtxt = "db_files/register/logins/"+login +"/"  + "cred.txt";
+		std::ofstream cred(credtxt);
+		if (cred.is_open())
 		{
-			passtxt<<ID;
-			passtxt<<"\n";
+			cred<<password;
+			cred<<"\n";
+			cred<<ID;
+			cred<<"\n";
 		}
-		passtxt.close();
+		cred.close();
 		add_ID(root_element, ID);
 		std::string id_f = "db_files/users/" + ID;
 		const char* id_f_n = id_f.c_str();
@@ -154,7 +156,6 @@ void registration(std::string info)
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
 		xmlMemoryDump();
-		std::cout<< "registration completed successfully\n";
 //		send(ID);
 	}
 }
@@ -163,6 +164,6 @@ int main()
 {
 	std::string info = "<registration_information><FirstName>Jo</FirstName><LastName>Black</LastName><Gender>male</Gender><BirthDate>10.02.1990</BirthDate><Email>black@gmail.com</Email><Login>black1990</Login><Password>JBlack1990</Password></registration_information>";
 
-	registration(info);
+	registerUser(info);
 	return 0;
 }
