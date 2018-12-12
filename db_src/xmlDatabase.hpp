@@ -18,7 +18,7 @@ class xmlDatabase : public database {
                 virtual bool deleteGroup(std::string groupID);
                 virtual bool addUserToGroup(std::string groupID, std::string userID);
                 virtual bool removeFromGroup(std::string groupID, std::string userID);
-                virtual bool removeMessage(std::string messageInfo)0;
+                virtual bool removeMessage(std::string messageInfo);
                 virtual bool removeGroupConversation(std::string groupInfo);
                 virtual std::string getGroupInfo(std::string groupID);
                 virtual std::string getGroupConversation(std::string groupID);
