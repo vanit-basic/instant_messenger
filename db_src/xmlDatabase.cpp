@@ -1,3 +1,5 @@
+#include<fstream>
+#include<stdio.h>
 #include "xmlDatabase.hpp"
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -75,12 +77,23 @@ std::string xmlDatabase::getUserInfo(std::string userID) {
 }
 
 std::string xmlDatabase::getUserConversations(std::string userID) {
-	return std::string("getUserConversations");
+	std::string tmp = "";
+        std::string fin = "";
+        std::ifstream id("db_files/users/"+userID+"/convs/convs_list.xml");
+        while(id >> tmp)
+                fin = fin +tmp;
+        return fin;
 }
 
 std::string xmlDatabase::getUsersConversation(std::string fromID, std::string toID) {
-	return std::string("getUsersConversation");
+	std::string tmp = "";
+        std::string fin = "";
+        std::ifstream id("db_files/users/"+fromID+"/convs/"+toID);
+        while(id >> tmp)
+                fin = fin +tmp;
+        return fin;
 }
+
 
 bool xmlDatabase::addUserMessage(std::string messageInfo) {
 	return true;
@@ -111,12 +124,29 @@ xmlDatabase* xmlDatabase::getShared() {
 	return sharedDB;
 }
 
+std::string xmlDatabase::createGroup(std::string groupInfo) {
+	return std::string("groupID");
+}
+
+bool xmlDatabase::deleteGroup(std::string groupInfo) {
+	return true;
+}
+
+bool removeFromGroup(std::string groupID) {
+	return true;
+}
+
+bool removeMessage(std::string messageInfo) {
+	return true;
+}
+
+bool removeGroupConversation(std::string groupInfo) {
+	return true;
+}
+
 xmlDatabase::xmlDatabase() {
 	if(NULL == sharedDB) sharedDB = this;
-
 }
 
-xmlDatabase::~xmlDatabase() {
-
-}
+xmlDatabase::~xmlDatabase() { }
 

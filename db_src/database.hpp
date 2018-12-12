@@ -20,6 +20,17 @@ class database {
 		virtual bool addUserMessage(std::string messageInfo) = 0;
 
 		//group related queries
+		
+		virtual std::string createGroup(std::string groupInfo) = 0;
+
+                virtual bool deleteGroup(std::string groupInfo) = 0;
+
+                virtual bool removeFromGroup(std::string groupID) = 0;
+
+                virtual bool removeMessage(std::string messageInfo) = 0;
+
+                virtual bool removeGroupConversation(std::string groupInfo) = 0;
+		
 		virtual std::string getGroupInfo(std::string groupID) = 0;
 		
 		virtual std::string getGroupConversation(std::string groupID) = 0;
