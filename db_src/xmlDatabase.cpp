@@ -128,11 +128,13 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	return std::string("groupID");
 }
 
-bool xmlDatabase::deleteGroup(std::string groupInfo) {
+bool xmlDatabase::deleteGroup(std::string groupID) {
 	return true;
 }
-
-bool removeFromGroup(std::string groupID) {
+bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID) {
+	return true;
+}
+bool removeFromGroup(std::string groupID, std::string userID) {
 	return true;
 }
 
