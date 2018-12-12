@@ -109,7 +109,13 @@ std::string xmlDatabase::getGroupInfo(std::string groupID) {
 }
 
 std::string xmlDatabase::getGroupConversation(std::string groupID) {
-	return std::string("getGroupConversation");
+	std::string temp="";
+        std::string conversation="";
+        std::ifstream xml("db_files/groups/"+groupID+"/conv.xml");
+        while(xml>>temp){
+                conversation+=temp;
+	}
+        return conversation;
 }
 
 std::string xmlDatabase::updateGroupInfo(std::string groupInfo) {
