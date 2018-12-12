@@ -1,6 +1,29 @@
 #include <iostream>
 
-#include "xmlDatabase.hpp"
+#include <xmlDatabase.hpp>
+/*
+registerUser(std::string userInfo)
+loginUser(std::string login, std::string password)
+getUserInfo(std::string userID)
+getUserConversations(std::string userID)
+getUsersConversation(std::string fromID, std::string toID)
+createGroup(std::string groupInfo)
+getGroupInfo(std::string groupID)
+getGroupConversation(std::string groupID)
+updateGroupInfo(std::string groupInfo)
+updateUserInfo(std::string userInfo)
+addUserMessage(std::string messageInfo)
+deleteGroup(std::string groupID)
+addUserToGroup(std::string groupID, std::string userID)
+removeFromGroup(std::string groupID, std::string userID)
+removeMessage(std::string messageInfo)
+removeGroupConversation(std::string groupInfo)
+addGroupMessage(std::string messageInfo)
+*/
+
+void registerLoginTest () {
+
+}
 
 int main() {
 	

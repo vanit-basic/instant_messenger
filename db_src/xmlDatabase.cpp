@@ -1,14 +1,16 @@
-#include "IDgenerator.hpp"
-#include "xmlDatabase.hpp"
+
+#include <IDgenerator.hpp>
+#include <xmlDatabase.hpp>
+
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <stdio.h>
-#include <fstream>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <iostream>
 #include <string>
+#include <string.h>
 #include <fstream>
 #include <cstdlib>
 
@@ -79,7 +81,7 @@ bool verification(std::string login, std::string mail, std::string &result) {
         if(!isValidEmail(mail))
         {
             std::cout<<"Invalid mail\n";
-            rezult += "<Email>Invalid</Email>";
+            result += "<Email>Invalid</Email>";
         }
         return false;
     }
@@ -268,8 +270,8 @@ std::string xmlDatabase::getGroupConversation(std::string groupID) {
     return conversation;
 }
 
-std::string xmlDatabase::updateGroupInfo(std::string groupInfo) {
-    return std::string("updateGroupInfo");
+bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
+    return true;
 }
 
 bool xmlDatabase::addGroupMessage(std::string messageInfo) {
@@ -292,11 +294,11 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID) {
     return true;
 }
 
-bool removeMessage(std::string messageInfo) {
+bool xmlDatabase::removeMessage(std::string messageInfo) {
     return true;
 }
 
-bool removeGroupConversation(std::string groupInfo) {
+bool xmlDatabase::removeGroupConversation(std::string groupInfo) {
     return true;
 }
 
@@ -305,9 +307,8 @@ xmlDatabase::xmlDatabase() {
 }
 
 xmlDatabase::~xmlDatabase() { }
-#ifdef LIBXML_TREE_ENABLED
 
-bool removeFromGroup(std::string groupID, std::string userID) {
+bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
     LIBXML_TEST_VERSION
 
         DIR* groupsDir = opendir("groups/g1");
@@ -320,12 +321,14 @@ bool removeFromGroup(std::string groupID, std::string userID) {
         } else {
             root_element = xmlDocGetRootElement(doc);
             xmlNode *cur_node = NULL;
-            for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
+	    ///TBC a_node -> root_element
+            for (cur_node = root_element; cur_node; cur_node = cur_node->next) {
                 if (cur_node->type == XML_ELEMENT_NODE) {
-                    const xmlChar* name = cur_node->name;
-                    const xmlChar* value = xmlNodeGetContent(cur_node->children);
-                    if (strcmp(name, "user") == 0 && strcmp(value, userID) == 0) {
-                        xmlFreeNode(cur_niode);
+                    const char* name = (const char*)cur_node->name;
+                    const char* value = (const char*)xmlNodeGetContent(cur_node->children);
+                    if (strcmp(name, "user") == 0 && strcmp(value, userID.c_str()) == 0) {
+                        xmlUnlinkNode(cur_node);
+                        xmlFreeNode(cur_node);
                     }
                 }
             }
@@ -335,7 +338,7 @@ bool removeFromGroup(std::string groupID, std::string userID) {
 
     DIR* usersDir = opendir("users");
     if (usersDir) {
-        DIR userDir = open(userID);
+        DIR* userDir = opendir(userID.c_str());
         if (userDir) {
             xmlDoc *doc = NULL;
             xmlNode *root_element = NULL;
@@ -345,11 +348,13 @@ bool removeFromGroup(std::string groupID, std::string userID) {
             }
             root_element = xmlDocGetRootElement(doc);
             xmlNode *cur_node = NULL;
-            for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
+	    ///TBC a_node -> root_element
+            for (cur_node = root_element; cur_node; cur_node = cur_node->next) {
                 if (cur_node->type == XML_ELEMENT_NODE) {
                     const xmlChar* name = cur_node->name;
                     const xmlChar* value = xmlNodeGetContent(cur_node->children);
-                    if (strcmp(name, "user") == 0 && strcmp(value, userID) == 0) {
+                    if (strcmp((const char*)name, "user") == 0 && strcmp((const char*)value, userID.c_str()) == 0) {
+                        xmlUnlinkNode(cur_node);
                         xmlFreeNode(cur_node);
                     }
                 }
