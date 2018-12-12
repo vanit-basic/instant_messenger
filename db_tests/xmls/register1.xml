@@ -1,0 +1,9 @@
+<info>
+        <firstname>fn1</firstname>
+        <lastname>ln1</lastname>
+        <gender>female</gender>
+        <birthDate>10.11.1993</birthDate>
+	<Email>fn1@mail.com</Email>
+        <Login>test1</Login>
+        <Password>test1234</Password>
+</info>
