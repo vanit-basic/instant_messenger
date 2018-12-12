@@ -6,7 +6,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fstream>
-#include <dirent.h>
 
 static int id = 1;
 
