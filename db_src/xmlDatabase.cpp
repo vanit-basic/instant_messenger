@@ -2,7 +2,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
-
+#include <fstream>
 static xmlDatabase* sharedDB = NULL;
 
 
@@ -38,18 +38,19 @@ std::string xmlDatabase::getGroupInfo(std::string groupID) {
 	std::string str="";
 	std::string res="";
 	try{
-		std::string groups= "db_files/groups/"+group_id;
+		std::string groups= "db_files/groups/"+groupID;
 		const char* x = groups.c_str();
 		struct stat sb;
 		if (!(stat(x, &sb) == 0 && S_ISDIR(sb.st_mode)))
 			throw 404;
 
-		std::ifstream xml("db_files/groups/"+group_id+"/ginfo.xml");
+		std::ifstream xml("db_files/groups/"+groupID+"/ginfo.xml");
 		while(xml>>str)
 			res+=str;
 	}
 	catch(int x){
-		std::cout<<"Error "<<x<<"! File not exist!"<<std::endl;
+		printf("Error %d ! File not exist!",x);
+		//std::cout<<"Error "<<x<<"! File not exist!"<<std::endl;
 	}
 	return res;
 }
