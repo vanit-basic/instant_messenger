@@ -16,7 +16,7 @@ int main () {
 	
 	std::cout << db->getUserConversations(std::string("u89")) << std::endl;
 	
-	std::cout << db->getUsersConversation(std::string("u23"), std::string("u567")) << std::endl;
+	std::cout << db->getUsersConversation(std::string("u100000"), std::string("u100001")) << std::endl;
 	
 	std::cout << db->addUserMessage(std::string("message xml")) << std::endl;
 	

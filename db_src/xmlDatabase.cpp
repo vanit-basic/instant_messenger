@@ -1,3 +1,5 @@
+#include<fstream>
+#include<stdio.h>
 #include "xmlDatabase.hpp"
 
 static xmlDatabase* sharedDB = NULL;
@@ -24,8 +26,15 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
 }
 
 std::string xmlDatabase::getUsersConversation(std::string fromID, std::string toID) {
-	return std::string("getUsersConversation");
+	std::string tmp = "";
+        std::string fin = "";
+        std::ifstream id("db_files/conversation/"+fromID+toID+".xml");
+
+        while(id >> tmp)
+                fin = fin +tmp;
+        return fin;
 }
+
 
 bool xmlDatabase::addUserMessage(std::string messageInfo) {
 	return true;
