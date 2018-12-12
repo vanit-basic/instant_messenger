@@ -1,4 +1,7 @@
 #include "xmlDatabase.hpp"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
 
 static xmlDatabase* sharedDB = NULL;
 
@@ -32,7 +35,23 @@ bool xmlDatabase::addUserMessage(std::string messageInfo) {
 }
 
 std::string xmlDatabase::getGroupInfo(std::string groupID) {
-	return std::string("getGroupInfo");
+	std::string str="";
+	std::string res="";
+	try{
+		std::string groups= "db_files/groups/"+group_id;
+		const char* x = groups.c_str();
+		struct stat sb;
+		if (!(stat(x, &sb) == 0 && S_ISDIR(sb.st_mode)))
+			throw 404;
+
+		std::ifstream xml("db_files/groups/"+group_id+"/ginfo.xml");
+		while(xml>>str)
+			res+=str;
+	}
+	catch(int x){
+		std::cout<<"Error "<<x<<"! File not exist!"<<std::endl;
+	}
+	return res;
 }
 
 std::string xmlDatabase::getGroupConversation(std::string groupID) {
