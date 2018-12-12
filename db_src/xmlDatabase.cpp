@@ -1,15 +1,13 @@
 #include "xmlDatabase.hpp"
-
 #include <sys/stat.h>
-#include <fstream>
-
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <dirent.h>
+#include <iostream>
+#include <string>
 #include <fstream>
+#include <cstdlib>
 
 static xmlDatabase* sharedDB = NULL;
-
 
 std::string xmlDatabase::registerUser(std::string userInfo) {
 	return std::string("registerUser");
