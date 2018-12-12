@@ -2,7 +2,7 @@
 
 #include "xmlDatabase.hpp"
 
-int main () {
+int main() {
 	
 	database *db = new xmlDatabase;
 	
