@@ -1,4 +1,6 @@
 #include "xmlDatabase.hpp"
+#include <sys/stat.h>
+#include <fstream>
 
 static xmlDatabase* sharedDB = NULL;
 
@@ -16,7 +18,27 @@ bool xmlDatabase::updateUserInfo(std::string userInfo) {
 }
 
 std::string xmlDatabase::getUserInfo(std::string userID) {
-	return std::string("getUserInfo");
+	std::string path = "db_files/users/"+userID;
+	const char * p = path.c_str();
+	struct stat sb;
+	std::string info = "";
+	if(stat(p, &sb) == 0 && S_ISDIR(sb.st_mode)) {
+		std::string temp = "";
+		std::ifstream xml_file("db_files/users/"+userID+"/info.xml");
+		if(xml_file.is_open()) {
+			while(xml_file >> temp) {
+				if(temp.substr(0, 7) == "<login>") {
+					info += "</info>";
+					break;
+				}
+				info += temp;
+			}
+		}
+		return info;
+	}
+	else
+		return "Error 404";
+
 }
 
 std::string xmlDatabase::getUserConversations(std::string userID) {
