@@ -290,8 +290,83 @@ bool xmlDatabase::deleteGroup(std::string groupID) {
     return true;
 }
 
-bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID) {
-    return true;
+void find_ids(std::string messageInfo, std::string &groupId, std::string &userId)
+{
+        std::string inf = messageInfo;
+        inf = inf.erase(0, inf.find("<GroupId>")+9);
+        groupId = inf.substr(0, inf.find("</GroupId>"));
+        inf = messageInfo;
+        inf = inf.erase(0,inf.find("<UserId>")+ 8);
+        userId = inf.substr(0, inf.find("</UserId>"));
+}
+void add_ID(xmlNode* root_element, std::string id, bool &status)
+{
+        xmlNode* cur_node = root_element;
+        const char* i = id.c_str();
+        if (cur_node->type == XML_ELEMENT_NODE)
+        {
+               if(NULL == xmlNewChild(cur_node, NULL, BAD_CAST i, NULL))
+               {
+                       status = false;
+               }
+        }
+}
+
+void change_quantity(xmlNode* root_element, bool &status)
+{
+        bool stat = false;
+        xmlNode *cur_node = NULL;
+        std::string quantity = "";
+        for (cur_node = root_element->children; cur_node; cur_node = cur_node->next)
+        {
+                if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)(cur_node->name), "usersquantity")))
+                {
+                        stat = true;
+                        quantity = (char*)xmlNodeGetContent(cur_node);
+                        quantity = std::to_string(std::stoi(quantity) + 1);
+                        const char* new_quantity = quantity.c_str();
+                        xmlNodeSetContent(cur_node, BAD_CAST new_quantity);
+                        if(!(0 == strcmp((char*)(xmlNodeGetContent(cur_node)),  new_quantity)))
+                        {
+                                status = false;
+                        }
+                }
+        }
+        if(!stat)
+        {
+                status = false;
+        }
+}
+
+bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID) 
+{
+	std::string groupId = "g1";
+	std::string userId = "u23";
+	bool status = true;
+	find_ids(messageInfo, groupId, userId);
+	std::string gr_inf = "db_files/groups/" + groupId + "/ginfo.xml";
+	const char* c_gr_inf = gr_inf.c_str();
+	std::string users = "db_files/groups/" + groupId + "/users.xml";
+	const char* c_users = users.c_str();
+	xmlDoc *doc = NULL;
+	xmlNode *root_element = NULL;
+	LIBXML_TEST_VERSION;
+	doc = xmlReadFile(c_users, NULL, 0);
+	root_element = xmlDocGetRootElement(doc);
+	add_ID(root_element, userId, status);
+	xmlSaveFormatFileEnc(c_users, doc, "UTF-8", 1);
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+	if(status)
+	{
+		doc = xmlReadFile(c_gr_inf, NULL, 0);
+		root_element = xmlDocGetRootElement(doc);
+		change_quantity(root_element, status);
+		xmlSaveFormatFileEnc(c_gr_inf, doc, "UTF-8", 1);
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+	}
+	return status;
 }
 
 bool xmlDatabase::removeMessage(std::string messageInfo) {
