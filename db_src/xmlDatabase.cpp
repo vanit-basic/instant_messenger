@@ -1,14 +1,13 @@
 #include "xmlDatabase.hpp"
-<<<<<<< HEAD
+
 #include <sys/stat.h>
 #include <fstream>
 
-=======
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
 #include <fstream>
->>>>>>> a9ee1704fae4d8dbb8ef30ec0551a048d01baf80
+
 static xmlDatabase* sharedDB = NULL;
 
 
@@ -17,8 +16,37 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
 }
 
 std::string xmlDatabase::loginUser(std::string login, std::string password) {
-	return std::string("loginUser");
+	// Open directory with login name
+    	DIR* loginDir = opendir(login.c_str());
+    if (!loginDir) {
+        // If there is not directory with such name then login and / or password is not available
+        std::cout << "Your login and / or password is not available! Please, try again!" << std::endl;
+    } else {
+        // Open pass.txt
+        std::string path = "./" + login + "/pass.txt";
+        std::ifstream passFile(path.c_str());
+        if (passFile.is_open()) {
+            std::string tempPass;
+            // If password matches print user id
+            if (std::getline(passFile, tempPass)) {
+                if (password.compare(tempPass) == 0) {
+                    std::string id = "";
+                    if (std::getline(passFile, id)) {
+                        return id;
+                    }
+            } else {
+                // Login and / or pass is not available
+                std::cout << "Your login and / or password is not aveilable! Please, try again!" << std::endl;
+            }
+        }
+        passFile.close();
+    } else {
+        std::cout << "Error 404 not found" << std::endl;
+    }
 }
+    closedir(loginDir);
+}
+
 
 bool xmlDatabase::updateUserInfo(std::string userInfo) {
 	return true;
