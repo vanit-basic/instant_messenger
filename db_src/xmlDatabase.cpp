@@ -124,12 +124,29 @@ xmlDatabase* xmlDatabase::getShared() {
 	return sharedDB;
 }
 
+std::string xmlDatabase::createGroup(std::string groupInfo) {
+	return std::string("groupID");
+}
+
+bool xmlDatabase::deleteGroup(std::string groupInfo) {
+	return true;
+}
+
+bool removeFromGroup(std::string groupID) {
+	return true;
+}
+
+bool removeMessage(std::string messageInfo) {
+	return true;
+}
+
+bool removeGroupConversation(std::string groupInfo) {
+	return true;
+}
+
 xmlDatabase::xmlDatabase() {
 	if(NULL == sharedDB) sharedDB = this;
-
 }
 
-xmlDatabase::~xmlDatabase() {
-
-}
+xmlDatabase::~xmlDatabase() { }
 
