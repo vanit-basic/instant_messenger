@@ -14,7 +14,7 @@ int main () {
 	
 	std::cout << db->getUserInfo(std::string("u2")) << std::endl;
 	
-	std::cout << db->getUserConversations(std::string("u89")) << std::endl;
+	std::cout << db->getUserConversations(std::string("u100000")) << std::endl;
 	
 	std::cout << db->getUsersConversation(std::string("u100000"), std::string("u100001")) << std::endl;
 	
