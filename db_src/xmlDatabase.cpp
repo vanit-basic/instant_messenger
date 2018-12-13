@@ -282,6 +282,7 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	if (root->type == XML_ELEMENT_NODE) {
 		const char * gId = groupId.c_str();
 		xmlNewChild(root, NULL, BAD_CAST "groupId", BAD_CAST gId);
+		xmlNewChild(root, NULL, BAD_CAST "usersquantity", BAD_CAST "1");
 	}
 	xmlNode* node = NULL;
 	std::string value = "";
