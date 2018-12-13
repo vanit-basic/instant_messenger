@@ -59,6 +59,10 @@ void test_IdGenerator()
 	{
 		std::cout << IDgenerator::getUserId()<<std::endl;
 	}
+	for(int i=0; i<1000; i++)
+	{
+		std::cout << IDgenerator::getGroupId()<<std::endl;
+	}
 }
 void test_groupFunctional()
 {
@@ -94,9 +98,20 @@ void test_createGroup() {
 	groupId = groupId.substr(4, groupId.rfind("<") - 4);
 	std::cout << db->getGroupInfo(groupId) << std::endl;
 }
+void test_creatGroup_addUserToGroup_getGroupInfo()
+{
+	std::string inf = "<info><name>VanIt</name><admin>u1</admin><createdate>12.12.2018</createdate></info>";
+	std::string gid = db->createGroup(inf);
+	std::cout<< gid <<std::endl;
+	gid = gid.erase(0, 4);
+	gid = gid.substr(0, gid.find("</id>"));
+	std::cout<<db->getGroupInfo(gid)<<std::endl;
+	db->addUserToGroup(gid, "u17");
+	std::cout<<db->getGroupInfo(gid)<<std::endl;
+}
 
 int main() {
-//	test1();
+	test1();
 //	test1();
 //	test_groupFunctional();
 //	test_groupFunctional();
@@ -104,6 +119,7 @@ int main() {
 
 //	test2();
 //	test_IdGenerator();
-	test_createGroup();
+//	test_createGroup();
+	test_creatGroup_addUserToGroup_getGroupInfo();
 	return 0;
 }
