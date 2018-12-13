@@ -179,7 +179,7 @@ std::string xmlDatabase::loginUser(std::string login, std::string password) {
         std::cout << "Your login and / or password is not available! Please, try again!" << std::endl;
     } else {
         // Open pass.txt
-        std::string path = "./" + login + "/pass.txt";
+        std::string path = "./" + login + "/creds.txt";
         std::ifstream passFile(path.c_str());
         if (passFile.is_open()) {
             std::string tempPass;
@@ -242,7 +242,10 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
 }
 
 std::string xmlDatabase::getUsersConversation(std::string fromID, std::string toID) {
-    std::string tmp = "";
+xmlDoc* doc = NULL;
+       int length = groupInfo.size();
+       const char* inf = groupInfo.c_str();
+       doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);    std::string tmp = "";
     std::string fin = "";
     std::ifstream id("db_files/users/" + fromID + "/convs/" + toID);
     while(id >> tmp)
