@@ -62,9 +62,21 @@ void test_IdGenerator()
 	}
 }
 
+void test_createGroup() {
+	std::string info = xml2string("xmls/createGroup1.xml");
+	std::string GroupId = db->createGroup(info);
+	std::cout << GroupId << std::endl;
+	std::cout << db->getGroupInfo(GroupId) << std::endl;
+        info = xml2string("xmls/createGroup2.xml");	
+	GroupId = db->createGroup(info);
+	std::cout << GroupId <<std::endl;
+	std::cout << db->getGroupInfo(GroupId) << std::endl;
+}
+
 int main() {
-	test1();
+//	test1();
 //	test2();
 //	test_IdGenerator();
+	test_createGroup();
 	return 0;
 }
