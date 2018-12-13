@@ -57,16 +57,22 @@ IDgenerator::IDgenerator(std::string userIdtxt, std::string groupIdtxt)
 	std::ifstream verification_user_file(user_file);
 	if (!verification_user_file.is_open())
 	{
-	verification_user_file.close();
 	user = std::ofstream(user_file);
 	user.close();
+	}
+	else
+	{
+		verification_user_file.close();
 	}
 	std::ifstream verification_group_file(group_file);
 	if (!verification_group_file.is_open())
 	{
-	verification_group_file.close();
         group = std::ofstream(group_file);
 	group.close();
+	}
+	else
+	{
+		verification_group_file.close();
 	}
 }
 IDgenerator::~IDgenerator()
