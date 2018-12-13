@@ -23,7 +23,7 @@ void delete_node(xmlNode* a_node) {
     xmlNode* node = NULL;
     for (cur_node = a_node; cur_node; cur_node = cur_node->next)
     {
-        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)(cur_node->name), "Password")))
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)(cur_node->name), "password")))
         {
             xmlUnlinkNode(cur_node);
             xmlFreeNode(cur_node);
@@ -36,7 +36,7 @@ void add_ID(xmlNode* root_element, std::string id) {
     const char* i = id.c_str();
     if (cur_node->type == XML_ELEMENT_NODE)
     {
-        xmlNewChild(cur_node, NULL, BAD_CAST "Id", BAD_CAST i);
+        xmlNewChild(cur_node, NULL, BAD_CAST "id", BAD_CAST i);
     }
 }
 
@@ -69,18 +69,17 @@ bool isValidEmail(std::string mail) {
 }
 
 bool verification(std::string login, std::string mail, std::string &result) {
-    std::string error = "";
     if (!(isValidLogin(login) && isValidEmail(mail)))
     {
         if(!isValidLogin(login))
         {
             std::cout<<"Invalid login\n";
-            result += "<Login>Invalid</Login>";
+            result += "<login>Invalid</login>";
         }
         if(!isValidEmail(mail))
         {
             std::cout<<"Invalid mail\n";
-            result += "<Email>Invalid</Email>";
+            result += "<email>Invalid</email>";
         }
         return false;
     }
@@ -102,15 +101,15 @@ void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::str
     xmlNode *cur_node = NULL;
     for (cur_node = a_node; cur_node; cur_node = cur_node->next)
     {
-        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "Login")))
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "login")))
         {
             login = (char*)xmlNodeGetContent(cur_node);
         }
-        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "Email")))
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "email")))
         {
             mail = (char*)xmlNodeGetContent(cur_node);
         }
-        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "Password")))
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "password")))
         {
             password = (char*)xmlNodeGetContent(cur_node);
             delete_node(cur_node);
@@ -139,7 +138,7 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
     if(verification(login, mail, result))
     {
         std::string ID = IDgenerator::getUserId();
-        std::string credtxt = "db_files/register/logins/"+login +"/"  + "cred.txt";
+        std::string credtxt = "db_files/register/logins/"+login +"/"  + "creds.txt";
         std::ofstream cred(credtxt);
         if (cred.is_open())
         {
@@ -161,9 +160,9 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
         xmlFreeDoc(doc);
         xmlCleanupParser();
         xmlMemoryDump();
-        result = "<Id>" + ID +"</Id>";
+        result = "<id>" + ID +"</id>";
     }
-    return result;
+	    return result;
 }
 
 std::string xmlDatabase::loginUser(std::string login, std::string password) {
@@ -237,15 +236,12 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
 }
 
 std::string xmlDatabase::getUsersConversation(std::string fromID, std::string toID) {
-xmlDoc* doc = NULL;
-       int length = groupInfo.size();
-       const char* inf = groupInfo.c_str();
-       doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);    std::string tmp = "";
-    std::string fin = "";
-    std::ifstream id("db_files/users/" + fromID + "/convs/" + toID);
-    while(id >> tmp)
-        fin = fin + tmp;
-    return fin;
+	std::string tmp = "";
+	std::string fin = "";
+	std::ifstream id("db_files/users/" + fromID + "/convs/" + toID);
+	while(id >> tmp)
+		fin = fin + tmp;
+	return fin;
 }
 
 
@@ -292,15 +288,6 @@ bool xmlDatabase::deleteGroup(std::string groupID) {
     return true;
 }
 
-void find_ids(std::string messageInfo, std::string &groupId, std::string &userId)
-{
-        std::string inf = messageInfo;
-        inf = inf.erase(0, inf.find("<GroupId>")+9);
-        groupId = inf.substr(0, inf.find("</GroupId>"));
-        inf = messageInfo;
-        inf = inf.erase(0,inf.find("<UserId>")+ 8);
-        userId = inf.substr(0, inf.find("</UserId>"));
-}
 void add_ID(xmlNode* root_element, std::string id, bool &status)
 {
         xmlNode* cur_node = root_element;
@@ -338,20 +325,17 @@ void change_quantity(xmlNode* root_element, bool &status)
 
 bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID) 
 {
-	std::string groupId = "";
-	std::string userId = "";
 	bool status = true;
-	find_ids(messageInfo, groupId, userId);
-	std::string gr_inf = "db_files/groups/" + groupId + "/ginfo.xml";
+	std::string gr_inf = "db_files/groups/" + groupID + "/ginfo.xml";
 	const char* c_gr_inf = gr_inf.c_str();
-	std::string users = "db_files/groups/" + groupId + "/users.xml";
+	std::string users = "db_files/groups/" + groupID + "/users.xml";
 	const char* c_users = users.c_str();
 	xmlDoc *doc = NULL;
 	xmlNode *root_element = NULL;
 	LIBXML_TEST_VERSION;
 	doc = xmlReadFile(c_users, NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
-	add_ID(root_element, userId, status);
+	add_ID(root_element, userID, status);
 	xmlSaveFormatFileEnc(c_users, doc, "UTF-8", 1);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();

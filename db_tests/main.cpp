@@ -52,19 +52,6 @@ void test2 () {
 	std::cout << db->loginUser(std::string("test2"), std::string("test1234")) << std::endl;
 }
 
-void testAll () {
-	std::cout << db->registerUser(std::string("user info xml")) << std::endl;
-	std::cout << db->loginUser(std::string("test1"), std::string("pass1234")) << std::endl;
-	std::cout << db->updateUserInfo(std::string("user info xml")) << std::endl;
-	std::cout << db->getUserInfo(std::string("u100000")) << std::endl;
-	std::cout << db->getUserConversations(std::string("u100000")) << std::endl;
-	std::cout << db->getUsersConversation(std::string("u100000"), std::string("u100001")) << std::endl;
-	std::cout << db->addUserMessage(std::string("message xml")) << std::endl;
-	std::cout << db->getGroupInfo(std::string("g5")) << std::endl;
-	std::cout << db->getGroupConversation(std::string("g67")) << std::endl;
-	std::cout << db->updateGroupInfo(std::string("group info xml")) << std::endl;
-	std::cout << db->addGroupMessage(std::string("message xml")) << std::endl;
-}
 
 int main() {
 	test1();
