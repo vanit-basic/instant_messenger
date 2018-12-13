@@ -237,15 +237,12 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
 }
 
 std::string xmlDatabase::getUsersConversation(std::string fromID, std::string toID) {
-xmlDoc* doc = NULL;
-       int length = groupInfo.size();
-       const char* inf = groupInfo.c_str();
-       doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);    std::string tmp = "";
-    std::string fin = "";
-    std::ifstream id("db_files/users/" + fromID + "/convs/" + toID);
-    while(id >> tmp)
-        fin = fin + tmp;
-    return fin;
+	std::string tmp = "";
+	std::string fin = "";
+	std::ifstream id("db_files/users/" + fromID + "/convs/" + toID);
+	while(id >> tmp)
+		fin = fin + tmp;
+	return fin;
 }
 
 
