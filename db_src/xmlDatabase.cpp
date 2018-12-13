@@ -313,14 +313,14 @@ void add_ID(xmlNode* root_element, std::string id, bool &status)
 
 void change_quantity(xmlNode* root_element, bool &status)
 {
-        bool stat = false;
+	status = false;
         xmlNode *cur_node = NULL;
         std::string quantity = "";
         for (cur_node = root_element->children; cur_node; cur_node = cur_node->next)
         {
                 if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)(cur_node->name), "usersquantity")))
                 {
-                        stat = true;
+                        status = true;
                         quantity = (char*)xmlNodeGetContent(cur_node);
                         quantity = std::to_string(std::stoi(quantity) + 1);
                         const char* new_quantity = quantity.c_str();
@@ -331,16 +331,12 @@ void change_quantity(xmlNode* root_element, bool &status)
                         }
                 }
         }
-        if(!stat)
-        {
-                status = false;
-        }
 }
 
 bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID) 
 {
-	std::string groupId = "g1";
-	std::string userId = "u23";
+	std::string groupId = "";
+	std::string userId = "";
 	bool status = true;
 	find_ids(messageInfo, groupId, userId);
 	std::string gr_inf = "db_files/groups/" + groupId + "/ginfo.xml";
