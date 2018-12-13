@@ -16,6 +16,7 @@ cflags := "-I$(headers_dir)"
 shared := $(out_dir)/libdb.so
 
 $(shared): $(db_src)
+	mkdir -p libs
 	g++  $^ `xml2-config --cflags --libs` $(cflags) --shared -fPIC -o $(shared)
 
 test: $(test_src) $(shared)
