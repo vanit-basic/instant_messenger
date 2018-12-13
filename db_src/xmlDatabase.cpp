@@ -297,15 +297,6 @@ bool xmlDatabase::deleteGroup(std::string groupID) {
     return true;
 }
 
-void find_ids(std::string messageInfo, std::string &groupId, std::string &userId)
-{
-        std::string inf = messageInfo;
-        inf = inf.erase(0, inf.find("<groupId>")+9);
-        groupId = inf.substr(0, inf.find("</groupId>"));
-        inf = messageInfo;
-        inf = inf.erase(0,inf.find("<userId>")+ 8);
-        userId = inf.substr(0, inf.find("</userId>"));
-}
 void add_ID(xmlNode* root_element, std::string id, bool &status)
 {
         xmlNode* cur_node = root_element;
@@ -343,20 +334,17 @@ void change_quantity(xmlNode* root_element, bool &status)
 
 bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID) 
 {
-	std::string groupId = "";
-	std::string userId = "";
 	bool status = true;
-	find_ids(messageInfo, groupId, userId);
-	std::string gr_inf = "db_files/groups/" + groupId + "/ginfo.xml";
+	std::string gr_inf = "db_files/groups/" + groupID + "/ginfo.xml";
 	const char* c_gr_inf = gr_inf.c_str();
-	std::string users = "db_files/groups/" + groupId + "/users.xml";
+	std::string users = "db_files/groups/" + groupID + "/users.xml";
 	const char* c_users = users.c_str();
 	xmlDoc *doc = NULL;
 	xmlNode *root_element = NULL;
 	LIBXML_TEST_VERSION;
 	doc = xmlReadFile(c_users, NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
-	add_ID(root_element, userId, status);
+	add_ID(root_element, userID, status);
 	xmlSaveFormatFileEnc(c_users, doc, "UTF-8", 1);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
