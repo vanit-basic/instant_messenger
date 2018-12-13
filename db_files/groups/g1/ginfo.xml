@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <info>
-	<id>g1</id>
-	<name>VanIt</name>
-	<admin>u100001</admin>
-	<avatar></avatar>
-	<createDate>11.12.2018</createDate>
-	<usersquantity>3</usersquantity>
-	<user>u123</user>
+  <id>g2</id>
+  <name>Mafia</name>
+  <admin>u100003</admin>
+  <avatar/>
+  <createDate>13.12.2018</createDate>
+  <usersquantity>13</usersquantity>
+  <groupId>g1</groupId>
 </info>

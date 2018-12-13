@@ -61,9 +61,23 @@ void test_IdGenerator()
 		std::cout << IDgenerator::getUserId()<<std::endl;
 	}
 }
+void test_groupFunctional()
+{
+	std::string info = xml2string("xmls/createGroup1.xml");
+	std::cout<<"Info = "<<info<<std::endl;	
+	std::string id=db->createGroup(info);
+	id = id.erase(0, 4);
+        id = id.substr(0, id.find("</id>"));
+	std::cout<<"Group ID = "<<id<<std::endl;
+	std::cout<<"Group Info : \n";
+	std::cout<<db->getGroupInfo(id)<<std::endl;
+
+
+}
 
 int main() {
 	test1();
+	test_groupFunctional();
 //	test2();
 //	test_IdGenerator();
 	return 0;
