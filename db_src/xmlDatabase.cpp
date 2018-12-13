@@ -68,7 +68,7 @@ bool isValidEmail(std::string mail) {
     }
 }
 
-bool verification(std::string login, std::string mail, std::string &result, std::string &error) {
+bool verification(std::string login, std::string mail, std::string &result) {
     if (!(isValidLogin(login) && isValidEmail(mail)))
     {
         if(!isValidLogin(login))
@@ -123,7 +123,6 @@ void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::str
 }
 
 std::string xmlDatabase::registerUser(std::string userInfo) {
-    std::string error = "";
     std::string result = "";
     int length = userInfo.size();
     const char* inf = userInfo.c_str();
@@ -136,7 +135,7 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
     doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);
     root_element = xmlDocGetRootElement(doc);
     bloodhound(root_element, login, mail, password);
-    if(verification(login, mail, result, error))
+    if(verification(login, mail, result))
     {
         std::string ID = IDgenerator::getUserId();
         std::string credtxt = "db_files/register/logins/"+login +"/"  + "creds.txt";
@@ -163,12 +162,7 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
         xmlMemoryDump();
         result = "<id>" + ID +"</id>";
     }
-    if(error == "")
-    {
-    return result;
-    }
-    else
-	    return error;
+	    return result;
 }
 
 std::string xmlDatabase::loginUser(std::string login, std::string password) {
