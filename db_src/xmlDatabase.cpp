@@ -174,7 +174,7 @@ std::string xmlDatabase::loginUser(std::string login, std::string password) {
         std::cout << "Your login and / or password is not available! Please, try again!" << std::endl;
     } else {
         // Open pass.txt
-        std::string path = "./" + login + "/pass.txt";
+        std::string path = "./" + login + "/creds.txt";
         std::ifstream passFile(path.c_str());
         if (passFile.is_open()) {
             std::string tempPass;
