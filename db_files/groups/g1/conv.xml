@@ -1,22 +1,2 @@
-<conv>
-	<m1 from="u100000" >
-		<date>21:11</date>
-		<body>Hi everyone</body>
-	</m1>
-	<m2 from="u100001" >
-		<date>21:13</date>
-		<body>Hello</body>
-	</m2>
-	<m3 from="u100002" >
-		<date>21:14</date>
-		<body>Hi, how are you?</body>
-	</m3>
-	<m4 from="u100000" >
-		<date>21:16</date>
-		<body>I'm fine,thank you</body>
-	</m4>
-	<m5 from="u100001" >
-		<date>21:19</date>
-		<body>very happy, thank</body>
-	</m5>
-</conv>
+<?xml version="1.0" encoding="UTF-8"?>
+<conv/>
