@@ -320,7 +320,8 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
         xmlFreeDoc(doc);
         xmlCleanupParser();
 
-	return groupId;
+	std::string id = "<id>" + groupId + "</id>";
+	return id;
 }
 
 std::string xmlDatabase::getGroupInfo(std::string groupID) {
