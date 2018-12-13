@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-
 #include <xmlDatabase.hpp>
 #include <IDgenerator.hpp>
 
@@ -85,21 +84,23 @@ void test_groupFunctional()
 
 void test_createGroup() {
 	std::string info = xml2string("xmls/createGroup1.xml");
-	std::string GroupId = db->createGroup(info);
-	std::cout << GroupId << std::endl;
-	std::cout << db->getGroupInfo(GroupId) << std::endl;
+	std::string groupId = db->createGroup(info);
+	std::cout << groupId << std::endl;
+	groupId = groupId.substr(4, groupId.rfind("<") - 4);
+	std::cout << db->getGroupInfo(groupId) << std::endl;
         info = xml2string("xmls/createGroup2.xml");	
-	GroupId = db->createGroup(info);
-	std::cout << GroupId <<std::endl;
-	std::cout << db->getGroupInfo(GroupId) << std::endl;
+	groupId = db->createGroup(info);
+	std::cout << groupId <<std::endl;
+	groupId = groupId.substr(4, groupId.rfind("<") - 4);
+	std::cout << db->getGroupInfo(groupId) << std::endl;
 }
 
 int main() {
 //	test1();
-	test1();
-	test_groupFunctional();
-	test_groupFunctional();
-	test_groupFunctional();
+//	test1();
+//	test_groupFunctional();
+//	test_groupFunctional();
+//	test_groupFunctional();
 
 //	test2();
 //	test_IdGenerator();
