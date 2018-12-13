@@ -23,7 +23,7 @@ void delete_node(xmlNode* a_node) {
     xmlNode* node = NULL;
     for (cur_node = a_node; cur_node; cur_node = cur_node->next)
     {
-        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)(cur_node->name), "Password")))
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)(cur_node->name), "password")))
         {
             xmlUnlinkNode(cur_node);
             xmlFreeNode(cur_node);
@@ -36,7 +36,7 @@ void add_ID(xmlNode* root_element, std::string id) {
     const char* i = id.c_str();
     if (cur_node->type == XML_ELEMENT_NODE)
     {
-        xmlNewChild(cur_node, NULL, BAD_CAST "Id", BAD_CAST i);
+        xmlNewChild(cur_node, NULL, BAD_CAST "id", BAD_CAST i);
     }
 }
 
@@ -68,19 +68,18 @@ bool isValidEmail(std::string mail) {
     }
 }
 
-bool verification(std::string login, std::string mail, std::string &result) {
-    std::string error = "";
+bool verification(std::string login, std::string mail, std::string &result, std::string &error) {
     if (!(isValidLogin(login) && isValidEmail(mail)))
     {
         if(!isValidLogin(login))
         {
             std::cout<<"Invalid login\n";
-            result += "<Login>Invalid</Login>";
+            result += "<login>Invalid</login>";
         }
         if(!isValidEmail(mail))
         {
             std::cout<<"Invalid mail\n";
-            result += "<Email>Invalid</Email>";
+            result += "<email>Invalid</email>";
         }
         return false;
     }
@@ -102,15 +101,15 @@ void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::str
     xmlNode *cur_node = NULL;
     for (cur_node = a_node; cur_node; cur_node = cur_node->next)
     {
-        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "Login")))
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "login")))
         {
             login = (char*)xmlNodeGetContent(cur_node);
         }
-        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "Email")))
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "email")))
         {
             mail = (char*)xmlNodeGetContent(cur_node);
         }
-        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "Password")))
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "password")))
         {
             password = (char*)xmlNodeGetContent(cur_node);
             delete_node(cur_node);
@@ -124,6 +123,7 @@ void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::str
 }
 
 std::string xmlDatabase::registerUser(std::string userInfo) {
+    std::string error = "";
     std::string result = "";
     int length = userInfo.size();
     const char* inf = userInfo.c_str();
@@ -136,10 +136,10 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
     doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);
     root_element = xmlDocGetRootElement(doc);
     bloodhound(root_element, login, mail, password);
-    if(verification(login, mail, result))
+    if(verification(login, mail, result, error))
     {
         std::string ID = IDgenerator::getUserId();
-        std::string credtxt = "db_files/register/logins/"+login +"/"  + "cred.txt";
+        std::string credtxt = "db_files/register/logins/"+login +"/"  + "creds.txt";
         std::ofstream cred(credtxt);
         if (cred.is_open())
         {
@@ -161,9 +161,14 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
         xmlFreeDoc(doc);
         xmlCleanupParser();
         xmlMemoryDump();
-        result = "<Id>" + ID +"</Id>";
+        result = "<id>" + ID +"</id>";
     }
+    if(error == "")
+    {
     return result;
+    }
+    else
+	    return error;
 }
 
 std::string xmlDatabase::loginUser(std::string login, std::string password) {
@@ -292,11 +297,11 @@ bool xmlDatabase::deleteGroup(std::string groupID) {
 void find_ids(std::string messageInfo, std::string &groupId, std::string &userId)
 {
         std::string inf = messageInfo;
-        inf = inf.erase(0, inf.find("<GroupId>")+9);
-        groupId = inf.substr(0, inf.find("</GroupId>"));
+        inf = inf.erase(0, inf.find("<groupId>")+9);
+        groupId = inf.substr(0, inf.find("</groupId>"));
         inf = messageInfo;
-        inf = inf.erase(0,inf.find("<UserId>")+ 8);
-        userId = inf.substr(0, inf.find("</UserId>"));
+        inf = inf.erase(0,inf.find("<userId>")+ 8);
+        userId = inf.substr(0, inf.find("</userId>"));
 }
 void add_ID(xmlNode* root_element, std::string id, bool &status)
 {
