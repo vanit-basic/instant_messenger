@@ -9,14 +9,16 @@ std::string IDgenerator::getUserId()
 	std::ofstream user_write(user_file);
 	if(uid == "")
 	{
-		uid = "0";
+		uid = "1";
 		user_write << uid;
+		user_write << std::endl;
 		uid = "u" + uid;
 	}
 	else
 	{
 		uid = std::to_string(std::stoi(uid) + 1);
 		user_write << uid;
+		user_write << std::endl;
 		uid ="u" + uid;
 	}
 	user_write.close();
@@ -31,7 +33,7 @@ std::string IDgenerator::getGroupId()
 	std::ofstream group_write(group_file);
 	if(gid == "")
 	{
-		gid = "0";
+		gid = "1";
 		group_write << gid;
 		group_write << std::endl;
 		gid = "g" + gid;
@@ -53,11 +55,8 @@ IDgenerator::IDgenerator(std::string userIdtxt, std::string groupIdtxt)
 	group_file = "db_files/resources/" + groupIdtxt;
 	user_file = "db_files/resources/" + userIdtxt;
 	user = std::ofstream(user_file);
-	std::string id = "0";
-	user << id;
 	user.close();
         group = std::ofstream(group_file);
-	group << id; 
 	group.close();
 }
 IDgenerator::~IDgenerator()

@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include <xmlDatabase.hpp>
+#include <IDgenerator.hpp>
 
 /*
 registerUser(std::string userInfo)
@@ -40,6 +41,8 @@ void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
 	std::string id = db->registerUser(info);
+	id = id.erase(0, 4);
+	id = id.substr(0, id.find("</id>"));
 	std::cout << "ID : " << id << std::endl;
 	info = db->getUserInfo(id);
 	std::cout << info << std::endl;
@@ -51,10 +54,17 @@ void test2 () {
 	std::string id = db->registerUser(info);
 	std::cout << db->loginUser(std::string("test2"), std::string("test1234")) << std::endl;
 }
-
+void test_IdGenerator()
+{
+	for(int i=0; i<1000; i++)
+	{
+		std::cout << IDgenerator::getUserId()<<std::endl;
+	}
+}
 
 int main() {
 	test1();
-	test2();
+//	test2();
+//	test_IdGenerator();
 	return 0;
 }
