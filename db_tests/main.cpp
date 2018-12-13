@@ -95,15 +95,12 @@ void test_createGroup() {
 }
 
 int main() {
-<<<<<<< HEAD
 //	test1();
-=======
 	test1();
 	test_groupFunctional();
 	test_groupFunctional();
 	test_groupFunctional();
 
->>>>>>> 0878c8309c17414982a0b4775fe2cc61d2ea6d0d
 //	test2();
 //	test_IdGenerator();
 	test_createGroup();
