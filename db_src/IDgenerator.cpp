@@ -54,10 +54,20 @@ IDgenerator::IDgenerator(std::string userIdtxt, std::string groupIdtxt)
 {
 	group_file = "db_files/resources/" + groupIdtxt;
 	user_file = "db_files/resources/" + userIdtxt;
+	std::ifstream verification_user_file(user_file);
+	if (!verification_user_file.is_open())
+	{
 	user = std::ofstream(user_file);
 	user.close();
+	}
+	verification_user_file.close();
+	std::ifstream verification_group_file(group_file);
+	if (!verification_group_file.is_open())
+	{
         group = std::ofstream(group_file);
 	group.close();
+	}
+	verification_group_file.close();
 }
 IDgenerator::~IDgenerator()
 {
