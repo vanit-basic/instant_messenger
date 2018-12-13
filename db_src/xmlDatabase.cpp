@@ -357,9 +357,6 @@ xmlDatabase* xmlDatabase::getShared() {
     return sharedDB;
 }
 
-std::string xmlDatabase::createGroup(std::string groupInfo) {
-    return std::string("groupID");
-}
 
 bool xmlDatabase::deleteGroup(std::string groupID) {
     return true;
