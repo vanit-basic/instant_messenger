@@ -13,6 +13,7 @@
 #include <fstream>
 #include <cstdlib>
 
+
 static xmlDatabase* sharedDB = NULL;
 
 IDgenerator obj("us_id.txt","gr_id.txt");
@@ -225,13 +226,14 @@ std::string xmlDatabase::getUserInfo(std::string userID) {
         std::ifstream xml_file("db_files/users/"+userID+"/info.xml");
         if(xml_file.is_open()) {
             while(xml_file >> temp) {
-                if(temp.substr(0, 7) == "<login>") {
+                if(! (temp.substr(0, 7) == "<login>")) {
                     info += "</info>";
                     break;
                 }
                 info += temp;
             }
         }
+	info = info.erase(0, info.find("<info>"));
         return info;
     }
     else
@@ -262,12 +264,74 @@ bool xmlDatabase::addUserMessage(std::string messageInfo) {
     return true;
 }
 
+
+std::string xmlDatabase::createGroup(std::string groupInfo) {
+	std::string groupId = IDgenerator::getGroupId();
+	std::string path = "db_files/groups/" + groupId;
+        const char * p = path.c_str();
+	
+        mode_t process_mask = umask (0);
+        mkdir(p , 0777);
+        umask (process_mask);
+
+    	xmlDoc* doc = NULL;
+    	xmlNode* root = NULL;
+	
+	LIBXML_TEST_VERSION;
+	const char* inf = groupInfo.c_str();
+        doc = xmlReadMemory(inf, groupInfo.size(), "noname.xml", NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	if (root->type == XML_ELEMENT_NODE) {
+		const char * gId = groupId.c_str();
+		xmlNewChild(root, NULL, BAD_CAST "groupId", BAD_CAST gId);
+	}
+	xmlNode* node = NULL;
+	std::string value = "";
+	for(node = root->children; node; node = node->next) {
+		if(node->type == XML_ELEMENT_NODE) {
+			if(0 == strcmp((char*)node->name, "admin")) {
+				value = (char*) xmlNodeGetContent(node);
+				break;
+			}
+		}
+	}
+	path = path + "/ginfo.xml";
+	const char* file = path.c_str();
+        xmlSaveFormatFileEnc(file, doc, "UTF-8", 1);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+	
+	doc = xmlNewDoc(BAD_CAST "1.0");
+        root = xmlNewNode(NULL, BAD_CAST "users");
+        xmlDocSetRootElement(doc, root);
+	const char * value1 = value.c_str();
+	xmlNewChild(root, NULL, BAD_CAST value1, NULL);
+	path = "db_files/groups/" + groupId + "/users.xml";
+	const char* file1 = path.c_str();
+	xmlSaveFormatFileEnc(file1, doc, "UTF-8", 1);
+	xmlFreeDoc(doc);
+        xmlCleanupParser();
+
+	doc = xmlNewDoc(BAD_CAST "1.0");
+        root = xmlNewNode(NULL, BAD_CAST "conv");
+        xmlDocSetRootElement(doc, root);
+	path = "db_files/groups/" + groupId + "/conv.xml";
+	const char* file2 = path.c_str();
+        xmlSaveFormatFileEnc(file2, doc, "UTF-8", 1);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+
+	return groupId;
+}
+
 std::string xmlDatabase::getGroupInfo(std::string groupID) {
     std::string str = "";
     std::string res = "";
     std::ifstream xml("db_files/groups/" + groupID + "/ginfo.xml");
     while(xml >> str)
         res += str;
+    res = res.erase(0, res.find("<info>"));
     return res;
 }
 
