@@ -227,10 +227,8 @@ std::string xmlDatabase::getUserInfo(std::string userID) {
         if(xml_file.is_open()) {
             while(xml_file >> temp) {
                 if(! (temp.substr(0, 7) == "<login>")) {
-                    info += "</info>";
-                    break;
+                	info += temp;
                 }
-                info += temp;
             }
         }
 	info = info.erase(0, info.find("<info>"));
