@@ -17,6 +17,18 @@ static xmlDatabase* sharedDB = NULL;
 
 IDgenerator obj("us_id.txt","gr_id.txt", "mes_id.txt");
 
+void UpdateGroupDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
+{
+        for(xmlNode* node = root->children; node; node = node->next) {
+                if(node->type == XML_ELEMENT_NODE) {
+                        if(0 == strcmp((char*)node->name,(char*)tegName)){
+                                xmlNodeSetContent(node, content);
+                                break;
+                        }
+                }
+        }
+}
+
 xmlNodePtr delete_node(xmlNode* a_node)
 {
 	bool stat = true;
@@ -45,18 +57,6 @@ xmlNodePtr delete_node(xmlNode* a_node)
 		}
 	}
 	return cur_node;
-}
-
-void UpdateGroupDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
-{
-        for(xmlNode* node = root->children; node; node = node->next) {
-                if(node->type == XML_ELEMENT_NODE) {
-                        if(0 == strcmp((char*)node->name,(char*)tegName)){
-                                xmlNodeSetContent(node, content);
-                                break;
-                        }
-                }
-        }
 }
 
 void add_ID(xmlNode* root_element, std::string id) 
