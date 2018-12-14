@@ -53,8 +53,8 @@ void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
 	std::string id = db->registerUser(info);
-	id = id.erase(0, 4);
-	id = id.substr(0, id.find("</id>"));
+	id = id.erase(0, 5);
+	id = id.substr(0, id.find("</uId>"));
 	std::cout << "ID : " << id << std::endl;
 	info = db->getUserInfo(id);
 	std::cout << info << std::endl;
@@ -116,8 +116,8 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
 	std::string inf = "<info><name>VanIt</name><admin>u1</admin><createdate>12.12.2018</createdate></info>";
 	std::string gid = db->createGroup(inf);
 	std::cout<< gid <<std::endl;
-	gid = gid.erase(0, 4);
-	gid = gid.substr(0, gid.find("</id>"));
+	gid = gid.erase(0, 5);
+	gid = gid.substr(0, gid.find("</gId>"));
 	std::cout<<db->getGroupInfo(gid)<<std::endl;
 	db->addUserToGroup(gid, "u17");
 	std::cout<<db->getGroupInfo(gid)<<std::endl;

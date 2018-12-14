@@ -172,7 +172,7 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
 		xmlMemoryDump();
-		result = "<id>" + ID +"</id>";
+		result = "<uId>" + ID +"</uId>";
 
 	}
 	return result;
