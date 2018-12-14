@@ -35,11 +35,12 @@ std::string xml2string (const char* file) {
 	}
 	return info;
 }
-void test_getUserConversation(std::string from_id,std::string to_id){
+void test_getUserConversation(std::string from_id,std::string to_id) {
 	std::cout<<db->getUsersConversation(from_id,to_id)<<std::endl;
-	std::cout<<=======================================<<std::endl;
+//	std::cout<<=======================================<<std::endl;
 	std::cout<<db->getUserConversations(from_id)<<std::endl;
 }
+
 void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
@@ -94,12 +95,12 @@ void test_createGroup() {
 	std::string info = xml2string("xmls/createGroup1.xml");
 	std::string groupId = db->createGroup(info);
 	std::cout << groupId << std::endl;
-	groupId = groupId.substr(4, groupId.rfind("<") - 4);
+	groupId = groupId.substr(5, groupId.rfind("<") - 5);
 	std::cout << db->getGroupInfo(groupId) << std::endl;
         info = xml2string("xmls/createGroup2.xml");	
 	groupId = db->createGroup(info);
 	std::cout << groupId <<std::endl;
-	groupId = groupId.substr(4, groupId.rfind("<") - 4);
+	groupId = groupId.substr(5, groupId.rfind("<") - 5);
 	std::cout << db->getGroupInfo(groupId) << std::endl;
 }
 void test_creatGroup_addUserToGroup_getGroupInfo()
@@ -115,7 +116,7 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
 }
 
 int main() {
-	test1();
+//	test1();
 //	test1();
 //	test_groupFunctional();
 //	test_groupFunctional();
@@ -123,8 +124,8 @@ int main() {
 
 //	test2();
 //	test_IdGenerator();
-//	test_createGroup();
+	test_createGroup();
 //	test_creatGroup_addUserToGroup_getGroupInfo();
-        test_getUserConversation("u100004","u100007"){
+//        test_getUserConversation("u100004","u100007"){
 	return 0;
 }
