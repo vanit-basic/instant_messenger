@@ -3,7 +3,7 @@
         <lastname>ln2</lastname>
         <gender>male</gender>
         <birthDate>10.11.1992</birthDate>
-	<Email>fn2@mail.com</Email>
-        <Login>test2</Login>
-        <Password>test1234</Password>
+	<email>fn2@mail.com</email>
+        <login>test2</login>
+        <password>test1234</password>
 </info>

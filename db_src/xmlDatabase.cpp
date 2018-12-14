@@ -1,6 +1,5 @@
-#include "IDgenerator.hpp"
-#include "xmlDatabase.hpp"
-
+#include <IDgenerator.hpp>
+#include <xmlDatabase.hpp>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <stdio.h>
@@ -12,6 +11,7 @@
 #include <string.h>
 #include <fstream>
 #include <cstdlib>
+
 
 static xmlDatabase* sharedDB = NULL;
 
@@ -121,48 +121,61 @@ void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::str
         bloodhound(cur_node->children, login, mail, password);
     }
 }
-
-std::string xmlDatabase::registerUser(std::string userInfo) {
-    std::string result = "";
-    int length = userInfo.size();
-    const char* inf = userInfo.c_str();
-    std::string login = "";
-    std::string mail = "";
-    std::string password = "";
-    xmlDoc* doc = NULL;
-    xmlNode* root_element = NULL;
-    LIBXML_TEST_VERSION;
-    doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);
-    root_element = xmlDocGetRootElement(doc);
-    bloodhound(root_element, login, mail, password);
-    if(verification(login, mail, result))
+void isValidId(std::string &ID)
+{
+    std::string ids = "db_files/users/" + ID;
+    const char* uid = ids.c_str();
+    struct stat sb;
+    while (stat(uid, &sb) == 0 && S_ISDIR(sb.st_mode))
     {
-        std::string ID = IDgenerator::getUserId();
-        std::string credtxt = "db_files/register/logins/"+login +"/"  + "creds.txt";
-        std::ofstream cred(credtxt);
-        if (cred.is_open())
-        {
-            cred<<password;
-            cred<<"\n";
-            cred<<ID;
-            cred<<"\n";
-        }
-        cred.close();
-        add_ID(root_element, ID);
-        std::string id_f = "db_files/users/" + ID;
-        const char* id_f_n = id_f.c_str();
-        mode_t process_mask = umask (0);
-        mkdir(id_f_n, 0777);
-        umask (process_mask);
-        std::string us_inf = "db_files/users/" + ID + "/info.xml";
-        const char* us_inf_char = us_inf.c_str();
-        xmlSaveFormatFileEnc(us_inf_char, doc, "UTF-8", 1);
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
-        xmlMemoryDump();
-        result = "<id>" + ID +"</id>";
+	ID = IDgenerator::getUserId();
+	ids = "db_files/users/" + ID;
+	uid = ids.c_str();
     }
-	    return result;
+}
+std::string xmlDatabase::registerUser(std::string userInfo) {
+	std::string result = "";
+	int length = userInfo.size();
+	const char* inf = userInfo.c_str();
+	std::string login = "";
+	std::string mail = "";
+	std::string password = "";
+	xmlDoc* doc = NULL;
+	xmlNode* root_element = NULL;
+	LIBXML_TEST_VERSION;
+	doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);
+	root_element = xmlDocGetRootElement(doc);
+	bloodhound(root_element, login, mail, password);
+	if(verification(login, mail, result))
+	{
+		std::string ID = IDgenerator::getUserId();
+		isValidId(ID);
+		std::string credtxt = "db_files/register/logins/"+login +"/"  + "creds.txt";
+		std::ofstream cred(credtxt);
+		if (cred.is_open())
+		{
+			cred<<password;
+			cred<<"\n";
+			cred<<ID;
+			cred<<"\n";
+		}
+		cred.close();
+		add_ID(root_element, ID);
+		std::string id_f = "db_files/users/" + ID;
+		const char* id_f_n = id_f.c_str();
+		mode_t process_mask = umask (0);
+		mkdir(id_f_n, 0777);
+		umask (process_mask);
+		std::string us_inf = "db_files/users/" + ID + "/info.xml";
+		const char* us_inf_char = us_inf.c_str();
+		xmlSaveFormatFileEnc(us_inf_char, doc, "UTF-8", 1);
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+		xmlMemoryDump();
+		result = "<id>" + ID +"</id>";
+
+	}
+	return result;
 }
 
 std::string xmlDatabase::loginUser(std::string login, std::string password) {
@@ -212,13 +225,12 @@ std::string xmlDatabase::getUserInfo(std::string userID) {
         std::ifstream xml_file("db_files/users/"+userID+"/info.xml");
         if(xml_file.is_open()) {
             while(xml_file >> temp) {
-                if(temp.substr(0, 7) == "<login>") {
-                    info += "</info>";
-                    break;
+                if(! (temp.substr(0, 7) == "<login>")) {
+                	info += temp;
                 }
-                info += temp;
             }
         }
+	info = info.erase(0, info.find("<info>"));
         return info;
     }
     else
@@ -249,12 +261,76 @@ bool xmlDatabase::addUserMessage(std::string messageInfo) {
     return true;
 }
 
+
+std::string xmlDatabase::createGroup(std::string groupInfo) {
+	std::string groupId = IDgenerator::getGroupId();
+	std::string path = "db_files/groups/" + groupId;
+        const char * p = path.c_str();
+	
+        mode_t process_mask = umask (0);
+        mkdir(p , 0777);
+        umask (process_mask);
+
+    	xmlDoc* doc = NULL;
+    	xmlNode* root = NULL;
+	
+	LIBXML_TEST_VERSION;
+	const char* inf = groupInfo.c_str();
+        doc = xmlReadMemory(inf, groupInfo.size(), "noname.xml", NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	if (root->type == XML_ELEMENT_NODE) {
+		const char * gId = groupId.c_str();
+		xmlNewChild(root, NULL, BAD_CAST "groupId", BAD_CAST gId);
+		xmlNewChild(root, NULL, BAD_CAST "usersquantity", BAD_CAST "1");
+	}
+	xmlNode* node = NULL;
+	std::string value = "";
+	for(node = root->children; node; node = node->next) {
+		if(node->type == XML_ELEMENT_NODE) {
+			if(0 == strcmp((char*)node->name, "admin")) {
+				value = (char*) xmlNodeGetContent(node);
+				break;
+			}
+		}
+	}
+	path = path + "/ginfo.xml";
+	const char* file = path.c_str();
+        xmlSaveFormatFileEnc(file, doc, "UTF-8", 1);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+	
+	doc = xmlNewDoc(BAD_CAST "1.0");
+        root = xmlNewNode(NULL, BAD_CAST "users");
+        xmlDocSetRootElement(doc, root);
+	const char * value1 = value.c_str();
+	xmlNewChild(root, NULL, BAD_CAST value1, NULL);
+	path = "db_files/groups/" + groupId + "/users.xml";
+	const char* file1 = path.c_str();
+	xmlSaveFormatFileEnc(file1, doc, "UTF-8", 1);
+	xmlFreeDoc(doc);
+        xmlCleanupParser();
+
+	doc = xmlNewDoc(BAD_CAST "1.0");
+        root = xmlNewNode(NULL, BAD_CAST "conv");
+        xmlDocSetRootElement(doc, root);
+	path = "db_files/groups/" + groupId + "/conv.xml";
+	const char* file2 = path.c_str();
+        xmlSaveFormatFileEnc(file2, doc, "UTF-8", 1);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+
+	std::string id = "<id>" + groupId + "</id>";
+	return id;
+}
+
 std::string xmlDatabase::getGroupInfo(std::string groupID) {
     std::string str = "";
     std::string res = "";
     std::ifstream xml("db_files/groups/" + groupID + "/ginfo.xml");
     while(xml >> str)
         res += str;
+    res = res.erase(0, res.find("<info>"));
     return res;
 }
 
@@ -280,9 +356,6 @@ xmlDatabase* xmlDatabase::getShared() {
     return sharedDB;
 }
 
-std::string xmlDatabase::createGroup(std::string groupInfo) {
-    return std::string("groupID");
-}
 
 bool xmlDatabase::deleteGroup(std::string groupID) {
     return true;
