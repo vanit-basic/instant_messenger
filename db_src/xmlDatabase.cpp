@@ -281,7 +281,7 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	root = xmlDocGetRootElement(doc);
 	if (root->type == XML_ELEMENT_NODE) {
 		const char * gId = groupId.c_str();
-		xmlNewChild(root, NULL, BAD_CAST "groupId", BAD_CAST gId);
+		xmlNewChild(root, NULL, BAD_CAST "gId", BAD_CAST gId);
 		xmlNewChild(root, NULL, BAD_CAST "usersquantity", BAD_CAST "1");
 	}
 	xmlNode* node = NULL;
@@ -321,7 +321,7 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
         xmlFreeDoc(doc);
         xmlCleanupParser();
 
-	std::string id = "<id>" + groupId + "</id>";
+	std::string id = "<gId>" + groupId + "</gId>";
 	return id;
 }
 
