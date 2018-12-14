@@ -17,10 +17,10 @@ shared := $(out_dir)/libdb.so
 
 $(shared): $(db_src)
 	mkdir -p libs
-	g++  $^ `xml2-config --cflags --libs` $(cflags) --shared -fPIC -o $(shared)
+	g++  $^ `xml2-config --cflags --libs` $(cflags) --shared -fPIC --std=c++11 -o $(shared)
 
 test: $(test_src) $(shared)
-	g++  $^ `xml2-config --cflags --libs` $(cflags) -o $(test_dir)/xml
+	g++  $^ `xml2-config --cflags --libs` $(cflags) --std=c++11 -o $(test_dir)/xml
 
 clean:
 	rm -f $(shared) $(test_dir)/xml
