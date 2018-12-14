@@ -180,13 +180,14 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
 
 std::string xmlDatabase::loginUser(std::string login, std::string password) {
     // Open directory with login name
-    DIR* loginDir = opendir(login.c_str());
+	std::string pathLog = "db_files/register/logins/" + login;
+    DIR* loginDir = opendir(pathLog.c_str());
     if (!loginDir) {
         // If there is not directory with such name then login and / or password is not available
-        std::cout << "Your login and / or password is not available! Please, try again!" << std::endl;
+        std::cout << "!Your login and / or password is not available! Please, try again!" << std::endl;
     } else {
         // Open pass.txt
-        std::string path = "./" + login + "/creds.txt";
+        std::string path = "db_files/register/logins/" + login + "/creds.txt";
         std::ifstream passFile(path.c_str());
         if (passFile.is_open()) {
             std::string tempPass;

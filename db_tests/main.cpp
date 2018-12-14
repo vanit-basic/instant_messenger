@@ -35,12 +35,20 @@ std::string xml2string (const char* file) {
 	}
 	return info;
 }
+<<<<<<< HEAD
+void test_getUserConversation(std::string from_id,std::string to_id){
+=======
 void test_getUserConversation(std::string from_id,std::string to_id) {
+>>>>>>> 385ecf682ebd5ecec31d0b84185593219be3ecf7
 	std::cout<<db->getUsersConversation(from_id,to_id)<<std::endl;
 //	std::cout<<=======================================<<std::endl;
 	std::cout<<db->getUserConversations(from_id)<<std::endl;
+<<<<<<< HEAD
+}
+=======
 }
 
+>>>>>>> 385ecf682ebd5ecec31d0b84185593219be3ecf7
 void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
@@ -116,8 +124,13 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
 }
 
 int main() {
+<<<<<<< HEAD
+	test1();
+	test2();
+=======
 //	test1();
 //	test1();
+>>>>>>> 385ecf682ebd5ecec31d0b84185593219be3ecf7
 //	test_groupFunctional();
 //	test_groupFunctional();
 //	test_groupFunctional();
