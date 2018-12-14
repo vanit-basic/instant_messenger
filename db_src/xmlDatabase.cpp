@@ -47,6 +47,18 @@ xmlNodePtr delete_node(xmlNode* a_node)
 	return cur_node;
 }
 
+void UpdateGroupDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
+{
+        for(xmlNode* node = root->children; node; node = node->next) {
+                if(node->type == XML_ELEMENT_NODE) {
+                        if(0 == strcmp((char*)node->name,(char*)tegName)){
+                                xmlNodeSetContent(node, content);
+                                break;
+                        }
+                }
+        }
+}
+
 void add_ID(xmlNode* root_element, std::string id) 
 {
     xmlNode* cur_node = root_element;
@@ -387,6 +399,29 @@ std::string xmlDatabase::getGroupConversation(std::string groupID) {
 }
 
 bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
+	LIBXML_TEST_VERSION;
+	xmlDoc* doc = xmlReadMemory(groupInfo.c_str(), groupInfo.size(), "noname.xml", NULL, 0);
+	xmlNode* root = xmlDocGetRootElement(doc);
+	xmlNode* node = NULL;
+	std::string gId = "";
+	for(node = root->children; node; node = node->next) {
+		if(node->type == XML_ELEMENT_NODE) {
+			if(0 == strcmp((char*)node->name,"gId")){
+				gId = (char*)xmlNodeGetContent(node);
+				break;
+			}
+		}
+	}
+	std::string path = "db_files/groups/" + gId + "/ginfo.xml";
+	xmlDoc* docGen = xmlReadFile(path.c_str(), NULL, 0);
+	xmlNode* rootGen = xmlDocGetRootElement(docGen);
+	for(node = root->children; node; node = node->next) {
+		if(node->type == XML_ELEMENT_NODE)
+			UpdateGroupDate(rootGen, node->name, xmlNodeGetContent(node));
+	}
+	xmlFreeDoc(doc);
+	xmlFreeDoc(docGen);
+	xmlMemoryDump();
 	return true;
 }
 
