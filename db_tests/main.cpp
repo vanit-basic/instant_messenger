@@ -39,11 +39,7 @@ std::string xml2string (const char* file) {
 }
 void test_getUserConversation(std::string from_id,std::string to_id) {
 	std::cout<<db->getUsersConversation(from_id,to_id)<<std::endl;
-<<<<<<< HEAD
-	std::cout<<"*******************************"<<std::endl;
-=======
 	std::cout<<"======================================="<<std::endl;
->>>>>>> 70723eafbc80600d6316b5509a2963f08b15f985
 	std::cout<<db->getUserConversations(from_id)<<std::endl;
 }
 
@@ -151,11 +147,7 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
 }
 
 int main() {
-<<<<<<< HEAD
-//	test1();
-=======
 	test1();
->>>>>>> 70723eafbc80600d6316b5509a2963f08b15f985
 //	test2();
 //	test_groupFunctional();
 //	test_groupFunctional();
@@ -165,10 +157,6 @@ int main() {
 //	test_IdGenerator();
 //	test_createGroup();
 //	test_creatGroup_addUserToGroup_getGroupInfo();
-<<<<<<< HEAD
         test_getUserConversation("u100002","u100003");
-=======
-//	test_getUserConversation("u100004","u100007"){
->>>>>>> 70723eafbc80600d6316b5509a2963f08b15f985
 	return 0;
 }
