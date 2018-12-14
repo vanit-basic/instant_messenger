@@ -82,6 +82,10 @@ void test_IdGenerator()
 	{
 		std::cout << IDgenerator::getGroupId()<<std::endl;
 	}
+	for(int i=0; i<1000; i++)
+	{
+		std::cout << IDgenerator::getMessageId()<<std::endl;
+	}
 }
 void test_groupFunctional()
 {
@@ -157,6 +161,6 @@ int main() {
 //	test_IdGenerator();
 //	test_createGroup();
 //	test_creatGroup_addUserToGroup_getGroupInfo();
-        test_getUserConversation("u100002","u100003");
+//	test_getUserConversation("u100002","u100003");
 	return 0;
 }

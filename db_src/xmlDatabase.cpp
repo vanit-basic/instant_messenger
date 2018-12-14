@@ -15,7 +15,7 @@
 
 static xmlDatabase* sharedDB = NULL;
 
-IDgenerator obj("us_id.txt","gr_id.txt");
+IDgenerator obj("us_id.txt","gr_id.txt", "mes_id.txt");
 
 xmlNodePtr delete_node(xmlNode* a_node)
 {
