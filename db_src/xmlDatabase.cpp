@@ -47,7 +47,8 @@ xmlNodePtr delete_node(xmlNode* a_node)
 	return cur_node;
 }
 
-void add_ID(xmlNode* root_element, std::string id) {
+void add_ID(xmlNode* root_element, std::string id) 
+{
     xmlNode* cur_node = root_element;
     const char* i = id.c_str();
     if (cur_node->type == XML_ELEMENT_NODE)
@@ -56,7 +57,8 @@ void add_ID(xmlNode* root_element, std::string id) {
     }
 }
 
-bool isValidLogin(std::string login) {
+bool isValidLogin(std::string login) 
+{
     std::string log = "db_files/register/logins/" + login;
     const char* l = log.c_str();
     struct stat sb;
@@ -70,7 +72,8 @@ bool isValidLogin(std::string login) {
     }
 }
 
-bool isValidEmail(std::string mail) {
+bool isValidEmail(std::string mail) 
+{
     std::string email = "db_files/register/mails/" + mail;
     const char* em = email.c_str();
     struct stat sb;
@@ -84,7 +87,8 @@ bool isValidEmail(std::string mail) {
     }
 }
 
-bool verification(std::string login, std::string mail, std::string &result) {
+bool verification(std::string login, std::string mail, std::string &result) 
+{
     if (!(isValidLogin(login) && isValidEmail(mail)))
     {
         if(!isValidLogin(login))
@@ -113,7 +117,8 @@ bool verification(std::string login, std::string mail, std::string &result) {
     }
 }
 
-void tracker (xmlNode* a_node, std::string &login, std::string &mail, std::string &password) {
+void tracker (xmlNode* a_node, std::string &login, std::string &mail, std::string &password) 
+{
     xmlNode *cur_node = NULL;
     for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
     {
@@ -148,7 +153,8 @@ void isValidId(std::string &ID)
 	uid = ids.c_str();
     }
 }
-std::string xmlDatabase::registerUser(std::string userInfo) {
+std::string xmlDatabase::registerUser(std::string userInfo) 
+{
 	std::string result = "";
 	int length = userInfo.size();
 	const char* inf = userInfo.c_str();
@@ -188,7 +194,6 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
 		xmlCleanupParser();
 		xmlMemoryDump();
 		result = "<uId>" + ID +"</uId>";
-
 	}
 	return result;
 }
