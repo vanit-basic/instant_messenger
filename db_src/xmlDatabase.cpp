@@ -1,6 +1,5 @@
 #include <IDgenerator.hpp>
 #include <xmlDatabase.hpp>
-
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <stdio.h>
