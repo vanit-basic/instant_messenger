@@ -17,21 +17,38 @@ static xmlDatabase* sharedDB = NULL;
 
 IDgenerator obj("us_id.txt","gr_id.txt");
 
-void delete_node(xmlNode* a_node) {
-    bool stat = true;
-    xmlNode *cur_node = NULL;
-    xmlNode* node = NULL;
-    for (cur_node = a_node; cur_node; cur_node = cur_node->next)
-    {
-        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)(cur_node->name), "password")))
-        {
-            xmlUnlinkNode(cur_node);
-            xmlFreeNode(cur_node);
-        }
-    }
+xmlNodePtr delete_node(xmlNode* a_node)
+{
+	bool stat = true;
+	xmlNode *cur_node = a_node;
+	xmlNode* node = NULL;
+	if (cur_node->type == XML_ELEMENT_NODE)
+	{
+		if(cur_node->prev)
+		{
+			node = cur_node->prev;
+		}
+		else
+		{
+			node = cur_node->parent;
+			stat = false;
+		}
+		xmlUnlinkNode(cur_node);
+		xmlFreeNode(cur_node);
+		if(stat == true)
+		{
+			cur_node = node;
+		}
+		else
+		{
+			cur_node = node->children;
+		}
+	}
+	return cur_node;
 }
 
-void add_ID(xmlNode* root_element, std::string id) {
+void add_ID(xmlNode* root_element, std::string id) 
+{
     xmlNode* cur_node = root_element;
     const char* i = id.c_str();
     if (cur_node->type == XML_ELEMENT_NODE)
@@ -40,7 +57,8 @@ void add_ID(xmlNode* root_element, std::string id) {
     }
 }
 
-bool isValidLogin(std::string login) {
+bool isValidLogin(std::string login) 
+{
     std::string log = "db_files/register/logins/" + login;
     const char* l = log.c_str();
     struct stat sb;
@@ -54,7 +72,8 @@ bool isValidLogin(std::string login) {
     }
 }
 
-bool isValidEmail(std::string mail) {
+bool isValidEmail(std::string mail) 
+{
     std::string email = "db_files/register/mails/" + mail;
     const char* em = email.c_str();
     struct stat sb;
@@ -68,7 +87,8 @@ bool isValidEmail(std::string mail) {
     }
 }
 
-bool verification(std::string login, std::string mail, std::string &result) {
+bool verification(std::string login, std::string mail, std::string &result) 
+{
     if (!(isValidLogin(login) && isValidEmail(mail)))
     {
         if(!isValidLogin(login))
@@ -97,9 +117,10 @@ bool verification(std::string login, std::string mail, std::string &result) {
     }
 }
 
-void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::string &password) {
+void tracker (xmlNode* a_node, std::string &login, std::string &mail, std::string &password) 
+{
     xmlNode *cur_node = NULL;
-    for (cur_node = a_node; cur_node; cur_node = cur_node->next)
+    for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
     {
         if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "login")))
         {
@@ -112,13 +133,12 @@ void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::str
         if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "password")))
         {
             password = (char*)xmlNodeGetContent(cur_node);
-            delete_node(cur_node);
+            cur_node = delete_node(cur_node);
         }
         if (!((login == "") || (mail == "") || (password == "")))
         {
             break;
         }
-        bloodhound(cur_node->children, login, mail, password);
     }
 }
 void isValidId(std::string &ID)
@@ -133,7 +153,8 @@ void isValidId(std::string &ID)
 	uid = ids.c_str();
     }
 }
-std::string xmlDatabase::registerUser(std::string userInfo) {
+std::string xmlDatabase::registerUser(std::string userInfo) 
+{
 	std::string result = "";
 	int length = userInfo.size();
 	const char* inf = userInfo.c_str();
@@ -145,12 +166,12 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
 	LIBXML_TEST_VERSION;
 	doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
-	bloodhound(root_element, login, mail, password);
+	tracker(root_element, login, mail, password);
 	if(verification(login, mail, result))
 	{
 		std::string ID = IDgenerator::getUserId();
 		isValidId(ID);
-		std::string credtxt = "db_files/register/logins/"+login +"/"  + "creds.txt";
+		std::string credtxt = "db_files/register/logins/" + login + "/creds.txt";
 		std::ofstream cred(credtxt);
 		if (cred.is_open())
 		{
@@ -173,7 +194,6 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
 		xmlCleanupParser();
 		xmlMemoryDump();
 		result = "<uId>" + ID +"</uId>";
-
 	}
 	return result;
 }
