@@ -166,7 +166,24 @@ void isValidId(std::string &ID)
 		uid = ids.c_str();
 	}
 }
-
+void add_convs_dir(std::string ID)
+{
+	std::string path = "db_files/users/" + ID + "/convs";
+	const char* path_c = path.c_str();
+	mode_t process_mask = umask (0);
+	mkdir(path_c, 0777);
+	umask (process_mask);
+	xmlDoc* doc = NULL;
+	xmlNode* root = NULL;
+	doc = xmlNewDoc(BAD_CAST "1.0");
+	root = xmlNewNode(NULL, BAD_CAST "convs");
+	xmlDocSetRootElement(doc, root);
+	path = path + "/convs_list.xml";
+	const char* convs = path.c_str();
+	xmlSaveFormatFileEnc(convs, doc, "UTF-8", 1);
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+}
 std::string xmlDatabase::registerUser(std::string userInfo) 
 {
 	std::string result = "";
@@ -204,6 +221,7 @@ std::string xmlDatabase::registerUser(std::string userInfo)
 		std::string us_inf = "db_files/users/" + ID + "/info.xml";
 		const char* us_inf_char = us_inf.c_str();
 		xmlSaveFormatFileEnc(us_inf_char, doc, "UTF-8", 1);
+		add_convs_dir(ID);
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
 		xmlMemoryDump();
