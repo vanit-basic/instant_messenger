@@ -148,7 +148,7 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
 int main() {
 //	test1();
 	test2();
-//	test_groupFunctional();
+	test_groupFunctional();
 //	test_groupFunctional();
 //	test_groupFunctional();
 
