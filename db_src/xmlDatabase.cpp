@@ -17,18 +17,34 @@ static xmlDatabase* sharedDB = NULL;
 
 IDgenerator obj("us_id.txt","gr_id.txt");
 
-void delete_node(xmlNode* a_node) {
-    bool stat = true;
-    xmlNode *cur_node = NULL;
-    xmlNode* node = NULL;
-    for (cur_node = a_node; cur_node; cur_node = cur_node->next)
-    {
-        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)(cur_node->name), "password")))
-        {
-            xmlUnlinkNode(cur_node);
-            xmlFreeNode(cur_node);
-        }
-    }
+xmlNodePtr delete_node(xmlNode* a_node)
+{
+	bool stat = true;
+	xmlNode *cur_node = a_node;
+	xmlNode* node = NULL;
+	if (cur_node->type == XML_ELEMENT_NODE)
+	{
+		if(cur_node->prev)
+		{
+			node = cur_node->prev;
+		}
+		else
+		{
+			node = cur_node->parent;
+			stat = false;
+		}
+		xmlUnlinkNode(cur_node);
+		xmlFreeNode(cur_node);
+		if(stat == true)
+		{
+			cur_node = node;
+		}
+		else
+		{
+			cur_node = node->children;
+		}
+	}
+	return cur_node;
 }
 
 void add_ID(xmlNode* root_element, std::string id) {
@@ -97,9 +113,9 @@ bool verification(std::string login, std::string mail, std::string &result) {
     }
 }
 
-void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::string &password) {
+void tracker (xmlNode* a_node, std::string &login, std::string &mail, std::string &password) {
     xmlNode *cur_node = NULL;
-    for (cur_node = a_node; cur_node; cur_node = cur_node->next)
+    for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
     {
         if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "login")))
         {
@@ -112,13 +128,12 @@ void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::str
         if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "password")))
         {
             password = (char*)xmlNodeGetContent(cur_node);
-            delete_node(cur_node);
+            cur_node = delete_node(cur_node);
         }
         if (!((login == "") || (mail == "") || (password == "")))
         {
             break;
         }
-        bloodhound(cur_node->children, login, mail, password);
     }
 }
 void isValidId(std::string &ID)
@@ -145,12 +160,12 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
 	LIBXML_TEST_VERSION;
 	doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
-	bloodhound(root_element, login, mail, password);
+	tracker(root_element, login, mail, password);
 	if(verification(login, mail, result))
 	{
 		std::string ID = IDgenerator::getUserId();
 		isValidId(ID);
-		std::string credtxt = "db_files/register/logins/"+login +"/"  + "creds.txt";
+		std::string credtxt = "db_files/register/logins/" + login + "/creds.txt";
 		std::ofstream cred(credtxt);
 		if (cred.is_open())
 		{

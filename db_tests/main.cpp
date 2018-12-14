@@ -47,6 +47,7 @@ void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
 	std::string id = db->registerUser(info);
+	std::cout << id << std::endl;
 
 	xmlDoc* doc = NULL;
         xmlNode* root = NULL;
@@ -146,8 +147,8 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
 }
 
 int main() {
-//	test1();
-	test2();
+	test1();
+//	test2();
 //	test_groupFunctional();
 //	test_groupFunctional();
 //	test_groupFunctional();
@@ -155,7 +156,7 @@ int main() {
 //	test2();
 //	test_IdGenerator();
 //	test_createGroup();
-	test_creatGroup_addUserToGroup_getGroupInfo();
+//	test_creatGroup_addUserToGroup_getGroupInfo();
 //	test_getUserConversation("u100004","u100007"){
 	return 0;
 }
