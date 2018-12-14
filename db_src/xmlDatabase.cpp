@@ -17,110 +17,131 @@ static xmlDatabase* sharedDB = NULL;
 
 IDgenerator obj("us_id.txt","gr_id.txt");
 
-void delete_node(xmlNode* a_node) {
+xmlNodePtr delete_node(xmlNode* a_node)
+{
 	bool stat = true;
-	xmlNode *cur_node = NULL;
+	xmlNode *cur_node = a_node;
 	xmlNode* node = NULL;
-	for (cur_node = a_node; cur_node; cur_node = cur_node->next)
-	{
-		if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)(cur_node->name), "password")))
-		{
-			xmlUnlinkNode(cur_node);
-			xmlFreeNode(cur_node);
-		}
-	}
-}
-
-void add_ID(xmlNode* root_element, std::string id) {
-	xmlNode* cur_node = root_element;
-	const char* i = id.c_str();
 	if (cur_node->type == XML_ELEMENT_NODE)
 	{
-		xmlNewChild(cur_node, NULL, BAD_CAST "id", BAD_CAST i);
+		if(cur_node->prev)
+		{
+			node = cur_node->prev;
+		}
+		else
+		{
+			node = cur_node->parent;
+			stat = false;
+		}
+		xmlUnlinkNode(cur_node);
+		xmlFreeNode(cur_node);
+		if(stat == true)
+		{
+			cur_node = node;
+		}
+		else
+		{
+			cur_node = node->children;
+		}
 	}
+	return cur_node;
 }
 
-bool isValidLogin(std::string login) {
-	std::string log = "db_files/register/logins/" + login;
-	const char* l = log.c_str();
-	struct stat sb;
-	if (stat(l, &sb) == 0 && S_ISDIR(sb.st_mode))
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
+void add_ID(xmlNode* root_element, std::string id) 
+{
+    xmlNode* cur_node = root_element;
+    const char* i = id.c_str();
+    if (cur_node->type == XML_ELEMENT_NODE)
+    {
+        xmlNewChild(cur_node, NULL, BAD_CAST "id", BAD_CAST i);
+    }
 }
 
-bool isValidEmail(std::string mail) {
-	std::string email = "db_files/register/mails/" + mail;
-	const char* em = email.c_str();
-	struct stat sb;
-	if (stat(em, &sb) == 0 && S_ISDIR(sb.st_mode))
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
+bool isValidLogin(std::string login) 
+{
+    std::string log = "db_files/register/logins/" + login;
+    const char* l = log.c_str();
+    struct stat sb;
+    if (stat(l, &sb) == 0 && S_ISDIR(sb.st_mode))
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
-bool verification(std::string login, std::string mail, std::string &result) {
-	if (!(isValidLogin(login) && isValidEmail(mail)))
-	{
-		if(!isValidLogin(login))
-		{
-			std::cout<<"Invalid login\n";
-			result += "<login>Invalid</login>";
-		}
-		if(!isValidEmail(mail))
-		{
-			std::cout<<"Invalid mail\n";
-			result += "<email>Invalid</email>";
-		}
-		return false;
-	}
-	else
-	{
-		std::string log_f = "db_files/register/logins/" + login;
-		const char* log_f_n = log_f.c_str();
-		std::string mail_f = "db_files/register/mails/" + mail;
-		const char* mail_f_n = mail_f.c_str();
-		mode_t process_mask = umask (0);
-		mkdir(log_f_n, 0777);
-		mkdir(mail_f_n, 0777);
-		umask (process_mask);
-		return true;
-	}
+bool isValidEmail(std::string mail) 
+{
+    std::string email = "db_files/register/mails/" + mail;
+    const char* em = email.c_str();
+    struct stat sb;
+    if (stat(em, &sb) == 0 && S_ISDIR(sb.st_mode))
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
-void bloodhound(xmlNode* a_node, std::string &login, std::string &mail, std::string &password) {
-	xmlNode *cur_node = NULL;
-	for (cur_node = a_node; cur_node; cur_node = cur_node->next)
-	{
-		if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "login")))
-		{
-			login = (char*)xmlNodeGetContent(cur_node);
-		}
-		if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "email")))
-		{
-			mail = (char*)xmlNodeGetContent(cur_node);
-		}
-		if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "password")))
-		{
-			password = (char*)xmlNodeGetContent(cur_node);
-			delete_node(cur_node);
-		}
-		if (!((login == "") || (mail == "") || (password == "")))
-		{
-			break;
-		}
-		bloodhound(cur_node->children, login, mail, password);
-	}
+bool verification(std::string login, std::string mail, std::string &result) 
+{
+    if (!(isValidLogin(login) && isValidEmail(mail)))
+    {
+        if(!isValidLogin(login))
+        {
+            std::cout<<"Invalid login\n";
+            result += "<login>Invalid</login>";
+        }
+        if(!isValidEmail(mail))
+        {
+            std::cout<<"Invalid mail\n";
+            result += "<email>Invalid</email>";
+        }
+        return false;
+    }
+    else
+    {
+        std::string log_f = "db_files/register/logins/" + login;
+        const char* log_f_n = log_f.c_str();
+        std::string mail_f = "db_files/register/mails/" + mail;
+        const char* mail_f_n = mail_f.c_str();
+        mode_t process_mask = umask (0);
+        mkdir(log_f_n, 0777);
+        mkdir(mail_f_n, 0777);
+        umask (process_mask);
+        return true;
+    }
 }
+
+void tracker (xmlNode* a_node, std::string &login, std::string &mail, std::string &password) 
+{
+    xmlNode *cur_node = NULL;
+    for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
+    {
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "login")))
+        {
+            login = (char*)xmlNodeGetContent(cur_node);
+        }
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "email")))
+        {
+            mail = (char*)xmlNodeGetContent(cur_node);
+        }
+        if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "password")))
+        {
+            password = (char*)xmlNodeGetContent(cur_node);
+            cur_node = delete_node(cur_node);
+        }
+        if (!((login == "") || (mail == "") || (password == "")))
+        {
+            break;
+        }
+    }
+}
+
 void isValidId(std::string &ID)
 {
 	std::string ids = "db_files/users/" + ID;
@@ -133,7 +154,9 @@ void isValidId(std::string &ID)
 		uid = ids.c_str();
 	}
 }
-std::string xmlDatabase::registerUser(std::string userInfo) {
+
+std::string xmlDatabase::registerUser(std::string userInfo) 
+{
 	std::string result = "";
 	int length = userInfo.size();
 	const char* inf = userInfo.c_str();
@@ -145,12 +168,12 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
 	LIBXML_TEST_VERSION;
 	doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
-	bloodhound(root_element, login, mail, password);
+	tracker(root_element, login, mail, password);
 	if(verification(login, mail, result))
 	{
 		std::string ID = IDgenerator::getUserId();
 		isValidId(ID);
-		std::string credtxt = "db_files/register/logins/"+login +"/"  + "creds.txt";
+		std::string credtxt = "db_files/register/logins/" + login + "/creds.txt";
 		std::ofstream cred(credtxt);
 		if (cred.is_open())
 		{
@@ -173,7 +196,6 @@ std::string xmlDatabase::registerUser(std::string userInfo) {
 		xmlCleanupParser();
 		xmlMemoryDump();
 		result = "<uId>" + ID +"</uId>";
-
 	}
 	return result;
 }
