@@ -262,18 +262,18 @@ std::string xmlDatabase::getUserInfo(std::string userID) {
 /*std::string replacePattern(std::string input, std::string pattern) {
 	std::string out = input.replace(pattern);
 	return out;
-}
+}*/
 std::string findAndReplaceAll(std::string & data, std::string toSearch)
 {
 	size_t pos = data.find(toSearch);
  
 	while( pos != std::string::npos)
 	{
-		data.replace(pos, toSearch.size());
-		//pos =data.find(toSearch, pos + toSearch.size());
+		data.replace(pos, toSearch.size(), "");
+		pos =data.find(toSearch, pos + toSearch.size());
 	}
 	return data;
-}*/
+}
 std::string xmlDatabase::getUserConversations(std::string userID) {
     std::string tmp = "";
     std::string fin = "";
@@ -281,7 +281,7 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
     while(getline(id,tmp)) {
         fin = fin +tmp;
     }
-   // fin = findAndReplaceAll(fin,"");
+    fin = findAndReplaceAll(fin,"\n");
 
     return fin;
 }
