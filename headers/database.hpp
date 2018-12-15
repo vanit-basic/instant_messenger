@@ -17,7 +17,7 @@ class database {
 		
 		virtual std::string getUsersConversation(std::string fromID, std::string toID) = 0;
 		
-		virtual bool addUserMessage(std::string messageInfo) = 0;
+		virtual bool addUserMessage(std::string from, std::string to, std::string message) = 0;
 
 		//group related queries
 		

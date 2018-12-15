@@ -149,9 +149,24 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
 	db->addUserToGroup(gid, "u17");
 	std::cout<<db->getGroupInfo(gid)<<std::endl;
 }
+void testxx()
+{
+	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
+	std::string id1 = db->registerUser(info1);
+	std::cout<<id1<<std::endl;
+	std::string info2 = "<registration_information><firstName>Valod</firstName><lastName>Valodyan</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>valod@gmail.com</email><login>valod1990</login><password>Val1990</password></registration_information>";
+	std::string id2 = db->registerUser(info2);
+	std::cout<<id2<<std::endl;
+}
+void test_addUserMessage()
+{
+	std::string message = "<message><date>14.12.2018</date><body>barev Valod</body></message>";
+	db->addUserMessage("u1","u2", message);
+
+}
 
 int main() {
-	test1();
+//	test1();
 //	test2();
 //	test_groupFunctional();
 //	test_groupFunctional();
@@ -162,5 +177,7 @@ int main() {
 //	test_createGroup();
 //	test_creatGroup_addUserToGroup_getGroupInfo();
 //	test_getUserConversation("u100002","u100003");
+	testxx();
+//	test_addUserMessage();
 	return 0;
 }

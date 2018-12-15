@@ -21,7 +21,6 @@ $(shared): $(db_src)
 
 test: $(test_src) $(shared)
 	g++  $^ `xml2-config --cflags --libs` $(cflags) --std=c++11 -o $(test_dir)/xml
-	cd db_tests; ./xml
 
 clean:
 	rm -f $(shared) $(test_dir)/xml
