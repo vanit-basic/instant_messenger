@@ -149,20 +149,57 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
 	db->addUserToGroup(gid, "u17");
 	std::cout<<db->getGroupInfo(gid)<<std::endl;
 }
-void testxx()
+void test_addUserMessage()
+//USHADRUTYUN ashxatacneluc araj petqa add_message funkciayum dzer popoxutyun@ aneq, mteq xmlDatabase.cpp, gteq bacatrutyun@ te inch@ petqa poxel  ( motavorapes tox 400 - 500 mijakayqum )
 {
 	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
 	std::string id1 = db->registerUser(info1);
-	std::cout<<id1<<std::endl;
 	std::string info2 = "<registration_information><firstName>Valod</firstName><lastName>Valodyan</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>valod@gmail.com</email><login>valod1990</login><password>Val1990</password></registration_information>";
 	std::string id2 = db->registerUser(info2);
-	std::cout<<id2<<std::endl;
-}
-void test_addUserMessage()
-{
-	std::string message = "<message><date>14.12.2018</date><body>barev Valod</body></message>";
-	db->addUserMessage("u1","u2", message);
-
+	std::string info3 = "<registration_information><firstName>Vika</firstName><lastName>Vika</lastName><gender>female</gender><birthDate>10.02.1990</birthDate><email>vika@gmail.com</email><login>vika1990</login><password>Vika1990</password></registration_information>";
+	std::string id3 = db->registerUser(info3);
+	std::string message1 = "<message><date>14.12.2018</date><body>barev Valod</body></message>";
+	std::string message2 = "<message><date>14.12.2018</date><body>barev Jo</body></message>";
+	std::string message3 = "<message><date>14.12.2018</date><body> Inch ka?</body></message>";
+	std::string message4 = "<message><date>14.12.2018</date><body> Ban chka</body></message>";
+	std::string message5 = "<message><date>14.12.2018</date><body> barev Vika</body></message>";
+	std::string message6 = "<message><date>14.12.2018</date><body> Vika barev</body></message>";
+	std::string message7 = "<message><date>14.12.2018</date><body>barev</body></message>";
+	xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        LIBXML_TEST_VERSION;
+        const char* i1 = id1.c_str();
+        doc = xmlReadMemory(i1, id1.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	id1 =(char*) xmlNodeGetContent(root);
+	std::cout<< id1 <<std::endl;
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+        const char* i2 = id2.c_str();
+        doc = xmlReadMemory(i2, id2.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	id2 =(char*) xmlNodeGetContent(root);
+	std::cout<< id2 <<std::endl;
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+        const char* i3 = id3.c_str();
+        doc = xmlReadMemory(i3, id3.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	id3 =(char*) xmlNodeGetContent(root);
+	std::cout<< id3 <<std::endl;
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+	db->addUserMessage(id1, id2 , message1);
+	db->addUserMessage(id2, id1 , message2);
+	db->addUserMessage(id1, id2 , message3);
+	db->addUserMessage(id2, id1 , message4);
+	db->addUserMessage(id1, id3 , message5);
+	db->addUserMessage(id2, id3 , message6);
+	db->addUserMessage(id3, id1 , message7);
+	db->addUserMessage(id3, id2 , message7);
 }
 
 int main() {
@@ -177,7 +214,6 @@ int main() {
 //	test_createGroup();
 //	test_creatGroup_addUserToGroup_getGroupInfo();
 //	test_getUserConversation("u100002","u100003");
-	testxx();
-//	test_addUserMessage();
+	test_addUserMessage();
 	return 0;
 }

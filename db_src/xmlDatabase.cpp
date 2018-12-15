@@ -330,30 +330,31 @@ void add_user_conv(std::string from, std::string to)
 {
         xmlDoc* doc = NULL;
         xmlNode* root = NULL;
-        std::string path = "db_files/users/" + from +"/convs_list.xml";
+        std::string path = "";
+	path = "db_files/users/" + from + "/convs/convs_list.xml";
         const char* p1 = path.c_str();
-        doc = xmlReadFile (p1, NULL, 0);
+	doc = xmlReadFile (p1, NULL, 0);
         root = xmlDocGetRootElement(doc);
         const char* t = to.c_str();
         xmlNewChild(root, NULL, BAD_CAST t , NULL);
         xmlSaveFormatFileEnc(p1, doc, "UTF-8", 1);
         xmlFreeDoc(doc);
         xmlCleanupParser();
-        path = "db_files/users/" + to +"/convs_list.xml";
+        path = "db_files/users/" + to + "/convs/convs_list.xml";
         const char* p2 = path.c_str();
         doc = xmlReadFile (p2, NULL, 0);
         root = xmlDocGetRootElement(doc);
         const char* f = from.c_str();
         xmlNewChild(root, NULL, BAD_CAST f , NULL);
-        xmlSaveFormatFileEnc(p1, doc, "UTF-8", 1);
+        xmlSaveFormatFileEnc(p2, doc, "UTF-8", 1);
         xmlFreeDoc(doc);
         xmlCleanupParser();
 }
 
 bool add_link(std:: string path, std::string from, std::string to)
 {
-        std::string l1 = "db_files/users/" + from + "/" + to;
-        std::string l2 = "db_files/users/" + to + "/" + from;
+        std::string l1 = "db_files/users/" + from + "/convs/" + to + ".xml";
+        std::string l2 = "db_files/users/" + to + "/convs/" + from + ".xml";
         const char* link1 = l1.c_str();
         const char* link2 = l2.c_str();
         const char* conv = path.c_str();
@@ -367,7 +368,7 @@ bool add_link(std:: string path, std::string from, std::string to)
         }
 }
 
-bool add_message(xmlNode* node, std::string from, std::string to)
+bool add_message(xmlNode* node, std::string from, std::string to, bool &status1)
 {
         bool status = true;
         std::string path1 = "db_files/conversations/" + from + to + ".xml";
@@ -384,6 +385,7 @@ bool add_message(xmlNode* node, std::string from, std::string to)
                 root = xmlDocGetRootElement(doc);
                 xmlAddChild(root, node);
                 xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+        	xmlCleanupParser();
         }
         else
         {
@@ -395,20 +397,24 @@ bool add_message(xmlNode* node, std::string from, std::string to)
                         root = xmlDocGetRootElement(doc);
                         xmlAddChild(root, node);
                         xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+        		xmlCleanupParser();
                 }
                 else
                 {
+			doc = xmlNewDoc(BAD_CAST "1.0");
                         root = xmlNewNode(NULL, BAD_CAST "conv");
                         xmlDocSetRootElement(doc, root);
                         xmlAddChild(root, node);
                         const char* path = path1.c_str();
                         xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
                         add_user_conv(from, to);
-                        status = add_link(path, from, to);
+//jisht link sarqelu hamar path petqa amboxjutyamb tanq, aysinqn amen mekis mot da tarbera linelu minchev instant_messenger direktorian(orinak im mot /home/narek/Documents/Tnayin/  a janapar@ dzer mot ktarbervi aysqan mas@), ashxatacneluc araj nerqevi toxum jisht amboxj janapar@ tveq patth1 = "/amboxj jamaparh@ neraryal conversations direktorian/"  + from + to + ".xml" P.S. amboxj janaparh@ imanalu hamar terminalov mteq conversation direktorian u pwd areq
+			path1 = "/home/narek/Documents/Tnayin/instant_messenger/db_files/conversations/" + from + to + ".xml";
+                        status = add_link(path1, from, to);
+        		xmlCleanupParser();
+			status1 = false;
                 }
         }
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
         return status;
 }
 
@@ -424,6 +430,7 @@ xmlNode* addMessId (xmlNode* root, std::string from)
 bool xmlDatabase::addUserMessage(std::string from, std::string to, std::string message)
 {
         bool status = false;
+        bool status1 = true;
         std::string path = "";
         const char* mess = message.c_str();
         xmlDoc* doc = NULL;
@@ -432,9 +439,9 @@ bool xmlDatabase::addUserMessage(std::string from, std::string to, std::string m
         doc = xmlReadMemory(mess, message.length(), "noname.xml", NULL, 0);
         root = xmlDocGetRootElement(doc);
         root = addMessId(root, from);
-        status = add_message(root, from, to);
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
+        status = add_message(root, from, to, status1);
+	xmlCleanupParser();
+	xmlMemoryDump();
         return status;
 }
 
