@@ -249,7 +249,7 @@ int main() {
 //	test2();
 //	test_IdGenerator();
 	test_createGroup();
-//	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
+	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_getUserConversation("u100002","u100003");
 //	test_addUserMessage();
 	return 0;
