@@ -637,6 +637,35 @@ void change_quantity(xmlNode* root_element, bool &status)
 	}
 }
 
+bool add_link_group_convs(std:: string groupId, std::string userId)
+{
+        std::string p1 = "db_files/users/" + userId + "/convs/" + groupId + ".xml";
+        std::string convs = "/home/narek/Documents/Tnayin/instant_messenger/db_files/groups/" + groupId + "/conv.xml";
+        const char* link = p1.c_str();
+        const char* conv = convs.c_str();
+	std::string p2 = "db_files/users/" + userId + "/convs/convs_list.xml";
+	const char* path = p2.c_str();
+	const char* gId = groupId.c_str();
+	xmlDoc* doc = NULL;
+	xmlNode* root = NULL;
+        doc = xmlReadFile(path, NULL, 0);
+        root = xmlDocGetRootElement(doc);
+        if ((0 == symlink(conv, link)) && (!(NULL == xmlNewChild(root, NULL, BAD_CAST gId, NULL))))
+        {
+		xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+                return true;
+        }
+        else
+        {
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+                return false;
+        }
+}
+
+
 bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID) 
 {
 	bool status = true;
@@ -644,8 +673,8 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 	const char* c_gr_inf = gr_inf.c_str();
 	std::string users = "db_files/groups/" + groupID + "/users.xml";
 	const char* c_users = users.c_str();
-	xmlDoc *doc = NULL;
-	xmlNode *root_element = NULL;
+	xmlDoc* doc = NULL;
+	xmlNode* root_element = NULL;
 	LIBXML_TEST_VERSION;
 	doc = xmlReadFile(c_users, NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
@@ -661,6 +690,10 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 		xmlSaveFormatFileEnc(c_gr_inf, doc, "UTF-8", 1);
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
+		if(status)
+		{
+			status = add_link_group_convs(groupID, userID);
+		}
 	}
 	return status;
 }

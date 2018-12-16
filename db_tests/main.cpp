@@ -136,14 +136,26 @@ void test_createGroup() {
 }
 void test_creatGroup_addUserToGroup_getGroupInfo()
 {
-	std::string inf = "<info><name>VanIt</name><admin>u1</admin><createdate>12.12.2018</createdate></info>";
-	std::string gid = db->createGroup(inf);
-	std::cout<< gid <<std::endl;
+	std::string inf = "<info><name>VanIt</name><admin>u1000</admin><createdate>12.12.2018</createdate></info>";
+	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
+	std::string id = db->registerUser(info1);
+	std::cout << id << std::endl;
+
+        LIBXML_TEST_VERSION;
 	xmlDoc* doc = NULL;
         xmlNode* root = NULL;
         LIBXML_TEST_VERSION;
-        const char* info = gid.c_str();
-        doc = xmlReadMemory(info, gid.size(), "noname.xml", NULL, 0);
+        const char* id1 = id.c_str();
+        doc = xmlReadMemory(id1, id.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	id =(char*) xmlNodeGetContent(root);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+	std::string gid = db->createGroup(inf);
+	std::cout<< gid <<std::endl;
+        const char* gid1 = gid.c_str();
+        doc = xmlReadMemory(gid1, gid.size(), "noname.xml", NULL, 0);
         root = xmlDocGetRootElement(doc);
 	gid =(char*) xmlNodeGetContent(root);
 	std::cout<< gid <<std::endl;
@@ -151,13 +163,13 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
         xmlCleanupParser();
         xmlMemoryDump();
 	std::cout<<db->getGroupInfo(gid)<<std::endl;
-	db->addUserToGroup(gid, "u17");
+	db->addUserToGroup(gid, id);
 	std::cout<<db->getGroupInfo(gid)<<std::endl;
 	std::cout<<"Update gInfo\tadmin->u24, name-> VanIt-Basic_training\n";
-	std::string updInfo = "<info><gId>" + gid + "</gId><name>VanItBasictraining</name><admin>u24</admin></info>";
-	std::cout<<"updInfo : "<<updInfo<<std::endl;
-	db->updateGroupInfo(updInfo);
-	std::cout<<db->getGroupInfo(gid)<<std::endl;
+//	std::string updInfo = "<info><gId>" + gid + "</gId><name>VanItBasictraining</name><admin>u24</admin></info>";
+//	std::cout<<"updInfo : "<<updInfo<<std::endl;
+//	db->updateGroupInfo(updInfo);
+//	std::cout<<db->getGroupInfo(gid)<<std::endl;
 }
 void test_addUserMessage()
 //USHADRUTYUN ashxatacneluc araj petqa add_message funkciayum dzer popoxutyun@ aneq, mteq xmlDatabase.cpp, gteq bacatrutyun@ te inch@ petqa poxel  ( motavorapes tox 400 - 500 mijakayqum )
@@ -213,7 +225,7 @@ void test_addUserMessage()
 }
 
 int main() {
-	test1();
+//	test1();
 //	test2();
 //	test_groupFunctional();
 //	test_groupFunctional();
@@ -222,7 +234,7 @@ int main() {
 //	test2();
 //	test_IdGenerator();
 //	test_createGroup();
-//	test_creatGroup_addUserToGroup_getGroupInfo();
+	test_creatGroup_addUserToGroup_getGroupInfo();
 //	test_getUserConversation("u100002","u100003");
 //	test_addUserMessage();
 	return 0;
