@@ -148,6 +148,11 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
 	std::cout<<db->getGroupInfo(gid)<<std::endl;
 	db->addUserToGroup(gid, "u17");
 	std::cout<<db->getGroupInfo(gid)<<std::endl;
+	std::cout<<"Update gInfo\tadmin->u24, name-> VanIt-Basic_training\n";
+	std::string updInfo = "<info><gId>" + gid + "</gId><name>VanItBasictraining</name><admin>u24</admin></info>";
+	std::cout<<"updInfo : "<<updInfo<<std::endl;
+	db->updateGroupInfo(updInfo);
+	std::cout<<db->getGroupInfo(gid)<<std::endl;
 }
 void test_addUserMessage()
 //USHADRUTYUN ashxatacneluc araj petqa add_message funkciayum dzer popoxutyun@ aneq, mteq xmlDatabase.cpp, gteq bacatrutyun@ te inch@ petqa poxel  ( motavorapes tox 400 - 500 mijakayqum )
@@ -212,8 +217,8 @@ int main() {
 //	test2();
 //	test_IdGenerator();
 //	test_createGroup();
-//	test_creatGroup_addUserToGroup_getGroupInfo();
+	test_creatGroup_addUserToGroup_getGroupInfo();
 //	test_getUserConversation("u100002","u100003");
-	test_addUserMessage();
+//	test_addUserMessage();
 	return 0;
 }

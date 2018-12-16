@@ -19,11 +19,11 @@ IDgenerator obj("us_id.txt","gr_id.txt", "mes_id.txt");
 
 void UpdateGroupDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
 {
-        for(xmlNode* node = root->children; node; node = node->next) {
-                if(node->type == XML_ELEMENT_NODE) {
-                        if(0 == strcmp((char*)node->name,(char*)tegName)){
-                                xmlNodeSetContent(node, content);
-                                break;
+	for(xmlNode* node = root->children; node; node = node->next) {
+		if(node->type == XML_ELEMENT_NODE) {
+			if(0 == strcmp((char*)node->name,(char*)tegName)){
+				xmlNodeSetContent(node, content);
+				break;
                         }
                 }
         }
@@ -543,9 +543,10 @@ bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
 	xmlDoc* docGen = xmlReadFile(path.c_str(), NULL, 0);
 	xmlNode* rootGen = xmlDocGetRootElement(docGen);
 	for(node = root->children; node; node = node->next) {
-		if(node->type == XML_ELEMENT_NODE)
+		if(node->type == XML_ELEMENT_NODE && strcmp((char*)node->name,"gId")!=0)
 			UpdateGroupDate(rootGen, node->name, xmlNodeGetContent(node));
 	}
+	xmlSaveFormatFileEnc(path.c_str(), docGen, "UTF-8", 1);
 	xmlFreeDoc(doc);
 	xmlFreeDoc(docGen);
 	xmlMemoryDump();
