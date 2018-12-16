@@ -64,6 +64,11 @@ void test1 () {
 	std::cout << "ID : " << id << std::endl;
 	info = db->getUserInfo(id);
 	std::cout << info << std::endl;
+	std::cout<<"Update userInfo\n";
+	std::string updInfo = "<info><uId>" + id + "</uId><firstname>Miqo</firstname><lastname>Aslikyan</lastname><login>Miqo1101</login><gender>male</gender></info>";
+	db->updateUserInfo(updInfo);
+	std::cout<<db->getUserInfo(id)<<std::endl;
+
 }
 
 void test2 () {
@@ -208,7 +213,7 @@ void test_addUserMessage()
 }
 
 int main() {
-//	test1();
+	test1();
 //	test2();
 //	test_groupFunctional();
 //	test_groupFunctional();
@@ -217,7 +222,7 @@ int main() {
 //	test2();
 //	test_IdGenerator();
 //	test_createGroup();
-	test_creatGroup_addUserToGroup_getGroupInfo();
+//	test_creatGroup_addUserToGroup_getGroupInfo();
 //	test_getUserConversation("u100002","u100003");
 //	test_addUserMessage();
 	return 0;

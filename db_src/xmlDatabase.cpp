@@ -29,6 +29,18 @@ void UpdateGroupDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content
         }
 }
 
+void UpdateUserDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
+{
+        for(xmlNode* node = root->children; node; node = node->next) {
+                if(node->type == XML_ELEMENT_NODE) {
+                        if(0 == strcmp((char*)node->name,(char*)tegName)){
+                                xmlNodeSetContent(node, content);
+                                break;
+                        }
+                }
+        }
+}
+
 xmlNodePtr delete_node(xmlNode* a_node)
 {
 	bool stat = true;
@@ -263,7 +275,31 @@ std::string xmlDatabase::loginUser(std::string login, std::string password) {
 
 
 bool xmlDatabase::updateUserInfo(std::string userInfo) {
-	return true;
+	LIBXML_TEST_VERSION;
+        xmlDoc* doc = xmlReadMemory(userInfo.c_str(), userInfo.size(), "noname.xml", NULL, 0);
+        xmlNode* root = xmlDocGetRootElement(doc);
+        xmlNode* node = NULL;
+        std::string uId = "";
+        for(node = root->children; node; node = node->next) {
+                if(node->type == XML_ELEMENT_NODE) {
+                        if(0 == strcmp((char*)node->name,"uId")){
+                                uId = (char*)xmlNodeGetContent(node);
+                                break;
+                        }
+                }
+        }
+        std::string path = "db_files/users/" + uId + "/info.xml";
+        xmlDoc* docGen = xmlReadFile(path.c_str(), NULL, 0);
+        xmlNode* rootGen = xmlDocGetRootElement(docGen);
+        for(node = root->children; node; node = node->next) {
+                if(node->type == XML_ELEMENT_NODE && strcmp((char*)node->name,"uId")!=0)
+                        UpdateUserDate(rootGen, node->name, xmlNodeGetContent(node));
+        }
+        xmlSaveFormatFileEnc(path.c_str(), docGen, "UTF-8", 1);
+        xmlFreeDoc(doc);
+        xmlFreeDoc(docGen);
+        xmlMemoryDump();
+        return true;
 }
 
 std::string xmlDatabase::getUserInfo(std::string userID) {
