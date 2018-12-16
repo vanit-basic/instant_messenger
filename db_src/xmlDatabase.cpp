@@ -11,11 +11,35 @@
 #include <string.h>
 #include <fstream>
 #include <cstdlib>
-
+#include <unistd.h>
 
 static xmlDatabase* sharedDB = NULL;
 
-IDgenerator obj("us_id.txt","gr_id.txt");
+IDgenerator obj("us_id.txt","gr_id.txt", "mes_id.txt");
+
+void UpdateGroupDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
+{
+	for(xmlNode* node = root->children; node; node = node->next) {
+		if(node->type == XML_ELEMENT_NODE) {
+			if(0 == strcmp((char*)node->name,(char*)tegName)){
+				xmlNodeSetContent(node, content);
+				break;
+                        }
+                }
+        }
+}
+
+void UpdateUserDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
+{
+        for(xmlNode* node = root->children; node; node = node->next) {
+                if(node->type == XML_ELEMENT_NODE) {
+                        if(0 == strcmp((char*)node->name,(char*)tegName)){
+                                xmlNodeSetContent(node, content);
+                                break;
+                        }
+                }
+        }
+}
 
 xmlNodePtr delete_node(xmlNode* a_node)
 {
@@ -93,12 +117,10 @@ bool verification(std::string login, std::string mail, std::string &result)
     {
         if(!isValidLogin(login))
         {
-            std::cout<<"Invalid login\n";
             result += "<login>Invalid</login>";
         }
         if(!isValidEmail(mail))
         {
-            std::cout<<"Invalid mail\n";
             result += "<email>Invalid</email>";
         }
         return false;
@@ -154,7 +176,24 @@ void isValidId(std::string &ID)
 		uid = ids.c_str();
 	}
 }
-
+void add_convs_dir(std::string ID)
+{
+	std::string path = "db_files/users/" + ID + "/convs";
+	const char* path_c = path.c_str();
+	mode_t process_mask = umask (0);
+	mkdir(path_c, 0777);
+	umask (process_mask);
+	xmlDoc* doc = NULL;
+	xmlNode* root = NULL;
+	doc = xmlNewDoc(BAD_CAST "1.0");
+	root = xmlNewNode(NULL, BAD_CAST "convs");
+	xmlDocSetRootElement(doc, root);
+	path = path + "/convs_list.xml";
+	const char* convs = path.c_str();
+	xmlSaveFormatFileEnc(convs, doc, "UTF-8", 1);
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+}
 std::string xmlDatabase::registerUser(std::string userInfo) 
 {
 	std::string result = "";
@@ -192,6 +231,7 @@ std::string xmlDatabase::registerUser(std::string userInfo)
 		std::string us_inf = "db_files/users/" + ID + "/info.xml";
 		const char* us_inf_char = us_inf.c_str();
 		xmlSaveFormatFileEnc(us_inf_char, doc, "UTF-8", 1);
+		add_convs_dir(ID);
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
 		xmlMemoryDump();
@@ -235,7 +275,31 @@ std::string xmlDatabase::loginUser(std::string login, std::string password) {
 
 
 bool xmlDatabase::updateUserInfo(std::string userInfo) {
-	return true;
+	LIBXML_TEST_VERSION;
+        xmlDoc* doc = xmlReadMemory(userInfo.c_str(), userInfo.size(), "noname.xml", NULL, 0);
+        xmlNode* root = xmlDocGetRootElement(doc);
+        xmlNode* node = NULL;
+        std::string uId = "";
+        for(node = root->children; node; node = node->next) {
+                if(node->type == XML_ELEMENT_NODE) {
+                        if(0 == strcmp((char*)node->name,"uId")){
+                                uId = (char*)xmlNodeGetContent(node);
+                                break;
+                        }
+                }
+        }
+        std::string path = "db_files/users/" + uId + "/info.xml";
+        xmlDoc* docGen = xmlReadFile(path.c_str(), NULL, 0);
+        xmlNode* rootGen = xmlDocGetRootElement(docGen);
+        for(node = root->children; node; node = node->next) {
+                if(node->type == XML_ELEMENT_NODE && strcmp((char*)node->name,"uId")!=0)
+                        UpdateUserDate(rootGen, node->name, xmlNodeGetContent(node));
+        }
+        xmlSaveFormatFileEnc(path.c_str(), docGen, "UTF-8", 1);
+        xmlFreeDoc(doc);
+        xmlFreeDoc(docGen);
+        xmlMemoryDump();
+        return true;
 }
 
 std::string xmlDatabase::getUserInfo(std::string userID) {
@@ -298,11 +362,122 @@ std::string xmlDatabase::getUsersConversation(std::string fromID, std::string to
 	return fin;
 }
 
-
-bool xmlDatabase::addUserMessage(std::string messageInfo) {
-	return true;
+void add_user_conv(std::string from, std::string to)
+{
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        std::string path = "";
+	path = "db_files/users/" + from + "/convs/convs_list.xml";
+        const char* p1 = path.c_str();
+	doc = xmlReadFile (p1, NULL, 0);
+        root = xmlDocGetRootElement(doc);
+        const char* t = to.c_str();
+        xmlNewChild(root, NULL, BAD_CAST t , NULL);
+        xmlSaveFormatFileEnc(p1, doc, "UTF-8", 1);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        path = "db_files/users/" + to + "/convs/convs_list.xml";
+        const char* p2 = path.c_str();
+        doc = xmlReadFile (p2, NULL, 0);
+        root = xmlDocGetRootElement(doc);
+        const char* f = from.c_str();
+        xmlNewChild(root, NULL, BAD_CAST f , NULL);
+        xmlSaveFormatFileEnc(p2, doc, "UTF-8", 1);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
 }
 
+bool add_link(std:: string path, std::string from, std::string to)
+{
+        std::string l1 = "db_files/users/" + from + "/convs/" + to + ".xml";
+        std::string l2 = "db_files/users/" + to + "/convs/" + from + ".xml";
+        const char* link1 = l1.c_str();
+        const char* link2 = l2.c_str();
+        const char* conv = path.c_str();
+        if ((0 == symlink(conv, link1)) && (0 == symlink(conv, link2)))
+        {
+                return true;
+        }
+        else
+        {
+                return false;
+        }
+}
+
+bool add_message(xmlNode* node, std::string from, std::string to)
+{
+        bool status = true;
+        std::string path1 = "db_files/conversations/" + from + to + ".xml";
+        std::string path2 = "db_files/conversations/" + to + from + ".xml";
+        std::ifstream path_one(path1);
+        std::ifstream path_two(path2);
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        if(path_one.is_open())
+        {
+                path_one.close();
+                const char* path = path1.c_str();
+                doc = xmlReadFile (path, NULL, 0);
+                root = xmlDocGetRootElement(doc);
+                xmlAddChild(root, node);
+                xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+        	xmlCleanupParser();
+        }
+        else
+        {
+                if(path_two.is_open())
+                {
+                        path_two.close();
+                        const char* path = path2.c_str();
+                        doc = xmlReadFile (path, NULL, 0);
+                        root = xmlDocGetRootElement(doc);
+                        xmlAddChild(root, node);
+                        xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+        		xmlCleanupParser();
+                }
+                else
+                {
+			doc = xmlNewDoc(BAD_CAST "1.0");
+                        root = xmlNewNode(NULL, BAD_CAST "conv");
+                        xmlDocSetRootElement(doc, root);
+                        xmlAddChild(root, node);
+                        const char* path = path1.c_str();
+                        xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+                        add_user_conv(from, to);
+//jisht link sarqelu hamar path petqa amboxjutyamb tanq, aysinqn amen mekis mot da tarbera linelu minchev instant_messenger direktorian(orinak im mot /home/narek/Documents/Tnayin/  a janapar@ dzer mot ktarbervi aysqan mas@), ashxatacneluc araj nerqevi toxum jisht amboxj janapar@ tveq patth1 = "/amboxj jamaparh@ neraryal conversations direktorian/"  + from + to + ".xml" P.S. amboxj janaparh@ imanalu hamar terminalov mteq conversation direktorian u pwd areq
+			path1 = "/home/narek/Documents/Tnayin/instant_messenger/db_files/conversations/" + from + to + ".xml";
+                        status = add_link(path1, from, to);
+        		xmlCleanupParser();
+                }
+        }
+        return status;
+}
+
+xmlNode* addMessId (xmlNode* root, std::string from)
+{
+        const char* mid = (IDgenerator::getMessageId()).c_str();
+        const char* f = from.c_str();
+        xmlNodeSetName(root, BAD_CAST mid);
+        xmlNewProp(root, BAD_CAST "from", BAD_CAST f);
+        return root;
+}
+
+bool xmlDatabase::addUserMessage(std::string from, std::string to, std::string message)
+{
+        bool status = false;
+        std::string path = "";
+        const char* mess = message.c_str();
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        LIBXML_TEST_VERSION;
+        doc = xmlReadMemory(mess, message.length(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+        root = addMessId(root, from);
+        status = add_message(root, from, to);
+	xmlCleanupParser();
+	xmlMemoryDump();
+        return status;
+}
 
 std::string xmlDatabase::createGroup(std::string groupInfo) {
 	std::string groupId = IDgenerator::getGroupId();
@@ -387,10 +562,51 @@ std::string xmlDatabase::getGroupConversation(std::string groupID) {
 }
 
 bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
+	LIBXML_TEST_VERSION;
+	xmlDoc* doc = xmlReadMemory(groupInfo.c_str(), groupInfo.size(), "noname.xml", NULL, 0);
+	xmlNode* root = xmlDocGetRootElement(doc);
+	xmlNode* node = NULL;
+	std::string gId = "";
+	for(node = root->children; node; node = node->next) {
+		if(node->type == XML_ELEMENT_NODE) {
+			if(0 == strcmp((char*)node->name,"gId")){
+				gId = (char*)xmlNodeGetContent(node);
+				break;
+			}
+		}
+	}
+	std::string path = "db_files/groups/" + gId + "/ginfo.xml";
+	xmlDoc* docGen = xmlReadFile(path.c_str(), NULL, 0);
+	xmlNode* rootGen = xmlDocGetRootElement(docGen);
+	for(node = root->children; node; node = node->next) {
+		if(node->type == XML_ELEMENT_NODE && strcmp((char*)node->name,"gId")!=0)
+			UpdateGroupDate(rootGen, node->name, xmlNodeGetContent(node));
+	}
+	xmlSaveFormatFileEnc(path.c_str(), docGen, "UTF-8", 1);
+	xmlFreeDoc(doc);
+	xmlFreeDoc(docGen);
+	xmlMemoryDump();
 	return true;
 }
-
-bool xmlDatabase::addGroupMessage(std::string messageInfo) {
+bool xmlDatabase::addGroupMessage(std::string groupId, std::string userId, std::string message)
+{
+        std::string p = "db_files/groups/" + groupId + "/conv.xml";
+        const char* path = p.c_str();
+        const char* mess = message.c_str();
+        xmlDoc* doc_mess = NULL;
+        xmlNode* root_mess = NULL;
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        LIBXML_TEST_VERSION;
+        doc_mess = xmlReadMemory(mess, message.length(), "noname.xml", NULL, 0);
+        root_mess = xmlDocGetRootElement(doc_mess);
+        root_mess = addMessId(root_mess, userId);
+	doc = xmlReadFile (path, NULL, 0);
+        root = xmlDocGetRootElement(doc);
+        xmlAddChild(root, root_mess);
+        xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+        xmlCleanupParser();
+        xmlMemoryDump();
 	return true;
 }
 
@@ -438,6 +654,36 @@ void change_quantity(xmlNode* root_element, bool &status)
 	}
 }
 
+bool add_link_group_convs(std:: string groupId, std::string userId)
+//jisht link sarqelu hamar path petqa amboxjutyamb tanq, aysinqn amen mekis mot da tarbera linelu minchev instant_messenger direktorian(orinak im mot /home/narek/Documents/Tnayin/  a janapar@ dzer mot ktarbervi aysqan mas@), ashxatacneluc araj std::string convs =...  toxum jisht amboxj janapar@ tveq convs = "/amboxj jamaparh@ neraryal conversations direktorian/"  + groupId + "/conv.xml". P.S. amboxj janaparh@ imanalu hamar terminalov mteq groups direktorian u pwd areq
+{
+        std::string p1 = "db_files/users/" + userId + "/convs/" + groupId + ".xml";
+        std::string convs = "/home/narek/Documents/Tnayin/instant_messenger/db_files/groups/" + groupId + "/conv.xml";
+        const char* link = p1.c_str();
+        const char* conv = convs.c_str();
+	std::string p2 = "db_files/users/" + userId + "/convs/convs_list.xml";
+	const char* path = p2.c_str();
+	const char* gId = groupId.c_str();
+	xmlDoc* doc = NULL;
+	xmlNode* root = NULL;
+        doc = xmlReadFile(path, NULL, 0);
+        root = xmlDocGetRootElement(doc);
+        if ((0 == symlink(conv, link)) && (!(NULL == xmlNewChild(root, NULL, BAD_CAST gId, NULL))))
+        {
+		xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+                return true;
+        }
+        else
+        {
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+                return false;
+        }
+}
+
+
 bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID) 
 {
 	bool status = true;
@@ -445,8 +691,8 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 	const char* c_gr_inf = gr_inf.c_str();
 	std::string users = "db_files/groups/" + groupID + "/users.xml";
 	const char* c_users = users.c_str();
-	xmlDoc *doc = NULL;
-	xmlNode *root_element = NULL;
+	xmlDoc* doc = NULL;
+	xmlNode* root_element = NULL;
 	LIBXML_TEST_VERSION;
 	doc = xmlReadFile(c_users, NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
@@ -462,6 +708,10 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 		xmlSaveFormatFileEnc(c_gr_inf, doc, "UTF-8", 1);
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
+		if(status)
+		{
+			status = add_link_group_convs(groupID, userID);
+		}
 	}
 	return status;
 }
