@@ -1,12 +1,12 @@
 <info>
-	<ID>100000</ID>
+	<uId>100000</uId>
 	<join_date>03.4.2019</join_date>
 	<firstname>Narek</firstname>
 	<lastname>Jilavyan</lastname>
 	<gender>male</gender>
 	<birthDate>21.02.2002</birthDate>
 	<mail>narek_jilavyan@mail.ru</mail>
-	<group>g5</group>
+	<gId>g5</gId>
 	<login>NarekYan</login>
 	<password>Narek2002</password>
 </info>

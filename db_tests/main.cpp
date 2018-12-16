@@ -2,6 +2,8 @@
 #include <fstream>
 #include <xmlDatabase.hpp>
 #include <IDgenerator.hpp>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 /*
 registerUser(std::string userInfo)
@@ -35,16 +37,38 @@ std::string xml2string (const char* file) {
 	}
 	return info;
 }
+void test_getUserConversation(std::string from_id,std::string to_id) {
+	std::cout<<db->getUsersConversation(from_id,to_id)<<std::endl;
+	std::cout<<"======================================="<<std::endl;
+	std::cout<<db->getUserConversations(from_id)<<std::endl;
+}
 
 void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
 	std::string id = db->registerUser(info);
-	id = id.erase(0, 4);
-	id = id.substr(0, id.find("</id>"));
+	std::cout << id << std::endl;
+
+	xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        LIBXML_TEST_VERSION;
+        const char* inf = id.c_str();
+        doc = xmlReadMemory(inf, id.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	id =(char*) xmlNodeGetContent(root);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+
+
 	std::cout << "ID : " << id << std::endl;
 	info = db->getUserInfo(id);
 	std::cout << info << std::endl;
+	std::cout<<"Update userInfo\n";
+	std::string updInfo = "<info><uId>" + id + "</uId><firstname>Miqo</firstname><lastname>Aslikyan</lastname><login>Miqo1101</login><gender>male</gender></info>";
+	db->updateUserInfo(updInfo);
+	std::cout<<db->getUserInfo(id)<<std::endl;
+
 }
 
 void test2 () {
@@ -59,6 +83,14 @@ void test_IdGenerator()
 	{
 		std::cout << IDgenerator::getUserId()<<std::endl;
 	}
+	for(int i=0; i<1000; i++)
+	{
+		std::cout << IDgenerator::getGroupId()<<std::endl;
+	}
+	for(int i=0; i<1000; i++)
+	{
+		std::cout << IDgenerator::getMessageId()<<std::endl;
+	}
 }
 void test_groupFunctional()
 {
@@ -66,8 +98,16 @@ void test_groupFunctional()
 	std::string info = xml2string("xmls/createGroup1.xml");
 	std::cout<<"Info = "<<info<<std::endl;	
 	std::string id=db->createGroup(info);
-	id = id.erase(0, 4);
-        id = id.substr(0, id.find("</id>"));
+	xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        LIBXML_TEST_VERSION;
+        const char* inf = id.c_str();
+        doc = xmlReadMemory(inf, id.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	id =(char*) xmlNodeGetContent(root);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
 	std::cout<<"Group ID = "<<id<<std::endl;
 	std::cout<<"Group Info : ";
 	std::cout<<db->getGroupInfo(id)<<std::endl;
@@ -86,18 +126,122 @@ void test_createGroup() {
 	std::string info = xml2string("xmls/createGroup1.xml");
 	std::string groupId = db->createGroup(info);
 	std::cout << groupId << std::endl;
-	groupId = groupId.substr(4, groupId.rfind("<") - 4);
+        LIBXML_TEST_VERSION;
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+	const char* Id = groupId.c_str();
+	doc = xmlReadMemory(Id, groupId.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	groupId = (char*) xmlNodeGetContent(root); 
+	std::cout << groupId << "\n";
 	std::cout << db->getGroupInfo(groupId) << std::endl;
-        info = xml2string("xmls/createGroup2.xml");	
+        
+	info = xml2string("xmls/createGroup2.xml");	
 	groupId = db->createGroup(info);
 	std::cout << groupId <<std::endl;
-	groupId = groupId.substr(4, groupId.rfind("<") - 4);
+	Id = groupId.c_str();
+	doc = xmlReadMemory(Id, groupId.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	groupId = (char*) xmlNodeGetContent(root); 
+	std::cout << groupId << "\n";
 	std::cout << db->getGroupInfo(groupId) << std::endl;
 }
+void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
+{
+	std::string inf = "<info><name>VanIt</name><admin>u1000</admin><createdate>12.12.2018</createdate></info>";
+	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
+	std::string id = db->registerUser(info1);
+	std::cout << id << std::endl;
 
+        LIBXML_TEST_VERSION;
+	xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        LIBXML_TEST_VERSION;
+        const char* id1 = id.c_str();
+        doc = xmlReadMemory(id1, id.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	id =(char*) xmlNodeGetContent(root);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+	std::string gid = db->createGroup(inf);
+	std::cout<< gid <<std::endl;
+        const char* gid1 = gid.c_str();
+        doc = xmlReadMemory(gid1, gid.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	gid =(char*) xmlNodeGetContent(root);
+	std::cout<< gid <<std::endl;
+	std::cout<< id <<std::endl;
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+	std::cout<<db->getGroupInfo(gid)<<std::endl;
+	db->addUserToGroup(gid, id);
+	std::cout<<db->getGroupInfo(gid)<<std::endl;
+	std::cout<<"Update gInfo\tadmin->u24, name-> VanIt-Basic_training\n";
+	std::string updInfo = "<info><gId>" + gid + "</gId><name>VanItBasictraining</name><admin>u24</admin></info>";
+	std::cout<<"updInfo : "<<updInfo<<std::endl;
+	db->updateGroupInfo(updInfo);
+	std::cout<<db->getGroupInfo(gid)<<std::endl;
+	std::cout<<"start test addGroupMessage\n";
+	std::string group_mess = "<message><date>16.12.2018</date><body>barev ankrkneliner)</body></message>";
+	std::cout<< db->addGroupMessage(gid, id, group_mess) <<std::endl;
+}
+void test_addUserMessage()
+//USHADRUTYUN ashxatacneluc araj petqa add_message funkciayum dzer popoxutyun@ aneq, mteq xmlDatabase.cpp, gteq bacatrutyun@ te inch@ petqa poxel  ( motavorapes tox 400 - 500 mijakayqum )
+{
+	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
+	std::string id1 = db->registerUser(info1);
+	std::string info2 = "<registration_information><firstName>Valod</firstName><lastName>Valodyan</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>valod@gmail.com</email><login>valod1990</login><password>Val1990</password></registration_information>";
+	std::string id2 = db->registerUser(info2);
+	std::string info3 = "<registration_information><firstName>Vika</firstName><lastName>Vika</lastName><gender>female</gender><birthDate>10.02.1990</birthDate><email>vika@gmail.com</email><login>vika1990</login><password>Vika1990</password></registration_information>";
+	std::string id3 = db->registerUser(info3);
+	std::string message1 = "<message><date>14.12.2018</date><body>barev Valod</body></message>";
+	std::string message2 = "<message><date>14.12.2018</date><body>barev Jo</body></message>";
+	std::string message3 = "<message><date>14.12.2018</date><body> Inch ka?</body></message>";
+	std::string message4 = "<message><date>14.12.2018</date><body> Ban chka</body></message>";
+	std::string message5 = "<message><date>14.12.2018</date><body> barev Vika</body></message>";
+	std::string message6 = "<message><date>14.12.2018</date><body> Vika barev</body></message>";
+	std::string message7 = "<message><date>14.12.2018</date><body>barev</body></message>";
+	xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        LIBXML_TEST_VERSION;
+        const char* i1 = id1.c_str();
+        doc = xmlReadMemory(i1, id1.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	id1 =(char*) xmlNodeGetContent(root);
+	std::cout<< id1 <<std::endl;
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+        const char* i2 = id2.c_str();
+        doc = xmlReadMemory(i2, id2.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	id2 =(char*) xmlNodeGetContent(root);
+	std::cout<< id2 <<std::endl;
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+        const char* i3 = id3.c_str();
+        doc = xmlReadMemory(i3, id3.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	id3 =(char*) xmlNodeGetContent(root);
+	std::cout<< id3 <<std::endl;
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+	db->addUserMessage(id1, id2 , message1);
+	db->addUserMessage(id2, id1 , message2);
+	db->addUserMessage(id1, id2 , message3);
+	db->addUserMessage(id2, id1 , message4);
+	db->addUserMessage(id1, id3 , message5);
+	db->addUserMessage(id2, id3 , message6);
+	db->addUserMessage(id3, id1 , message7);
+	db->addUserMessage(id3, id2 , message7);
+}
 int main() {
 //	test1();
-//	test1();
+//	test2();
 //	test_groupFunctional();
 //	test_groupFunctional();
 //	test_groupFunctional();
@@ -105,5 +249,8 @@ int main() {
 //	test2();
 //	test_IdGenerator();
 	test_createGroup();
+//	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
+//	test_getUserConversation("u100002","u100003");
+//	test_addUserMessage();
 	return 0;
 }
