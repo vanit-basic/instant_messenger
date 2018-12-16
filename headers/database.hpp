@@ -39,7 +39,7 @@ class database {
 		
 		virtual bool updateGroupInfo(std::string groupInfo) = 0;
 
-		virtual bool addGroupMessage(std::string messageInfo) = 0;
+		virtual bool addGroupMessage(std::string groupId, std::string userId, std::string message) = 0;
 
 	public:
 		database() {}

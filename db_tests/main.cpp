@@ -134,7 +134,7 @@ void test_createGroup() {
 	groupId = groupId.substr(5, groupId.rfind("<") - 5);
 	std::cout << db->getGroupInfo(groupId) << std::endl;
 }
-void test_creatGroup_addUserToGroup_getGroupInfo()
+void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
 {
 	std::string inf = "<info><name>VanIt</name><admin>u1000</admin><createdate>12.12.2018</createdate></info>";
 	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
@@ -159,6 +159,7 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
         root = xmlDocGetRootElement(doc);
 	gid =(char*) xmlNodeGetContent(root);
 	std::cout<< gid <<std::endl;
+	std::cout<< id <<std::endl;
         xmlFreeDoc(doc);
         xmlCleanupParser();
         xmlMemoryDump();
@@ -166,10 +167,13 @@ void test_creatGroup_addUserToGroup_getGroupInfo()
 	db->addUserToGroup(gid, id);
 	std::cout<<db->getGroupInfo(gid)<<std::endl;
 	std::cout<<"Update gInfo\tadmin->u24, name-> VanIt-Basic_training\n";
-//	std::string updInfo = "<info><gId>" + gid + "</gId><name>VanItBasictraining</name><admin>u24</admin></info>";
-//	std::cout<<"updInfo : "<<updInfo<<std::endl;
-//	db->updateGroupInfo(updInfo);
-//	std::cout<<db->getGroupInfo(gid)<<std::endl;
+	std::string updInfo = "<info><gId>" + gid + "</gId><name>VanItBasictraining</name><admin>u24</admin></info>";
+	std::cout<<"updInfo : "<<updInfo<<std::endl;
+	db->updateGroupInfo(updInfo);
+	std::cout<<db->getGroupInfo(gid)<<std::endl;
+	std::cout<<"start test addGroupMessage\n";
+	std::string group_mess = "<message><date>16.12.2018</date><body>barev ankrkneliner)</body></message>";
+	std::cout<< db->addGroupMessage(gid, id, group_mess) <<std::endl;
 }
 void test_addUserMessage()
 //USHADRUTYUN ashxatacneluc araj petqa add_message funkciayum dzer popoxutyun@ aneq, mteq xmlDatabase.cpp, gteq bacatrutyun@ te inch@ petqa poxel  ( motavorapes tox 400 - 500 mijakayqum )
@@ -223,7 +227,6 @@ void test_addUserMessage()
 	db->addUserMessage(id3, id1 , message7);
 	db->addUserMessage(id3, id2 , message7);
 }
-
 int main() {
 //	test1();
 //	test2();
@@ -234,7 +237,7 @@ int main() {
 //	test2();
 //	test_IdGenerator();
 //	test_createGroup();
-	test_creatGroup_addUserToGroup_getGroupInfo();
+	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_getUserConversation("u100002","u100003");
 //	test_addUserMessage();
 	return 0;

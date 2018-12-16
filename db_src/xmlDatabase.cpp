@@ -588,8 +588,25 @@ bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
 	xmlMemoryDump();
 	return true;
 }
-
-bool xmlDatabase::addGroupMessage(std::string messageInfo) {
+bool xmlDatabase::addGroupMessage(std::string groupId, std::string userId, std::string message)
+{
+        std::string p = "db_files/groups/" + groupId + "/conv.xml";
+        const char* path = p.c_str();
+        const char* mess = message.c_str();
+        xmlDoc* doc_mess = NULL;
+        xmlNode* root_mess = NULL;
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        LIBXML_TEST_VERSION;
+        doc_mess = xmlReadMemory(mess, message.length(), "noname.xml", NULL, 0);
+        root_mess = xmlDocGetRootElement(doc_mess);
+        root_mess = addMessId(root_mess, userId);
+	doc = xmlReadFile (path, NULL, 0);
+        root = xmlDocGetRootElement(doc);
+        xmlAddChild(root, root_mess);
+        xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+        xmlCleanupParser();
+        xmlMemoryDump();
 	return true;
 }
 
@@ -638,6 +655,7 @@ void change_quantity(xmlNode* root_element, bool &status)
 }
 
 bool add_link_group_convs(std:: string groupId, std::string userId)
+//jisht link sarqelu hamar path petqa amboxjutyamb tanq, aysinqn amen mekis mot da tarbera linelu minchev instant_messenger direktorian(orinak im mot /home/narek/Documents/Tnayin/  a janapar@ dzer mot ktarbervi aysqan mas@), ashxatacneluc araj std::string convs =...  toxum jisht amboxj janapar@ tveq convs = "/amboxj jamaparh@ neraryal conversations direktorian/"  + groupId + "/conv.xml". P.S. amboxj janaparh@ imanalu hamar terminalov mteq groups direktorian u pwd areq
 {
         std::string p1 = "db_files/users/" + userId + "/convs/" + groupId + ".xml";
         std::string convs = "/home/narek/Documents/Tnayin/instant_messenger/db_files/groups/" + groupId + "/conv.xml";
