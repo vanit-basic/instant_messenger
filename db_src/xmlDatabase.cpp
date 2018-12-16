@@ -358,7 +358,7 @@ bool add_link(std:: string path, std::string from, std::string to)
         const char* link1 = l1.c_str();
         const char* link2 = l2.c_str();
         const char* conv = path.c_str();
-        if (!(symlink(conv, link1) || symlink(conv, link2)))
+        if ((0 == symlink(conv, link1)) && (0 == symlink(conv, link2)))
         {
                 return true;
         }
@@ -368,7 +368,7 @@ bool add_link(std:: string path, std::string from, std::string to)
         }
 }
 
-bool add_message(xmlNode* node, std::string from, std::string to, bool &status1)
+bool add_message(xmlNode* node, std::string from, std::string to)
 {
         bool status = true;
         std::string path1 = "db_files/conversations/" + from + to + ".xml";
@@ -412,7 +412,6 @@ bool add_message(xmlNode* node, std::string from, std::string to, bool &status1)
 			path1 = "/home/narek/Documents/Tnayin/instant_messenger/db_files/conversations/" + from + to + ".xml";
                         status = add_link(path1, from, to);
         		xmlCleanupParser();
-			status1 = false;
                 }
         }
         return status;
@@ -430,7 +429,6 @@ xmlNode* addMessId (xmlNode* root, std::string from)
 bool xmlDatabase::addUserMessage(std::string from, std::string to, std::string message)
 {
         bool status = false;
-        bool status1 = true;
         std::string path = "";
         const char* mess = message.c_str();
         xmlDoc* doc = NULL;
@@ -439,7 +437,7 @@ bool xmlDatabase::addUserMessage(std::string from, std::string to, std::string m
         doc = xmlReadMemory(mess, message.length(), "noname.xml", NULL, 0);
         root = xmlDocGetRootElement(doc);
         root = addMessId(root, from);
-        status = add_message(root, from, to, status1);
+        status = add_message(root, from, to);
 	xmlCleanupParser();
 	xmlMemoryDump();
         return status;
