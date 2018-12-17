@@ -304,7 +304,7 @@ void test_addUserMessage_getUsersConversation_getUserConversations()
 	}
 }
 int main() {
-//	test1();
+	test1();
 //	test2();
 //	test_groupFunctional();
 
@@ -313,6 +313,6 @@ int main() {
 //	test_createGroup();
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_getUserConversation("u100000","u100003");
-	test_addUserMessage_getUsersConversation_getUserConversations();
+//	test_addUserMessage_getUsersConversation_getUserConversations();
 	return 0;
 }

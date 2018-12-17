@@ -537,8 +537,8 @@ std::string xmlDatabase::addUserMessage(std::string from, std::string to, std::s
 	root = addMessId(root, from);
 	info = xmlDocToString(doc);
 	status = add_message(root, from, to);
-	xmlCleanupParser();
 	xmlMemoryDump();
+	xmlCleanupParser();
 	if(status && (!(info == "")))
 	{
 		return info;
