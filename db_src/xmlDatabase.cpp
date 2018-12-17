@@ -393,7 +393,7 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
 std::string xmlDatabase::getUsersConversation(std::string fromID, std::string toID) {
 	std::string tmp = "";
 	std::string fin = "";
-	std::ifstream id("db_files/users/" + fromID + "/convs/" + toID);
+	std::ifstream id("db_files/users/" + fromID + "/convs/" + toID + ".xml");
 	while(getline(id,tmp)) {
 		fin = fin + tmp;
 	}
@@ -537,8 +537,8 @@ std::string xmlDatabase::addUserMessage(std::string from, std::string to, std::s
 	root = addMessId(root, from);
 	info = xmlDocToString(doc);
 	status = add_message(root, from, to);
-	xmlCleanupParser();
 	xmlMemoryDump();
+	xmlCleanupParser();
 	if(status && (!(info == "")))
 	{
 		return info;
@@ -812,6 +812,25 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 }
 
 bool xmlDatabase::removeMessage(std::string messageInfo) {
+/*	
+	std::string fromId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+	messageInfo = messageInfo.substr(messageInfo.find(">")+1);
+
+	std::string toId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+	messageInfo = messageInfo.substr(messageInfo.find(">")+1);
+	
+	std::string messageId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+	messageInfo = messageInfo.substr(messageInfo.find(">")+1);
+	
+	std::string remove_status = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+	
+	std::string conv = "db_files/users/" + fromID + "/convs/" + toID;
+	const char* del_mess = conv.c_str();
+	xmlDoc* doc = NULL;
+	xmlNode* eoot_element = NULL;
+	LIBXML_TEST_VERSION;
+	doc = xmlReadFile(del_mess, Null, 0);
+	root_element = xmlDocGetRootElement(doc);*/
 	return true;
 }
 

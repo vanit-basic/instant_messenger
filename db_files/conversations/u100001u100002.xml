@@ -1,0 +1,15 @@
+<conv>
+        <m1 from="u100001" >
+                <date>20:28</date>
+                <body>privet</body>
+        </m1>
+        <m2 from="u100002" >
+                <date>20:29</date>
+                <body>zdarov</body>
+        </m2>
+        <m3 from="u100001" >
+                <date>20:30</date>
+                <body>kak dela?</body>
+        </m3>
+</conv>
+
