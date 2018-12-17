@@ -812,6 +812,25 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 }
 
 bool xmlDatabase::removeMessage(std::string messageInfo) {
+/*	
+	std::string fromId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+	messageInfo = messageInfo.substr(messageInfo.find(">")+1);
+
+	std::string toId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+	messageInfo = messageInfo.substr(messageInfo.find(">")+1);
+	
+	std::string messageId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+	messageInfo = messageInfo.substr(messageInfo.find(">")+1);
+	
+	std::string remove_status = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+	
+	std::string conv = "db_files/users/" + fromID + "/convs/" + toID;
+	const char* del_mess = conv.c_str();
+	xmlDoc* doc = NULL;
+	xmlNode* eoot_element = NULL;
+	LIBXML_TEST_VERSION;
+	doc = xmlReadFile(del_mess, Null, 0);
+	root_element = xmlDocGetRootElement(doc);*/
 	return true;
 }
 

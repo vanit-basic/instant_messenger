@@ -39,7 +39,9 @@ std::string xml2string (const char* file) {
 }
 void test_getUserConversation(std::string from_id,std::string to_id) {
 	std::cout<<db->getUsersConversation(from_id,to_id)<<std::endl;
-	std::cout<<"======================================="<<std::endl;
+	std::cout<<"*****************************************************"<<std::endl;
+	std::cout<<"*****************************************************"<<std::endl;
+	std::cout<<"*****************************************************"<<std::endl;
 	std::cout<<db->getUserConversations(from_id)<<std::endl;
 }
 

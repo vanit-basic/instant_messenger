@@ -1,0 +1,15 @@
+<conv>
+        <m1 from="u100002" >
+                <date>20:28</date>
+                <body>xxxxxxxxxxx</body>
+        </m1>
+        <m2 from="u100004" >
+                <date>20:29</date>
+                <body>yyyyyyyy</body>
+        </m2>
+        <m3 from="u100002" >
+                <date>20:30</date>
+                <body>xyxyxyxy</body>
+        </m3>
+</conv>
+
