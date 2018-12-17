@@ -326,7 +326,7 @@ std::string xmlDatabase::getUserInfo(std::string userID) {
 	std::string out = input.replace(pattern);
 	return out;
 }*/
-std::string findAndReplaceAll(std::string & data, std::string toSearch)
+/*std::string findAndReplaceAll(std::string & data, std::string toSearch)
 {
 	size_t pos = data.find(toSearch);
  
@@ -336,7 +336,16 @@ std::string findAndReplaceAll(std::string & data, std::string toSearch)
 		pos =data.find(toSearch, pos + toSearch.size());
 	}
 	return data;
+}*/
+std::string replace_tab(std::string input){
+
+        while(input.find('\t') != std::string::npos){
+                int pos = input.find('\t');
+                input.erase(pos,1);
+        }
+        return input;
 }
+
 std::string xmlDatabase::getUserConversations(std::string userID) {
     std::string tmp = "";
     std::string fin = "";
@@ -344,7 +353,7 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
     while(getline(id,tmp)) {
         fin = fin +tmp;
     }
-    fin = findAndReplaceAll(fin,"\n");
+    fin = replace_tab(fin);
 
     return fin;
 }
@@ -356,6 +365,7 @@ std::string xmlDatabase::getUsersConversation(std::string fromID, std::string to
 	while(getline(id,tmp)) {
 		fin = fin + tmp;
 	}
+    fin = replace_tab(fin);
 	return fin;
 }
 
