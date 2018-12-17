@@ -4,7 +4,7 @@
 #include <IDgenerator.hpp>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-
+#include <string.h>
 /*
 registerUser(std::string userInfo)
 getUserInfo(std::string userID)
@@ -47,28 +47,33 @@ void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
 	std::string id = db->registerUser(info);
-	std::cout << id << std::endl;
 
 	xmlDoc* doc = NULL;
-        xmlNode* root = NULL;
-        LIBXML_TEST_VERSION;
-        const char* inf = id.c_str();
-        doc = xmlReadMemory(inf, id.size(), "noname.xml", NULL, 0);
-        root = xmlDocGetRootElement(doc);
-	id =(char*) xmlNodeGetContent(root);
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
-        xmlMemoryDump();
-
-
-	std::cout << "ID : " << id << std::endl;
-	info = db->getUserInfo(id);
-	std::cout << info << std::endl;
-	std::cout<<"Update userInfo\n";
-	std::string updInfo = "<info><uId>" + id + "</uId><firstname>Miqo</firstname><lastname>Aslikyan</lastname><login>Miqo1101</login><gender>male</gender></info>";
-	db->updateUserInfo(updInfo);
-	std::cout<<db->getUserInfo(id)<<std::endl;
-
+	xmlNode* root = NULL;
+	LIBXML_TEST_VERSION;
+	const char* inf = id.c_str();
+	doc = xmlReadMemory(inf, id.size(), "noname.xml", NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	xmlChar* buf = xmlNodeGetContent(root);
+	id =(char*) buf;
+	xmlFree(buf);
+	if(0 == strcmp((char*)root->name, "error"))
+	{
+		std::cout<<"Such login or email is already in use\n";
+	}
+	else
+	{
+		std::cout << "ID : " << id << std::endl;
+		info = db->getUserInfo(id);
+		std::cout << info << std::endl;
+		std::cout<<"Update userInfo\n";
+		std::string updInfo = "<info><uId>" + id + "</uId><firstname>Miqo</firstname><lastname>Aslikyan</lastname><login>Miqo1101</login><gender>male</gender></info>";
+		db->updateUserInfo(updInfo);
+		std::cout<<db->getUserInfo(id)<<std::endl;
+	}
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+	xmlMemoryDump();
 }
 
 void test2 () {
@@ -152,41 +157,54 @@ void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
 	std::string inf = "<info><name>VanIt</name><admin>u1000</admin><createdate>12.12.2018</createdate></info>";
 	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
 	std::string id = db->registerUser(info1);
-	std::cout << id << std::endl;
 
-        LIBXML_TEST_VERSION;
+	LIBXML_TEST_VERSION;
 	xmlDoc* doc = NULL;
-        xmlNode* root = NULL;
-        LIBXML_TEST_VERSION;
-        const char* id1 = id.c_str();
-        doc = xmlReadMemory(id1, id.size(), "noname.xml", NULL, 0);
-        root = xmlDocGetRootElement(doc);
+	xmlNode* root = NULL;
+	LIBXML_TEST_VERSION;
+	const char* id1 = id.c_str();
+	doc = xmlReadMemory(id1, id.size(), "noname.xml", NULL, 0);
+	root = xmlDocGetRootElement(doc);
 	id =(char*) xmlNodeGetContent(root);
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
-        xmlMemoryDump();
-	std::string gid = db->createGroup(inf);
-	std::cout<< gid <<std::endl;
-        const char* gid1 = gid.c_str();
-        doc = xmlReadMemory(gid1, gid.size(), "noname.xml", NULL, 0);
-        root = xmlDocGetRootElement(doc);
-	gid =(char*) xmlNodeGetContent(root);
-	std::cout<< gid <<std::endl;
-	std::cout<< id <<std::endl;
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
-        xmlMemoryDump();
-	std::cout<<db->getGroupInfo(gid)<<std::endl;
-	db->addUserToGroup(gid, id);
-	std::cout<<db->getGroupInfo(gid)<<std::endl;
-	std::cout<<"Update gInfo\tadmin->u24, name-> VanIt-Basic_training\n";
-	std::string updInfo = "<info><gId>" + gid + "</gId><name>VanItBasictraining</name><admin>u24</admin></info>";
-	std::cout<<"updInfo : "<<updInfo<<std::endl;
-	db->updateGroupInfo(updInfo);
-	std::cout<<db->getGroupInfo(gid)<<std::endl;
-	std::cout<<"start test addGroupMessage\n";
-	std::string group_mess = "<message><date>16.12.2018</date><body>barev ankrkneliner)</body></message>";
-	std::cout<< db->addGroupMessage(gid, id, group_mess) <<std::endl;
+	xmlChar* buf = xmlNodeGetContent(root);
+	id =(char*) buf;
+	xmlFree(buf);
+	if(0 == strcmp((char*)root->name, "error"))
+	{
+		std::cout<<"Such login or email is already in use\n";
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+		xmlMemoryDump();
+	}
+	else
+	{
+		std::cout << id << std::endl;
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+		xmlMemoryDump();
+		std::string gid = db->createGroup(inf);
+		std::cout<< gid <<std::endl;
+		const char* gid1 = gid.c_str();
+		doc = xmlReadMemory(gid1, gid.size(), "noname.xml", NULL, 0);
+		root = xmlDocGetRootElement(doc);
+		gid =(char*) xmlNodeGetContent(root);
+		std::cout<< gid <<std::endl;
+		std::cout<< id <<std::endl;
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+		xmlMemoryDump();
+		std::cout<<db->getGroupInfo(gid)<<std::endl;
+		db->addUserToGroup(gid, id);
+		std::cout<<db->getGroupInfo(gid)<<std::endl;
+		std::cout<<"Update gInfo\tadmin->u24, name-> VanIt-Basic_training\n";
+		std::string updInfo = "<info><gId>" + gid + "</gId><name>VanItBasictraining</name><admin>u24</admin></info>";
+		std::cout<<"updInfo : "<<updInfo<<std::endl;
+		db->updateGroupInfo(updInfo);
+		std::cout<<db->getGroupInfo(gid)<<std::endl;
+		std::cout<<"start test addGroupMessage\n";
+		std::string group_mess = "<message><date>16.12.2018</date><body>barev ankrkneliner)</body></message>";
+		std::cout<< db->addGroupMessage(gid, id, group_mess) <<std::endl;
+	}
 }
 void test_addUserMessage()
 //USHADRUTYUN ashxatacneluc araj petqa add_message funkciayum dzer popoxutyun@ aneq, mteq xmlDatabase.cpp, gteq bacatrutyun@ te inch@ petqa poxel  ( motavorapes tox 400 - 500 mijakayqum )
@@ -205,40 +223,77 @@ void test_addUserMessage()
 	std::string message6 = "<message><date>14.12.2018</date><body> Vika barev</body></message>";
 	std::string message7 = "<message><date>14.12.2018</date><body>barev</body></message>";
 	xmlDoc* doc = NULL;
-        xmlNode* root = NULL;
-        LIBXML_TEST_VERSION;
-        const char* i1 = id1.c_str();
-        doc = xmlReadMemory(i1, id1.size(), "noname.xml", NULL, 0);
-        root = xmlDocGetRootElement(doc);
-	id1 =(char*) xmlNodeGetContent(root);
-	std::cout<< id1 <<std::endl;
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
-        xmlMemoryDump();
-        const char* i2 = id2.c_str();
-        doc = xmlReadMemory(i2, id2.size(), "noname.xml", NULL, 0);
-        root = xmlDocGetRootElement(doc);
-	id2 =(char*) xmlNodeGetContent(root);
-	std::cout<< id2 <<std::endl;
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
-        xmlMemoryDump();
-        const char* i3 = id3.c_str();
-        doc = xmlReadMemory(i3, id3.size(), "noname.xml", NULL, 0);
-        root = xmlDocGetRootElement(doc);
-	id3 =(char*) xmlNodeGetContent(root);
-	std::cout<< id3 <<std::endl;
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
-        xmlMemoryDump();
-	db->addUserMessage(id1, id2 , message1);
-	db->addUserMessage(id2, id1 , message2);
-	db->addUserMessage(id1, id2 , message3);
-	db->addUserMessage(id2, id1 , message4);
-	db->addUserMessage(id1, id3 , message5);
-	db->addUserMessage(id2, id3 , message6);
-	db->addUserMessage(id3, id1 , message7);
-	db->addUserMessage(id3, id2 , message7);
+	xmlNode* root = NULL;
+	LIBXML_TEST_VERSION;
+	const char* i1 = id1.c_str();
+	doc = xmlReadMemory(i1, id1.size(), "noname.xml", NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	xmlChar* buf;
+	buf = xmlNodeGetContent(root);
+	id1 =(char*) buf;
+	xmlFree(buf);
+	if(0 == strcmp((char*)root->name, "error"))
+	{
+		std::cout<<"Such login or email is already in use\n";
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+		xmlMemoryDump();
+	}
+	else
+	{
+		std::cout<< id1 <<std::endl;
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+		xmlMemoryDump();
+		const char* i2 = id2.c_str();
+		doc = xmlReadMemory(i2, id2.size(), "noname.xml", NULL, 0);
+		root = xmlDocGetRootElement(doc);
+		buf = xmlNodeGetContent(root);
+		id2 =(char*) buf;
+		xmlFree(buf);
+		if(0 == strcmp((char*)root->name, "error"))
+		{
+			std::cout<<"Such login or email is already in use\n";
+			xmlFreeDoc(doc);
+			xmlCleanupParser();
+			xmlMemoryDump();
+		}
+		else
+		{
+			std::cout<< id2 <<std::endl;
+			xmlFreeDoc(doc);
+			xmlCleanupParser();
+			xmlMemoryDump();
+			const char* i3 = id3.c_str();
+			doc = xmlReadMemory(i3, id3.size(), "noname.xml", NULL, 0);
+			root = xmlDocGetRootElement(doc);
+			buf = xmlNodeGetContent(root);
+			id3 =(char*) buf;
+			xmlFree(buf);
+			if(0 == strcmp((char*)root->name, "error"))
+			{
+				std::cout<<"Such login or email is already in use\n";
+				xmlFreeDoc(doc);
+				xmlCleanupParser();
+				xmlMemoryDump();
+			}
+			else
+			{
+				std::cout<< id3 <<std::endl;
+				xmlFreeDoc(doc);
+				xmlCleanupParser();
+				xmlMemoryDump();
+				db->addUserMessage(id1, id2 , message1);
+				db->addUserMessage(id2, id1 , message2);
+				db->addUserMessage(id1, id2 , message3);
+				db->addUserMessage(id2, id1 , message4);
+				db->addUserMessage(id1, id3 , message5);
+				db->addUserMessage(id2, id3 , message6);
+				db->addUserMessage(id3, id1 , message7);
+				db->addUserMessage(id3, id2 , message7);
+			}
+		}
+	}
 }
 int main() {
 //	test1();
@@ -248,8 +303,8 @@ int main() {
 //	test2();
 //	test_IdGenerator();
 //	test_createGroup();
-//	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
-	test_getUserConversation("u100000","u100003");
+	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
+//	test_getUserConversation("u100000","u100003");
 //	test_addUserMessage();
 	return 0;
 }
