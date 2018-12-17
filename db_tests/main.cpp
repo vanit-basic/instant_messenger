@@ -112,12 +112,13 @@ void test_groupFunctional()
 	std::cout<<"Group Info : ";
 	std::cout<<db->getGroupInfo(id)<<std::endl;
 	std::cout<<"********************************"<<std::endl;
-	std::cout<<"Add usertogroup : "<<db->addUserToGroup("g1","u100003")<<std::endl;
-	std::cout<<"Get groupinfo : "<<db->getGroupInfo("g1")<<std::endl;
-	std::cout<<"Remove form group : "<<db->removeFromGroup("g1","u10003")<<std::endl;
+	std::cout<<"Add usertogroup : "<<db->addUserToGroup(id,"u100003")<<std::endl;
+	std::cout<<"Add usertogroup : "<<db->addUserToGroup(id,"u100008")<<std::endl;
+	std::cout<<"Get groupinfo : "<<db->getGroupInfo(id)<<std::endl;
+	std::cout<<"Remove form group : "<<db->removeFromGroup(id,"u100003")<<std::endl;
 	std::cout<<"Remove form group : "<<db->removeFromGroup("g6","u10003")<<std::endl;
 	std::cout<<"Remove form group : "<<db->removeFromGroup("g1","u40004")<<std::endl;
-	std::cout<<"Get groupinfo : "<<db->getGroupInfo("g1")<<std::endl;
+	std::cout<<"Get groupinfo : "<<db->getGroupInfo(id)<<std::endl;
 	std::cout<<"End Group testing"<<std::endl;
 	
 }
@@ -126,12 +127,24 @@ void test_createGroup() {
 	std::string info = xml2string("xmls/createGroup1.xml");
 	std::string groupId = db->createGroup(info);
 	std::cout << groupId << std::endl;
-	groupId = groupId.substr(5, groupId.rfind("<") - 5);
+        LIBXML_TEST_VERSION;
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+	const char* Id = groupId.c_str();
+	doc = xmlReadMemory(Id, groupId.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	groupId = (char*) xmlNodeGetContent(root); 
+	std::cout << groupId << "\n";
 	std::cout << db->getGroupInfo(groupId) << std::endl;
-        info = xml2string("xmls/createGroup2.xml");	
+        
+	info = xml2string("xmls/createGroup2.xml");	
 	groupId = db->createGroup(info);
 	std::cout << groupId <<std::endl;
-	groupId = groupId.substr(5, groupId.rfind("<") - 5);
+	Id = groupId.c_str();
+	doc = xmlReadMemory(Id, groupId.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+	groupId = (char*) xmlNodeGetContent(root); 
+	std::cout << groupId << "\n";
 	std::cout << db->getGroupInfo(groupId) << std::endl;
 }
 void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
@@ -231,14 +244,12 @@ int main() {
 //	test1();
 //	test2();
 //	test_groupFunctional();
-//	test_groupFunctional();
-//	test_groupFunctional();
 
 //	test2();
 //	test_IdGenerator();
 //	test_createGroup();
-	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
-//	test_getUserConversation("u100002","u100003");
+//	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
+	test_getUserConversation("u100000","u100003");
 //	test_addUserMessage();
 	return 0;
 }
