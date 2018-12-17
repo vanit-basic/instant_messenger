@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <info>
-<<<<<<< HEAD:db_files/groups/g1/ginfo.xml
   <name>ChkaMerNmany</name>
   <admin>u10</admin>
-  <groupId>g1</groupId>
-  <usersquantity>4</usersquantity>
-=======
-  <name>Mafia</name>
-  <admin>u100003</admin>
+  <usersquantity>1</usersquantity>
   <avatar/>
   <createDate>13.12.2018</createDate>
   <gId>g1</gId>
->>>>>>> d801f051ad42c1dec6137144459ef5cdd40bb746:db_files/groups/g10001/ginfo.xml
 </info>

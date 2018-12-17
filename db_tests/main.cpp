@@ -112,12 +112,13 @@ void test_groupFunctional()
 	std::cout<<"Group Info : ";
 	std::cout<<db->getGroupInfo(id)<<std::endl;
 	std::cout<<"********************************"<<std::endl;
-	std::cout<<"Add usertogroup : "<<db->addUserToGroup("g1","u100003")<<std::endl;
-	std::cout<<"Get groupinfo : "<<db->getGroupInfo("g1")<<std::endl;
-	std::cout<<"Remove form group : "<<db->removeFromGroup("g1","u10003")<<std::endl;
+	std::cout<<"Add usertogroup : "<<db->addUserToGroup(id,"u100003")<<std::endl;
+	std::cout<<"Add usertogroup : "<<db->addUserToGroup(id,"u100008")<<std::endl;
+	std::cout<<"Get groupinfo : "<<db->getGroupInfo(id)<<std::endl;
+	std::cout<<"Remove form group : "<<db->removeFromGroup(id,"u100003")<<std::endl;
 	std::cout<<"Remove form group : "<<db->removeFromGroup("g6","u10003")<<std::endl;
 	std::cout<<"Remove form group : "<<db->removeFromGroup("g1","u40004")<<std::endl;
-	std::cout<<"Get groupinfo : "<<db->getGroupInfo("g1")<<std::endl;
+	std::cout<<"Get groupinfo : "<<db->getGroupInfo(id)<<std::endl;
 	std::cout<<"End Group testing"<<std::endl;
 	
 }
@@ -242,8 +243,6 @@ void test_addUserMessage()
 int main() {
 //	test1();
 //	test2();
-//	test_groupFunctional();
-//	test_groupFunctional();
 //	test_groupFunctional();
 
 //	test2();
