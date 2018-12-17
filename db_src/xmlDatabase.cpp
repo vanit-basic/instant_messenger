@@ -507,10 +507,27 @@ xmlNode* addMessId (xmlNode* root, std::string from)
 	return root;
 }
 
-bool xmlDatabase::addUserMessage(std::string from, std::string to, std::string message)
+std::string xmlDocToString(xmlDoc* doc)
+{
+        std::string info = "";
+        xmlChar* buf;
+        int size = 0;
+        xmlDocDumpMemory(doc, &buf, &size);
+        info = (char*) buf;
+        if (!(buf == NULL))
+        {
+                info = (char*)buf;
+        }
+
+        xmlFree(buf);
+        return info;
+}
+
+std::string xmlDatabase::addUserMessage(std::string from, std::string to, std::string message)
 {
 	bool status = false;
 	std::string path = "";
+	std::string info = "";
 	const char* mess = message.c_str();
 	xmlDoc* doc = NULL;
 	xmlNode* root = NULL;
@@ -518,10 +535,18 @@ bool xmlDatabase::addUserMessage(std::string from, std::string to, std::string m
 	doc = xmlReadMemory(mess, message.length(), "noname.xml", NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	root = addMessId(root, from);
+	info = xmlDocToString(doc);
 	status = add_message(root, from, to);
 	xmlCleanupParser();
 	xmlMemoryDump();
-	return status;
+	if(status && (!(info == "")))
+	{
+		return info;
+	}
+	else
+	{
+		return "<error/>";
+	}
 }
 
 void isValidGroupId(std::string &gId) {
@@ -644,9 +669,11 @@ bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
 	xmlMemoryDump();
 	return true;
 }
-bool xmlDatabase::addGroupMessage(std::string groupId, std::string userId, std::string message)
+
+std::string xmlDatabase::addGroupMessage(std::string groupId, std::string userId, std::string message)
 {
 	std::string p = "db_files/groups/" + groupId + "/conv.xml";
+	std::string info = "";
 	const char* path = p.c_str();
 	const char* mess = message.c_str();
 	xmlDoc* doc_mess = NULL;
@@ -657,6 +684,7 @@ bool xmlDatabase::addGroupMessage(std::string groupId, std::string userId, std::
 	doc_mess = xmlReadMemory(mess, message.length(), "noname.xml", NULL, 0);
 	root_mess = xmlDocGetRootElement(doc_mess);
 	root_mess = addMessId(root_mess, userId);
+	info = xmlDocToString(doc_mess);
 	doc = xmlReadFile (path, NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	xmlAddChild(root, root_mess);
@@ -665,7 +693,11 @@ bool xmlDatabase::addGroupMessage(std::string groupId, std::string userId, std::
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	xmlMemoryDump();
-	return true;
+	if (info == "")
+	{
+		info = "<error/>";
+	}
+	return info;
 }
 
 xmlDatabase* xmlDatabase::getShared() {
@@ -701,7 +733,9 @@ void change_quantity(xmlNode* root_element, bool &status)
 		{
 			status = true;
 			xmlChar* buf;
-			quantity = (char*)xmlNodeGetContent(cur_node);
+			buf = xmlNodeGetContent(cur_node);
+			quantity = (char*) buf;
+			xmlFree(buf);
 			quantity = std::to_string(std::stoi(quantity) + 1);
 			const char* new_quantity = quantity.c_str();
 			xmlNodeSetContent(cur_node, BAD_CAST new_quantity);

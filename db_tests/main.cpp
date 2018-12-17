@@ -283,8 +283,8 @@ void test_addUserMessage()
 				xmlFreeDoc(doc);
 				xmlCleanupParser();
 				xmlMemoryDump();
-				db->addUserMessage(id1, id2 , message1);
-				db->addUserMessage(id2, id1 , message2);
+				std::cout<<db->addUserMessage(id1, id2 , message1)<<std::endl;
+				std::cout<<db->addUserMessage(id2, id1 , message2)<<std::endl;
 				db->addUserMessage(id1, id2 , message3);
 				db->addUserMessage(id2, id1 , message4);
 				db->addUserMessage(id1, id3 , message5);
@@ -296,14 +296,14 @@ void test_addUserMessage()
 	}
 }
 int main() {
-//	test1();
+	test1();
 //	test2();
 //	test_groupFunctional();
 
 //	test2();
 //	test_IdGenerator();
 //	test_createGroup();
-	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
+//	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_getUserConversation("u100000","u100003");
 //	test_addUserMessage();
 	return 0;
