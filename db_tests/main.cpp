@@ -206,7 +206,7 @@ void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
 		std::cout<< db->addGroupMessage(gid, id, group_mess) <<std::endl;
 	}
 }
-void test_addUserMessage()
+void test_addUserMessage_getUsersConversation_getUserConversations()
 //USHADRUTYUN ashxatacneluc araj petqa add_message funkciayum dzer popoxutyun@ aneq, mteq xmlDatabase.cpp, gteq bacatrutyun@ te inch@ petqa poxel  ( motavorapes tox 400 - 500 mijakayqum )
 {
 	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
@@ -283,20 +283,28 @@ void test_addUserMessage()
 				xmlFreeDoc(doc);
 				xmlCleanupParser();
 				xmlMemoryDump();
+				std::cout<<"addUserMessage\n";
 				std::cout<<db->addUserMessage(id1, id2 , message1)<<std::endl;
 				std::cout<<db->addUserMessage(id2, id1 , message2)<<std::endl;
-				db->addUserMessage(id1, id2 , message3);
+				std::cout<<db->addUserMessage(id1, id2 , message3)<<std::endl;
+				std::cout<<"getUsersConversation\n";
+				std::cout<<db->getUsersConversation(id1, id2)<<std::endl;
 				db->addUserMessage(id2, id1 , message4);
+				std::cout<<db->getUsersConversation(id1, id2)<<std::endl;
 				db->addUserMessage(id1, id3 , message5);
 				db->addUserMessage(id2, id3 , message6);
 				db->addUserMessage(id3, id1 , message7);
 				db->addUserMessage(id3, id2 , message7);
+				std::cout<<"getUserConversations\n";
+				std::cout<<"id1  "<<id1<<"  "<<db->getUserConversations(id1)<<std::endl;
+				std::cout<<"id2  "<<id2<<"  "<<db->getUserConversations(id2)<<std::endl;
+				std::cout<<"id3  "<<id3<<"  "<<db->getUserConversations(id3)<<std::endl;
 			}
 		}
 	}
 }
 int main() {
-	test1();
+//	test1();
 //	test2();
 //	test_groupFunctional();
 
@@ -305,6 +313,6 @@ int main() {
 //	test_createGroup();
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_getUserConversation("u100000","u100003");
-//	test_addUserMessage();
+	test_addUserMessage_getUsersConversation_getUserConversations();
 	return 0;
 }
