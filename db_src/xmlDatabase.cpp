@@ -671,7 +671,7 @@ bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
 }
 
 std::string xmlDatabase::addGroupMessage(std::string groupId, std::string userId, std::string message)
-{
+{ 
 	std::string p = "db_files/groups/" + groupId + "/conv.xml";
 	std::string info = "";
 	const char* path = p.c_str();
@@ -815,7 +815,21 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 	return true;
 }
 
-bool xmlDatabase::removeGroupConversation(std::string groupInfo) {
+bool xmlDatabase::removeGroupConversation(std::string groupId) {
+
+	std::string path = "db_files/groups/" + groupId + "/conv.xml"; 
+	remove (path); 
+	xmlDocPtr doc = NULL;   
+	xmlNodePtr root = NULL;
+	LIBXML_TEST_VERSION; 
+	doc = xmlNewDoc(BAD_CAST "1.0");
+	root = xmlNewNode(NULL, BAD_CAST "conv");
+	xmlDocSetRootElement(doc, root);
+	xmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 1);
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+	xmlMemoryDump();
+
 	return true;
 }
 
