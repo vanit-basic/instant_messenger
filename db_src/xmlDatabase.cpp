@@ -823,15 +823,46 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 	messageInfo = messageInfo.substr(messageInfo.find(">")+1);
 	
 	std::string remove_status = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
-	
+	*/
+	std::string fromId,toId,messageId,remove_status;
+	xmlDoc* doc_rest = NULL;
+	xmlNode* root_rest = NULL;
+	xmlDoc* doc = NULL;
+	xmlNode* root_element = NULL;
+	xmlNode* node = NULL;
+	doc_rest = xmlReadMemory(messageInfo.c_str(), messageInfo.size(), "noname.xml", NULL, 0);
+	root_rest = xmlDocGetRootElement(doc_rest);
+	for(node = root_rest->children;node;node = node->next){
+                if(0== strcmp((char*)node->name,"fromId")
+			fromxmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 1);Id = xmlNodeGetContent(node);
+                if(0== strcmp((char*)node->name,"toId"))
+			toId = xmlNodeGetContent(node);
+                if(0== strcmp((char*)node->name,"messageId"))
+			messageId = xmlNodeGetContent(node);
+                if(0== strcmp((char*)node->name,"remove_status"))
+			remove_status = xmlNodeGetContent(node);
+				}	
+        xmlFreeDoc(doc_rest);
+        xmlCleanupParser();
+        xmlMemoryDump();
 	std::string conv = "db_files/users/" + fromID + "/convs/" + toID;
 	const char* del_mess = conv.c_str();
-	xmlDoc* doc = NULL;
-	xmlNode* eoot_element = NULL;
 	LIBXML_TEST_VERSION;
 	doc = xmlReadFile(del_mess, Null, 0);
-	root_element = xmlDocGetRootElement(doc);*/
-	return true;
+	root_element = xmlDocGetRootElement(doc);
+	for(node = root_element->children;node;node = node->next){
+                if(0== strcmp((char*)node->name,messageId))
+                        break;
+			}
+        if(remove_status==0)
+                xmlNewProp(node,BAD_CAST fromId, BAD_CAST "deleted");
+        else 
+               xmlUnlinkNode(node);
+	       xmlSaveFormatFileEnc(conv.c_str(), doc, "UTF-8", 1);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+                return true;
 }
 
 bool xmlDatabase::removeGroupConversation(std::string groupId) {

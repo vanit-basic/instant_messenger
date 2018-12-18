@@ -37,6 +37,7 @@ std::string xml2string (const char* file) {
 	}
 	return info;
 }
+
 void test_getUserConversation(std::string from_id,std::string to_id) {
 	std::cout<<db->getUsersConversation(from_id,to_id)<<std::endl;
 	std::cout<<"*****************************************************"<<std::endl;
@@ -44,7 +45,14 @@ void test_getUserConversation(std::string from_id,std::string to_id) {
 	std::cout<<"*****************************************************"<<std::endl;
 	std::cout<<db->getUserConversations(from_id)<<std::endl;
 }
-
+void test_delete_message(){
+	std::string delete_mess_test = "<delete_message><fromId>u100001</fromId><toId>u100002</toId><messageId>m1</messageId><remove_status>0<remove_status></delete_message>";
+	if(db->removeMessage(delete_mess_test)){
+		std::cout<<db->getUsersConversation("u100001","u100002")<<std::endl;
+	}
+	else
+		std::cout<<"error";
+}
 void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
@@ -306,7 +314,7 @@ void test_addUserMessage_getUsersConversation_getUserConversations()
 	}
 }
 int main() {
-	test1();
+//	test1();
 //	test2();
 //	test_groupFunctional();
 
@@ -316,5 +324,6 @@ int main() {
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_getUserConversation("u100000","u100003");
 //	test_addUserMessage_getUsersConversation_getUserConversations();
+	test_delete_message();	
 	return 0;
 }
