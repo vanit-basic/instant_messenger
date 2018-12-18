@@ -495,7 +495,7 @@ bool add_message(xmlNode* node, std::string from, std::string to)
 			xmlCleanupParser();
 			add_user_conv(from, to);
 			//jisht link sarqelu hamar path petqa amboxjutyamb tanq, aysinqn amen mekis mot da tarbera linelu minchev instant_messenger direktorian(orinak im mot /home/narek/Documents/Tnayin/  a janapar@ dzer mot ktarbervi aysqan mas@), ashxatacneluc araj nerqevi toxum jisht amboxj janapar@ tveq patth1 = "/amboxj jamaparh@ neraryal conversations direktorian/"  + from + to + ".xml" P.S. amboxj janaparh@ imanalu hamar terminalov mteq conversation direktorian u pwd areq
-			path1 = "/home/narek/Documents/Tnayin/instant_messenger/db_files/conversations/" + from + to + ".xml";
+			path1 = "../../../../db_files/conversations/" + from + to + ".xml";
 			status = add_link(path1, from, to);
 		}
 	}
@@ -754,10 +754,9 @@ void change_quantity(xmlNode* root_element, bool &status)
 }
 
 bool add_link_group_convs(std:: string groupId, std::string userId)
-	//jisht link sarqelu hamar path petqa amboxjutyamb tanq, aysinqn amen mekis mot da tarbera linelu minchev instant_messenger direktorian(orinak im mot /home/narek/Documents/Tnayin/  a janapar@ dzer mot ktarbervi aysqan mas@), ashxatacneluc araj std::string convs =...  toxum jisht amboxj janapar@ tveq convs = "/amboxj jamaparh@ neraryal conversations direktorian/"  + groupId + "/conv.xml". P.S. amboxj janaparh@ imanalu hamar terminalov mteq groups direktorian u pwd areq
 {
 	std::string p1 = "db_files/users/" + userId + "/convs/" + groupId + ".xml";
-	std::string convs = "/home/narek/Documents/Tnayin/instant_messenger/db_files/groups/" + groupId + "/conv.xml";
+	std::string convs = "../../../../db_files/groups/" + groupId + "/conv.xml";
 	const char* link = p1.c_str();
 	const char* conv = convs.c_str();
 	std::string p2 = "db_files/users/" + userId + "/convs/convs_list.xml";
@@ -790,20 +789,22 @@ bool addGroupId (std::string gid, std::string uid)
 	const char* Gid = gid.c_str();
 	xmlDoc* doc = NULL;
 	xmlNode* root = NULL;
+	xmlNode* node = NULL;
 	doc = xmlReadFile(path, NULL, 0);
 	root = xmlDocGetRootElement(doc);
-	xmlNode* cur_node = NULL;
-        for (cur_node = root->children; cur_node; cur_node = cur_node->next)
+	//xmlNode* cur_node = NULL;
+        for (xmlNode* cur_node = root->children; cur_node; cur_node = cur_node->next)
         {
                 if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "groups")))
                 {
-			if(NULL == xmlNewChild(cur_node, NULL, BAD_CAST Gid, NULL))
+			if(!(NULL == xmlNewChild(cur_node, NULL, BAD_CAST Gid, NULL)))
 			{
 				status = false;
 				break;
 			}
                 }
 	}
+	xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	return status;
