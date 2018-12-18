@@ -365,6 +365,9 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 		xmlDocDumpMemory(newDoc, &info, &size);
 		shortInfo = (char*) info;
 		xmlFree(info);
+		xmlFreeDoc(doc);
+		xmlFreeDoc(newDoc);
+
         }
         return shortInfo;
 }
