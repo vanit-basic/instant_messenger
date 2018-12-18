@@ -651,14 +651,41 @@ std::string xmlDatabase::getGroupInfo(std::string groupID) {
 	return res;
 }
 
-std::string xmlDatabase::getGroupConversation(std::string groupID) {
-	std::string temp = "";
-	std::string conversation = "";
-	std::ifstream xml("db_files/groups/" + groupID + "/conv.xml");
-	while(xml >> temp){
-		conversation += temp;
-	}
-	return conversation;
+std::string xmlDatabase::getGroupConversation(std::string userID,std::string groupID) {
+	std::string data ="db_files/groups/"+groupID+"/conv.xml";
+        const char* FileData=data.c_str();
+        xmlDoc* doc =NULL;
+        xmlNode* root = NULL;
+        xmlNode* child = NULL;
+        doc=xmlReadFile(FileData,NULL,0);
+        root = xmlDocGetRootElement(doc);
+        child = root->children;
+        const char* temp =userID.c_str() ;
+        xmlChar* cur =xmlCharStrdup(temp);
+        while(child != NULL){
+                if(child->type != XML_TEXT_NODE){
+                        if(xmlGetProp(child,cur)!=NULL){
+                                xmlNode* temp = child->next;
+                                xmlUnlinkNode(child);
+                                child = temp;
+                        }
+                }
+                else{
+                        child=child->next;
+                }
+        }
+
+        xmlChar* info;
+        std::string conversation="";
+        int size;
+        xmlDocDumpMemory(doc, &info, &size);
+        conversation = (char*)info;
+        xmlFree(doc);
+        xmlFree(info);
+
+
+        return conversation;
+
 }
 
 bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
