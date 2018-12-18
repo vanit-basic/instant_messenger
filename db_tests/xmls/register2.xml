@@ -1,9 +1,1 @@
-<info>
-        <firstname>fn2</firstname>
-        <lastname>ln2</lastname>
-        <gender>male</gender>
-        <birthDate>10.11.1992</birthDate>
-	<email>fn2@mail.com</email>
-        <login>test2</login>
-        <password>test1234</password>
-</info>
+<info><firstname>fn2</firstname><lastname>ln2</lastname><gender>male</gender><birthDate>10.11.1992</birthDate><email>fn2@mail.com</email><login>test2</login><password>test1234</password></info>

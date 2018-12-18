@@ -1,13 +1,1 @@
-<info>
-	<uId>100001</uId>
-	<join_date>05.03.2019</join_date>
-        <firstname>Valod</firstname>
-        <lastname>Valodyan</lastname>
-        <gender>male</gender>
-        <birthDate>03.04.1995</birthDate>
-	<mail>Valodik@mail.ru</mail>
-	<gId>g27</gId>
-        <login>Valodik</login>
-        <password>Valod95</password>
-</info>
-
+<info><uId>100001</uId><join_date>05.03.2019</join_date><firstname>Valod</firstname><lastname>Valodyan</lastname><gender>male</gender><birthDate>03.04.1995</birthDate><mail>Valodik@mail.ru</mail><gId>g27</gId><login>Valodik</login><password>Valod95</password></info>
