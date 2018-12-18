@@ -27,6 +27,8 @@ void UpdateGroupDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content
 			}
 		}
 	}
+	xmlFree(tegName);
+	xmlFree(content);
 }
 
 void UpdateUserDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
@@ -39,6 +41,21 @@ void UpdateUserDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
 			}
 		}
 	}
+	xmlFree(tegName);
+	xmlFree(content);
+}
+
+void remgIdFromUinfo(xmlNode* root, std::string userId){
+	xmlNode* node = NULL;
+        for(node = root->children; node; node = node->next){
+                if(0 == strcmp((char*)node->name, "groups"))
+                        break;
+        }
+/*	for(node = node->children; node; node = node->next){
+		if(node->type == XML_ELEMENT_NODE)
+		remUserFromGroup((char*)node->name,userId);
+	}
+*/
 }
 
 xmlNodePtr delete_node(xmlNode* a_node)
@@ -400,7 +417,7 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
 		fin = fin +tmp;
 	}
 	fin = replace_tab(fin);
-
+	id.close();
 	return fin;
 }
 
@@ -412,6 +429,7 @@ std::string xmlDatabase::getUsersConversation(std::string fromID, std::string to
 		fin = fin + tmp;
 	}
 	fin = replace_tab(fin);
+	id.close();
 	return fin;
 }
 
@@ -662,6 +680,7 @@ std::string xmlDatabase::getGroupInfo(std::string groupID) {
 	std::ifstream xml("db_files/groups/" + groupID + "/ginfo.xml");
 	while(xml >> str)
 		res += str;
+	xml.close();
 	return res;
 }
 
@@ -764,6 +783,37 @@ xmlDatabase* xmlDatabase::getShared() {
 	return sharedDB;
 }
 
+
+bool xmlDatabase::deleteUser(std::string userId){
+	std::string login = "";
+	std::string email = "";
+	xmlNode* node = NULL;
+	xmlNode* root = NULL;
+	std::string path = "db_files/users" + userId + "/info.xml";
+	xmlDoc* doc = xmlReadFile(path.c_str(), NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	remgIdFromUinfo(root, userId);
+	for(node = root->children; node; node = node->next){
+		if(node->type == XML_ELEMENT_NODE){
+			if(0 == strcmp((char*)node->name, "login")){
+				login = (char*)xmlNodeGetContent(node);
+				continue;
+			}
+			if(0 == strcmp((char*)node->name, "email"))
+				email = (char*)xmlNodeGetContent(node);
+		}
+	}
+	path = "db_files/register/logins/" + login;
+	rmdir(path.c_str());
+	path = "db_files/register/mails/" + email;
+	remove(path.c_str());	
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+	xmlMemoryDump();
+	path = "db_files/users" + userId;
+	rmdir(path.c_str());
+	return true;
+}
 
 bool xmlDatabase::deleteGroup(std::string groupID) {
 	return true;
@@ -1033,8 +1083,7 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 	}
 
 	closedir(usersDir);
-
-
+	
 	std::string pathForID = "db_files/groups/" + groupID;
 	DIR* usersDirID = opendir(pathForID.c_str());
 	if (usersDirID) {

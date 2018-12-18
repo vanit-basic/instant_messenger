@@ -265,8 +265,8 @@ void test_groupFunctional()
 	std::cout<<"Add usertogroup : "<<db->addUserToGroup(id,"u100008")<<std::endl;
 	std::cout<<"Get groupinfo : "<<db->getGroupInfo(id)<<std::endl;
 	std::cout<<"Remove form group : "<<db->removeFromGroup(id,"u100003")<<std::endl;
-	std::cout<<"Remove form group : "<<db->removeFromGroup("g6","u10003")<<std::endl;
-	std::cout<<"Remove form group : "<<db->removeFromGroup("g1","u40004")<<std::endl;
+	std::cout<<"Remove form group : "<<db->removeFromGroup(id,"u10003")<<std::endl;
+	std::cout<<"Remove form group : "<<db->removeFromGroup(id,"u40004")<<std::endl;
 	std::cout<<"Get groupinfo : "<<db->getGroupInfo(id)<<std::endl;
 	std::cout<<"End Group testing"<<std::endl;
 	
