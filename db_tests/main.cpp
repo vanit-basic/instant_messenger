@@ -243,13 +243,13 @@ void test_addUserMessage()
 int main() {
 //	test1();
 //	test2();
-	test_groupFunctional();
+//	test_groupFunctional();
 
 //	test2();
 //	test_IdGenerator();
 //	test_createGroup();
-//	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
+	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_getUserConversation("u100002","u100003");
-	test_addUserMessage();
+//	test_addUserMessage();
 	return 0;
 }
