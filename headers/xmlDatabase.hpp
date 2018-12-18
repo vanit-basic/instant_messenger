@@ -13,7 +13,7 @@ class xmlDatabase : public database {
                 virtual std::string getUserConversations(std::string userID);
                 virtual std::string getUsersConversation(std::string fromID, std::string toID);
                 virtual std::string addUserMessage(std::string from, std::string to, std::string message);
-
+		virtual bool deleteUser(std::string userId);
                 //group related queries
                 virtual std::string createGroup(std::string groupInfo);
                 virtual bool deleteGroup(std::string groupID);

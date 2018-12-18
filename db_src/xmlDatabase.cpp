@@ -27,8 +27,8 @@ void UpdateGroupDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content
 			}
 		}
 	}
-	xmlFree(tegName);
-	xmlFree(content);
+	xmlFree((void*)tegName);
+	xmlFree((void*)content);
 }
 
 void UpdateUserDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
@@ -41,8 +41,8 @@ void UpdateUserDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
 			}
 		}
 	}
-	xmlFree(tegName);
-	xmlFree(content);
+	xmlFree((void*)tegName);
+	xmlFree((void*)content);
 }
 
 void remgIdFromUinfo(xmlNode* root, std::string userId){
