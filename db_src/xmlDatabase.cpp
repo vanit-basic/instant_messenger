@@ -867,21 +867,20 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 }
 
 bool xmlDatabase::removeGroupConversation(std::string groupId) {
+	std::string path = "db_files/groups/" + groupId + "/conv.xml";
+	remove (path.c_str());
+	xmlDocPtr doc = NULL;
+	xmlNodePtr root = NULL;
+	LIBXML_TEST_VERSION;
+	doc = xmlNewDoc(BAD_CAST "1.0");
+	root = xmlNewNode(NULL, BAD_CAST "conv");
+	xmlDocSetRootElement(doc, root);
+	xmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 1);
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+	xmlMemoryDump();
 
- std::string path = "db_files/groups/" + groupId + "/conv.xml";
-        remove (path.c_str());
-        xmlDocPtr doc = NULL;
-        xmlNodePtr root = NULL;
-        LIBXML_TEST_VERSION;
-        doc = xmlNewDoc(BAD_CAST "1.0");
-        root = xmlNewNode(NULL, BAD_CAST "conv");
-        xmlDocSetRootElement(doc, root);
-        xmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 1);
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
-        xmlMemoryDump();
-
-        return true;
+	return true;
 }
 
 xmlDatabase::xmlDatabase() {
@@ -889,6 +888,7 @@ xmlDatabase::xmlDatabase() {
 }
 
 xmlDatabase::~xmlDatabase() { }
+
 
 bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 	LIBXML_TEST_VERSION
@@ -898,7 +898,8 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 	if (groupsDir) {
 		xmlDoc *doc = NULL;
 		xmlNode *root_element = NULL;
-		doc = xmlReadFile("users.xml", NULL, 0);
+		std::string pathForXml = path + "/users.xml";
+		doc = xmlReadFile(pathForXml.c_str(), NULL, 0);
 		if (doc == NULL) {
 			std::cout << "error: there is no such group!" << std::endl;
 		} else {
@@ -922,43 +923,38 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 	std::string pathGroup = "db_files/groups/" + groupID;
 	DIR* usersDir = opendir(pathGroup.c_str());
 	if (usersDir) {
-		DIR* userDir = opendir(userID.c_str());
-		if (userDir) {
-			xmlDoc *doc = NULL;
-			xmlNode *root_element = NULL;
-			doc = xmlReadFile("ginfo.xml", NULL, 0);
-			if (doc == NULL) {
-				std::cout << "Error: there is no such a group!" << std::endl;
-			}
-			root_element = xmlDocGetRootElement(doc);
-			xmlNode *cur_node = NULL;
-			///TBC a_node -> root_element
-			for (cur_node = root_element; cur_node; cur_node = cur_node->next) {
-				if (cur_node->type == XML_ELEMENT_NODE) {
-					const xmlChar* name = cur_node->name;
-					if (strcmp((const char*)name, "usersquantity") == 0) {
-						//xmlUnlinkNode(cur_node);
-						//xmlFreeNode(cur_node);
-						const xmlChar* value = xmlNodeGetContent(cur_node->children);
-						int temp = atoi((char*) value) - 1;
-						const char* tmp = std::to_string(temp).c_str();
-						xmlNodeSetContent(cur_node, (xmlChar*) tmp);
-						break;
-					}
+		xmlDoc *doc = NULL;
+		xmlNode *root_element = NULL;
+		std::string pathForInfo = path + "/ginfo.xml";
+		doc = xmlReadFile(pathForInfo.c_str(), NULL, 0);
+		if (doc == NULL) {
+			std::cout << "Error: there is no such a group!" << std::endl;
+		}
+		root_element = xmlDocGetRootElement(doc);
+		xmlNode *cur_node = NULL;
+		///TBC a_node -> root_element
+		for (cur_node = root_element->children; cur_node; cur_node = cur_node->next) {
+			if (cur_node->type == XML_ELEMENT_NODE) {
+				const xmlChar* name = cur_node->name;
+				if (strcmp((const char*)name, "usersquantity") == 0) {
+					const xmlChar* value = xmlNodeGetContent(cur_node);
+					int temp = atoi((char*) value) - 1;
+					const char* tmp = std::to_string(temp).c_str();
+					xmlNodeSetContent(cur_node, (xmlChar*) tmp);
+					break;
 				}
 			}
-			xmlFreeDoc(doc);
-			closedir(userDir);
-		} else {
-			std::cout << "Error 404 not found" << std::endl;
 		}
-
-
-
-		closedir(usersDir);
-		closedir(groupsDir);
-		xmlCleanupParser();
-
-		return true;
+		xmlSaveFormatFileEnc(pathForInfo.c_str(), doc, "UTF-8", 1);
+		xmlFreeDoc(doc);
+	} else {
+		std::cout << "Error 404 not found" << std::endl;
 	}
+
+	closedir(usersDir);
+	closedir(groupsDir);
+	xmlCleanupParser();
+
+	return true;
+
 }
