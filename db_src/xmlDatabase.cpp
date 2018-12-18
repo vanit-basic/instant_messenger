@@ -581,8 +581,8 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	const char* inf = groupInfo.c_str();
 	doc = xmlReadMemory(inf, groupInfo.size(), "noname.xml", NULL, 0);
 	root = xmlDocGetRootElement(doc);
+	const char * gId = groupId.c_str();
 	if (root->type == XML_ELEMENT_NODE) {
-		const char * gId = groupId.c_str();
 		xmlNewChild(root, NULL, BAD_CAST "gId", BAD_CAST gId);
 		xmlNewChild(root, NULL, BAD_CAST "usersquantity", BAD_CAST "1");
 	}
@@ -602,6 +602,21 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	xmlMemoryDump();
+
+	path = "db_files/users/" + value + "/info.xml"; 
+	const char* filename = path.c_str();
+	doc = xmlReadFile(filename, NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	for(node = root->children; node; node = node->next) {
+                if(node->type == XML_ELEMENT_NODE) {
+                        if(0 == strcmp((char*)node->name, "groups")) {	
+				xmlNewChild(node, NULL, BAD_CAST "gId", BAD_CAST gId);
+				break;
+			}
+		}
+	}
+	xmlSaveFormatFileEnc(filename, doc, "UTF-8", 1);
+	xmlFreeDoc(doc);
 
 	doc = xmlNewDoc(BAD_CAST "1.0");
 	root = xmlNewNode(NULL, BAD_CAST "users");
@@ -636,14 +651,41 @@ std::string xmlDatabase::getGroupInfo(std::string groupID) {
 	return res;
 }
 
-std::string xmlDatabase::getGroupConversation(std::string groupID) {
-	std::string temp = "";
-	std::string conversation = "";
-	std::ifstream xml("db_files/groups/" + groupID + "/conv.xml");
-	while(xml >> temp){
-		conversation += temp;
-	}
-	return conversation;
+std::string xmlDatabase::getGroupConversation(std::string userID,std::string groupID) {
+	std::string data ="db_files/groups/"+groupID+"/conv.xml";
+        const char* FileData=data.c_str();
+        xmlDoc* doc =NULL;
+        xmlNode* root = NULL;
+        xmlNode* child = NULL;
+        doc=xmlReadFile(FileData,NULL,0);
+        root = xmlDocGetRootElement(doc);
+        child = root->children;
+        const char* temp =userID.c_str() ;
+        xmlChar* cur =xmlCharStrdup(temp);
+        while(child != NULL){
+                if(child->type != XML_TEXT_NODE){
+                        if(xmlGetProp(child,cur)!=NULL){
+                                xmlNode* temp = child->next;
+                                xmlUnlinkNode(child);
+                                child = temp;
+                        }
+                }
+                else{
+                        child=child->next;
+                }
+        }
+
+        xmlChar* info;
+        std::string conversation="";
+        int size;
+        xmlDocDumpMemory(doc, &info, &size);
+        conversation = (char*)info;
+        xmlFree(doc);
+        xmlFree(info);
+
+
+        return conversation;
+
 }
 
 bool xmlDatabase::updateGroupInfo(std::string groupInfo) {

@@ -152,7 +152,7 @@ void test_createGroup() {
 	groupId = (char*) xmlNodeGetContent(root); 
 	std::cout << groupId << "\n";
 	std::cout << db->getGroupInfo(groupId) << std::endl;
-        
+        std::cout << db->getUserShortInfo("u100000") << "\n"; 
 	info = xml2string("xmls/createGroup2.xml");	
 	groupId = db->createGroup(info);
 	std::cout << groupId <<std::endl;
@@ -318,8 +318,6 @@ int main() {
 //	test1();
 //	test2();
 //	test_groupFunctional();
-
-//	test2();
 //	test_IdGenerator();
 //	test_createGroup();
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
