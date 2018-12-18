@@ -40,15 +40,16 @@ std::string xml2string (const char* file) {
 
 void test_getUserConversation(std::string from_id,std::string to_id) {
 	std::cout<<db->getUsersConversation(from_id,to_id)<<std::endl;
-	std::cout<<"*****************************************************"<<std::endl;
-	std::cout<<"*****************************************************"<<std::endl;
-	std::cout<<"*****************************************************"<<std::endl;
-	std::cout<<db->getUserConversations(from_id)<<std::endl;
+//	std::cout<<"*****************************************************"<<std::endl;
+//	std::cout<<"*****************************************************"<<std::endl;
+//	std::cout<<"*****************************************************"<<std::endl;
+//	std::cout<<db->getUserConversations(from_id)<<std::endl;
 }
 void test_delete_message(){
-	std::string delete_mess_test = "<delete_message><fromId>u100001</fromId><toId>u100002</toId><messageId>m1</messageId><remove_status>0<remove_status></delete_message>";
+		std::cout<<db->getUsersConversation("u100000","u100003")<<std::endl;
+	std::string delete_mess_test = "<delete_message><fromId>u100000</fromId><toId>u100003</toId><messageId>m1</messageId><remove_status>0</remove_status></delete_message>";
 	if(db->removeMessage(delete_mess_test)){
-		std::cout<<db->getUsersConversation("u100001","u100002")<<std::endl;
+		std::cout<<db->getUsersConversation("u100000","u100003")<<std::endl;
 	}
 	else
 		std::cout<<"error";
