@@ -22,7 +22,7 @@ class xmlDatabase : public database {
                 virtual bool removeMessage(std::string messageInfo);
                 virtual bool removeGroupConversation(std::string groupInfo);
                 virtual std::string getGroupInfo(std::string groupID);
-                virtual std::string getGroupConversation(std::string groupID);
+                virtual std::string getGroupConversation(std::string userID, std::string groupID);
                 virtual bool updateGroupInfo(std::string groupInfo);
 		virtual std::string addGroupMessage(std::string groupId, std::string userId, std::string message);
 

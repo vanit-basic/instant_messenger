@@ -37,7 +37,7 @@ class database {
 		
 		virtual std::string getGroupInfo(std::string groupID) = 0;
 		
-		virtual std::string getGroupConversation(std::string groupID) = 0;
+		virtual std::string getGroupConversation(std::string userID, std::string groupID) = 0;
 		
 		virtual bool updateGroupInfo(std::string groupInfo) = 0;
 

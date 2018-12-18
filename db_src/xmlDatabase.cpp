@@ -313,53 +313,53 @@ bool xmlDatabase::updateUserInfo(std::string userInfo) {
 }
 
 std::string xmlDatabase::getUserInfo(std::string userID) {
-        std::string path = "db_files/users/"+userID;
-        const char * p = path.c_str();
-        struct stat sb;
-        std::string info = "";
-        if(stat(p, &sb) == 0 && S_ISDIR(sb.st_mode)) {
-                std::string temp = "";
-                std::ifstream xml_file("db_files/users/"+userID+"/info.xml");
-                while(! xml_file.eof()) {
-                        info += temp;
-                        xml_file >> temp;
-                }
-                xml_file.close();
-                return info;
-        }
-        else
-                return "Error 404";
+	std::string path = "db_files/users/"+userID;
+	const char * p = path.c_str();
+	struct stat sb;
+	std::string info = "";
+	if(stat(p, &sb) == 0 && S_ISDIR(sb.st_mode)) {
+		std::string temp = "";
+		std::ifstream xml_file("db_files/users/"+userID+"/info.xml");
+		while(! xml_file.eof()) {
+			info += temp;
+			xml_file >> temp;
+		}
+		xml_file.close();
+		return info;
+	}
+	else
+		return "Error 404";
 
 }
 
 std::string xmlDatabase::getUserShortInfo(std::string userId) {
-        std::string path = "db_files/users/" + userId;
-        const char * p = path.c_str();
-        struct stat sb;
-        std::string shortInfo = "";
-        if(stat(p, &sb) == 0 && S_ISDIR(sb.st_mode)) {
-                path += "/info.xml";
-                const char * filename = path.c_str();
+	std::string path = "db_files/users/" + userId;
+	const char * p = path.c_str();
+	struct stat sb;
+	std::string shortInfo = "";
+	if(stat(p, &sb) == 0 && S_ISDIR(sb.st_mode)) {
+		path += "/info.xml";
+		const char * filename = path.c_str();
 
-                xmlDoc * doc = NULL;
-                xmlNode * root = NULL;
-                xmlNode * node = NULL;
+		xmlDoc * doc = NULL;
+		xmlNode * root = NULL;
+		xmlNode * node = NULL;
 
-                doc = xmlReadFile(filename, NULL, 0);
-                root = xmlDocGetRootElement(doc);
+		doc = xmlReadFile(filename, NULL, 0);
+		root = xmlDocGetRootElement(doc);
 
-                xmlDoc * newDoc = xmlNewDoc(BAD_CAST "1.0");
-                xmlNode * newRoot = xmlNewNode(NULL, BAD_CAST "info");
-                xmlDocSetRootElement(newDoc, newRoot);
+		xmlDoc * newDoc = xmlNewDoc(BAD_CAST "1.0");
+		xmlNode * newRoot = xmlNewNode(NULL, BAD_CAST "info");
+		xmlDocSetRootElement(newDoc, newRoot);
 
-                for (node = root->children; node; node = node->next) {
-                        if (node->type == XML_ELEMENT_NODE) {
-                                if(0 == strcmp((char*)node->name, "firstname") || 0 == strcmp((char*)node->name, "lastname") || 0 == strcmp((char*)node->name, "birthDate") || 0 == strcmp((char*)node->name, "avatar")) {
-                                        xmlNewChild(newRoot, NULL, BAD_CAST node->name, BAD_CAST xmlNodeGetContent(node));
+		for (node = root->children; node; node = node->next) {
+			if (node->type == XML_ELEMENT_NODE) {
+				if(0 == strcmp((char*)node->name, "firstname") || 0 == strcmp((char*)node->name, "lastname") || 0 == strcmp((char*)node->name, "birthDate") || 0 == strcmp((char*)node->name, "avatar")) {
+					xmlNewChild(newRoot, NULL, BAD_CAST node->name, BAD_CAST xmlNodeGetContent(node));
 
-                                }
-                        }
-                }
+				}
+			}
+		}
 
 		xmlChar* info;
 		int size;
@@ -369,27 +369,27 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 		xmlFreeDoc(doc);
 		xmlFreeDoc(newDoc);
 
-        }
-        return shortInfo;
+	}
+	return shortInfo;
 }
 
 std::string replace_tab(std::string input){
 
-        while(input.find('\t') != std::string::npos){
-                int pos = input.find('\t');
-                input.erase(pos,1);
-        }
-        return input;
+	while(input.find('\t') != std::string::npos){
+		int pos = input.find('\t');
+		input.erase(pos,1);
+	}
+	return input;
 }
 
 std::string xmlDatabase::getUserConversations(std::string userID) {
-    std::string tmp = "";
-    std::string fin = "";
-    std::ifstream id("db_files/users/"+userID+"/convs/convs_list.xml");
-    while(getline(id,tmp)) {
-        fin = fin +tmp;
-    }
-    fin = replace_tab(fin);
+	std::string tmp = "";
+	std::string fin = "";
+	std::ifstream id("db_files/users/"+userID+"/convs/convs_list.xml");
+	while(getline(id,tmp)) {
+		fin = fin +tmp;
+	}
+	fin = replace_tab(fin);
 
 	return fin;
 }
@@ -401,7 +401,7 @@ std::string xmlDatabase::getUsersConversation(std::string fromID, std::string to
 	while(getline(id,tmp)) {
 		fin = fin + tmp;
 	}
-    fin = replace_tab(fin);
+	fin = replace_tab(fin);
 	return fin;
 }
 
@@ -513,18 +513,18 @@ xmlNode* addMessId (xmlNode* root, std::string from)
 
 std::string xmlDocToString(xmlDoc* doc)
 {
-        std::string info = "";
-        xmlChar* buf;
-        int size = 0;
-        xmlDocDumpMemory(doc, &buf, &size);
-        info = (char*) buf;
-        if (!(buf == NULL))
-        {
-                info = (char*)buf;
-        }
+	std::string info = "";
+	xmlChar* buf;
+	int size = 0;
+	xmlDocDumpMemory(doc, &buf, &size);
+	info = (char*) buf;
+	if (!(buf == NULL))
+	{
+		info = (char*)buf;
+	}
 
-        xmlFree(buf);
-        return info;
+	xmlFree(buf);
+	return info;
 }
 
 std::string xmlDatabase::addUserMessage(std::string from, std::string to, std::string message)
@@ -554,14 +554,14 @@ std::string xmlDatabase::addUserMessage(std::string from, std::string to, std::s
 }
 
 void isValidGroupId(std::string &gId) {
-        std::string ids = "db_files/groups/" + gId;
-        const char* gid = ids.c_str();
-        struct stat sb;
-        while (stat(gid, &sb) == 0 && S_ISDIR(sb.st_mode)) {
-                gId = IDgenerator::getGroupId();
-                ids = "db_files/groups/" + gId;
-                gid = ids.c_str();
-        }
+	std::string ids = "db_files/groups/" + gId;
+	const char* gid = ids.c_str();
+	struct stat sb;
+	while (stat(gid, &sb) == 0 && S_ISDIR(sb.st_mode)) {
+		gId = IDgenerator::getGroupId();
+		ids = "db_files/groups/" + gId;
+		gid = ids.c_str();
+	}
 }
 
 std::string xmlDatabase::createGroup(std::string groupInfo) {
@@ -608,8 +608,8 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	doc = xmlReadFile(filename, NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	for(node = root->children; node; node = node->next) {
-                if(node->type == XML_ELEMENT_NODE) {
-                        if(0 == strcmp((char*)node->name, "groups")) {	
+		if(node->type == XML_ELEMENT_NODE) {
+			if(0 == strcmp((char*)node->name, "groups")) {	
 				xmlNewChild(node, NULL, BAD_CAST "gId", BAD_CAST gId);
 				break;
 			}
@@ -653,38 +653,38 @@ std::string xmlDatabase::getGroupInfo(std::string groupID) {
 
 std::string xmlDatabase::getGroupConversation(std::string userID,std::string groupID) {
 	std::string data ="db_files/groups/"+groupID+"/conv.xml";
-        const char* FileData=data.c_str();
-        xmlDoc* doc =NULL;
-        xmlNode* root = NULL;
-        xmlNode* child = NULL;
-        doc=xmlReadFile(FileData,NULL,0);
-        root = xmlDocGetRootElement(doc);
-        child = root->children;
-        const char* temp =userID.c_str() ;
-        xmlChar* cur =xmlCharStrdup(temp);
-        while(child != NULL){
-                if(child->type != XML_TEXT_NODE){
-                        if(xmlGetProp(child,cur)!=NULL){
-                                xmlNode* temp = child->next;
-                                xmlUnlinkNode(child);
-                                child = temp;
-                        }
-                }
-                else{
-                        child=child->next;
-                }
-        }
+	const char* FileData=data.c_str();
+	xmlDoc* doc =NULL;
+	xmlNode* root = NULL;
+	xmlNode* child = NULL;
+	doc=xmlReadFile(FileData,NULL,0);
+	root = xmlDocGetRootElement(doc);
+	child = root->children;
+	const char* temp =userID.c_str() ;
+	xmlChar* cur =xmlCharStrdup(temp);
+	while(child != NULL){
+		if(child->type != XML_TEXT_NODE){
+			if(xmlGetProp(child,cur)!=NULL){
+				xmlNode* temp = child->next;
+				xmlUnlinkNode(child);
+				child = temp;
+			}
+		}
+		else{
+			child=child->next;
+		}
+	}
 
-        xmlChar* info;
-        std::string conversation="";
-        int size;
-        xmlDocDumpMemory(doc, &info, &size);
-        conversation = (char*)info;
-        xmlFree(doc);
-        xmlFree(info);
+	xmlChar* info;
+	std::string conversation="";
+	int size;
+	xmlDocDumpMemory(doc, &info, &size);
+	conversation = (char*)info;
+	xmlFree(doc);
+	xmlFree(info);
 
 
-        return conversation;
+	return conversation;
 
 }
 
@@ -835,16 +835,16 @@ bool addGroupId (std::string gid, std::string uid)
 	doc = xmlReadFile(path, NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	//xmlNode* cur_node = NULL;
-        for (xmlNode* cur_node = root->children; cur_node; cur_node = cur_node->next)
-        {
-                if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "groups")))
-                {
+	for (xmlNode* cur_node = root->children; cur_node; cur_node = cur_node->next)
+	{
+		if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "groups")))
+		{
 			if(!(NULL == xmlNewChild(cur_node, NULL, BAD_CAST Gid, NULL)))
 			{
 				status = false;
 				break;
 			}
-                }
+		}
 	}
 	xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
 	xmlFreeDoc(doc);
@@ -886,25 +886,25 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 }
 
 bool xmlDatabase::removeMessage(std::string messageInfo) {
-/*	
-	std::string fromId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
-	messageInfo = messageInfo.substr(messageInfo.find(">")+1);
+	/*	
+		std::string fromId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+		messageInfo = messageInfo.substr(messageInfo.find(">")+1);
 
-	std::string toId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
-	messageInfo = messageInfo.substr(messageInfo.find(">")+1);
-	
-	std::string messageId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
-	messageInfo = messageInfo.substr(messageInfo.find(">")+1);
-	
-	std::string remove_status = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
-	
-	std::string conv = "db_files/users/" + fromID + "/convs/" + toID;
-	const char* del_mess = conv.c_str();
-	xmlDoc* doc = NULL;
-	xmlNode* eoot_element = NULL;
-	LIBXML_TEST_VERSION;
-	doc = xmlReadFile(del_mess, Null, 0);
-	root_element = xmlDocGetRootElement(doc);*/
+		std::string toId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+		messageInfo = messageInfo.substr(messageInfo.find(">")+1);
+
+		std::string messageId = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+		messageInfo = messageInfo.substr(messageInfo.find(">")+1);
+
+		std::string remove_status = messageInfo.substr(messageInfo.find("<")+1,messageInfo.find(">")-(messageInfo.find("<")+1));
+
+		std::string conv = "db_files/users/" + fromID + "/convs/" + toID;
+		const char* del_mess = conv.c_str();
+		xmlDoc* doc = NULL;
+		xmlNode* eoot_element = NULL;
+		LIBXML_TEST_VERSION;
+		doc = xmlReadFile(del_mess, Null, 0);
+		root_element = xmlDocGetRootElement(doc);*/
 	return true;
 }
 
@@ -930,7 +930,6 @@ xmlDatabase::xmlDatabase() {
 }
 
 xmlDatabase::~xmlDatabase() { }
-
 
 bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 	LIBXML_TEST_VERSION
@@ -959,7 +958,10 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 				}
 			}
 			xmlFreeDoc(doc);
+			xmlCleanupParser();
+
 		}
+		closedir(groupsDir);
 	}
 
 	std::string pathGroup = "db_files/groups/" + groupID;
@@ -979,24 +981,52 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 			if (cur_node->type == XML_ELEMENT_NODE) {
 				const xmlChar* name = cur_node->name;
 				if (strcmp((const char*)name, "usersquantity") == 0) {
-					const xmlChar* value = xmlNodeGetContent(cur_node);
+					xmlChar* value = xmlNodeGetContent(cur_node);
 					int temp = atoi((char*) value) - 1;
 					const char* tmp = std::to_string(temp).c_str();
 					xmlNodeSetContent(cur_node, (xmlChar*) tmp);
+					xmlFree(value);
 					break;
 				}
 			}
 		}
 		xmlSaveFormatFileEnc(pathForInfo.c_str(), doc, "UTF-8", 1);
 		xmlFreeDoc(doc);
+		xmlCleanupParser();
 	} else {
 		std::cout << "Error 404 not found" << std::endl;
 	}
 
 	closedir(usersDir);
-	closedir(groupsDir);
-	xmlCleanupParser();
 
+
+	std::string pathForID = "db_files/groups/" + groupID;
+	DIR* usersDirID = opendir(pathForID.c_str());
+	if (usersDirID) {
+		xmlDoc *doc = NULL;
+		xmlNode *root_element = NULL;
+		std::string pathForXml = pathForID + "/users.xml";
+		doc = xmlReadFile(pathForXml.c_str(), NULL, 0);
+		if (doc == NULL) {
+			std::cout << "error: user is not a member of group!" << std::endl;
+		} else {
+			root_element = xmlDocGetRootElement(doc);
+			xmlNode* cur_node = NULL;
+			for (cur_node = root_element->children; cur_node; cur_node = cur_node->next) {
+				if (cur_node->type == XML_ELEMENT_NODE) {
+					const char* name = (const char*)cur_node->name;
+					if (strcmp(name, userID.c_str()) == 0) {
+						xmlUnlinkNode(cur_node);
+						xmlFreeNode(cur_node);
+						break;
+					}
+				}
+			}
+		}
+		xmlSaveFormatFileEnc(pathForXml.c_str(), doc, "UTF-8", 1);
+		xmlFreeDoc(doc);
+		xmlCleanupParser();
+	}
+	closedir(usersDirID);
 	return true;
-
 }
