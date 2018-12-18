@@ -77,7 +77,7 @@ void add_ID(xmlNode* root_element, std::string id)
 	const char* i = id.c_str();
 	if (cur_node->type == XML_ELEMENT_NODE)
 	{
-		xmlNewChild(cur_node, NULL, BAD_CAST "id", BAD_CAST i);
+		xmlNewChild(cur_node, NULL, BAD_CAST "uId", BAD_CAST i);
 		xmlNewChild(cur_node, NULL, BAD_CAST "groups", NULL);
 	}
 }

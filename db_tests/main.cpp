@@ -6,24 +6,28 @@
 #include <libxml/tree.h>
 #include <string.h>
 /*
-registerUser(std::string userInfo)
-getUserInfo(std::string userID)
-loginUser(std::string login, std::string password)
-getUserConversations(std::string userID)
-getUsersConversation(std::string fromID, std::string toID)
-createGroup(std::string groupInfo)
-getGroupInfo(std::string groupID)
-getGroupConversation(std::string groupID)
-updateGroupInfo(std::string groupInfo)
-updateUserInfo(std::string userInfo)
-addUserMessage(std::string messageInfo)
-deleteGroup(std::string groupID)
-addUserToGroup(std::string groupID, std::string userID)
-removeFromGroup(std::string groupID, std::string userID)
-removeMessage(std::string messageInfo)
-removeGroupConversation(std::string groupInfo)
-addGroupMessage(std::string messageInfo)
-*/
+   User
+   registerUser(std::string userInfo)  				+
+   getUserInfo(std::string userID)     				+
+   getUserShortInfo(std::string userID)     			+
+   loginUser(std::string login, std::string password)		+
+   addUserMessage(std::string messageInfo)			+
+   getUserConversations(std::string userID)			+
+   getUsersConversation(std::string fromID, std::string toID)	+
+   updateUserInfo(std::string userInfo)				+
+   addUserToGroup(std::string groupID, std::string userID)	+
+
+   Group
+   createGroup(std::string groupInfo)				+
+   getGroupInfo(std::string groupID)				+
+   updateGroupInfo(std::string groupInfo)			+
+   addGroupMessage(std::string messageInfo)			+
+   removeFromGroup(std::string groupID, std::string userID)	-
+   getGroupConversation(std::string groupID)			+
+   deleteGroup(std::string groupID)				-
+   removeGroupConversation(std::string groupInfo)		-
+   removeMessage(std::string messageInfo)			-
+   */
 
 static database *db = new xmlDatabase;
 
@@ -62,6 +66,121 @@ bool getId (std::string &id)
 		return true;
 	}
 }
+void test_all()
+{
+	std::string UserInfo1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
+
+	std::string UserInfo2 = "<registration_information><firstName>Valod</firstName><lastName>Valodyan</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>valod@gmail.com</email><login>valod1990</login><password>Val1990</password></registration_information>";
+
+	std::string UserInfo3 = "<registration_information><firstName>Vika</firstName><lastName>Vika</lastName><gender>female</gender><birthDate>10.02.1990</birthDate><email>vika@gmail.com</email><login>vika1990</login><password>Vika1990</password></registration_information>";
+	std::cout<<"Users Info for registration\n";
+	std::cout<<"First User Info for registration  "<<UserInfo1<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Second User Info for registration "<<UserInfo2<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Third User Info for registration  "<<UserInfo3<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************   TEST REGISTER_USER()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::string UserId1 = db->registerUser(UserInfo1);
+	std::string UserId2 = db->registerUser(UserInfo2);
+	std::string UserId3 = db->registerUser(UserInfo3);
+	getId(UserId1);
+	getId(UserId2);
+	getId(UserId3);
+	std::cout<<"First user id    "<<UserId1<<std::endl;
+	std::cout<<"Second user id   "<<UserId2<<std::endl;
+	std::cout<<"Third user id    "<<UserId3<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST GET_USER_INFO()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"First user Info     "<<db->getUserInfo(UserId2)<<std::endl;
+	std::cout<<"Second user Info    "<<db->getUserInfo(UserId2)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST GET_USER_SHORT_INFO()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"First user Short Info     "<<db->getUserInfo(UserId2)<<std::endl;
+	std::cout<<"Second user Short Info    "<<db->getUserInfo(UserId2)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST LOGIN_USER()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<db->loginUser("black1990", "JBlack1990")<<std::endl;
+	std::cout<<db->loginUser("valod1990", "Val1990")<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST ADD_USER_MESSAGE()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::string message1 = "<message><date>14.12.2018</date><body>barev Valod</body></message>";
+	std::string message2 = "<message><date>14.12.2018</date><body>barev Jo</body></message>";
+	std::string message3 = "<message><date>14.12.2018</date><body> Inch ka?</body></message>";
+	std::string message4 = "<message><date>14.12.2018</date><body> Ban chka</body></message>";
+	std::string message5 = "<message><date>14.12.2018</date><body> barev Vika</body></message>";
+	std::string message6 = "<message><date>14.12.2018</date><body> Vika barev</body></message>";
+	std::string message7 = "<message><date>14.12.2018</date><body>barev</body></message>";
+	std::cout<<db->addUserMessage(UserId1, UserId2, message1)<<std::endl;
+	std::cout<<db->addUserMessage(UserId2, UserId1, message2)<<std::endl;
+	std::cout<<db->addUserMessage(UserId1, UserId2, message3)<<std::endl;
+	std::cout<<db->addUserMessage(UserId2, UserId1, message4);
+	std::cout<<db->addUserMessage(UserId1, UserId3, message5);
+	std::cout<<db->addUserMessage(UserId2, UserId3, message6);
+	std::cout<<db->addUserMessage(UserId3, UserId1, message7);
+	std::cout<<db->addUserMessage(UserId3, UserId2, message7);
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST GET_USERS_CONVERSATION()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId2<<std::endl;
+	std::cout<<db->getUsersConversation(UserId1, UserId2)<<std::endl;
+	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId3<<std::endl;
+	std::cout<<db->getUsersConversation(UserId1, UserId3)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST GET_USER_CONVERSATIONS()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Conversations user  "<<UserId1<<"  "<<db->getUserConversations(UserId1)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Conversations user  "<<UserId2<<"  "<<db->getUserConversations(UserId2)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST UPDATE_USER_INFO()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::string updateUserInf = "<info><firstName>Valodik</firstName><lastName>Sargsyan</lastName><birthDate>11.12.1980</birthDate><uId>" + UserId2 + "</uId></info>";
+	std::cout<<"Udate info for user  "<<UserId2<<", change firstname Valod->Valodik, lastname Valodyan->Sargsyan, birthdate 10.02.1990->11.12.1980"<<std::endl;
+	std::cout<<" Function result  "<<db->updateUserInfo(updateUserInf)<<std::endl;
+	std::cout<<"get new info  "<<db->getUserInfo(UserId2)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST CREATE_GROUP()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::string GroupInfo = "<info><name>VanIt</name><admin>" + UserId1 + "</admin><createdate>18.12.2018</createdate></info>";
+	std::cout<<"Group info  "<<GroupInfo<<std::endl;
+	std::string GroupId = db->createGroup(GroupInfo);
+	std::cout<<"Function result  "<<GroupId<<std::endl;
+	getId(GroupId);
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST GET_GROUP_INFO()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Function result  "<<db->getGroupInfo(GroupId)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST UPDATE_GROUP_INFO()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::string updateGroupInfo = "<info><gId>" +GroupId+ "</gId><name>VanItBasicTraining</name><createdate>20.20.2018</createdate></info>";
+	std::cout<<"Change group name VanIt->VanItBasicTraining, createdate 18.12.2018->20.20.2018"<<std::endl;
+	std::cout<<"Function result  "<<db->updateGroupInfo(updateGroupInfo)<<std::endl;
+	std::cout<<"Group new info  "<<db->getGroupInfo(GroupId)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST ADD_GROUP_MESSAGE()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::string groupmess1 = "<message><date>19.12.2018</date><body>barev ankrkneliner)</body></message>";
+	std::cout<<"Function result1  "<< db->addGroupMessage(GroupId, UserId1, groupmess1) <<std::endl;
+	std::string groupmess2 = "<message><date>19.12.2018</date><body>Hazar barev </body></message>";
+	std::cout<<"Function result2  "<< db->addGroupMessage(GroupId, UserId2, groupmess2) <<std::endl;
+	std::string groupmess3 = "<message><date>19.12.2018</date><body>vonc eq? </body></message>";
+	std::cout<<"Function result3  "<< db->addGroupMessage(GroupId, UserId3, groupmess3) <<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"*****************  TEST GET_GROUP_CONVERSATION()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Function result for user "<<UserId1<<"   "<<db->getGroupConversation(UserId1, GroupId)<<std::endl;
+	std::cout<<"Function result for user "<<UserId2<<"   "<<db->getGroupConversation(UserId2, GroupId)<<std::endl;
+	
+
+}
+
 void test_getUserConversation(std::string from_id,std::string to_id) {
 	std::cout<<db->getUsersConversation(from_id,to_id)<<std::endl;
 //	std::cout<<"*****************************************************"<<std::endl;
@@ -282,6 +401,7 @@ void test_addUserMessage_getUsersConversation_getUserConversations()
 
 
 int main() {
+	test_all();
 //	test1();
 //	test2();
 //	test_groupFunctional();
@@ -289,7 +409,7 @@ int main() {
 //	test_createGroup();
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_getUserConversation("u100000","u100003");
-	test_addUserMessage_getUsersConversation_getUserConversations();
+//	test_addUserMessage_getUsersConversation_getUserConversations();
 //	test_delete_message();	
 	return 0;
 }
