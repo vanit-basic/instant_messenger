@@ -12,7 +12,9 @@ class database {
 		virtual bool updateUserInfo(std::string userInfo) = 0;
 		
 		virtual std::string getUserInfo(std::string userID) = 0;
-		
+	
+		virtual std::string getUserShortInfo(std::string userID) = 0;
+
 		virtual std::string getUserConversations(std::string userID) = 0;
 		
 		virtual std::string getUsersConversation(std::string fromID, std::string toID) = 0;
