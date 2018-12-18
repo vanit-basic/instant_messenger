@@ -1,15 +1,1 @@
-<conv>
-	<m1 from="u100002" >
-		<date>20:28</date>
-		<body>Hi van!</body>
-	</m1>
-	<m2 from="u100003" >
-		<date>20:29</date>
-		<body>Hello aziz!</body>
-	</m2>
-	<m3 from="u100002" >
-		<date>20:30</date>
-		<body>Hav?</body>
-	</m3>
-</conv>
-
+<conv><m1 from="u100002" ><date>20:28</date><body>Hi van!</body></m1><m2 from="u100003" ><date>20:29</date><body>Hello aziz!</body></m2><m3 from="u100002" ><date>20:30</date><body>Hav?</body></m3></conv>
