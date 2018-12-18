@@ -27,6 +27,8 @@ void UpdateGroupDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content
 			}
 		}
 	}
+	xmlFree(tegName);
+	xmlFree(content);
 }
 
 void UpdateUserDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
@@ -39,6 +41,8 @@ void UpdateUserDate(xmlNode* root,const xmlChar* tegName,const xmlChar* content)
 			}
 		}
 	}
+	xmlFree(tegName);
+	xmlFree(content);
 }
 
 void remgIdFromUinfo(xmlNode* root, std::string userId){
@@ -413,7 +417,7 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
 		fin = fin +tmp;
 	}
 	fin = replace_tab(fin);
-
+	id.close();
 	return fin;
 }
 
@@ -425,6 +429,7 @@ std::string xmlDatabase::getUsersConversation(std::string fromID, std::string to
 		fin = fin + tmp;
 	}
 	fin = replace_tab(fin);
+	id.close();
 	return fin;
 }
 
@@ -675,6 +680,7 @@ std::string xmlDatabase::getGroupInfo(std::string groupID) {
 	std::ifstream xml("db_files/groups/" + groupID + "/ginfo.xml");
 	while(xml >> str)
 		res += str;
+	xml.close();
 	return res;
 }
 
