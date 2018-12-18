@@ -580,8 +580,8 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	const char* inf = groupInfo.c_str();
 	doc = xmlReadMemory(inf, groupInfo.size(), "noname.xml", NULL, 0);
 	root = xmlDocGetRootElement(doc);
+	const char * gId = groupId.c_str();
 	if (root->type == XML_ELEMENT_NODE) {
-		const char * gId = groupId.c_str();
 		xmlNewChild(root, NULL, BAD_CAST "gId", BAD_CAST gId);
 		xmlNewChild(root, NULL, BAD_CAST "usersquantity", BAD_CAST "1");
 	}
@@ -601,6 +601,14 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	xmlMemoryDump();
+
+	path = "db_files/users/" + value + "/info.xml"; 
+	const char* filename = path.c_str();
+	doc = xmlReadFile(filename, NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	xmlNewChild(root, NULL, BAD_CAST "gId", BAD_CAST gId);
+	xmlSaveFormatFileEnc(filename, doc, "UTF-8", 1);
+	xmlFreeDoc(doc);
 
 	doc = xmlNewDoc(BAD_CAST "1.0");
 	root = xmlNewNode(NULL, BAD_CAST "users");
