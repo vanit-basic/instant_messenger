@@ -836,29 +836,32 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 	doc_rest = xmlReadMemory(messageInfo.c_str(), messageInfo.size(), "noname.xml", NULL, 0);
 	root_rest = xmlDocGetRootElement(doc_rest);
 	for(node = root_rest->children;node;node = node->next){
-                if(0== strcmp((char*)node->name,"fromId")
-			fromxmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 1);Id = xmlNodeGetContent(node);
+                if(0== strcmp((char*)node->name,"fromId"))
+			fromId=(char*)xmlNodeGetContent(node);
                 if(0== strcmp((char*)node->name,"toId"))
-			toId = xmlNodeGetContent(node);
+			toId = (char*)xmlNodeGetContent(node);
                 if(0== strcmp((char*)node->name,"messageId"))
-			messageId = xmlNodeGetContent(node);
+			messageId = (char*)xmlNodeGetContent(node);
                 if(0== strcmp((char*)node->name,"remove_status"))
-			remove_status = xmlNodeGetContent(node);
+			remove_status = (char*)xmlNodeGetContent(node);
 				}	
-        xmlFreeDoc(doc_rest);
+        
+	xmlChar* atribut = (xmlChar*)fromId.c_str();
+	//xmlChar* tag_mId = (xmlChar*)messageId.c_str();
+	xmlFreeDoc(doc_rest);
         xmlCleanupParser();
         xmlMemoryDump();
-	std::string conv = "db_files/users/" + fromID + "/convs/" + toID;
+	std::string conv = "db_files/users/" + fromId + "/convs/" + toId;
 	const char* del_mess = conv.c_str();
 	LIBXML_TEST_VERSION;
-	doc = xmlReadFile(del_mess, Null, 0);
+	doc = xmlReadFile(del_mess, NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
 	for(node = root_element->children;node;node = node->next){
-                if(0== strcmp((char*)node->name,messageId))
+                if(0== strcmp((char*)node->name,messageId.c_str()))
                         break;
 			}
-        if(remove_status==0)
-                xmlNewProp(node,BAD_CAST fromId, BAD_CAST "deleted");
+        if(remove_status=="0")
+                xmlNewProp(node,BAD_CAST atribut, BAD_CAST "deleted");
         else 
                xmlUnlinkNode(node);
 	       xmlSaveFormatFileEnc(conv.c_str(), doc, "UTF-8", 1);
@@ -869,7 +872,7 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 }
 
 bool xmlDatabase::removeGroupConversation(std::string groupId) {
-
+}
  bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
         LIBXML_TEST_VERSION
                 std::cout << groupID << "  " << userID << std::endl;
