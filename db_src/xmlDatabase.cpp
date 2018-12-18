@@ -78,6 +78,7 @@ void add_ID(xmlNode* root_element, std::string id)
 	if (cur_node->type == XML_ELEMENT_NODE)
 	{
 		xmlNewChild(cur_node, NULL, BAD_CAST "id", BAD_CAST i);
+		xmlNewChild(cur_node, NULL, BAD_CAST "groups", NULL);
 	}
 }
 
@@ -778,6 +779,32 @@ bool add_link_group_convs(std:: string groupId, std::string userId)
 	}
 }
 
+bool addGroupId (std::string gid, std::string uid)
+{
+	bool status = true;
+	std::string p = "db_files/users/" + uid + "/info.xml";
+	const char* path = p.c_str();
+	const char* Gid = gid.c_str();
+	xmlDoc* doc = NULL;
+	xmlNode* root = NULL;
+	doc = xmlReadFile(path, NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	xmlNode* cur_node = NULL;
+        for (cur_node = root->children; cur_node; cur_node = cur_node->next)
+        {
+                if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "groups")))
+                {
+			if(NULL == xmlNewChild(cur_node, NULL, BAD_CAST Gid, NULL))
+			{
+				status = false;
+				break;
+			}
+                }
+	}
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+	return status;
+}
 
 bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID) 
 {
@@ -803,6 +830,7 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 		xmlSaveFormatFileEnc(c_gr_inf, doc, "UTF-8", 1);
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
+		status = addGroupId(groupID, userID);
 		if(status)
 		{
 			status = add_link_group_convs(groupID, userID);
