@@ -26,6 +26,7 @@ class xmlDatabase : public database {
                 virtual std::string getGroupConversation(std::string userID, std::string groupID);
                 virtual bool updateGroupInfo(std::string groupInfo);
 		virtual std::string addGroupMessage(std::string groupId, std::string userId, std::string message);
+		virtual std::string getGroupUsers(std::string groupId);
 
 	public:
 		xmlDatabase();
