@@ -23,6 +23,8 @@ class database {
 
 		virtual bool deleteUser(std::string userId) = 0;
 
+		virtual bool updateGroupMessage(std::string groupId, std::string messId, std::string messBody) = 0;
+
 		//group related queries
 		
 		virtual std::string createGroup(std::string groupInfo) = 0;
