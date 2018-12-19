@@ -778,23 +778,80 @@ std::string xmlDatabase::getGroupConversation(std::string userID,std::string gro
 
 	return conversation;
 }
+
+bool changeAdmin(std::string gId,std::string newAdmin){
+	std::string oldAdmin = "";
+	xmlNode* node = NULL;
+	std::string path = "db_files/groups/" + gId + "/ginfo.xml";
+	xmlDoc* doc = xmlReadFile(path.c_str(), NULL, 0);
+	xmlNode* root = xmlDocGetRootElement(doc); 
+	for(node = root->children; node; node = node->next){
+		if(node->type == XML_ELEMENT_NODE){
+			if(0 == strcmp((char*)node->name,"admin")){
+				oldAdmin = (char*)xmlNodeGetContent(node);
+				break;
+			}
+		}
+	}
+	xmlFreeDoc(doc);
+	path = "db_files/users" + oldAdmin + "/info.xml";
+	doc = xmlReadFile(path.c_str(), NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	for(node = root->children; node; node = node->next){
+		if(node->type == XML_ELEMENT_NODE){
+			if(0 == strcmp((char*)node->name,"groupAdmin")){
+				for(node = node->children; node; node = node->next){
+					if(0 == strcmp((char*)node->name,gId.c_str())){
+						delete_node(node);
+						break;
+					}
+				}
+			}
+		}
+	}
+	xmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 0);
+	xmlFreeDoc(doc);
+	path = "db_files/users" + newAdmin + "/info.xml";
+	doc = xmlReadFile(path.c_str(), NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	for(node = root->children; node; node = node->next){
+		if(node->type == XML_ELEMENT_NODE){
+			if(0 == strcmp((char*)node->name,"groupAdmin")){
+				xmlNewChild(node, NULL, BAD_CAST gId.c_str(), NULL);
+				break;
+			}
+		}
+	}
+	xmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 0);
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+	xmlMemoryDump();
+	return true;
+}
+
 bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
 	LIBXML_TEST_VERSION;
 	xmlDoc* doc = xmlReadMemory(groupInfo.c_str(), groupInfo.size(), "noname.xml", NULL, 0);
 	xmlNode* root = xmlDocGetRootElement(doc);
 	xmlNode* node = NULL;
 	std::string gId = "";
+	std::string newAdmin = "";
 	for(node = root->children; node; node = node->next) {
 		if(node->type == XML_ELEMENT_NODE) {
+			if(0 == strcmp((char*)node->name,"admin")){
+				newAdmin =(char*)xmlNodeGetContent(node);	
+				continue;
+			}
 			if(0 == strcmp((char*)node->name,"gId")){
 				xmlChar* buf;
 				buf = xmlNodeGetContent(node);
 				gId = (char*)buf;
 				xmlFree(buf);
-				break;
 			}
 		}
 	}
+	if(newAdmin != "")
+                changeAdmin(gId,newAdmin);
 	std::string path = "db_files/groups/" + gId + "/ginfo.xml";
 	xmlDoc* docGen = xmlReadFile(path.c_str(), NULL, 0);
 	xmlNode* rootGen = xmlDocGetRootElement(docGen);
