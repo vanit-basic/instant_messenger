@@ -988,9 +988,8 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
         xmlCleanupParser();
         xmlMemoryDump();
 	std::string conv = "db_files/users/" + fromId + "/convs/" + toId;
-	const char* del_mess = conv.c_str();
 	LIBXML_TEST_VERSION;
-	doc = xmlReadFile(del_mess, NULL, 0);
+	doc = xmlReadFile(conv.c_str(), NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
 	for(node = root_element->children;node;node = node->next){
                 if(0== strcmp((char*)node->name,messageId.c_str()))
@@ -1007,10 +1006,53 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
                 return true;
 }
 
-bool xmlDatabase::removeMessageFromGroupConversation(std::string groupInfo){
+bool xmlDatabase::removeMessageFromGroupConversation(std::string messageInfo){
+	
+	std::string userId; 
+	std::string groupId; 
+	std::string messageId;
+	std::string remove_status;
+	xmlDoc* doc_rest = NULL;
+	xmlNode* root_rest = NULL;
+	xmlDoc* doc = NULL;
+	xmlNode* root_element = NULL;
+	xmlNode* node = NULL;
+	doc_rest = xmlReadMemory(messageInfo.c_str(), messageInfo.size(), "noname.xml", NULL, 0);
+	root_rest = xmlDocGetRootElement(doc_rest);
+	for(node = root_rest->children;node;node = node->next){
+		if(0 == strcmp((char*)node->name,"userId"))
+			userId=(char*)xmlNodeGetContent(node);
+		if(0 == strcmp((char*)node->name,"groupId"))
+			groupId = (char*)xmlNodeGetContent(node);
+		if(0 == strcmp((char*)node->name,"messageId"))
+			messageId = (char*)xmlNodeGetContent(node);
+		if(0 == strcmp((char*)node->name,"remove_status"))
+			remove_status = (char*)xmlNodeGetContent(node);
 
+        }
 
-	return true;
+	xmlChar* attribute = (xmlChar*)userId.c_str();
+	xmlFreeDoc(doc_rest);
+	xmlCleanupParser();
+	xmlMemoryDump();
+
+	std::string conv = "db_files/groups/" + groupId + "/conv.xml";
+        LIBXML_TEST_VERSION;
+        doc = xmlReadFile(conv.c_str(), NULL, 0);
+        root_element = xmlDocGetRootElement(doc);
+        for(node = root_element->children;node;node = node->next){
+                if(0== strcmp((char*)node->name,messageId.c_str()))
+                        break;
+                        }
+        if(remove_status=="0")
+                xmlNewProp(node,BAD_CAST attribute, BAD_CAST "deleted");
+        else
+               xmlUnlinkNode(node);
+               xmlSaveFormatFileEnc(conv.c_str(), doc, "UTF-8", 0);
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+                return true;
 }
 bool xmlDatabase::removeGroupConversation(std::string groupId) {
 	std::string path = "db_files/groups/" + groupId + "/conv.xml";
