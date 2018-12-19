@@ -917,7 +917,7 @@ LIBXML_TEST_VERSION;
         xmlCleanupParser();
         xmlMemoryDump();
         path="db_files/groups/" + groupId;
-        rmdir(path.c_str());
+        remove(path.c_str());
 	return true;
 }
 
