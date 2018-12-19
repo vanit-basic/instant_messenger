@@ -1000,7 +1000,7 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
                 xmlNewProp(node,BAD_CAST atribut, BAD_CAST "deleted");
         else 
                xmlUnlinkNode(node);
-	       xmlSaveFormatFileEnc(conv.c_str(), doc, "UTF-8", 1);
+	       xmlSaveFormatFileEnc(conv.c_str(), doc, "UTF-8", 0);
         xmlFreeDoc(doc);
         xmlCleanupParser();
         xmlMemoryDump();
@@ -1016,13 +1016,15 @@ bool xmlDatabase::removeGroupConversation(std::string groupId) {
 	doc = xmlNewDoc(BAD_CAST "1.0");
 	root = xmlNewNode(NULL, BAD_CAST "conv");
 	xmlDocSetRootElement(doc, root);
-	xmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	xmlMemoryDump();
 
 	return true;
 }
+
+
 
 xmlDatabase::xmlDatabase() {
 	if(NULL == sharedDB) sharedDB = this;
