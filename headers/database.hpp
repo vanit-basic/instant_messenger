@@ -47,6 +47,7 @@ class database {
 
 		virtual std::string addGroupMessage(std::string groupId, std::string userId, std::string message) = 0;
 
+		virtual std::string getGroupUsers(std::string groupId) = 0;
 	public:
 		database() {}
 		~database() {}
