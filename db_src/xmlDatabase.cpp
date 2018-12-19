@@ -857,6 +857,67 @@ bool xmlDatabase::deleteUser(std::string userId){
 }
 
 bool xmlDatabase::deleteGroup(std::string groupID) {
+LIBXML_TEST_VERSION;
+        std::string path = "";
+        path = "db_files/groups/" + groupId + "/users.xml";
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        doc=xmlReadFile(path.c_str(),NULL,0);
+        root= xmlDocGetRootElement(doc);
+        for (xmlNode* cur_node = root->children; cur_node; cur_node = cur_node->next)
+        {
+                if (cur_node->type == XML_ELEMENT_NODE)
+                {
+                        std::string nodeName = (char*)cur_node->name;
+                        std::string path1="db_files/users/" + nodeName + "/info.xml";
+                        xmlNode* root2=NULL;
+                        xmlDoc* doc2=NULL;
+                        doc2=xmlReadFile(path1.c_str(),NULL,0);
+                        root2=xmlDocGetRootElement(doc2);
+                        for (xmlNode* cur_node2 = root2->children; cur_node2; cur_node2 = cur_node2->next)
+                        {
+                                if (cur_node2->type == XML_ELEMENT_NODE)
+                                {
+                                        const char* name = (const char*)cur_node2->name;
+                                        if (strcmp(name, "groups") == 0)
+                                        {
+                                                for (xmlNode* cur_node3 = cur_node2->children; cur_node3; cur_node3 = cur_node3->next)
+                                                {
+                                                        if (cur_node3->type == XML_ELEMENT_NODE)
+                                                        {
+                                                                const char* name = (const char*)cur_node3->name;
+                                                                if (strcmp(name, groupId.c_str()) == 0)
+                                                                {
+                                                                        cur_node3 = delete_node(cur_node3);
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                        if (strcmp(name, "groupAdmin") == 0)
+                                        {
+                                                for (xmlNode* cur_node3 = cur_node2->children; cur_node3; cur_node3 = cur_node3->next)
+                                                {
+                                                       if (cur_node3->type == XML_ELEMENT_NODE)
+                                                        {
+                                                                const char* name = (const char*)cur_node3->name;
+                                                                if (strcmp(name, groupId.c_str()) == 0)
+                                                                {
+                                                                        cur_node3 = delete_node(cur_node3);
+                                         }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                        xmlFreeDoc(doc2);
+                }
+        }
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlCleanupParser();
+        xmlMemoryDump();
+        path="db_files/groups/" + groupId;
+        rmdir(path.c_str());
 	return true;
 }
 
