@@ -448,7 +448,7 @@ void add_user_conv(std::string from, std::string to)
 	root = xmlDocGetRootElement(doc);
 	const char* t = to.c_str();
 	xmlNewChild(root, NULL, BAD_CAST t , NULL);
-	xmlSaveFormatFileEnc(p1, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(p1, doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	path = "db_files/users/" + to + "/convs/convs_list.xml";
@@ -730,13 +730,13 @@ std::string xmlDatabase::getGroupConversation(std::string userID,std::string gro
 	const char* temp =userID.c_str() ;
 	xmlChar* cur =xmlCharStrdup(temp);
 	while(child != NULL){
+		if(child->type != XML_TEXT_NODE){
 			if(xmlGetProp(child,cur)!=NULL){
-				if(child->type != XML_TEXT_NODE){
-					xmlNode* temp = child->next;
-					xmlUnlinkNode(child);
-					child = temp;
-				}
+				xmlNode* temp = child->next;
+				xmlUnlinkNode(child);
+				child = temp;
 			}
+		}
 		else{
 			child=child->next;
 		}
@@ -856,7 +856,69 @@ bool xmlDatabase::deleteUser(std::string userId){
 	return true;
 }
 
-bool xmlDatabase::deleteGroup(std::string groupID) {
+bool xmlDatabase::deleteGroup(std::string groupId) {
+LIBXML_TEST_VERSION;
+        std::string path = "";
+        path = "";
+	path = "db_files/groups/" + groupId + "/users.xml";
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+        doc=xmlReadFile(path.c_str(),NULL,0);
+        root= xmlDocGetRootElement(doc);
+        for (xmlNode* cur_node = root->children; cur_node; cur_node = cur_node->next)
+        {
+                if (cur_node->type == XML_ELEMENT_NODE)
+                {
+                        std::string nodeName = (char*)cur_node->name;
+                        std::string path1="db_files/users/" + nodeName + "/info.xml";
+                        xmlNode* root2=NULL;
+                        xmlDoc* doc2=NULL;
+                        doc2=xmlReadFile(path1.c_str(),NULL,0);
+                        root2=xmlDocGetRootElement(doc2);
+                        for (xmlNode* cur_node2 = root2->children; cur_node2; cur_node2 = cur_node2->next)
+                        {
+                                if (cur_node2->type == XML_ELEMENT_NODE)
+                                {
+                                        const char* name = (const char*)cur_node2->name;
+                                        if (strcmp(name, "groups") == 0)
+                                        {
+                                                for (xmlNode* cur_node3 = cur_node2->children; cur_node3; cur_node3 = cur_node3->next)
+                                                {
+                                                        if (cur_node3->type == XML_ELEMENT_NODE)
+                                                        {
+                                                                const char* name = (const char*)cur_node3->name;
+                                                                if (strcmp(name, groupId.c_str()) == 0)
+                                                                {
+                                                                        cur_node3 = delete_node(cur_node3);
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                        if (strcmp(name, "groupAdmin") == 0)
+                                        {
+                                                for (xmlNode* cur_node3 = cur_node2->children; cur_node3; cur_node3 = cur_node3->next)
+                                                {
+                                                       if (cur_node3->type == XML_ELEMENT_NODE)
+                                                        {
+                                                                const char* name = (const char*)cur_node3->name;
+                                                                if (strcmp(name, groupId.c_str()) == 0)
+                                                                {
+                                                                        cur_node3 = delete_node(cur_node3);
+                                         }
+                                                        }
+                                                }
+                                        }
+                                }
+			}
+                        xmlFreeDoc(doc2);
+                }
+        }
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlCleanupParser();
+        xmlMemoryDump();
+        path="db_files/groups/" + groupId;
+        rmdir(path.c_str());
 	return true;
 }
 
@@ -972,21 +1034,21 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 	doc_rest = xmlReadMemory(messageInfo.c_str(), messageInfo.size(), "noname.xml", NULL, 0);
 	root_rest = xmlDocGetRootElement(doc_rest);
 	for(node = root_rest->children;node;node = node->next){
-                if(0== strcmp((char*)node->name,"fromId"))
+		if(0== strcmp((char*)node->name,"fromId"))
 			fromId=(char*)xmlNodeGetContent(node);
-                if(0== strcmp((char*)node->name,"toId"))
+		if(0== strcmp((char*)node->name,"toId"))
 			toId = (char*)xmlNodeGetContent(node);
-                if(0== strcmp((char*)node->name,"messageId"))
+		if(0== strcmp((char*)node->name,"messageId"))
 			messageId = (char*)xmlNodeGetContent(node);
-                if(0== strcmp((char*)node->name,"remove_status"))
+		if(0== strcmp((char*)node->name,"remove_status"))
 			remove_status = (char*)xmlNodeGetContent(node);
-	
+
 	}
 	std::cout<<fromId<<":::::::::::"<<toId<<std::endl;
 	xmlChar* atribut = (xmlChar*)fromId.c_str();
 	xmlFreeDoc(doc_rest);
-        xmlCleanupParser();
-        xmlMemoryDump();
+	xmlCleanupParser();
+	xmlMemoryDump();
 	std::string conv = "db_files/users/" + fromId + "/convs/" + toId;
 	LIBXML_TEST_VERSION;
 	doc = xmlReadFile(conv.c_str(), NULL, 0);
@@ -1003,7 +1065,6 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
         xmlFreeDoc(doc);
         xmlCleanupParser();
         xmlMemoryDump();
-                return true;
 }
 
 bool xmlDatabase::removeMessageFromGroupConversation(std::string messageInfo){
