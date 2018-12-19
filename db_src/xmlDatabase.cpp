@@ -413,10 +413,10 @@ std::string replace_tab(std::string input){
 	return input;
 }
 
-std::string xmlDatabase::getUserConversations(std::string userID) {
+std::string xmlDatabase::getUserConversations(std::string userId) {
 	std::string tmp = "";
 	std::string fin = "";
-	std::ifstream id("db_files/users/"+userID+"/convs/convs_list.xml");
+	std::ifstream id("db_files/users/"+userId+"/convs/convs_list.xml");
 	while(getline(id,tmp)) {
 		fin = fin +tmp;
 	}
@@ -425,16 +425,41 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
 	return fin;
 }
 
-std::string xmlDatabase::getUsersConversation(std::string fromID, std::string toID) {
-	std::string tmp = "";
-	std::string fin = "";
-	std::ifstream id("db_files/users/" + fromID + "/convs/" + toID + ".xml");
-	while(getline(id,tmp)) {
-		fin = fin + tmp;
+std::string xmlDatabase::getUsersConversation(std::string from, std::string to) {
+	std::string data ="db_files/users/"+ from + "/convs/" + to;
+	xmlDoc* doc =NULL;
+	xmlNode* root = NULL;
+	xmlNode* node = NULL;
+	doc=xmlReadFile(data.c_str(),NULL,0);
+	root = xmlDocGetRootElement(doc);
+	node = root->children;
+	const char* temp =from.c_str() ;
+	xmlChar* cur =xmlCharStrdup(temp);
+	while(node != NULL){
+		if(xmlGetProp(node,cur)!=NULL){
+			if(node->type != XML_TEXT_NODE){
+				xmlNode* temp = node->next;
+				xmlUnlinkNode(node);
+				xmlFree(node);
+				node = temp;
+			}
+		}
+		else{
+			node=node->next;
+		}
 	}
-	fin = replace_tab(fin);
-	id.close();
-	return fin;
+
+	xmlChar* info;
+	std::string conversation="";
+	int size;
+	xmlDocDumpMemory(doc, &info, &size);
+	conversation = (char*)info;
+	xmlFree(doc);
+	xmlFree(info);
+
+
+	return conversation;
+
 }
 
 void add_user_conv(std::string from, std::string to)
@@ -1025,7 +1050,7 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 }
 
 bool xmlDatabase::removeMessage(std::string messageInfo) {
-	std::string fromId,toId,messageId,remove_status;
+	std::string from,to,messageId,remove_status;
 	xmlDoc* doc_rest = NULL;
 	xmlNode* root_rest = NULL;
 	xmlDoc* doc = NULL;
@@ -1034,35 +1059,36 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 	doc_rest = xmlReadMemory(messageInfo.c_str(), messageInfo.size(), "noname.xml", NULL, 0);
 	root_rest = xmlDocGetRootElement(doc_rest);
 	for(node = root_rest->children;node;node = node->next){
-		if(0== strcmp((char*)node->name,"fromId"))
-			fromId=(char*)xmlNodeGetContent(node);
-		if(0== strcmp((char*)node->name,"toId"))
-			toId = (char*)xmlNodeGetContent(node);
+		if(0== strcmp((char*)node->name,"from"))
+			from=(char*)xmlNodeGetContent(node);
+		if(0== strcmp((char*)node->name,"to"))
+			to = (char*)xmlNodeGetContent(node);
 		if(0== strcmp((char*)node->name,"messageId"))
 			messageId = (char*)xmlNodeGetContent(node);
 		if(0== strcmp((char*)node->name,"remove_status"))
 			remove_status = (char*)xmlNodeGetContent(node);
 
 	}
-	std::cout<<fromId<<":::::::::::"<<toId<<std::endl;
-	xmlChar* atribut = (xmlChar*)fromId.c_str();
+	std::cout<<from<<":::::::::::"<<to<<std::endl;
+	xmlChar* atribut = (xmlChar*)from.c_str();
 	xmlFreeDoc(doc_rest);
 	xmlCleanupParser();
 	xmlMemoryDump();
-	std::string conv = "db_files/users/" + fromId + "/convs/" + toId;
-	const char* del_mess = conv.c_str();
+	std::string conv = "db_files/users/" + from + "/convs/" + to;
 	LIBXML_TEST_VERSION;
-	doc = xmlReadFile(del_mess, NULL, 0);
+	doc = xmlReadFile(conv.c_str(), NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
 	for(node = root_element->children;node;node = node->next){
                 if(0== strcmp((char*)node->name,messageId.c_str()))
                         break;
-			}
+		}
+	if(xmlGetProp(node,atribut)==NULL){
         if(remove_status=="0")
                 xmlNewProp(node,BAD_CAST atribut, BAD_CAST "deleted");
         else 
                xmlUnlinkNode(node);
-	       xmlSaveFormatFileEnc(conv.c_str(), doc, "UTF-8", 0);
+	}
+	xmlSaveFormatFileEnc(conv.c_str(), doc, "UTF-8", 0);
         xmlFreeDoc(doc);
         xmlCleanupParser();
         xmlMemoryDump();
