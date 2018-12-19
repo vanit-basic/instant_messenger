@@ -47,11 +47,11 @@ void remgIdFromUinfo(xmlNode* root, std::string userId){
                 if(0 == strcmp((char*)node->name, "groups"))
                         break;
         }
-/*	for(node = node->children; node; node = node->next){
+	for(node = node->children; node; node = node->next){
 		if(node->type == XML_ELEMENT_NODE)
-		remUserFromGroup((char*)node->name,userId);
+			removeFromGroup((char*)node->name,userId);
 	}
-*/
+
 }
 
 xmlNodePtr delete_node(xmlNode* a_node)
@@ -385,7 +385,7 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 
 		for (node = root->children; node; node = node->next) {
 			if (node->type == XML_ELEMENT_NODE) {
-				if(0 == strcmp((char*)node->name, "firstname") || 0 == strcmp((char*)node->name, "lastname") || 0 == strcmp((char*)node->name, "birthDate") || 0 == strcmp((char*)node->name, "avatar")) {
+				if(0 == strcmp((char*)node->name, "firstName") || 0 == strcmp((char*)node->name, "lastName") || 0 == strcmp((char*)node->name, "birthDate") || 0 == strcmp((char*)node->name, "avatar")) {
 					xmlNewChild(newRoot, NULL, BAD_CAST node->name, BAD_CAST xmlNodeGetContent(node));
 
 				}
