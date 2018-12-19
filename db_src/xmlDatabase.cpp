@@ -47,11 +47,11 @@ void remgIdFromUinfo(xmlNode* root, std::string userId){
                 if(0 == strcmp((char*)node->name, "groups"))
                         break;
         }
-/*	for(node = node->children; node; node = node->next){
+	for(node = node->children; node; node = node->next){
 		if(node->type == XML_ELEMENT_NODE)
-		remUserFromGroup((char*)node->name,userId);
+			removeFromGroup((char*)node->name,userId);
 	}
-*/
+
 }
 
 xmlNodePtr delete_node(xmlNode* a_node)
