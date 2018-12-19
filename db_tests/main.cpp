@@ -155,6 +155,7 @@ void test_all()
 	std::string GroupId2 = db->createGroup(GroupInfo2);
 	std::cout<<"Function result  "<<GroupId2<<std::endl;
 	getId(GroupId);
+	getId(GroupId2);
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST GET_GROUP_INFO()  *******************"<<std::endl;
 	std::cout<<std::endl;
@@ -192,23 +193,26 @@ void test_all()
 	std::cout<<"Function result for user "<<UserId1<<"   "<<db->getGroupConversation(UserId1, GroupId)<<std::endl;
 	std::cout<<"Function result for user "<<UserId2<<"   "<<db->getGroupConversation(UserId2, GroupId)<<std::endl;
 	std::cout<<std::endl;
+	std::cout<<"*****************  TEST GET_GROUP_USERS()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout <<"getGroupUsers g1"<<db->getGroupUsers(GroupId)<<std::endl;
+	std::cout <<"getGroupUsers g2  "<<db->getGroupUsers(GroupId2)<<std::endl;
 	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
 
-
 }
 
-void test_getUserConversation(std::string from_id,std::string to_id) {
-	std::cout<<db->getUsersConversation(from_id,to_id)<<std::endl;
+void test_getUserConversation(std::string from,std::string to) {
+	std::cout<<db->getUsersConversation(from,to)<<std::endl;
 //	std::cout<<"*****************************************************"<<std::endl;
 //	std::cout<<"*****************************************************"<<std::endl;
 //	std::cout<<"*****************************************************"<<std::endl;
-//	std::cout<<db->getUserConversations(from_id)<<std::endl;
+//	std::cout<<db->getUserConversations(from)<<std::endl;
 }
 void test_delete_message(){
 		std::cout<<db->getUsersConversation("u100004","u100001")<<std::endl;
-	std::string delete_mess_test = "<delete_message><fromId>u100004</fromId><toId>u100001</toId><messageId>m2</messageId><remove_status>0</remove_status></delete_message>";
+	std::string delete_mess_test = "<delete_message><from>u100004</from><to>u100001</to><messageId>m2</messageId><remove_status>0</remove_status></delete_message>";
 	if(db->removeMessage(delete_mess_test)){
 		std::cout<<db->getUsersConversation("u100004","u100001")<<std::endl;
 	}
@@ -426,8 +430,8 @@ int main() {
 //	test_IdGenerator();
 //	test_createGroup();
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
-//	test_getUserConversation("u100000","u100003");
 //	test_addUserMessage_getUsersConversation_getUserConversations();
 //	test_delete_message();	
+//	test_getUserConversation("u100001","u100004");
 	return 0;
 }
