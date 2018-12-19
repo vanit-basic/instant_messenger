@@ -428,7 +428,7 @@ std::string xmlDatabase::getUserConversations(std::string userID) {
 std::string xmlDatabase::getUsersConversation(std::string fromID, std::string toID) {
 	std::string tmp = "";
 	std::string fin = "";
-	std::ifstream id("db_files/users/" + fromID + "/convs/" + toID/* + ".xml"*/);
+	std::ifstream id("db_files/users/" + fromID + "/convs/" + toID + ".xml");
 	while(getline(id,tmp)) {
 		fin = fin + tmp;
 	}
@@ -856,10 +856,11 @@ bool xmlDatabase::deleteUser(std::string userId){
 	return true;
 }
 
-bool xmlDatabase::deleteGroup(std::string groupID) {
+bool xmlDatabase::deleteGroup(std::string groupId) {
 LIBXML_TEST_VERSION;
         std::string path = "";
-        path = "db_files/groups/" + groupId + "/users.xml";
+        path = "";
+	path = "db_files/groups/" + groupId + "/users.xml";
         xmlDoc* doc = NULL;
         xmlNode* root = NULL;
         doc=xmlReadFile(path.c_str(),NULL,0);
