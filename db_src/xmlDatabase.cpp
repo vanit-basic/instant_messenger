@@ -385,7 +385,7 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 
 		for (node = root->children; node; node = node->next) {
 			if (node->type == XML_ELEMENT_NODE) {
-				if(0 == strcmp((char*)node->name, "firstname") || 0 == strcmp((char*)node->name, "lastname") || 0 == strcmp((char*)node->name, "birthDate") || 0 == strcmp((char*)node->name, "avatar")) {
+				if(0 == strcmp((char*)node->name, "firstName") || 0 == strcmp((char*)node->name, "lastName") || 0 == strcmp((char*)node->name, "birthDate") || 0 == strcmp((char*)node->name, "avatar")) {
 					xmlNewChild(newRoot, NULL, BAD_CAST node->name, BAD_CAST xmlNodeGetContent(node));
 
 				}
