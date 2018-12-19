@@ -158,23 +158,25 @@ bool verification(std::string login, std::string mail, std::string &result)
 void tracker (xmlNode* a_node, std::string &login, std::string &mail, std::string &password) 
 {
 	xmlNode *cur_node = NULL;
-	xmlChar* buf;
 	for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
 	{
 		if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "login")))
 		{
+			xmlChar* buf;
 			buf = xmlNodeGetContent(cur_node);
 			login = (char*) buf;
 			xmlFree(buf);
 		}
 		if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "email")))
 		{
+			xmlChar* buf;
 			buf = xmlNodeGetContent(cur_node);
 			mail = (char*) buf;
 			xmlFree(buf);
 		}
 		if ((cur_node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)cur_node->name, "password")))
 		{
+			xmlChar* buf;
 			buf = xmlNodeGetContent(cur_node);
 			password = (char*) buf;
 			xmlFree(buf);
@@ -314,10 +316,10 @@ bool xmlDatabase::updateUserInfo(std::string userInfo) {
 	xmlNode* root = xmlDocGetRootElement(doc);
 	xmlNode* node = NULL;
 	std::string uId = "";
-	xmlChar* buf;
 	for(node = root->children; node; node = node->next) {
 		if(node->type == XML_ELEMENT_NODE) {
 			if(0 == strcmp((char*)node->name,"uId")){
+				xmlChar* buf;
 				buf = xmlNodeGetContent(node);
 				uId = (char*)buf;
 				xmlFree(buf);
@@ -558,7 +560,6 @@ std::string xmlDocToString(xmlDoc* doc)
 	{
 		info = (char*)buf;
 	}
-
 	xmlFree(buf);
 	return info;
 }
@@ -654,7 +655,10 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	for(node = root->children; node; node = node->next) {
 		if(node->type == XML_ELEMENT_NODE) {
 			if(0 == strcmp((char*)node->name, "admin")) {
-				value = (char*) xmlNodeGetContent(node);
+				xmlChar* buf;
+				buf = xmlNodeGetContent(node);
+				value = (char*)buf;
+				xmlFree(buf);
 				break;
 			}
 		}
@@ -732,9 +736,7 @@ std::string xmlDatabase::getGroupConversation(std::string userID,std::string gro
 	while(child != NULL){
 		if(child->type != XML_TEXT_NODE){
 			if(xmlGetProp(child,cur)!=NULL){
-				xmlNode* temp = child->next;
-				xmlUnlinkNode(child);
-				child = temp;
+				child = delete_node(child);
 			}
 		}
 		else{
@@ -750,9 +752,7 @@ std::string xmlDatabase::getGroupConversation(std::string userID,std::string gro
 	xmlFree(doc);
 	xmlFree(info);
 
-
 	return conversation;
-
 }
 bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
 	LIBXML_TEST_VERSION;
@@ -760,10 +760,10 @@ bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
 	xmlNode* root = xmlDocGetRootElement(doc);
 	xmlNode* node = NULL;
 	std::string gId = "";
-	xmlChar* buf;
 	for(node = root->children; node; node = node->next) {
 		if(node->type == XML_ELEMENT_NODE) {
 			if(0 == strcmp((char*)node->name,"gId")){
+				xmlChar* buf;
 				buf = xmlNodeGetContent(node);
 				gId = (char*)buf;
 				xmlFree(buf);
@@ -837,11 +837,18 @@ bool xmlDatabase::deleteUser(std::string userId){
 	for(node = root->children; node; node = node->next){
 		if(node->type == XML_ELEMENT_NODE){
 			if(0 == strcmp((char*)node->name, "login")){
-				login = (char*)xmlNodeGetContent(node);
+				xmlChar* buf;
+				buf = xmlNodeGetContent(node);
+				login = (char*)buf;
+				xmlFree(buf);
 				continue;
 			}
-			if(0 == strcmp((char*)node->name, "email"))
-				email = (char*)xmlNodeGetContent(node);
+			if(0 == strcmp((char*)node->name, "email")){
+				xmlChar* buf;
+				buf = xmlNodeGetContent(node);
+				email = (char*)buf;
+				xmlFree(buf);
+			}
 		}
 	}
 	path = "db_files/register/logins/" + login;
@@ -952,16 +959,16 @@ void change_quantity(xmlNode* root_element, bool &status)
 			quantity = std::to_string(std::stoi(quantity) + 1);
 			const char* new_quantity = quantity.c_str();
 			xmlNodeSetContent(cur_node, BAD_CAST new_quantity);
-			buf = xmlNodeGetContent(cur_node);
-			if(!(0 == strcmp((char*) buf, new_quantity)))
+			xmlChar* buf1;
+			buf1 = xmlNodeGetContent(cur_node);
+			if(!(0 == strcmp((char*) buf1, new_quantity)))
 			{
 				status = false;
 			}
-			xmlFree(buf);
+			xmlFree(buf1);
 		}
 	}
 }
-
 
 bool addGroupId (std::string gid, std::string uid)
 {
@@ -1042,7 +1049,6 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 			messageId = (char*)xmlNodeGetContent(node);
 		if(0== strcmp((char*)node->name,"remove_status"))
 			remove_status = (char*)xmlNodeGetContent(node);
-
 	}
 	std::cout<<fromId<<":::::::::::"<<toId<<std::endl;
 	xmlChar* atribut = (xmlChar*)fromId.c_str();

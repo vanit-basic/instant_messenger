@@ -419,7 +419,7 @@ void test_addUserMessage_getUsersConversation_getUserConversations()
 
 
 int main() {
-//	test_all();
+	test_all();
 //	test1();
 //	test2();
 //	test_groupFunctional();
@@ -428,6 +428,6 @@ int main() {
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_getUserConversation("u100000","u100003");
 //	test_addUserMessage_getUsersConversation_getUserConversations();
-	test_delete_message();	
+//	test_delete_message();	
 	return 0;
 }
