@@ -418,19 +418,28 @@ void test_addUserMessage_getUsersConversation_getUserConversations()
 }
 
 void test_removeGroupConversation (){
-	
+	xmlDoc* doc = NULL;
+	xmlNode* root = NULL;
+
 	std::string info = xml2string("xmls/createGroup1.xml");
 	std::cout << "Info = " << info << std::endl;
-	std::string id = db->createGroup(info);
-	std::cout << db->addUserToGroup(id,"u100003") << std::endl;
-	std::cout << db->addUserToGroup(id,"u100008") <<std::endl;
-	std::cout << db->getGroupInfo(id) << std::endl;
-	std::cout << db->addGroupMessage(id,"u100003", "barev") << std::endl; 
-	std::cout << db->addGroupMessage(id,"u100008", "barev") << std::endl;
-        std::cout << db->addGroupMessage(id,"u100003", "vonces") << std::endl;
-	std::cout << db->getGroupConversation("u100003",id) << std::endl;  
-	std::cout << db->removeGroupConversation(id) << std::endl;  
-        std::cout << db->getGroupConversation("u100003",id) << std::endl;   	
+	std::string gid = db->createGroup(info);
+
+	const char* gid1 = gid.c_str();
+	doc = xmlReadMemory(gid1, gid.size(), "noname.xml", NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	gid =(char*) xmlNodeGetContent(root);
+
+	std::cout<<"ID : "<<gid<<std::endl;
+	std::cout << db->addUserToGroup(gid,"u100000") << std::endl;
+	//std::cout << db->addUserToGroup(gid,"u100000") <<std::endl;
+	std::cout << db->getGroupInfo(gid) << std::endl;
+	std::cout << db->addGroupMessage(gid,"u100000", "<conv><Barev/></conv>") << std::endl; 
+	std::cout << db->addGroupMessage(gid,"u100000", "<conv><Hajox/></conv>") << std::endl;
+        //std::cout << db->addGroupMessage(gid,"u100003", "vonces") << std::endl;
+	std::cout << db->getGroupConversation("u100000",gid) << std::endl;  
+	std::cout << db->removeGroupConversation(gid) << std::endl;  
+        std::cout << db->getGroupConversation("u100000",gid) << std::endl;   	
 }
 
 int main() {
