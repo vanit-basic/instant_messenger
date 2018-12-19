@@ -197,10 +197,10 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout <<"getGroupUsers g1"<<db->getGroupUsers(GroupId)<<std::endl;
 	std::cout <<"getGroupUsers g2  "<<db->getGroupUsers(GroupId2)<<std::endl;
-	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
+/*	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
-
+*/
 }
 
 void test_getUserConversation(std::string from,std::string to) {

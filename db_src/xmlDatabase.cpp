@@ -428,7 +428,7 @@ std::string xmlDatabase::getUserConversations(std::string userId) {
 }
 
 std::string xmlDatabase::getUsersConversation(std::string from, std::string to) {
-	std::string data ="db_files/users/"+ from + "/convs/" + to;
+	std::string data ="db_files/users/"+ from + "/convs/" + to + ".xml";
 	xmlDoc* doc =NULL;
 	xmlNode* root = NULL;
 	xmlNode* node = NULL;
