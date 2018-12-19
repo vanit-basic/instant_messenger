@@ -405,9 +405,24 @@ void test_addUserMessage_getUsersConversation_getUserConversations()
 	}
 }
 
+void test_removeGroupConversation (){
+	
+	std::string info = xml2string("xmls/createGroup1.xml");
+	std::cout << "Info = " << info << std::endl;
+	std::string id = db->createGroup(info);
+	std::cout << db->addUserToGroup(id,"u100003") << std::endl;
+	std::cout << db->addUserToGroup(id,"u100008") <<std::endl;
+	std::cout << db->getGroupInfo(id) << std::endl;
+	std::cout << db->addGroupMessage(id,"u100003", "barev") << std::endl; 
+	std::cout << db->addGroupMessage(id,"u100008", "barev") << std::endl;
+        std::cout << db->addGroupMessage(id,"u100003", "vonces") << std::endl;
+	std::cout << db->getGroupConversation("u100003",id) << std::endl;  
+	std::cout << db->removeGroupConversation(id) << std::endl;  
+        std::cout << db->getGroupConversation("u100003",id) << std::endl;   	
+}
 
 int main() {
-	test_all();
+//	test_all();
 //	test1();
 //	test2();
 //	test_groupFunctional();
@@ -417,5 +432,6 @@ int main() {
 //	test_getUserConversation("u100000","u100003");
 //	test_addUserMessage_getUsersConversation_getUserConversations();
 //	test_delete_message();	
+	test_removeGroupConversation(); 
 	return 0;
 }
