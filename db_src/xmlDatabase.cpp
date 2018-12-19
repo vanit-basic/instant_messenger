@@ -755,14 +755,13 @@ std::string xmlDatabase::getGroupConversation(std::string userID,std::string gro
 	const char* temp =userID.c_str() ;
 	xmlChar* cur =xmlCharStrdup(temp);
 	while(child != NULL){
-		if(child->type != XML_TEXT_NODE){
-			if(xmlGetProp(child,cur)!=NULL){
+		if(xmlGetProp(child,cur)!=NULL){
+			if(child->type != XML_TEXT_NODE){
 				xmlNode* temp = child->next;
 				xmlUnlinkNode(child);
 				child = temp;
 			}
-		}
-		else{
+		} else {
 			child=child->next;
 		}
 	}
@@ -943,7 +942,7 @@ LIBXML_TEST_VERSION;
         xmlCleanupParser();
         xmlMemoryDump();
         path="db_files/groups/" + groupId;
-        rmdir(path.c_str());
+        remove(path.c_str());
 	return true;
 }
 
@@ -1234,4 +1233,27 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 	t = reduceGroupMembersQuantity(groupID);
 	t = removeUserIdFromXml(groupID, userID);
 	return 0;
+}
+
+std::string xmlDatabase::getGroupUsers(std::string groupID) {
+	std::string str = "";
+	std::string pathForID = "db_files/groups/" + groupID;
+
+	DIR* usersDirID = opendir(pathForID.c_str());
+	
+	if (usersDirID) {
+		xmlDoc *doc = NULL;
+		xmlNode *root_element = NULL;
+		std::string pathForXml = pathForID + "/users.xml";
+		doc = xmlReadFile(pathForXml.c_str(), NULL, 0);
+			xmlChar* info = NULL;
+			int countXmlElements = 0;
+			xmlDocDumpMemory(doc, &info, &countXmlElements);
+			str = (char*)info;
+			xmlFreeDoc(doc);
+			xmlFree(info);
+	}
+
+	closedir(usersDirID);
+	return str;
 }

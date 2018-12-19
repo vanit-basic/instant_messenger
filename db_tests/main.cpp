@@ -155,6 +155,7 @@ void test_all()
 	std::string GroupId2 = db->createGroup(GroupInfo2);
 	std::cout<<"Function result  "<<GroupId2<<std::endl;
 	getId(GroupId);
+	getId(GroupId2);
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST GET_GROUP_INFO()  *******************"<<std::endl;
 	std::cout<<std::endl;
@@ -192,10 +193,13 @@ void test_all()
 	std::cout<<"Function result for user "<<UserId1<<"   "<<db->getGroupConversation(UserId1, GroupId)<<std::endl;
 	std::cout<<"Function result for user "<<UserId2<<"   "<<db->getGroupConversation(UserId2, GroupId)<<std::endl;
 	std::cout<<std::endl;
+	std::cout<<"*****************  TEST GET_GROUP_USERS()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout <<"getGroupUsers g1"<<db->getGroupUsers(GroupId)<<std::endl;
+	std::cout <<"getGroupUsers g2  "<<db->getGroupUsers(GroupId2)<<std::endl;
 	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
-
 
 }
 
@@ -419,7 +423,7 @@ void test_addUserMessage_getUsersConversation_getUserConversations()
 
 
 int main() {
-//	test_all();
+	test_all();
 //	test1();
 //	test2();
 //	test_groupFunctional();
