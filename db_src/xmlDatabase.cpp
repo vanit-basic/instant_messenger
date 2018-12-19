@@ -1030,9 +1030,9 @@ xmlDatabase::xmlDatabase() {
 
 xmlDatabase::~xmlDatabase() { }
 
-bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
+bool removeFromGroupUserName(std::string groupID, std::string userID) {
 	LIBXML_TEST_VERSION
-		std::cout << groupID << "  " << userID << std::endl;
+	std::cout << groupID << "  " << userID << std::endl;
 	std::string path = "db_files/groups/" + groupID;
 	DIR* groupsDir = opendir(path.c_str());
 	if (groupsDir) {
@@ -1062,8 +1062,11 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 		}
 		closedir(groupsDir);
 	}
+}
 
+bool reduceGroupMembersQuantity(std::string groupID) {
 	std::string pathGroup = "db_files/groups/" + groupID;
+	std::string path = "db_files/groups/" + groupID;
 	DIR* usersDir = opendir(pathGroup.c_str());
 	if (usersDir) {
 		xmlDoc *doc = NULL;
@@ -1097,7 +1100,10 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 	}
 
 	closedir(usersDir);
-	
+	return true;
+}
+
+bool  removeUserIdFromXml(std::string groupID, std::string userID) {
 	std::string pathForID = "db_files/groups/" + groupID;
 	DIR* usersDirID = opendir(pathForID.c_str());
 	if (usersDirID) {
@@ -1125,6 +1131,15 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
 	}
+
 	closedir(usersDirID);
 	return true;
+}
+
+bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
+	bool t = false;
+	t = removeFromGroupUserName(groupID, userID);
+	t = reduceGroupMembersQuantity(groupID);
+	t = removeUserIdFromXml(groupID, userID);
+	return 0;
 }
