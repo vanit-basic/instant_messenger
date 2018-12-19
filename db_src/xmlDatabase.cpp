@@ -730,13 +730,13 @@ std::string xmlDatabase::getGroupConversation(std::string userID,std::string gro
 	const char* temp =userID.c_str() ;
 	xmlChar* cur =xmlCharStrdup(temp);
 	while(child != NULL){
-		if(child->type != XML_TEXT_NODE){
 			if(xmlGetProp(child,cur)!=NULL){
-				xmlNode* temp = child->next;
-				xmlUnlinkNode(child);
-				child = temp;
+				if(child->type != XML_TEXT_NODE){
+					xmlNode* temp = child->next;
+					xmlUnlinkNode(child);
+					child = temp;
+				}
 			}
-		}
 		else{
 			child=child->next;
 		}
