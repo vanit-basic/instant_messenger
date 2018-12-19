@@ -1079,11 +1079,7 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 	xmlFreeDoc(doc_rest);
 	xmlCleanupParser();
 	xmlMemoryDump();
-<<<<<<< HEAD
-	std::string conv = "db_files/users/" + fromId + "/convs/" + toId;
-=======
 	std::string conv = "db_files/users/" + from + "/convs/" + to;
->>>>>>> 7fa9482d9c4bebd71a055cebbe87163ac0759a9b
 	LIBXML_TEST_VERSION;
 	doc = xmlReadFile(conv.c_str(), NULL, 0);
 	root_element = xmlDocGetRootElement(doc);

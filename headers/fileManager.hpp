@@ -4,10 +4,8 @@
 class fileManager {
 
 	public:
-
 		void getFileContent(std::string path, std::string& content);
 		void getDirectoryContent(std::string path, std::vector<std::string>& files);
-
 
 		bool isFileExist(std::string path);
 		bool isDirectory(std::string path);
