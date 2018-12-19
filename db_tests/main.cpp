@@ -195,10 +195,10 @@ void test_getUserConversation(std::string from_id,std::string to_id) {
 //	std::cout<<db->getUserConversations(from_id)<<std::endl;
 }
 void test_delete_message(){
-		std::cout<<db->getUsersConversation("u100000","u100003")<<std::endl;
-	std::string delete_mess_test = "<delete_message><fromId>u100000</fromId><toId>u100003</toId><messageId>m1</messageId><remove_status>0</remove_status></delete_message>";
+		std::cout<<db->getUsersConversation("u100004","u100001")<<std::endl;
+	std::string delete_mess_test = "<delete_message><fromId>u100004</fromId><toId>u100001</toId><messageId>m2</messageId><remove_status>0</remove_status></delete_message>";
 	if(db->removeMessage(delete_mess_test)){
-		std::cout<<db->getUsersConversation("u100000","u100003")<<std::endl;
+		std::cout<<db->getUsersConversation("u100004","u100001")<<std::endl;
 	}
 	else
 		std::cout<<"error";
@@ -407,7 +407,7 @@ void test_addUserMessage_getUsersConversation_getUserConversations()
 
 
 int main() {
-	test_all();
+//	test_all();
 //	test1();
 //	test2();
 //	test_groupFunctional();
@@ -416,6 +416,6 @@ int main() {
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_getUserConversation("u100000","u100003");
 //	test_addUserMessage_getUsersConversation_getUserConversations();
-//	test_delete_message();	
+	test_delete_message();	
 	return 0;
 }
