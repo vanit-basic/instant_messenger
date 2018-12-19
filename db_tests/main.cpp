@@ -99,7 +99,7 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST GET_USER_SHORT_INFO()  *******************"<<std::endl;
 	std::cout<<std::endl;
-	std::cout<<"First user Short Info     "<<db->getUserShortInfo(UserId2)<<std::endl;
+	std::cout<<"First user Short Info     "<<db->getUserShortInfo(UserId1)<<std::endl;
 	std::cout<<"Second user Short Info    "<<db->getUserShortInfo(UserId2)<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST LOGIN_USER()  *******************"<<std::endl;
