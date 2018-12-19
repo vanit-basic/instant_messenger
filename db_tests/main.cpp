@@ -169,7 +169,12 @@ void test_all()
 	std::cout<<"Function result1  "<<db->addUserToGroup(GroupId, UserId2);
 	std::cout<<"Function result2  "<<db->addUserToGroup(GroupId, UserId3);
 	std::cout<<"Group info   "<<db->getGroupInfo(GroupId)<<std::endl;
+/*	std::cout<<std::endl;
+	std::cout<<"*****************  TEST REMOVE_FROM_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
+	std::cout<<"Function result  "<<db->removeFromGroup(GroupId, UserId2);
+	std::cout<<"Group info   "<<db->getGroupInfo(GroupId)<<std::endl;
+*/	std::cout<<std::endl;
 	std::cout<<"*****************  TEST ADD_GROUP_MESSAGE()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::string groupmess1 = "<message><date>19.12.2018</date><body>barev ankrkneliner)</body></message>";

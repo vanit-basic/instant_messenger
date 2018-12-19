@@ -47,11 +47,11 @@ void remgIdFromUinfo(xmlNode* root, std::string userId){
                 if(0 == strcmp((char*)node->name, "groups"))
                         break;
         }
-/*	for(node = node->children; node; node = node->next){
+	for(node = node->children; node; node = node->next){
 		if(node->type == XML_ELEMENT_NODE)
-		remUserFromGroup((char*)node->name,userId);
+			sharedDB->removeFromGroup((char*)node->name,userId);
 	}
-*/
+
 }
 
 xmlNodePtr delete_node(xmlNode* a_node)
@@ -214,7 +214,7 @@ void add_convs_dir(std::string ID)
 	xmlDocSetRootElement(doc, root);
 	path = path + "/convs_list.xml";
 	const char* convs = path.c_str();
-	xmlSaveFormatFileEnc(convs, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(convs, doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 }
@@ -264,7 +264,7 @@ std::string xmlDatabase::registerUser(std::string userInfo)
 		addUserIdDir(ID);
 		std::string us_inf = "db_files/users/" + ID + "/info.xml";
 		const char* us_inf_char = us_inf.c_str();
-		xmlSaveFormatFileEnc(us_inf_char, doc, "UTF-8", 1);
+		xmlSaveFormatFileEnc(us_inf_char, doc, "UTF-8", 0);
 		add_convs_dir(ID);
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
@@ -336,7 +336,7 @@ bool xmlDatabase::updateUserInfo(std::string userInfo) {
 			xmlFree(buf);
 		}
 	}
-	xmlSaveFormatFileEnc(path.c_str(), docGen, "UTF-8", 1);
+	xmlSaveFormatFileEnc(path.c_str(), docGen, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlFreeDoc(docGen);
 	xmlMemoryDump();
@@ -385,7 +385,7 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 
 		for (node = root->children; node; node = node->next) {
 			if (node->type == XML_ELEMENT_NODE) {
-				if(0 == strcmp((char*)node->name, "firstname") || 0 == strcmp((char*)node->name, "lastname") || 0 == strcmp((char*)node->name, "birthDate") || 0 == strcmp((char*)node->name, "avatar")) {
+				if(0 == strcmp((char*)node->name, "firstName") || 0 == strcmp((char*)node->name, "lastName") || 0 == strcmp((char*)node->name, "birthDate") || 0 == strcmp((char*)node->name, "avatar")) {
 					xmlNewChild(newRoot, NULL, BAD_CAST node->name, BAD_CAST xmlNodeGetContent(node));
 
 				}
@@ -457,7 +457,7 @@ void add_user_conv(std::string from, std::string to)
 	root = xmlDocGetRootElement(doc);
 	const char* f = from.c_str();
 	xmlNewChild(root, NULL, BAD_CAST f , NULL);
-	xmlSaveFormatFileEnc(p2, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(p2, doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 }
@@ -487,7 +487,7 @@ void readConversationFile(xmlNode* node, std::string path)
 	doc = xmlReadFile (path1, NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	xmlAddChild(root, node);
-	xmlSaveFormatFileEnc(path1, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(path1, doc, "UTF-8", 0);
 	xmlUnlinkNode(root);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
@@ -502,7 +502,7 @@ void addConversationFile(xmlNode* node, std::string path)
 	xmlDocSetRootElement(doc, root);
 	xmlAddChild(root, node);
 	const char* path1 = path.c_str();
-	xmlSaveFormatFileEnc(path1, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(path1, doc, "UTF-8", 0);
 	xmlUnlinkNode(root);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
@@ -578,7 +578,7 @@ bool add_link_group_convs(std:: string groupId, std::string userId)
 	root = xmlDocGetRootElement(doc);
 	if ((0 == symlink(conv, link)) && (!(NULL == xmlNewChild(root, NULL, BAD_CAST gId, NULL))))
 	{
-		xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+		xmlSaveFormatFileEnc(path, doc, "UTF-8", 0);
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
 		return true;
@@ -661,7 +661,7 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	}
 	path = path + "/ginfo.xml";
 	const char* file = path.c_str();
-	xmlSaveFormatFileEnc(file, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(file, doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	xmlMemoryDump();
@@ -680,7 +680,7 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 			}
 		}
 	}
-	xmlSaveFormatFileEnc(filename, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(filename, doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 
 	doc = xmlNewDoc(BAD_CAST "1.0");
@@ -690,7 +690,7 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	xmlNewChild(root, NULL, BAD_CAST value1, NULL);
 	path = "db_files/groups/" + groupId + "/users.xml";
 	const char* file1 = path.c_str();
-	xmlSaveFormatFileEnc(file1, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(file1, doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 
@@ -699,7 +699,7 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	xmlDocSetRootElement(doc, root);
 	path = "db_files/groups/" + groupId + "/conv.xml";
 	const char* file2 = path.c_str();
-	xmlSaveFormatFileEnc(file2, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(file2, doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 
@@ -730,13 +730,13 @@ std::string xmlDatabase::getGroupConversation(std::string userID,std::string gro
 	const char* temp =userID.c_str() ;
 	xmlChar* cur =xmlCharStrdup(temp);
 	while(child != NULL){
-		if(child->type != XML_TEXT_NODE){
 			if(xmlGetProp(child,cur)!=NULL){
-				xmlNode* temp = child->next;
-				xmlUnlinkNode(child);
-				child = temp;
+				if(child->type != XML_TEXT_NODE){
+					xmlNode* temp = child->next;
+					xmlUnlinkNode(child);
+					child = temp;
+				}
 			}
-		}
 		else{
 			child=child->next;
 		}
@@ -782,7 +782,7 @@ bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
 			xmlFree(buf);
 		}
 	}
-	xmlSaveFormatFileEnc(path.c_str(), docGen, "UTF-8", 1);
+	xmlSaveFormatFileEnc(path.c_str(), docGen, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlFreeDoc(docGen);
 	xmlCleanupParser();
@@ -808,7 +808,7 @@ std::string xmlDatabase::addGroupMessage(std::string groupId, std::string userId
 	doc = xmlReadFile (path, NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	xmlAddChild(root, root_mess);
-	xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(path, doc, "UTF-8", 0);
 	xmlUnlinkNode(root);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
@@ -923,7 +923,7 @@ bool addGroupId (std::string gid, std::string uid)
 			}
 		}
 	}
-	xmlSaveFormatFileEnc(path, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(path, doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	return status;
@@ -942,7 +942,7 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 	doc = xmlReadFile(c_users, NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
 	add_ID(root_element, userID, status);
-	xmlSaveFormatFileEnc(c_users, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(c_users, doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	if(status)
@@ -950,7 +950,7 @@ bool xmlDatabase::addUserToGroup(std::string groupID, std::string userID)
 		doc = xmlReadFile(c_gr_inf, NULL, 0);
 		root_element = xmlDocGetRootElement(doc);
 		change_quantity(root_element, status);
-		xmlSaveFormatFileEnc(c_gr_inf, doc, "UTF-8", 1);
+		xmlSaveFormatFileEnc(c_gr_inf, doc, "UTF-8", 0);
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
 		status = addGroupId(groupID, userID);
@@ -1007,6 +1007,11 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
                 return true;
 }
 
+bool xmlDatabase::removeMessageFromGroupConversation(std::string groupInfo){
+
+
+	return true;
+}
 bool xmlDatabase::removeGroupConversation(std::string groupId) {
 	std::string path = "db_files/groups/" + groupId + "/conv.xml";
 	remove (path.c_str());
@@ -1032,9 +1037,9 @@ xmlDatabase::xmlDatabase() {
 
 xmlDatabase::~xmlDatabase() { }
 
-bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
+bool removeFromGroupUserName(std::string groupID, std::string userID) {
 	LIBXML_TEST_VERSION
-		std::cout << groupID << "  " << userID << std::endl;
+	std::cout << groupID << "  " << userID << std::endl;
 	std::string path = "db_files/groups/" + groupID;
 	DIR* groupsDir = opendir(path.c_str());
 	if (groupsDir) {
@@ -1064,8 +1069,11 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 		}
 		closedir(groupsDir);
 	}
+}
 
+bool reduceGroupMembersQuantity(std::string groupID) {
 	std::string pathGroup = "db_files/groups/" + groupID;
+	std::string path = "db_files/groups/" + groupID;
 	DIR* usersDir = opendir(pathGroup.c_str());
 	if (usersDir) {
 		xmlDoc *doc = NULL;
@@ -1091,7 +1099,7 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 				}
 			}
 		}
-		xmlSaveFormatFileEnc(pathForInfo.c_str(), doc, "UTF-8", 1);
+		xmlSaveFormatFileEnc(pathForInfo.c_str(), doc, "UTF-8", 0);
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
 	} else {
@@ -1099,7 +1107,10 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 	}
 
 	closedir(usersDir);
-	
+	return true;
+}
+
+bool  removeUserIdFromXml(std::string groupID, std::string userID) {
 	std::string pathForID = "db_files/groups/" + groupID;
 	DIR* usersDirID = opendir(pathForID.c_str());
 	if (usersDirID) {
@@ -1123,10 +1134,19 @@ bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
 				}
 			}
 		}
-		xmlSaveFormatFileEnc(pathForXml.c_str(), doc, "UTF-8", 1);
+		xmlSaveFormatFileEnc(pathForXml.c_str(), doc, "UTF-8", 0);
 		xmlFreeDoc(doc);
 		xmlCleanupParser();
 	}
+
 	closedir(usersDirID);
 	return true;
+}
+
+bool xmlDatabase::removeFromGroup(std::string groupID, std::string userID) {
+	bool t = false;
+	t = removeFromGroupUserName(groupID, userID);
+	t = reduceGroupMembersQuantity(groupID);
+	t = removeUserIdFromXml(groupID, userID);
+	return 0;
 }
