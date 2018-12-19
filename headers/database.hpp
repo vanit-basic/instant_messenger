@@ -36,6 +36,8 @@ class database {
                 virtual bool removeMessage(std::string messageInfo) = 0;
 
                 virtual bool removeGroupConversation(std::string groupInfo) = 0;
+
+		virtual bool removeMessageFromGroupConversation(std::string groupInfo) = 0;
 		
 		virtual std::string getGroupInfo(std::string groupID) = 0;
 		
