@@ -49,7 +49,7 @@ void remgIdFromUinfo(xmlNode* root, std::string userId){
         }
 	for(node = node->children; node; node = node->next){
 		if(node->type == XML_ELEMENT_NODE)
-			removeFromGroup((char*)node->name,userId);
+			sharedDB->removeFromGroup((char*)node->name,userId);
 	}
 
 }
