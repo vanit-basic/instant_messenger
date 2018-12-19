@@ -148,9 +148,12 @@ void test_all()
 	std::cout<<"*****************  TEST CREATE_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::string GroupInfo = "<info><name>VanIt</name><admin>" + UserId1 + "</admin><createdate>18.12.2018</createdate></info>";
+	std::string GroupInfo2 = "<info><name>Chka Mer Nman@</name><admin>" + UserId1 + "</admin><createdate>20.12.2018</createdate></info>";
 	std::cout<<"Group info  "<<GroupInfo<<std::endl;
+	std::cout<<"Group info2  "<<GroupInfo<<std::endl;
 	std::string GroupId = db->createGroup(GroupInfo);
-	std::cout<<"Function result  "<<GroupId<<std::endl;
+	std::string GroupId2 = db->createGroup(GroupInfo2);
+	std::cout<<"Function result  "<<GroupId2<<std::endl;
 	getId(GroupId);
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST GET_GROUP_INFO()  *******************"<<std::endl;
@@ -169,12 +172,12 @@ void test_all()
 	std::cout<<"Function result1  "<<db->addUserToGroup(GroupId, UserId2);
 	std::cout<<"Function result2  "<<db->addUserToGroup(GroupId, UserId3);
 	std::cout<<"Group info   "<<db->getGroupInfo(GroupId)<<std::endl;
-/*	std::cout<<std::endl;
+	std::cout<<std::endl;
 	std::cout<<"*****************  TEST REMOVE_FROM_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"Function result  "<<db->removeFromGroup(GroupId, UserId2);
 	std::cout<<"Group info   "<<db->getGroupInfo(GroupId)<<std::endl;
-*/	std::cout<<std::endl;
+	std::cout<<std::endl;
 	std::cout<<"*****************  TEST ADD_GROUP_MESSAGE()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::string groupmess1 = "<message><date>19.12.2018</date><body>barev ankrkneliner)</body></message>";
@@ -188,6 +191,10 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"Function result for user "<<UserId1<<"   "<<db->getGroupConversation(UserId1, GroupId)<<std::endl;
 	std::cout<<"Function result for user "<<UserId2<<"   "<<db->getGroupConversation(UserId2, GroupId)<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Function result for group "<<GroupID2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
 
 
 }

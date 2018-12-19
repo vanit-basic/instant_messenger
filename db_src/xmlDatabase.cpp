@@ -448,7 +448,7 @@ void add_user_conv(std::string from, std::string to)
 	root = xmlDocGetRootElement(doc);
 	const char* t = to.c_str();
 	xmlNewChild(root, NULL, BAD_CAST t , NULL);
-	xmlSaveFormatFileEnc(p1, doc, "UTF-8", 1);
+	xmlSaveFormatFileEnc(p1, doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	path = "db_files/users/" + to + "/convs/convs_list.xml";
@@ -730,13 +730,13 @@ std::string xmlDatabase::getGroupConversation(std::string userID,std::string gro
 	const char* temp =userID.c_str() ;
 	xmlChar* cur =xmlCharStrdup(temp);
 	while(child != NULL){
+		if(child->type != XML_TEXT_NODE){
 			if(xmlGetProp(child,cur)!=NULL){
-				if(child->type != XML_TEXT_NODE){
-					xmlNode* temp = child->next;
-					xmlUnlinkNode(child);
-					child = temp;
-				}
+				xmlNode* temp = child->next;
+				xmlUnlinkNode(child);
+				child = temp;
 			}
+		}
 		else{
 			child=child->next;
 		}
