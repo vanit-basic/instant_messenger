@@ -1,3 +1,6 @@
+#ifndef DATABASE_HPP
+#define DATABASE_HPP
+
 #include <string>
 
 class database {
@@ -55,3 +58,5 @@ class database {
 		~database() {}
 
 };
+
+#endif
