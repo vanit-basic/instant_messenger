@@ -1034,7 +1034,7 @@ bool xmlDatabase::deleteGroup(std::string groupId) {
         xmlCleanupParser();
         xmlMemoryDump();
         path="db_files/groups/" + groupId;
-        remove(path.c_str());
+        rmdir(path.c_str());
 	return true;
 }
 
