@@ -155,7 +155,7 @@ bool verification(std::string login, std::string mail, std::string &result)
 	}
 }
 
-void tracker (xmlNode* a_node, std::string &login, std::string &mail, std::string &password) 
+void extract_credentials (xmlNode* a_node, std::string &login, std::string &mail, std::string &password) 
 {
 	xmlNode *cur_node = NULL;
 	for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
@@ -256,7 +256,7 @@ std::string xmlDatabase::registerUser(std::string userInfo)
 	LIBXML_TEST_VERSION;
 	doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
-	tracker(root_element, login, mail, password);
+	extract_credentials(root_element, login, mail, password);
 	if(verification(login, mail, result))
 	{
 		std::string ID = IDgenerator::getUserId();
