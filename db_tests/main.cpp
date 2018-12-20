@@ -216,6 +216,7 @@ void test_all()
 	std::cout << std::endl;
 	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
 	std::cout<<std::endl;
+	std::cout<<"GroupId : "<<GroupId2<<std::endl;
 	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
 }
 void test_ChangeGroupAdmin(){

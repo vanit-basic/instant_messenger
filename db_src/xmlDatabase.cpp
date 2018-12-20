@@ -76,9 +76,13 @@ xmlNodePtr delete_node(xmlNode* a_node)
 		{
 			cur_node = node;
 		}
-		else
+		else 
 		{
-			cur_node = node->children;
+			if(node->children)
+				cur_node = node->children;
+			else
+				cur_node = node;
+			
 		}
 	}
 	return cur_node;
@@ -1009,7 +1013,8 @@ bool xmlDatabase::deleteGroup(std::string groupId) {
 							if (cur_node3->type == XML_ELEMENT_NODE){
 								const char* name = (const char*)cur_node3->name;
 								if (strcmp(name, groupId.c_str()) == 0){
-									cur_node3 = delete_node(cur_node3);
+									delete_node(cur_node3);
+									break;
 								}
 							}
 						}
@@ -1019,22 +1024,24 @@ bool xmlDatabase::deleteGroup(std::string groupId) {
 							if (cur_node3->type == XML_ELEMENT_NODE){
 								const char* name = (const char*)cur_node3->name;
 								if (strcmp(name, groupId.c_str()) == 0){
-									cur_node3 = delete_node(cur_node3);
+									delete_node(cur_node3);
+									break;
 								}
 							}
 						}
 					}
 				}
 			}
+			xmlSaveFormatFileEnc(path1.c_str(), doc2, "UTF-8", 0);
 			xmlFreeDoc(doc2);
 		}
 	}
-        xmlFreeDoc(doc);
-        xmlCleanupParser();
-        xmlCleanupParser();
-        xmlMemoryDump();
-        path="rm -r db_files/groups/" + groupId;
-        system(path.c_str());
+	xmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 0);
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+	xmlMemoryDump();
+	path="rm -r db_files/groups/" + groupId;
+	system(path.c_str());
 	return true;
 }
 
