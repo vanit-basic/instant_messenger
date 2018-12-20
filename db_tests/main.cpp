@@ -181,8 +181,8 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST UPDATE_GROUP_INFO()  *******************"<<std::endl;
 	std::cout<<std::endl;
-	std::string updateGroupInfo = "<info><gId>" +GroupId+ "</gId><name>VanItBasicTraining</name><createdate>20.20.2018</createdate></info>";
-	std::cout<<"Change group name VanIt->VanItBasicTraining, createdate 18.12.2018->20.20.2018"<<std::endl;
+	std::string updateGroupInfo = "<info><gId>" +GroupId+ "</gId><name>VanItBasicTraining</name><admin>"+UserId3+"</admin><createdate>20.20.2018</createdate></info>";
+	std::cout<<"Change group name VanIt->VanItBasicTraining,admin->"+UserId3+", createdate 18.12.2018->20.20.2018"<<std::endl;
 	std::cout<<"Function result  "<<db->updateGroupInfo(updateGroupInfo)<<std::endl;
 	std::cout<<"Group new info  "<<db->getGroupInfo(GroupId)<<std::endl;
 	std::cout<<std::endl;
@@ -224,7 +224,27 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
 }
+void test_ChangeGroupAdmin(){
+	std::string UserInfo1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
+	std::string UserId1 = db->registerUser(UserInfo1);
+	getId(UserId1);
+	std::cout<<"UserId : "<<UserId1<<std::endl;
+	std::string UserInfo3 = "<registration_information><firstName>Vika</firstName><lastName>Vika</lastName><gender>female</gender><birthDate>10.02.1990</birthDate><email>vika@gmail.com</email><login>vika1990</login><password>Vika1990</password></registration_information>";
+	std::string UserId3 = db->registerUser(UserInfo3);
+	getId(UserId3);
+        std::cout<<"UserId : "<<UserId3<<std::endl;
+	std::string GroupInfo = "<info><name>VanIt</name><admin>" + UserId1 + "</admin><createdate>18.12.2018</createdate></info>";
+	std::string GroupId = db->createGroup(GroupInfo);
+	getId(GroupId);
+	std::cout<<"GroupId : "<<GroupId<<std::endl;
+	std::cout<<"Group info  "<<db->getGroupInfo(GroupId)<<std::endl<<std::endl;
+	std::string updateGroupInfo = "<info><gId>" +GroupId+ "</gId><name>VanItBasicTraining</name><admin>"+UserId3+"</admin><createdate>20.20.2018</createdate></info>";
+	std::cout<<"Function result  "<<db->updateGroupInfo(updateGroupInfo)<<std::endl<<std::endl;
+	std::cout<<"Group new info  "<<db->getGroupInfo(GroupId)<<std::endl<<std::endl;
+	std::cout<<"New Admin info  "<<db->getUserInfo(UserId3)<<std::endl<<std::endl;
+	std::cout<<"Old Admin info  "<<db->getUserInfo(UserId1)<<std::endl;
 
+}
 void test_getUserConversation(std::string from,std::string to) {
 	std::cout<<db->getUsersConversation(from,to)<<std::endl;
 //	std::cout<<"*****************************************************"<<std::endl;
@@ -480,5 +500,6 @@ int main() {
 //	test_delete_message();	
 //	test_removeGroupConversation(); 
 //	test_getUserConversation("u100001","u100004");
+//	test_ChangeGroupAdmin();
 	return 0;
 }
