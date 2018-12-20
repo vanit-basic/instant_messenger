@@ -1491,9 +1491,7 @@ std::string find_path(std::string from, std::string to){
 	}
 }
 
-bool xmlDatabase::updateUserMessage(std::string updateInfo) {
-	std::string from = "";
-	std::string to = "";
+bool xmlDatabase::updateUserMessage(std::string from, std::string to, std::string messageInfo) {
 	std::string messageId = "";
 	std::string correctedMessage;
 	xmlDoc* doc = NULL;
@@ -1502,34 +1500,18 @@ bool xmlDatabase::updateUserMessage(std::string updateInfo) {
 	xmlNode* node1 = NULL;
 
 	LIBXML_TEST_VERSION;
-	const char* info = updateInfo.c_str();
-	doc = xmlReadMemory(info, updateInfo.size(), "noname.xml", NULL, 0);
+	const char* info = messageInfo.c_str();
+	doc = xmlReadMemory(info, messageInfo.size(), "noname.xml", NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	for (node = root->children; node; node = node->next) {
 		if (node->type == XML_ELEMENT_NODE) {
-			if (0 == strcmp((char*)node->name, "from")) {
-				xmlChar* buf;
-				buf = xmlNodeGetContent(node);
-				from = (char*) buf;
-				xmlFree(buf);
-			}
-			else{
-				if  (0 == strcmp((char*)node->name, "to")) {
+			messageId = (char*) node->name;
+			for (node1 = node->children; node1; node1 = node1->next) {
+				if (0 == strcmp((char*)node1->name, "body")) {
 					xmlChar* buf;
 					buf = xmlNodeGetContent(node);
-					to = (char*) buf;
+					correctedMessage = (char*) buf;
 					xmlFree(buf);
-				}
-				else {
-					messageId = (char*) node->name;
-					for(node1 = node->children; node1; node1 = node1->next){
-						if((node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)node1->name, "body"))) {
-							xmlChar* buf;
-							buf = xmlNodeGetContent(node);
-							correctedMessage = (char*) buf;
-							xmlFree(buf);
-						}
-					}
 				}
 			}
 		}

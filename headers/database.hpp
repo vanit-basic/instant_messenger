@@ -21,7 +21,7 @@ class database {
 		
 		virtual std::string addUserMessage(std::string from, std::string to, std::string message) = 0;
 
-		virtual bool updateUserMessage(std::string updateInfo) = 0;
+		virtual bool updateUserMessage(std::string from, std::string to, std::string messageInfo) = 0;
 
 		virtual bool deleteUser(std::string userId) = 0;
 

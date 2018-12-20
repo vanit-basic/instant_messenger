@@ -128,8 +128,8 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST UPDATE_USER_MESSAGE()  *******************"<<std::endl;
 	std::cout<<std::endl;
-	std::string newmessage = "<info><from>"+UserId1+"</from><to>"+UserId3+"</to><m5><body>Barev</body></m5></info>";
-        db->updateUserMessage(newmessage);
+	std::string newmessage = "<info><m5><body>Barev</body></m5></info>";
+        db->updateUserMessage(UserId1, UserId3, newmessage);
 	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId3<< "**********"<<std::endl;
         std::cout<<db->getUsersConversation(UserId1, UserId3)<<std::endl;
 	std::cout<<std::endl;
@@ -229,7 +229,7 @@ void test_all()
 	std::cout << std::endl;
 	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
 	std::cout<<std::endl;
-	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
+//	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
 }
 void test_ChangeGroupAdmin(){
 	std::string UserInfo1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
