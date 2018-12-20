@@ -1,3 +1,6 @@
+#ifndef DATABASE_HPP
+#define DATABASE_HPP
+
 #include <string>
 
 class database {
@@ -20,6 +23,8 @@ class database {
 		virtual std::string getUsersConversation(std::string fromID, std::string toID) = 0;
 		
 		virtual std::string addUserMessage(std::string from, std::string to, std::string message) = 0;
+
+		virtual bool updateUserMessage(std::string updateInfo) = 0;
 
 		virtual bool deleteUser(std::string userId) = 0;
 
@@ -56,3 +61,5 @@ class database {
 		~database() {}
 
 };
+
+#endif

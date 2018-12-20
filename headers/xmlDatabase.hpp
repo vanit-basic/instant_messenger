@@ -1,3 +1,7 @@
+
+#ifndef XML_DATABASE_HPP
+#define XML_DATABASE_HPP
+
 #include "database.hpp"
 
 
@@ -13,6 +17,7 @@ class xmlDatabase : public database {
                 virtual std::string getUserConversations(std::string userID);
                 virtual std::string getUsersConversation(std::string fromID, std::string toID);
                 virtual std::string addUserMessage(std::string from, std::string to, std::string message);
+		virtual bool updateUserMessage(std::string updateInfo);
 		virtual bool deleteUser(std::string userId);
                 virtual bool updateGroupMessage(std::string groupId, std::string messId, std::string messBody);
                 virtual bool removeUserConversation(std::string fromUserId, std::string toUserId);
@@ -37,3 +42,5 @@ class xmlDatabase : public database {
 	public:
 		static xmlDatabase* getShared();
 };
+
+#endif
