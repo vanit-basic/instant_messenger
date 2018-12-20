@@ -439,15 +439,15 @@ void test_removeGroupConversation (){
 	gid =(char*) xmlNodeGetContent(root);
 
 	std::cout<<"ID : "<<gid<<std::endl;
-	std::cout << db->addUserToGroup(gid,"u100000") << std::endl;
+	std::cout << db->addUserToGroup(gid,"u100001") << std::endl;
 	//std::cout << db->addUserToGroup(gid,"u100000") <<std::endl;
 	std::cout << db->getGroupInfo(gid) << std::endl;
-	std::cout << db->addGroupMessage(gid,"u100000", "<conv><Barev/></conv>") << std::endl; 
-	std::cout << db->addGroupMessage(gid,"u100000", "<conv><Hajox/></conv>") << std::endl;
+	std::cout << db->addGroupMessage(gid,"u100001", "<message><date>14.12.2018</date><body> barev </body></message>") << std::endl; 
+	std::cout << db->addGroupMessage(gid,"u100001", "<message><date>14.12.2018</date><body> vonces? </body></message>") << std::endl;
         //std::cout << db->addGroupMessage(gid,"u100003", "vonces") << std::endl;
-	std::cout << db->getGroupConversation("u100000",gid) << std::endl;  
+	std::cout << db->getGroupConversation("u100001",gid) << std::endl;  
 	std::cout << db->removeGroupConversation(gid) << std::endl;  
-        std::cout << db->getGroupConversation("u100000",gid) << std::endl;   	
+        std::cout << db->getGroupConversation("u100001",gid) << std::endl;   	
 }
 
 int main() {
