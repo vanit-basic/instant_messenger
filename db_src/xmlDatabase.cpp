@@ -155,7 +155,7 @@ bool verification(std::string login, std::string mail, std::string &result)
 	}
 }
 
-void tracker (xmlNode* a_node, std::string &login, std::string &mail, std::string &password) 
+void extract_credentials (xmlNode* a_node, std::string &login, std::string &mail, std::string &password) 
 {
 	xmlNode *cur_node = NULL;
 	for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
@@ -256,7 +256,7 @@ std::string xmlDatabase::registerUser(std::string userInfo)
 	LIBXML_TEST_VERSION;
 	doc = xmlReadMemory(inf, length, "noname.xml", NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
-	tracker(root_element, login, mail, password);
+	extract_credentials(root_element, login, mail, password);
 	if(verification(login, mail, result))
 	{
 		std::string ID = IDgenerator::getUserId();
@@ -986,68 +986,55 @@ bool xmlDatabase::deleteUser(std::string userId){
 }
 
 bool xmlDatabase::deleteGroup(std::string groupId) {
-LIBXML_TEST_VERSION;
+        LIBXML_TEST_VERSION;
         std::string path = "";
-        path = "";
 	path = "db_files/groups/" + groupId + "/users.xml";
         xmlDoc* doc = NULL;
         xmlNode* root = NULL;
         doc=xmlReadFile(path.c_str(),NULL,0);
         root= xmlDocGetRootElement(doc);
-        for (xmlNode* cur_node = root->children; cur_node; cur_node = cur_node->next)
-        {
-                if (cur_node->type == XML_ELEMENT_NODE)
-                {
+        for (xmlNode* cur_node = root->children; cur_node; cur_node = cur_node->next){
+                if (cur_node->type == XML_ELEMENT_NODE){
                         std::string nodeName = (char*)cur_node->name;
-                        std::string path1="db_files/users/" + nodeName + "/info.xml";
-                        xmlNode* root2=NULL;
-                        xmlDoc* doc2=NULL;
-                        doc2=xmlReadFile(path1.c_str(),NULL,0);
-                        root2=xmlDocGetRootElement(doc2);
-                        for (xmlNode* cur_node2 = root2->children; cur_node2; cur_node2 = cur_node2->next)
-                        {
-                                if (cur_node2->type == XML_ELEMENT_NODE)
-                                {
-                                        const char* name = (const char*)cur_node2->name;
-                                        if (strcmp(name, "groups") == 0)
-                                        {
-                                                for (xmlNode* cur_node3 = cur_node2->children; cur_node3; cur_node3 = cur_node3->next)
-                                                {
-                                                        if (cur_node3->type == XML_ELEMENT_NODE)
-                                                        {
-                                                                const char* name = (const char*)cur_node3->name;
-                                                                if (strcmp(name, groupId.c_str()) == 0)
-                                                                {
-                                                                        cur_node3 = delete_node(cur_node3);
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                        if (strcmp(name, "groupAdmin") == 0)
-                                        {
-                                                for (xmlNode* cur_node3 = cur_node2->children; cur_node3; cur_node3 = cur_node3->next)
-                                                {
-                                                       if (cur_node3->type == XML_ELEMENT_NODE)
-                                                        {
-                                                                const char* name = (const char*)cur_node3->name;
-                                                                if (strcmp(name, groupId.c_str()) == 0)
-                                                                {
-                                                                        cur_node3 = delete_node(cur_node3);
-                                         }
-                                                        }
-                                                }
-                                        }
-                                }
+			std::string path1="db_files/users/" + nodeName + "/info.xml";
+			xmlNode* root2=NULL;
+			xmlDoc* doc2=NULL;
+			doc2=xmlReadFile(path1.c_str(),NULL,0);
+			root2=xmlDocGetRootElement(doc2);
+			for (xmlNode* cur_node2 = root2->children; cur_node2; cur_node2 = cur_node2->next){
+				if (cur_node2->type == XML_ELEMENT_NODE){
+					const char* name = (const char*)cur_node2->name;
+					if (strcmp(name, "groups") == 0){
+						for (xmlNode* cur_node3 = cur_node2->children; cur_node3; cur_node3 = cur_node3->next){
+							if (cur_node3->type == XML_ELEMENT_NODE){
+								const char* name = (const char*)cur_node3->name;
+								if (strcmp(name, groupId.c_str()) == 0){
+									cur_node3 = delete_node(cur_node3);
+								}
+							}
+						}
+					}
+					if (strcmp(name, "groupAdmin") == 0){
+						for (xmlNode* cur_node3 = cur_node2->children; cur_node3; cur_node3 = cur_node3->next){
+							if (cur_node3->type == XML_ELEMENT_NODE){
+								const char* name = (const char*)cur_node3->name;
+								if (strcmp(name, groupId.c_str()) == 0){
+									cur_node3 = delete_node(cur_node3);
+								}
+							}
+						}
+					}
+				}
 			}
-                        xmlFreeDoc(doc2);
-                }
-        }
+			xmlFreeDoc(doc2);
+		}
+	}
         xmlFreeDoc(doc);
         xmlCleanupParser();
         xmlCleanupParser();
         xmlMemoryDump();
         path="db_files/groups/" + groupId;
-        remove(path.c_str());
+        rmdir(path.c_str());
 	return true;
 }
 
@@ -1177,7 +1164,7 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 	xmlFreeDoc(doc_rest);
 	xmlCleanupParser();
 	xmlMemoryDump();
-	std::string conv = "db_files/users/" + from + "/convs/" + to;
+	std::string conv = "db_files/users/" + from + "/convs/" + to + ".xml";
 	LIBXML_TEST_VERSION;
 	doc = xmlReadFile(conv.c_str(), NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
@@ -1245,6 +1232,89 @@ bool xmlDatabase::removeMessageFromGroupConversation(std::string messageInfo){
         xmlMemoryDump();
                 return true;
 }
+bool removeFromXml(std::string fromUserId, std::string toUserId){
+        bool flag = false;
+        std::string data="db_files/users/"+fromUserId+"/convs/convs_list.xml";
+        const char* FileData = data.c_str();
+        xmlDoc* doc=NULL;
+        doc=xmlReadFile(FileData,NULL,0);
+        xmlNode* root =NULL;
+        root = xmlDocGetRootElement(doc);
+        xmlNode* child =NULL;
+        child =root->children;
+        while(child != NULL){
+                std::string nodeName=(char*)child->name;
+                if(nodeName == toUserId){
+                        if(child->type != XML_TEXT_NODE){
+                                flag = true;
+                                xmlNode* temp = child->next;
+                                xmlUnlinkNode(child);
+                                xmlFree(child);
+                                child = temp;
+                        }
+                }
+                else
+                        child=child->next;
+        }
+        if(flag){
+                xmlChar* info;
+                std::string newXml="";
+                int size;
+                xmlDocDumpMemory(doc, &info, &size);
+                newXml = (char*)info;
+                xmlFree(doc);
+                xmlFree(info);
+                remove(FileData);
+                xmlSaveFormatFileEnc(FileData,doc, "UTF-8", 0);
+        }
+        return flag;
+}
+
+bool xmlDatabase::removeUserConversation(std::string fromUserId,std::string toUserId){
+        if(removeFromXml(fromUserId, toUserId)){
+                std::string dataReviewLink("db_files/users/"+toUserId+"/convs/"+fromUserId+".xml");
+                const char*  Link= dataReviewLink.c_str();
+                std::string dataReviewUserLink("db_files/users/"+fromUserId+"/convs/"+toUserId+".xml");
+                const char* UserLink = dataReviewUserLink.c_str();
+                std::string dataConvLink1("db_files/conversations/"+toUserId+fromUserId+".xml");
+                const char* Conv1 = dataConvLink1.c_str();
+                std::string dataConvLink2("db_files/conversations/"+fromUserId+toUserId+".xml");
+                const char* Conv2 = dataConvLink2.c_str();
+                std::ifstream reviewLink("db_files/users/"+toUserId+"/convs/"+fromUserId+".xml");
+                if(reviewLink.is_open()){
+                        std::ifstream reviewUserLink("db_files/users/"+fromUserId+"/convs/"+toUserId+".xml");
+                        if(reviewUserLink.is_open()){
+                                reviewUserLink.close();
+                                remove(UserLink);
+                        }
+                        reviewLink.close();
+                        return true;
+                }
+                else{
+                        std::ifstream reviewUserLink("db_files/users/"+fromUserId+"/convs/"+toUserId+".xml");
+                        if(reviewUserLink.is_open()){
+                                std::ifstream convFile1("db_files/conversations/"+toUserId+fromUserId+".xml");
+                                if(convFile1.is_open()){
+                                        convFile1.close();
+                                        remove(Conv1);
+                                }
+                                else{
+                                        std::ifstream convFile2("db_files/conversations/"+fromUserId+toUserId+".xml");
+                                        if(convFile2.is_open()){
+                                                convFile1.close();
+                                                remove(Conv2);
+                                        }
+                                }
+                                reviewUserLink.close();
+                                remove(UserLink);
+                        }
+                        return true;
+                }
+        }
+        else
+                return false;
+}
+
 bool xmlDatabase::removeGroupConversation(std::string groupId) {
 	std::string path = "db_files/groups/" + groupId + "/conv.xml";
 	remove (path.c_str());
