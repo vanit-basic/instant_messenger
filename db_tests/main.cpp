@@ -16,6 +16,7 @@
    getUsersConversation(std::string fromID, std::string toID)	+
    updateUserInfo(std::string userInfo)				+
    addUserToGroup(std::string groupID, std::string userID)	+
+   removeUserConversation(std::string fromUserId,std::string toUserId)
 
    Group
    createGroup(std::string groupInfo)				+
@@ -125,6 +126,13 @@ void test_all()
 	std::cout<<db->addUserMessage(UserId3, UserId1, message7);
 	std::cout<<db->addUserMessage(UserId3, UserId2, message7);
 	std::cout<<std::endl;
+	std::cout<<"*****************  TEST UPDATE_USER_MESSAGE()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::string newmessage = "<info><m5><body>Barev</body></m5></info>";
+        db->updateUserMessage(UserId1, UserId3, newmessage);
+	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId3<< "**********"<<std::endl;
+        std::cout<<db->getUsersConversation(UserId1, UserId3)<<std::endl;
+	std::cout<<std::endl;
 	std::cout<<"*****************  TEST GET_USERS_CONVERSATION()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId2<<std::endl;
@@ -145,6 +153,17 @@ void test_all()
 	std::cout<<" Function result  "<<db->updateUserInfo(updateUserInf)<<std::endl;
 	std::cout<<"get new info  "<<db->getUserInfo(UserId2)<<std::endl;
 	std::cout<<std::endl;
+	std::cout<<"*****************  TEST REMOVE_USER_CONVERSATION()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Returns bool value. Returns true if deleted and false if that file doesn't exist."<<std::endl;
+	std::cout<<"U1's coversation is deleted."<<std::endl;
+	std::cout<<db->removeUserConversation(UserId1,UserId2)<<std::endl;
+	std::cout<<"U2's coversation is deleted."<<std::endl;
+	std::cout<<db->removeUserConversation(UserId2,UserId1)<<std::endl;
+	std::cout<<"The conversation is deleted for both users."<<std::endl;
+	std::cout<<db->removeUserConversation(UserId2,UserId1)<<std::endl;
+	std::cout<<std::endl;
+	
 	std::cout<<"*****************  TEST CREATE_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::string GroupInfo = "<info><name>VanIt</name><admin>" + UserId1 + "</admin><createdate>18.12.2018</createdate></info>";
@@ -163,8 +182,8 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST UPDATE_GROUP_INFO()  *******************"<<std::endl;
 	std::cout<<std::endl;
-	std::string updateGroupInfo = "<info><gId>" +GroupId+ "</gId><name>VanItBasicTraining</name><createdate>20.20.2018</createdate></info>";
-	std::cout<<"Change group name VanIt->VanItBasicTraining, createdate 18.12.2018->20.20.2018"<<std::endl;
+	std::string updateGroupInfo = "<info><gId>" +GroupId+ "</gId><name>VanItBasicTraining</name><admin>"+UserId3+"</admin><createdate>20.20.2018</createdate></info>";
+	std::cout<<"Change group name VanIt->VanItBasicTraining,admin->"+UserId3+", createdate 18.12.2018->20.20.2018"<<std::endl;
 	std::cout<<"Function result  "<<db->updateGroupInfo(updateGroupInfo)<<std::endl;
 	std::cout<<"Group new info  "<<db->getGroupInfo(GroupId)<<std::endl;
 	std::cout<<std::endl;
@@ -211,9 +230,30 @@ void test_all()
 /*	std::cout << std::endl;
 	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
 	std::cout<<std::endl;
+	std::cout<<"GroupId : "<<GroupId2<<std::endl;
 	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;*/
 }
+void test_ChangeGroupAdmin(){
+	std::string UserInfo1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
+	std::string UserId1 = db->registerUser(UserInfo1);
+	getId(UserId1);
+	std::cout<<"UserId : "<<UserId1<<std::endl;
+	std::string UserInfo3 = "<registration_information><firstName>Vika</firstName><lastName>Vika</lastName><gender>female</gender><birthDate>10.02.1990</birthDate><email>vika@gmail.com</email><login>vika1990</login><password>Vika1990</password></registration_information>";
+	std::string UserId3 = db->registerUser(UserInfo3);
+	getId(UserId3);
+        std::cout<<"UserId : "<<UserId3<<std::endl;
+	std::string GroupInfo = "<info><name>VanIt</name><admin>" + UserId1 + "</admin><createdate>18.12.2018</createdate></info>";
+	std::string GroupId = db->createGroup(GroupInfo);
+	getId(GroupId);
+	std::cout<<"GroupId : "<<GroupId<<std::endl;
+	std::cout<<"Group info  "<<db->getGroupInfo(GroupId)<<std::endl<<std::endl;
+	std::string updateGroupInfo = "<info><gId>" +GroupId+ "</gId><name>VanItBasicTraining</name><admin>"+UserId3+"</admin><createdate>20.20.2018</createdate></info>";
+	std::cout<<"Function result  "<<db->updateGroupInfo(updateGroupInfo)<<std::endl<<std::endl;
+	std::cout<<"Group new info  "<<db->getGroupInfo(GroupId)<<std::endl<<std::endl;
+	std::cout<<"New Admin info  "<<db->getUserInfo(UserId3)<<std::endl<<std::endl;
+	std::cout<<"Old Admin info  "<<db->getUserInfo(UserId1)<<std::endl;
 
+}
 void test_getUserConversation(std::string from,std::string to) {
 	std::cout<<db->getUsersConversation(from,to)<<std::endl;
 //	std::cout<<"*****************************************************"<<std::endl;
@@ -380,7 +420,7 @@ void test_addUserMessage_getUsersConversation_getUserConversations()
 	std::string message1 = "<message><date>14.12.2018</date><body>barev Valod</body></message>";
 	std::string message2 = "<message><date>14.12.2018</date><body>barev Jo</body></message>";
 	std::string message3 = "<message><date>14.12.2018</date><body> Inch ka?</body></message>";
-	std::string message4 = "<message><date>14.12.2018</date><body> Ban chka</body></message>";
+	std::string message4 = "<message><m4><date>14.12.2018</date><body> Ban chka</body></m4></message>";
 	std::string message5 = "<message><date>14.12.2018</date><body> barev Vika</body></message>";
 	std::string message6 = "<message><date>14.12.2018</date><body> Vika barev</body></message>";
 	std::string message7 = "<message><date>14.12.2018</date><body>barev</body></message>";
@@ -457,6 +497,7 @@ void test_removeGroupConversation (){
         std::cout << db->getGroupConversation("u100000",gid) << std::endl;   	
 }
 
+<<<<<<< HEAD
 void test_updateGroupMessage() {
 	std::string info = xml2string("xmls/createGroup1.xml");
 	std::string groupId = db->createGroup(info);
@@ -479,6 +520,42 @@ void test_updateGroupMessage() {
 	
 }
 
+=======
+
+void test_deleteMessageFromGroupConversation (){
+
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+
+        std::string info = xml2string("xmls/createGroup1.xml");
+        std::cout << "Info = " << info << std::endl;
+        std::string gid = db->createGroup(info);
+
+        const char* gid1 = gid.c_str();
+        doc = xmlReadMemory(gid1, gid.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+        gid =(char*) xmlNodeGetContent(root);
+
+        std::string mid = "m27";
+
+        std::cout <<"ID : " << gid << std::endl;
+        std::cout << db->addUserToGroup(gid,"u100001") << std::endl;
+        std::cout << db->getGroupInfo(gid) << std::endl;
+        std::cout << db->addGroupMessage (gid,"u100001", "<message><date>14.12.2018</date><body> barev </body></message>") << std::endl;
+        std::cout << db->addGroupMessage (gid,"u100001", "<message><date>14.12.2018</date><body> vonces? </body></message>") << std::endl;
+        std::cout << db->addGroupMessage (gid,"u100001", "<message><date>14.12.2018</date><body> hi </body></message>") << std::endl;
+        std::cout << db->addGroupMessage (gid,"u100001", "<message><date>14.12.2018</date><body> ola </body></message>") << std::endl;
+        std::string deleteMessage = "<delete_message><userId>u100001</userId><groupId>" + gid + "</groupId><messageId>"+mid+"</messageId><remove_status>0</remove_status></delete_message>";
+
+        std::cout << db->getGroupConversation ("u100001", gid) << std::endl;
+        std::cout << db->removeMessageFromGroupConversation(deleteMessage) << std::endl;
+        std::cout << db->getGroupConversation("u100001", gid) << std::endl;
+
+}
+
+
+
+>>>>>>> ff2ca6e21b3b958cbb92c91f3aafab914fd3a906
 int main() {
 	test_all();
 //	test1();
@@ -492,5 +569,6 @@ int main() {
 //	test_delete_message();	
 //	test_removeGroupConversation(); 
 //	test_getUserConversation("u100001","u100004");
+//	test_ChangeGroupAdmin();
 	return 0;
 }
