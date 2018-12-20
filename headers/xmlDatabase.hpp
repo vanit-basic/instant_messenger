@@ -36,6 +36,7 @@ class xmlDatabase : public database {
 		virtual std::string getGroupUsers(std::string groupId);
                 virtual bool updateGroupMessage(std::string groupId, std::string messBody);
 
+
 	public:
 		xmlDatabase();
 		~xmlDatabase();

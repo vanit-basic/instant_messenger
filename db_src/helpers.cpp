@@ -155,7 +155,7 @@ bool verification(std::string login, std::string mail, std::string &result)
         }
 }
 
-void tracker (xmlNode* a_node, std::string &login, std::string &mail, std::string &password)
+void extract_credentials (xmlNode* a_node, std::string &login, std::string &mail, std::string &password)
 {
         xmlNode *cur_node = NULL;
         for (cur_node = a_node->children; cur_node; cur_node = cur_node->next)
@@ -249,6 +249,15 @@ std::string replace_tab(std::string input){
                 input.erase(pos,1);
         }
         return input;
+}
+
+xmlNode* addMessId (xmlNode* root, std::string from)
+{
+        const char* mid = (IDgenerator::getMessageId()).c_str();
+        const char* f = from.c_str();
+        xmlNodeSetName(root, BAD_CAST mid);
+        xmlNewProp(root, BAD_CAST "from", BAD_CAST f);
+        return root;
 }
 
 void add_user_conv(std::string from, std::string to)
@@ -639,32 +648,54 @@ bool  removeUserIdFromXml(std::string groupID, std::string userID) {
         return true;
 }
 
+std::string find_path(std::string from, std::string to){
+        std::string path = "";
+        path = "db_files/conversations/" + from + to +".xml";
+        std::ifstream conv(path);
+        if (conv.is_open())
+        {
+                conv.close();
+                return path;
+        }
+        else
+        {
+                path =  "db_files/conversations/" + to + from +".xml";
+                return path;
+        }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+bool removeFromXml(std::string fromUserId, std::string toUserId){
+        bool flag = false;
+        std::string data="db_files/users/"+fromUserId+"/convs/convs_list.xml";
+        const char* FileData = data.c_str();
+        xmlDoc* doc=NULL;
+        doc=xmlReadFile(FileData,NULL,0);
+        xmlNode* root =NULL;
+        root = xmlDocGetRootElement(doc);
+        xmlNode* child =NULL;
+        child =root->children;
+        while(child != NULL){
+                std::string nodeName=(char*)child->name;
+                if(nodeName == toUserId){
+                        if(child->type != XML_TEXT_NODE){
+                                flag = true;
+                                child = delete_node(child);
+                        }
+                }
+                else
+                        child=child->next;
+        }
+        if(flag){
+                xmlChar* info;
+                std::string newXml="";
+                int size;
+                xmlDocDumpMemory(doc, &info, &size);
+                newXml = (char*)info;
+                xmlFree(doc);
+                xmlFree(info);
+                remove(FileData);
+                xmlSaveFormatFileEnc(FileData,doc, "UTF-8", 0);
+        }
+        return flag;
+}
 

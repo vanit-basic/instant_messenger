@@ -497,7 +497,6 @@ void test_removeGroupConversation (){
         std::cout << db->getGroupConversation("u100000",gid) << std::endl;   	
 }
 
-<<<<<<< HEAD
 void test_updateGroupMessage() {
 	std::string info = xml2string("xmls/createGroup1.xml");
 	std::string groupId = db->createGroup(info);
@@ -519,8 +518,6 @@ void test_updateGroupMessage() {
 	xmlFreeDoc(doc);
 	
 }
-
-=======
 
 void test_deleteMessageFromGroupConversation (){
 
@@ -553,9 +550,6 @@ void test_deleteMessageFromGroupConversation (){
 
 }
 
-
-
->>>>>>> ff2ca6e21b3b958cbb92c91f3aafab914fd3a906
 int main() {
 	test_all();
 //	test1();

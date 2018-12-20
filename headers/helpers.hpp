@@ -12,12 +12,14 @@ void add_ID(xmlNode* root_element, std::string id);
 bool isValidLogin(std::string login);
 bool isValidEmail(std::string mail);
 bool verification(std::string login, std::string mail, std::string &result);
-void tracker (xmlNode* a_node, std::string &login, std::string &mail, std::string &password);
+void extract_credentials (xmlNode* a_node, std::string &login, std::string &mail, std::string &password);
 void isValidId(std::string &ID);
 void add_convs_dir(std::string ID);
 void addCredtxt(std::string login, std::string password, std::string ID);
 void addUserIdDir(std::string ID);
 std::string replace_tab(std::string input);
+xmlNode* addMessId (xmlNode* root, std::string from);
+
 void add_user_conv(std::string from, std::string to);
 bool add_link(std:: string path, std::string from, std::string to);
 void readConversationFile(xmlNode* node, std::string path);
@@ -33,6 +35,7 @@ bool addGroupId (std::string gid, std::string uid);
 bool removeFromGroupUserName(std::string groupID, std::string userID);
 bool reduceGroupMembersQuantity(std::string groupID);
 bool  removeUserIdFromXml(std::string groupID, std::string userID);
-
+std::string find_path(std::string from, std::string to);
+bool removeFromXml(std::string fromUserId, std::string toUserId);
 
 #endif
