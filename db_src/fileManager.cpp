@@ -9,7 +9,14 @@ void fileManager::getDirectoryContent(std::string path, std::vector<std::string>
 }
 
 bool fileManager::isFileExist(std::string path) {
-	return true;
+	bool flag = false;
+        std::ifstream file(path);
+        if(file.is_open()){
+                flag = true;
+        }
+        file.close();
+        return flag;
+
 }
 
 bool fileManager::isDirectory(std::string path) {
