@@ -794,7 +794,7 @@ bool changeAdmin(std::string gId,std::string newAdmin){
 		}
 	}
 	xmlFreeDoc(doc);
-	path = "db_files/users" + oldAdmin + "/info.xml";
+	path = "db_files/users/" + oldAdmin + "/info.xml";
 	doc = xmlReadFile(path.c_str(), NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	for(node = root->children; node; node = node->next){
@@ -811,7 +811,7 @@ bool changeAdmin(std::string gId,std::string newAdmin){
 	}
 	xmlSaveFormatFileEnc(path.c_str(), doc, "UTF-8", 0);
 	xmlFreeDoc(doc);
-	path = "db_files/users" + newAdmin + "/info.xml";
+	path = "db_files/users/" + newAdmin + "/info.xml";
 	doc = xmlReadFile(path.c_str(), NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	for(node = root->children; node; node = node->next){
