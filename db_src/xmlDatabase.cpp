@@ -1033,8 +1033,8 @@ bool xmlDatabase::deleteGroup(std::string groupId) {
         xmlCleanupParser();
         xmlCleanupParser();
         xmlMemoryDump();
-        path="db_files/groups/" + groupId;
-        rmdir(path.c_str());
+        path="rm -r db_files/groups/" + groupId;
+        system(path.c_str());
 	return true;
 }
 
