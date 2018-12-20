@@ -138,6 +138,12 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"Conversations user  "<<UserId2<<"  "<<db->getUserConversations(UserId2)<<std::endl;
 	std::cout<<std::endl;
+	std::cout<<"***********************  TEST REMOVE_MESSAGE()  *********************"<<std::endl;
+	std::cout<<std::endl;
+	std::string delete_mess = "<delete_message><from>" + UserId1 + "</from><to>" + UserId2 + "</to><messageId>m1</messageId><remove_status>0</remove_status></delete_message>";
+	std::cout<<"Function result "<<db->removeMessage(delete_mess)<<std::endl;
+	std::cout<<db->getUsersConversation(UserId1, UserId2)<<std::endl;
+	std::cout << std::endl;
 	std::cout<<"*****************  TEST UPDATE_USER_INFO()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::string updateUserInf = "<info><firstName>Valodik</firstName><lastName>Sargsyan</lastName><birthDate>11.12.1980</birthDate><uId>" + UserId2 + "</uId></info>";
@@ -197,7 +203,7 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout <<"getGroupUsers g1"<<db->getGroupUsers(GroupId)<<std::endl;
 	std::cout <<"getGroupUsers g2  "<<db->getGroupUsers(GroupId2)<<std::endl;
-	std::cout<<"ADDing u2 in" << GroupId << " " <<db->addUserToGroup(GroupId, UserId2);
+	std::cout<<"Adding u2 in" << GroupId << " " <<db->addUserToGroup(GroupId, UserId2);
 	std::cout <<"getGroupUsers after adding " << GroupId << " " <<db->getGroupUsers(GroupId)<<std::endl;
 	std::cout<<"REMOVE U2 FROM G1  "<<db->removeFromGroup(GroupId, UserId2);
 	std::cout <<"getGroupUsers after removing g1 "<<db->getGroupUsers(GroupId)<<std::endl;
@@ -439,19 +445,19 @@ void test_removeGroupConversation (){
 	gid =(char*) xmlNodeGetContent(root);
 
 	std::cout<<"ID : "<<gid<<std::endl;
-	std::cout << db->addUserToGroup(gid,"u100000") << std::endl;
+	std::cout << db->addUserToGroup(gid,"u100001") << std::endl;
 	//std::cout << db->addUserToGroup(gid,"u100000") <<std::endl;
 	std::cout << db->getGroupInfo(gid) << std::endl;
-	std::cout << db->addGroupMessage(gid,"u100000", "<conv><Barev/></conv>") << std::endl; 
-	std::cout << db->addGroupMessage(gid,"u100000", "<conv><Hajox/></conv>") << std::endl;
+	std::cout << db->addGroupMessage(gid,"u100001", "<message><date>14.12.2018</date><body> barev </body></message>") << std::endl; 
+	std::cout << db->addGroupMessage(gid,"u100001", "<message><date>14.12.2018</date><body> vonces? </body></message>") << std::endl;
         //std::cout << db->addGroupMessage(gid,"u100003", "vonces") << std::endl;
-	std::cout << db->getGroupConversation("u100000",gid) << std::endl;  
+	std::cout << db->getGroupConversation("u100001",gid) << std::endl;  
 	std::cout << db->removeGroupConversation(gid) << std::endl;  
-        std::cout << db->getGroupConversation("u100000",gid) << std::endl;   	
+        std::cout << db->getGroupConversation("u100001",gid) << std::endl;   	
 }
 
 int main() {
-//	test_all();
+	test_all();
 //	test1();
 //	test2();
 //	test_groupFunctional();
@@ -460,7 +466,7 @@ int main() {
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_addUserMessage_getUsersConversation_getUserConversations();
 //	test_delete_message();	
-	test_removeGroupConversation(); 
+//	test_removeGroupConversation(); 
 //	test_getUserConversation("u100001","u100004");
 	return 0;
 }
