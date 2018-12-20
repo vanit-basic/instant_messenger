@@ -16,6 +16,7 @@
    getUsersConversation(std::string fromID, std::string toID)	+
    updateUserInfo(std::string userInfo)				+
    addUserToGroup(std::string groupID, std::string userID)	+
+   removeUserConversation(std::string fromUserId,std::string toUserId)
 
    Group
    createGroup(std::string groupInfo)				+
@@ -151,6 +152,17 @@ void test_all()
 	std::cout<<" Function result  "<<db->updateUserInfo(updateUserInf)<<std::endl;
 	std::cout<<"get new info  "<<db->getUserInfo(UserId2)<<std::endl;
 	std::cout<<std::endl;
+	std::cout<<"*****************  TEST REMOVE_USER_CONVERSATION()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Returns bool value. Returns true if deleted and false if that file doesn't exist."<<std::endl;
+	std::cout<<"U1's coversation is deleted."<<std::endl;
+	std::cout<<db->removeUserConversation(UserId1,UserId2)<<std::endl;
+	std::cout<<"U2's coversation is deleted."<<std::endl;
+	std::cout<<db->removeUserConversation(UserId2,UserId1)<<std::endl;
+	std::cout<<"The conversation is deleted for both users."<<std::endl;
+	std::cout<<db->removeUserConversation(UserId2,UserId1)<<std::endl;
+	std::cout<<std::endl;
+	
 	std::cout<<"*****************  TEST CREATE_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::string GroupInfo = "<info><name>VanIt</name><admin>" + UserId1 + "</admin><createdate>18.12.2018</createdate></info>";

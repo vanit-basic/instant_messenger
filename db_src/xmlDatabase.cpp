@@ -1260,11 +1260,8 @@ bool removeFromXml(std::string fromUserId, std::string toUserId){
                 if(nodeName == toUserId){
                         if(child->type != XML_TEXT_NODE){
                                 flag = true;
-                                xmlNode* temp = child->next;
-                                xmlUnlinkNode(child);
-                                xmlFree(child);
-                                child = temp;
-                        }
+                        	child = delete_node(child);
+			}
                 }
                 else
                         child=child->next;
@@ -1284,7 +1281,8 @@ bool removeFromXml(std::string fromUserId, std::string toUserId){
 }
 
 bool xmlDatabase::removeUserConversation(std::string fromUserId,std::string toUserId){
-        if(removeFromXml(fromUserId, toUserId)){
+	std::cout<<fromUserId<<" "<<toUserId<<std::endl;
+	if(removeFromXml(fromUserId, toUserId)){
                 std::string dataReviewLink("db_files/users/"+toUserId+"/convs/"+fromUserId+".xml");
                 const char*  Link= dataReviewLink.c_str();
                 std::string dataReviewUserLink("db_files/users/"+fromUserId+"/convs/"+toUserId+".xml");
