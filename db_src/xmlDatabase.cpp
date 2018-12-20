@@ -1164,7 +1164,7 @@ bool xmlDatabase::removeMessage(std::string messageInfo) {
 	xmlFreeDoc(doc_rest);
 	xmlCleanupParser();
 	xmlMemoryDump();
-	std::string conv = "db_files/users/" + from + "/convs/" + to;
+	std::string conv = "db_files/users/" + from + "/convs/" + to + ".xml";
 	LIBXML_TEST_VERSION;
 	doc = xmlReadFile(conv.c_str(), NULL, 0);
 	root_element = xmlDocGetRootElement(doc);
@@ -1232,6 +1232,89 @@ bool xmlDatabase::removeMessageFromGroupConversation(std::string messageInfo){
         xmlMemoryDump();
                 return true;
 }
+bool removeFromXml(std::string fromUserId, std::string toUserId){
+        bool flag = false;
+        std::string data="db_files/users/"+fromUserId+"/convs/convs_list.xml";
+        const char* FileData = data.c_str();
+        xmlDoc* doc=NULL;
+        doc=xmlReadFile(FileData,NULL,0);
+        xmlNode* root =NULL;
+        root = xmlDocGetRootElement(doc);
+        xmlNode* child =NULL;
+        child =root->children;
+        while(child != NULL){
+                std::string nodeName=(char*)child->name;
+                if(nodeName == toUserId){
+                        if(child->type != XML_TEXT_NODE){
+                                flag = true;
+                                xmlNode* temp = child->next;
+                                xmlUnlinkNode(child);
+                                xmlFree(child);
+                                child = temp;
+                        }
+                }
+                else
+                        child=child->next;
+        }
+        if(flag){
+                xmlChar* info;
+                std::string newXml="";
+                int size;
+                xmlDocDumpMemory(doc, &info, &size);
+                newXml = (char*)info;
+                xmlFree(doc);
+                xmlFree(info);
+                remove(FileData);
+                xmlSaveFormatFileEnc(FileData,doc, "UTF-8", 0);
+        }
+        return flag;
+}
+
+bool xmlDatabase::removeUserConversation(std::string fromUserId,std::string toUserId){
+        if(removeFromXml(fromUserId, toUserId)){
+                std::string dataReviewLink("db_files/users/"+toUserId+"/convs/"+fromUserId+".xml");
+                const char*  Link= dataReviewLink.c_str();
+                std::string dataReviewUserLink("db_files/users/"+fromUserId+"/convs/"+toUserId+".xml");
+                const char* UserLink = dataReviewUserLink.c_str();
+                std::string dataConvLink1("db_files/conversations/"+toUserId+fromUserId+".xml");
+                const char* Conv1 = dataConvLink1.c_str();
+                std::string dataConvLink2("db_files/conversations/"+fromUserId+toUserId+".xml");
+                const char* Conv2 = dataConvLink2.c_str();
+                std::ifstream reviewLink("db_files/users/"+toUserId+"/convs/"+fromUserId+".xml");
+                if(reviewLink.is_open()){
+                        std::ifstream reviewUserLink("db_files/users/"+fromUserId+"/convs/"+toUserId+".xml");
+                        if(reviewUserLink.is_open()){
+                                reviewUserLink.close();
+                                remove(UserLink);
+                        }
+                        reviewLink.close();
+                        return true;
+                }
+                else{
+                        std::ifstream reviewUserLink("db_files/users/"+fromUserId+"/convs/"+toUserId+".xml");
+                        if(reviewUserLink.is_open()){
+                                std::ifstream convFile1("db_files/conversations/"+toUserId+fromUserId+".xml");
+                                if(convFile1.is_open()){
+                                        convFile1.close();
+                                        remove(Conv1);
+                                }
+                                else{
+                                        std::ifstream convFile2("db_files/conversations/"+fromUserId+toUserId+".xml");
+                                        if(convFile2.is_open()){
+                                                convFile1.close();
+                                                remove(Conv2);
+                                        }
+                                }
+                                reviewUserLink.close();
+                                remove(UserLink);
+                        }
+                        return true;
+                }
+        }
+        else
+                return false;
+}
+
 bool xmlDatabase::removeGroupConversation(std::string groupId) {
 	std::string path = "db_files/groups/" + groupId + "/conv.xml";
 	remove (path.c_str());
