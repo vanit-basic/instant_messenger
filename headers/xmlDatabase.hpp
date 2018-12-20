@@ -1,3 +1,7 @@
+
+#ifndef XML_DATABASE_HPP
+#define XML_DATABASE_HPP
+
 #include "database.hpp"
 
 
@@ -38,3 +42,5 @@ class xmlDatabase : public database {
 	public:
 		static xmlDatabase* getShared();
 };
+
+#endif
