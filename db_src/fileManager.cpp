@@ -1,4 +1,5 @@
 #include <fileManager.hpp>
+#include<sys/stat.h>
 
 static fileManager* shared = NULL;
 
@@ -9,13 +10,13 @@ void fileManager::getDirectoryContent(std::string path, std::vector<std::string>
 }
 
 bool fileManager::isFileExist(std::string path) {
-	bool flag = false;
-        std::ifstream file(path);
-        if(file.is_open()){
-                flag = true;
-        }
-        file.close();
-        return flag;
+struct stat buf;
+const char* exist =path.c_str();
+        
+if(stat(exist,&buf)!=0)
+       return false;
+else
+       return true;
 
 }
 
