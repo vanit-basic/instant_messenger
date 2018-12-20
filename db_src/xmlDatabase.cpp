@@ -1474,3 +1474,87 @@ std::string xmlDatabase::getGroupUsers(std::string groupID) {
 	closedir(usersDirID);
 	return str;
 }
+
+std::string find_path(std::string from, std::string to){
+	std::string path = "";
+	path = "db_files/conversations/" + from + to +".xml";
+	std::ifstream conv(path);
+	if (conv.is_open())
+	{
+		conv.close();
+		return path;
+	}
+	else
+	{
+		path =  "db_files/conversations/" + to + from +".xml";
+		return path;
+	}
+}
+
+bool xmlDatabase::updateUserMessage(std::string updateInfo) {
+	std::string from = "";
+	std::string to = "";
+	std::string messageId = "";
+	std::string correctedMessage;
+	xmlDoc* doc = NULL;
+	xmlNode* root = NULL;
+	xmlNode* node = NULL;
+	xmlNode* node1 = NULL;
+
+	LIBXML_TEST_VERSION;
+	const char* info = updateInfo.c_str();
+	doc = xmlReadMemory(info, updateInfo.size(), "noname.xml", NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	for (node = root->children; node; node = node->next) {
+		if (node->type == XML_ELEMENT_NODE) {
+			if (0 == strcmp((char*)node->name, "from")) {
+				xmlChar* buf;
+				buf = xmlNodeGetContent(node);
+				from = (char*) buf;
+				xmlFree(buf);
+			}
+			else{
+				if  (0 == strcmp((char*)node->name, "to")) {
+					xmlChar* buf;
+					buf = xmlNodeGetContent(node);
+					to = (char*) buf;
+					xmlFree(buf);
+				}
+				else {
+					messageId = (char*) node->name;
+					for(node1 = node->children; node1; node1 = node1->next){
+						if((node->type == XML_ELEMENT_NODE) && (0 == strcmp((char*)node1->name, "body"))) {
+							xmlChar* buf;
+							buf = xmlNodeGetContent(node);
+							correctedMessage = (char*) buf;
+							xmlFree(buf);
+						}
+					}
+				}
+			}
+		}
+	}
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+	xmlMemoryDump();
+
+	std::string path = find_path(from, to);
+	doc = xmlReadFile(path.c_str(), NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	for (node = root->children; node; node = node->next) {
+		if (node->type == XML_ELEMENT_NODE) {
+			if (0 == strcmp((char*)node->name, messageId.c_str())) {
+				for (node1 = node->children; node1; node1 = node1->next) {
+					if (0 == strcmp((char*)node1->name, "body")) {
+						xmlNodeSetContent(node1, BAD_CAST correctedMessage.c_str());
+					}
+				}
+			}
+		}
+	}
+	const char * path1 = path.c_str(); 
+	xmlSaveFormatFileEnc(path1, doc, "UTF-8", 0);
+	xmlFreeDoc(doc);
+	xmlCleanupParser();
+	return true;
+}
