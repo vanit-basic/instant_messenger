@@ -163,7 +163,6 @@ void test_all()
 	std::cout<<"The conversation is deleted for both users."<<std::endl;
 	std::cout<<db->removeUserConversation(UserId2,UserId1)<<std::endl;
 	std::cout<<std::endl;
-	
 	std::cout<<"*****************  TEST CREATE_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::string GroupInfo = "<info><name>VanIt</name><admin>" + UserId1 + "</admin><createdate>18.12.2018</createdate></info>";
@@ -224,7 +223,7 @@ void test_all()
 	std::cout<<"***********************  TEST UPDATE_GROUP_MESSAGE()  *********************"<<std::endl;
 	std::cout<<std::endl;
 	std::string groupNewMess = "<m9><date>14.12.2018</date><body>barev ara</body></m9>";
-	std::cout<<"Function result  "<<db->updateGroupMessage(GroupId, groupNewMess);
+	std::cout<<"Function result  " << db->updateGroupMessage(GroupId, groupNewMess)<<std::endl;
 	std::cout<<"New Group conversation  "<<UserId1<<"   "<<db->getGroupConversation(UserId1, GroupId)<<std::endl;
 
 /*	std::cout << std::endl;
@@ -503,7 +502,6 @@ void test_updateGroupMessage() {
 	getId(groupId);	
 	std::string groupmess1 = "<message><date>14.12.2018</date><body>barev Valod</body></message>";
 	std::string groupmess2 = "<m14><date>14.12.2018</date><body>barev ara</body></m14>";
-	//db->updateGroupMessage(groupId, groupmess2);
 	std::string messInfo = db->addGroupMessage(groupId, "u100000", groupmess1);
 	const char* inf = messInfo.c_str();       
 

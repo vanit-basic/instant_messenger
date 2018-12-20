@@ -49,7 +49,7 @@ void remgIdFromUinfo(xmlNode* root, std::string userId){
         }
         for(node = node->children; node; node = node->next){
                 if(node->type == XML_ELEMENT_NODE)
-                        sharedDB->removeFromGroup((char*)node->name,userId);
+                       sharedDB->removeFromGroup((char*)node->name,userId);
         }
 
 }
@@ -302,10 +302,6 @@ bool add_link(std:: string path, std::string from, std::string to)
         }
 }
 
-
-
-
-
 void readConversationFile(xmlNode* node, std::string path)
 {
         xmlDoc* doc = NULL;
@@ -465,11 +461,6 @@ bool changeAdmin(std::string gId,std::string newAdmin){
         return true;
 }
 
-
-
-
-
-
 void add_ID(xmlNode* root_element, std::string id, bool &status)
 {
         xmlNode* cur_node = root_element;
@@ -573,8 +564,6 @@ bool removeFromGroupUserName(std::string groupID, std::string userID) {
                 closedir(groupsDir);
         }
 }
-
-
 
 bool reduceGroupMembersQuantity(std::string groupID) {
         std::string pathGroup = "db_files/groups/" + groupID;

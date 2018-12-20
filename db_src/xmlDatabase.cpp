@@ -427,8 +427,9 @@ bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
 	xmlMemoryDump();
 	return true;
 }
+
 bool xmlDatabase::updateGroupMessage(std::string groupId, std::string messBody) {
-	bool b = true;
+	bool status = true;
 	std::string path = "db_files/groups/" + groupId;
 	const char* mBody = messBody.c_str();
 	const char* p = path.c_str();
@@ -456,21 +457,22 @@ bool xmlDatabase::updateGroupMessage(std::string groupId, std::string messBody) 
 					xmlFreeDoc(doc);
 					xmlCleanupParser();
 					xmlMemoryDump();
-					b = true;
+					status = true;
 					break;
 				}
 				else{
-					b = false;
+					status = false;
 				}
 			}
 		}
-		else
-			b = false;
+		else{
+			status = false;
+		}
 	}
-	else
-		b = false;
-
-	return b;
+	else{
+		status = false;
+	}
+	return status;
 }
 
 std::string xmlDatabase::addGroupMessage(std::string groupId, std::string userId, std::string message)

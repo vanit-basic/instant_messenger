@@ -19,7 +19,6 @@ class xmlDatabase : public database {
                 virtual std::string addUserMessage(std::string from, std::string to, std::string message);
 		virtual bool updateUserMessage(std::string from, std::string to, std::string messageInfo);
 		virtual bool deleteUser(std::string userId);
-                virtual bool updateGroupMessage(std::string groupId, std::string messId, std::string messBody);
                 virtual bool removeUserConversation(std::string fromUserId, std::string toUserId);
 		//group related queries
                 virtual std::string createGroup(std::string groupInfo);
@@ -34,7 +33,7 @@ class xmlDatabase : public database {
                 virtual bool updateGroupInfo(std::string groupInfo);
 		virtual std::string addGroupMessage(std::string groupId, std::string userId, std::string message);
 		virtual std::string getGroupUsers(std::string groupId);
-                virtual bool updateGroupMessage(std::string groupId, std::string messBody);
+		virtual bool updateGroupMessage(std::string groupId, std::string messBody);
 
 
 	public:
