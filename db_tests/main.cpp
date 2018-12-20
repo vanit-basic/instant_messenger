@@ -125,6 +125,13 @@ void test_all()
 	std::cout<<db->addUserMessage(UserId3, UserId1, message7);
 	std::cout<<db->addUserMessage(UserId3, UserId2, message7);
 	std::cout<<std::endl;
+	std::cout<<"*****************  TEST UPDATE_USER_MESSAGE()  *******************"<<std::endl;
+	std::cout<<std::endl;
+	std::string newmessage = "<info><from>"+UserId1+"</from><to>"+UserId3+"</to><m5><body>Barev</body></m5></info>";
+        db->updateUserMessage(newmessage);
+	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId3<< "**********"<<std::endl;
+        std::cout<<db->getUsersConversation(UserId1, UserId3)<<std::endl;
+	std::cout<<std::endl;
 	std::cout<<"*****************  TEST GET_USERS_CONVERSATION()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId2<<std::endl;
@@ -373,7 +380,7 @@ void test_addUserMessage_getUsersConversation_getUserConversations()
 	std::string message1 = "<message><date>14.12.2018</date><body>barev Valod</body></message>";
 	std::string message2 = "<message><date>14.12.2018</date><body>barev Jo</body></message>";
 	std::string message3 = "<message><date>14.12.2018</date><body> Inch ka?</body></message>";
-	std::string message4 = "<message><date>14.12.2018</date><body> Ban chka</body></message>";
+	std::string message4 = "<message><m4><date>14.12.2018</date><body> Ban chka</body></m4></message>";
 	std::string message5 = "<message><date>14.12.2018</date><body> barev Vika</body></message>";
 	std::string message6 = "<message><date>14.12.2018</date><body> Vika barev</body></message>";
 	std::string message7 = "<message><date>14.12.2018</date><body>barev</body></message>";
@@ -451,7 +458,7 @@ void test_removeGroupConversation (){
 }
 
 int main() {
-//	test_all();
+	test_all();
 //	test1();
 //	test2();
 //	test_groupFunctional();
@@ -460,7 +467,7 @@ int main() {
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_addUserMessage_getUsersConversation_getUserConversations();
 //	test_delete_message();	
-	test_removeGroupConversation(); 
+//	test_removeGroupConversation(); 
 //	test_getUserConversation("u100001","u100004");
 	return 0;
 }
