@@ -202,9 +202,16 @@ void test_all()
 	std::cout<<"REMOVE U2 FROM G1  "<<db->removeFromGroup(GroupId, UserId2);
 	std::cout <<"getGroupUsers after removing g1 "<<db->getGroupUsers(GroupId)<<std::endl;
 	std::cout << std::endl;
+	std::cout<<"***********************  TEST UPDATE_GROUP_MESSAGE()  *********************"<<std::endl;
+	std::cout<<std::endl;
+	std::string groupNewMess = "<m9><date>14.12.2018</date><body>barev ara</body></m9>";
+	std::cout<<"Function result  "<<db->updateGroupMessage(GroupId, groupNewMess);
+	std::cout<<"New Group conversation  "<<UserId1<<"   "<<db->getGroupConversation(UserId1, GroupId)<<std::endl;
+
+/*	std::cout << std::endl;
 	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
 	std::cout<<std::endl;
-	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
+	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;*/
 }
 
 void test_getUserConversation(std::string from,std::string to) {
@@ -450,17 +457,40 @@ void test_removeGroupConversation (){
         std::cout << db->getGroupConversation("u100000",gid) << std::endl;   	
 }
 
+void test_updateGroupMessage() {
+	std::string info = xml2string("xmls/createGroup1.xml");
+	std::string groupId = db->createGroup(info);
+	getId(groupId);	
+	std::string groupmess1 = "<message><date>14.12.2018</date><body>barev Valod</body></message>";
+	std::string groupmess2 = "<m14><date>14.12.2018</date><body>barev ara</body></m14>";
+	//db->updateGroupMessage(groupId, groupmess2);
+	std::string messInfo = db->addGroupMessage(groupId, "u100000", groupmess1);
+	const char* inf = messInfo.c_str();       
+
+	LIBXML_TEST_VERSION;
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+	doc = xmlReadMemory(inf, messInfo.size(), "noname.xml", NULL, 0);
+	root = xmlDocGetRootElement(doc);
+	std::string mId = (char*)root->name;
+	std::cout << mId << "\n";
+	db->updateGroupMessage(groupId, groupmess2);
+	xmlFreeDoc(doc);
+	
+}
+
 int main() {
-//	test_all();
+	test_all();
 //	test1();
 //	test2();
 //	test_groupFunctional();
 //	test_IdGenerator();
 //	test_createGroup();
+//	test_updateGroupMessage();
 //	test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage();
 //	test_addUserMessage_getUsersConversation_getUserConversations();
 //	test_delete_message();	
-	test_removeGroupConversation(); 
+//	test_removeGroupConversation(); 
 //	test_getUserConversation("u100001","u100004");
 	return 0;
 }

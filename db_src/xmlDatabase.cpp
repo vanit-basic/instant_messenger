@@ -870,46 +870,50 @@ bool xmlDatabase::updateGroupInfo(std::string groupInfo) {
 	xmlMemoryDump();
 	return true;
 }
-bool xmlDatabase::updateGroupMessage(std::string groupId, std::string messId, std::string messBody) {
-        bool b = true;
-        std::string path = "db_files/groups/" + groupId;
-        const char* mId = messId.c_str();
-        const char* mBody = messBody.c_str();
-        const char* p = path.c_str();
-        struct stat sb;
-        xmlDoc* doc = NULL;
-        if(stat(p, &sb) == 0 && S_ISDIR(sb.st_mode)) {
-                path = path + "/conv.xml";
-                const char* pat = path.c_str();
-                std::ifstream file(path);
-                if(file.is_open()) {
-                        doc = xmlReadFile(pat, NULL, 0);
-                        xmlNode* root = xmlDocGetRootElement(doc);
-                        xmlNode* node = NULL;
-                        for(node = root->children; node; node = node->next) {
-                        std::cout << node->name <<"\n";
-                        std::cout << mId  <<"\n";
-                                if(0 == strcmp((const char*)(node->name), mId)) {
-                                        std::cout << "*****\n";
-                                        xmlNodeSetContent(node,BAD_CAST mBody);
-                                        remove(pat);
-                                        xmlSaveFormatFileEnc(pat, doc, "UTF-8", 0);
-                                        b = true;
-                                        break;
-                                }
-                                else{
-                                        std::cout << "else\n";
-                                        b = false;
-                                }
-                        }
-                }
-                else
-                        b = false;
-        }
-        else
-                b = false;
-        xmlFreeDoc(doc);
-        return b;
+bool xmlDatabase::updateGroupMessage(std::string groupId, std::string messBody) {
+	bool b = true;
+	std::string path = "db_files/groups/" + groupId;
+	const char* mBody = messBody.c_str();
+	const char* p = path.c_str();
+	xmlDoc* doc = NULL;
+	xmlNode* root = NULL;
+	xmlDoc* doc1 = NULL;
+	xmlNode* root1 = NULL;
+	doc1 = xmlReadMemory(mBody, messBody.size(), "noname.xml", NULL, 0);
+	root1 = xmlDocGetRootElement(doc1);
+	const char* mId =(char*)root1->name;
+	struct stat sb;
+	if(stat(p, &sb) == 0 && S_ISDIR(sb.st_mode)) {
+		path = path + "/conv.xml";
+		const char* pat = path.c_str();
+		std::ifstream file(path);
+		if(file.is_open()) {
+			doc = xmlReadFile(pat, NULL, 0);
+			root = xmlDocGetRootElement(doc);
+			for(xmlNode* node = root->children; node; node = node->next) {
+				if((node->type == XML_ELEMENT_NODE) && (0 == strcmp((const char*)(node->name), mId))) {
+					node = delete_node(node);
+					xmlAddChild(root, root1);
+					xmlSaveFormatFileEnc(pat, doc, "UTF-8", 0);
+					xmlUnlinkNode(root);
+					xmlFreeDoc(doc);
+					xmlCleanupParser();
+					xmlMemoryDump();
+					b = true;
+					break;
+				}
+				else{
+					b = false;
+				}
+			}
+		}
+		else
+			b = false;
+	}
+	else
+		b = false;
+
+	return b;
 }
 
 std::string xmlDatabase::addGroupMessage(std::string groupId, std::string userId, std::string message)
