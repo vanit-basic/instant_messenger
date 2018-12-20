@@ -24,9 +24,12 @@ class database {
 		
 		virtual std::string addUserMessage(std::string from, std::string to, std::string message) = 0;
 
+		virtual bool updateUserMessage(std::string updateInfo) = 0;
+
 		virtual bool deleteUser(std::string userId) = 0;
 
 		virtual bool updateGroupMessage(std::string groupId, std::string messId, std::string messBody) = 0;
+                virtual bool removeUserConversation(std::string fromUserId, std::string toUserId) = 0;
 
 		//group related queries
 		
