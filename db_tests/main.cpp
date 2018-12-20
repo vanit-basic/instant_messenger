@@ -162,6 +162,8 @@ void test_all()
 	std::cout<<db->removeUserConversation(UserId2,UserId1)<<std::endl;
 	std::cout<<"The conversation is deleted for both users."<<std::endl;
 	std::cout<<db->removeUserConversation(UserId2,UserId1)<<std::endl;
+	std::cout<<"Conversations user  "<<UserId1<<"  "<<db->getUserConversations(UserId1)<<std::endl;
+	std::cout<<"Conversations user  "<<UserId2<<"  "<<db->getUserConversations(UserId2)<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST CREATE_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
