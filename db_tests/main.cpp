@@ -495,6 +495,40 @@ void test_removeGroupConversation (){
         std::cout << db->getGroupConversation("u100001",gid) << std::endl;   	
 }
 
+
+void test_deleteMessageFromGroupConversation (){
+
+        xmlDoc* doc = NULL;
+        xmlNode* root = NULL;
+
+        std::string info = xml2string("xmls/createGroup1.xml");
+        std::cout << "Info = " << info << std::endl;
+        std::string gid = db->createGroup(info);
+
+        const char* gid1 = gid.c_str();
+        doc = xmlReadMemory(gid1, gid.size(), "noname.xml", NULL, 0);
+        root = xmlDocGetRootElement(doc);
+        gid =(char*) xmlNodeGetContent(root);
+
+        std::string mid = "m27";
+
+        std::cout <<"ID : " << gid << std::endl;
+        std::cout << db->addUserToGroup(gid,"u100001") << std::endl;
+        std::cout << db->getGroupInfo(gid) << std::endl;
+        std::cout << db->addGroupMessage (gid,"u100001", "<message><date>14.12.2018</date><body> barev </body></message>") << std::endl;
+        std::cout << db->addGroupMessage (gid,"u100001", "<message><date>14.12.2018</date><body> vonces? </body></message>") << std::endl;
+        std::cout << db->addGroupMessage (gid,"u100001", "<message><date>14.12.2018</date><body> hi </body></message>") << std::endl;
+        std::cout << db->addGroupMessage (gid,"u100001", "<message><date>14.12.2018</date><body> ola </body></message>") << std::endl;
+        std::string deleteMessage = "<delete_message><userId>u100001</userId><groupId>" + gid + "</groupId><messageId>"+mid+"</messageId><remove_status>0</remove_status></delete_message>";
+
+        std::cout << db->getGroupConversation ("u100001", gid) << std::endl;
+        std::cout << db->removeMessageFromGroupConversation(deleteMessage) << std::endl;
+        std::cout << db->getGroupConversation("u100001", gid) << std::endl;
+
+}
+
+
+
 int main() {
 	test_all();
 //	test1();
