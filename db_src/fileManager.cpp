@@ -1,4 +1,5 @@
 #include <fileManager.hpp>
+#include <stdio.h>
 #include<sys/stat.h>
 #include <unistd.h>
 static fileManager* shared = NULL;
@@ -37,6 +38,11 @@ int fileManager::deleteFolder(std::string path, bool recursive) {
 }
 
 int fileManager::deleteFile(std::string path) {
+	int status = std::remove(path.c_str());
+	if(status !=0){
+		if(errno == EBUSY) return 1;
+		else return -1;
+	}
 	return 0;
 }
 

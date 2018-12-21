@@ -2,6 +2,7 @@
 #include <fstream>
 #include <xmlDatabase.hpp>
 #include <IDgenerator.hpp>
+#include <fileManager.hpp>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <string.h>
@@ -31,7 +32,7 @@
    */
 
 static database *db = new xmlDatabase;
-
+fileManager *fm =fileManager::sharedManager();
 std::string xml2string (const char* file) {
 	std::ifstream in(file);
 	std::string info = "";
@@ -253,6 +254,11 @@ void test_ChangeGroupAdmin(){
 	std::cout<<"Group new info  "<<db->getGroupInfo(GroupId)<<std::endl<<std::endl;
 	std::cout<<"New Admin info  "<<db->getUserInfo(UserId3)<<std::endl<<std::endl;
 	std::cout<<"Old Admin info  "<<db->getUserInfo(UserId1)<<std::endl;
+
+}
+void testDeleteFile(){
+	std::string path = "/home/user/instant_messenger/db_files/users/u100002/convs/conv_list_u100002.xml";
+	std::cout<<fm->deleteFile(path)<<std::endl;
 
 }
 void test_getUserConversation(std::string from,std::string to) {
@@ -551,7 +557,7 @@ void test_deleteMessageFromGroupConversation (){
 }
 
 int main() {
-	test_all();
+	//test_all();
 //	test1();
 //	test2();
 //	test_groupFunctional();
@@ -564,5 +570,6 @@ int main() {
 //	test_removeGroupConversation(); 
 //	test_getUserConversation("u100001","u100004");
 //	test_ChangeGroupAdmin();
+	testDeleteFile();
 	return 0;
 }
