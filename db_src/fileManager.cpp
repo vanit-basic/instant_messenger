@@ -1,6 +1,6 @@
 #include <fileManager.hpp>
 #include<sys/stat.h>
-
+#include <unistd.h>
 static fileManager* shared = NULL;
 
 void fileManager::getFileContent(std::string path, std::string& content) {
