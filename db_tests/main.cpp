@@ -5,6 +5,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <string.h>
+#include "fileManager.hpp"
 /*
    User
    registerUser(std::string userInfo)  				+
@@ -31,7 +32,7 @@
    */
 
 static database *db = new xmlDatabase;
-
+fileManager *fm = fileManager::sharedManager(); 
 std::string xml2string (const char* file) {
 	std::ifstream in(file);
 	std::string info = "";
@@ -550,8 +551,15 @@ void test_deleteMessageFromGroupConversation (){
 
 }
 
+void test_createFile (){
+
+	std:: string path = ".."; 
+	std::string name = "newFileCreated"; 
+	fm->createFile(path, name); 
+}
+
 int main() {
-	test_all();
+//	test_all();
 //	test1();
 //	test2();
 //	test_groupFunctional();
@@ -564,5 +572,6 @@ int main() {
 //	test_removeGroupConversation(); 
 //	test_getUserConversation("u100001","u100004");
 //	test_ChangeGroupAdmin();
+        test_createFile(); 
 	return 0;
 }

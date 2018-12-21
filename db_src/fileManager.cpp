@@ -1,5 +1,7 @@
 #include <fileManager.hpp>
 #include<sys/stat.h>
+#include <unistd.h>
+#include <fstream>
 
 static fileManager* shared = NULL;
 
@@ -47,7 +49,14 @@ int fileManager::createSymlink(std::string filePath, std::string linkPath) {
 	return 0;
 }
 
-int fileManager::createFile(std::string path) {
+int fileManager::createFile(std::string path, std::string name) {
+
+        std::ofstream outfile;
+        std::string createFile = "";
+        createFile = path + "/" + name;
+        outfile.open(createFile.c_str());
+        outfile.close();
+
 	return 0;
 }
 
