@@ -446,6 +446,7 @@ bool xmlDatabase::updateGroupMessage(std::string groupId, std::string messBody) 
 		const char* pat = path.c_str();
 		std::ifstream file(path);
 		if(file.is_open()) {
+			file.close();
 			doc = xmlReadFile(pat, NULL, 0);
 			root = xmlDocGetRootElement(doc);
 			for(xmlNode* node = root->children; node; node = node->next) {
@@ -460,18 +461,15 @@ bool xmlDatabase::updateGroupMessage(std::string groupId, std::string messBody) 
 					status = true;
 					break;
 				}
-				else{
+				else
 					status = false;
-				}
 			}
 		}
-		else{
+		else
 			status = false;
-		}
 	}
-	else{
+	else
 		status = false;
-	}
 	return status;
 }
 
