@@ -52,7 +52,16 @@ int fileManager::createFile(std::string path) {
 }
 
 int fileManager::createFolder(std::string path) {
+	const char* pat = path.c_str();
+	mode_t process_mask = umask (0);
+        mkdir(pat, 0777);
+        umask (process_mask);
+	struct stat sb;
+        if(stat(pat, &sb) == 0 && S_ISDIR(sb.st_mode)) {
 	return 0;
+	}
+	else 
+		return 1;
 }
 
 fileManager* fileManager::sharedManager() {
