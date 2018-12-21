@@ -150,14 +150,12 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 	if(stat(p, &sb) == 0 && S_ISDIR(sb.st_mode)) {
 		path += "/info.xml";
 		const char * filename = path.c_str();
-
 		xmlDoc * doc = NULL;
 		xmlNode * root = NULL;
 		xmlNode * node = NULL;
 
 		doc = xmlReadFile(filename, NULL, 0);
 		root = xmlDocGetRootElement(doc);
-
 		xmlDoc * newDoc = xmlNewDoc(BAD_CAST "1.0");
 		xmlNode * newRoot = xmlNewNode(NULL, BAD_CAST "info");
 		xmlDocSetRootElement(newDoc, newRoot);
@@ -170,7 +168,6 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 				}
 			}
 		}
-
 		xmlChar* info;
 		int size;
 		xmlDocDumpMemory(newDoc, &info, &size);
@@ -178,7 +175,6 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 		xmlFree(info);
 		xmlFreeDoc(doc);
 		xmlFreeDoc(newDoc);
-
 	}
 	return shortInfo;
 }
@@ -268,7 +264,6 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	mode_t process_mask = umask (0);
 	mkdir(p , 0777);
 	umask (process_mask);
-
 	xmlDoc* doc = NULL;
 	xmlNode* root = NULL;
 
@@ -840,33 +835,15 @@ std::string xmlDatabase::getGroupUsers(std::string groupID) {
 
 bool xmlDatabase::updateUserMessage(std::string from, std::string to, std::string messageInfo) {
 	std::string messageId = "";
-	std::string correctedMessage;
+	std::string correctedMessage = "";
 	xmlDoc* doc = NULL;
 	xmlNode* root = NULL;
 	xmlNode* node = NULL;
 	xmlNode* node1 = NULL;
 
-	LIBXML_TEST_VERSION;
-	const char* info = messageInfo.c_str();
-	doc = xmlReadMemory(info, messageInfo.size(), "noname.xml", NULL, 0);
-	root = xmlDocGetRootElement(doc);
-	for (node = root->children; node; node = node->next) {
-		if (node->type == XML_ELEMENT_NODE) {
-			messageId = (char*) node->name;
-			for (node1 = node->children; node1; node1 = node1->next) {
-				if (0 == strcmp((char*)node1->name, "body")) {
-					xmlChar* buf;
-					buf = xmlNodeGetContent(node);
-					correctedMessage = (char*) buf;
-					xmlFree(buf);
-				}
-			}
-		}
-	}
-	xmlFreeDoc(doc);
-	xmlCleanupParser();
-	xmlMemoryDump();
+	findMessage(messageInfo, messageId, correctedMessage);
 
+	LIBXML_TEST_VERSION;
 	std::string path = find_path(from, to);
 	doc = xmlReadFile(path.c_str(), NULL, 0);
 	root = xmlDocGetRootElement(doc);

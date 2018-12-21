@@ -37,5 +37,5 @@ bool reduceGroupMembersQuantity(std::string groupID);
 bool  removeUserIdFromXml(std::string groupID, std::string userID);
 std::string find_path(std::string from, std::string to);
 bool removeFromXml(std::string fromUserId, std::string toUserId);
-
+void findMessage(std::string messageInfo, std::string &messageId, std::string &correctedMessage);
 #endif

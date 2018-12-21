@@ -128,6 +128,9 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST UPDATE_USER_MESSAGE()  *******************"<<std::endl;
 	std::cout<<std::endl;
+	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId3<< "**********"<<std::endl;
+        std::cout<<db->getUsersConversation(UserId1, UserId3)<<std::endl;
+	std::cout<<std::endl;
 	std::string newmessage = "<info><m5><body>Barev</body></m5></info>";
         db->updateUserMessage(UserId1, UserId3, newmessage);
 	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId3<< "**********"<<std::endl;
