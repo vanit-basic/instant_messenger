@@ -1,14 +1,16 @@
 #include <fileManager.hpp>
+<<<<<<< HEAD
 #include<sys/stat.h>
 #include <unistd.h>
 #include <fstream>
 
+=======
+#include <sys/stat.h>
+#include <unistd.h>
+>>>>>>> 7d0c1023801209c62eba9fdad0bd82383bffae8c
 static fileManager* shared = NULL;
 
 void fileManager::getFileContent(std::string path, std::string& content) {
-}
-
-void fileManager::getDirectoryContent(std::string path, std::vector<std::string>& files) {
 }
 
 bool fileManager::isFileExist(std::string path) {
@@ -22,12 +24,21 @@ bool fileManager::isFileExist(std::string path) {
 
 }
 
-bool fileManager::isDirectory(std::string path) {
-	return true;
+bool fileManager::isDirectory(std::string stringPath) {
+        const char* path = stringPath.c_str();
+        struct stat buf;
+        stat(path, &buf);
+        return S_ISDIR(buf.st_mode);
 }
 
 bool fileManager::isRegularFile(std::string path) {
-	return true;
+        struct stat sb;
+        const char * pat = path.c_str();
+        if (stat(pat, &sb) == 0 && S_ISREG(sb.st_mode)) {
+                return true;
+        } else {
+                return false;
+	}
 }
 
 bool fileManager::isSymLink(std::string path) {
@@ -61,17 +72,25 @@ int fileManager::createFile(std::string path, std::string name) {
 }
 
 int fileManager::createFolder(std::string path) {
+	const char* pat = path.c_str();
+	mode_t process_mask = umask (0);
+        mkdir(pat, 0777);
+        umask (process_mask);
+	struct stat sb;
+        if(stat(pat, &sb) == 0 && S_ISDIR(sb.st_mode)) {
 	return 0;
+	}
+	else 
+		return 1;
 }
 
 fileManager* fileManager::sharedManager() {
+	if(!shared) shared = new fileManager;
 	return shared;
 }
 
 fileManager::fileManager() {
-	if(NULL == shared) {
-		shared = this;
-	}
+	shared = this;
 }
 
 fileManager::~fileManager() {
