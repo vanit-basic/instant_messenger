@@ -6,9 +6,6 @@ static fileManager* shared = NULL;
 void fileManager::getFileContent(std::string path, std::string& content) {
 }
 
-void fileManager::getDirectoryContent(std::string path, std::vector<std::string>& files) {
-}
-
 bool fileManager::isFileExist(std::string path) {
 	struct stat buf;
 	const char* exist =path.c_str();
@@ -68,13 +65,12 @@ int fileManager::createFolder(std::string path) {
 }
 
 fileManager* fileManager::sharedManager() {
+	if(!shared) shared = new fileManager;
 	return shared;
 }
 
 fileManager::fileManager() {
-	if(NULL == shared) {
-		shared = this;
-	}
+	shared = this;
 }
 
 fileManager::~fileManager() {
