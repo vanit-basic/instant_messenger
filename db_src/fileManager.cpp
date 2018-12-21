@@ -29,7 +29,18 @@ bool fileManager::isRegularFile(std::string path) {
 }
 
 bool fileManager::isSymLink(std::string path) {
-	return true;
+	const char* Link =path.c_str();
+	int tmp;
+	struct stat buf;
+	tmp=lstat(Link , &buf);
+	std::cout<<"tmp = "<< tmp <<std::endl;
+	if(tmp == 0 && S_ISLNK(buf.st_mode)){
+		return true;
+	}
+	else{
+		return false;
+	}
+	return false;
 }
 
 int fileManager::deleteFolder(std::string path, bool recursive) {
