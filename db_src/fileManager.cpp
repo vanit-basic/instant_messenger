@@ -41,7 +41,7 @@ int fileManager::deleteFile(std::string path) {
 }
 
 int fileManager::createSymlink(std::string filePath, std::string linkPath) {
-	if(!isFileExist(filePath))
+	if(!shared->isFileExist(filePath))
 		return 1;
 	symlink(filePath.c_str(), linkPath.c_str());
 	return 0;
