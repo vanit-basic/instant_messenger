@@ -1,12 +1,16 @@
 #include <fileManager.hpp>
+<<<<<<< HEAD
 #include<sys/stat.h>
 #include <unistd.h>
+#include <fstream>
+
+=======
+#include <sys/stat.h>
+#include <unistd.h>
+>>>>>>> 7d0c1023801209c62eba9fdad0bd82383bffae8c
 static fileManager* shared = NULL;
 
 void fileManager::getFileContent(std::string path, std::string& content) {
-}
-
-void fileManager::getDirectoryContent(std::string path, std::vector<std::string>& files) {
 }
 
 bool fileManager::isFileExist(std::string path) {
@@ -20,12 +24,21 @@ bool fileManager::isFileExist(std::string path) {
 
 }
 
-bool fileManager::isDirectory(std::string path) {
-	return true;
+bool fileManager::isDirectory(std::string stringPath) {
+        const char* path = stringPath.c_str();
+        struct stat buf;
+        stat(path, &buf);
+        return S_ISDIR(buf.st_mode);
 }
 
 bool fileManager::isRegularFile(std::string path) {
-	return true;
+        struct stat sb;
+        const char * pat = path.c_str();
+        if (stat(pat, &sb) == 0 && S_ISREG(sb.st_mode)) {
+                return true;
+        } else {
+                return false;
+	}
 }
 
 bool fileManager::isSymLink(std::string path) {
@@ -47,7 +60,14 @@ int fileManager::createSymlink(std::string filePath, std::string linkPath) {
 	return 0;
 }
 
-int fileManager::createFile(std::string path) {
+int fileManager::createFile(std::string path, std::string name) {
+
+        std::ofstream outfile;
+        std::string createFile = "";
+        createFile = path + "/" + name;
+        outfile.open(createFile.c_str());
+        outfile.close();
+
 	return 0;
 }
 
@@ -69,13 +89,12 @@ int createFolder(std::string path) {
 }
 
 fileManager* fileManager::sharedManager() {
+	if(!shared) shared = new fileManager;
 	return shared;
 }
 
 fileManager::fileManager() {
-	if(NULL == shared) {
-		shared = this;
-	}
+	shared = this;
 }
 
 fileManager::~fileManager() {
