@@ -1,5 +1,5 @@
 #include <fileManager.hpp>
-#include<sys/stat.h>
+#include <sys/stat.h>
 #include <unistd.h>
 static fileManager* shared = NULL;
 
@@ -28,7 +28,13 @@ bool fileManager::isDirectory(std::string stringPath) {
 }
 
 bool fileManager::isRegularFile(std::string path) {
-	return true;
+        struct stat sb;
+        const char * pat = path.c_str();
+        if (stat(pat, &sb) == 0 && S_ISREG(sb.st_mode)) {
+                return true;
+        } else {
+                return false;
+	}
 }
 
 bool fileManager::isSymLink(std::string path) {
