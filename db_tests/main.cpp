@@ -7,33 +7,7 @@
 #include <string.h>
 #include <fileManager.hpp>
 
-/*
-   User
-   registerUser(std::string userInfo)  				+
-   getUserInfo(std::string userID)     				+
-   getUserShortInfo(std::string userID)     			+
-   loginUser(std::string login, std::string password)		+
-   addUserMessage(std::string messageInfo)			+
-   getUserConversations(std::string userID)			+
-   getUsersConversation(std::string fromID, std::string toID)	+
-   updateUserInfo(std::string userInfo)				+
-   addUserToGroup(std::string groupID, std::string userID)	+
-   removeUserConversation(std::string fromUserId,std::string toUserId)
-
-   Group
-   createGroup(std::string groupInfo)				+
-   getGroupInfo(std::string groupID)				+
-   updateGroupInfo(std::string groupInfo)			+
-   addGroupMessage(std::string messageInfo)			+
-   removeFromGroup(std::string groupID, std::string userID)	-
-   getGroupConversation(std::string groupID)			+
-   deleteGroup(std::string groupID)				-
-   removeGroupConversation(std::string groupInfo)		-
-   removeMessage(std::string messageInfo)			-
-   */
-
 static database *db = new xmlDatabase;
-static fileManager* fm = new fileManager;
 
 std::string xml2string (const char* file) {
 	std::ifstream in(file);
@@ -265,6 +239,7 @@ void test_ChangeGroupAdmin(){
 }
 
 void test_is_file_regular () {
+	fileManager *fm = fileManager::sharedManager();
         std::string path1 = "../db_files/resources/gr_id.txt";
         std::string path2 = "../db_files/resources/mes_id.txt";
         std::string path3 = "../db_files";
@@ -283,6 +258,7 @@ void testForIsDirectory() {
         std::string path4 = "../db_files/users/u100000";
         std::string path5 = "maneantonyan";
 	std::string path6 = "home/kolibri/manemane";
+	fileManager *fm = fileManager::sharedManager();
 	
 	std::cout << "Testing isDirectory for : " << fm->isDirectory(path1) << std::endl;
 	std::cout << "Testing isDirectory for : " << fm->isDirectory(path2) << std::endl;
