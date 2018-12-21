@@ -14,7 +14,7 @@ class fileManager {
 		int deleteFolder(std::string path, bool recursive);
 		int deleteFile(std::string path);
 		int createSymlink(std::string filePath, std::string linkPath);
-		int createFile(std::string path);
+		int createFile(std::string path, std::string name);
 		int createFolder(std::string path);
 
 	public:

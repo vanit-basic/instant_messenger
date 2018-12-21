@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fstream>
+
 static fileManager* shared = NULL;
 
 void fileManager::getFileContent(std::string path, std::string& content) {
@@ -59,21 +61,32 @@ int fileManager::createSymlink(std::string filePath, std::string linkPath) {
 	return 0;
 }
 
-int fileManager::createFile(std::string path) {
+int fileManager::createFile(std::string path, std::string name) {
+
+        std::ofstream outfile;
+        std::string createFile = "";
+        createFile = path + "/" + name;
+        outfile.open(createFile.c_str());
+        outfile.close();
+
 	return 0;
 }
 
-int fileManager::createFolder(std::string path) {
+int createFolder(std::string path) {
 	const char* pat = path.c_str();
-	mode_t process_mask = umask (0);
-        mkdir(pat, 0777);
-        umask (process_mask);
+	int status = 0;
 	struct stat sb;
-        if(stat(pat, &sb) == 0 && S_ISDIR(sb.st_mode)) {
-	return 0;
+	if (stat(pat, &sb) == 0 && S_ISDIR(sb.st_mode))
+	{
+		status = 1;
 	}
-	else 
-		return 1;
+	else
+	{
+		mode_t process_mask = umask (0);
+		status = mkdir(pat, 0777);
+		umask (process_mask);
+	}
+	return status;
 }
 
 fileManager* fileManager::sharedManager() {

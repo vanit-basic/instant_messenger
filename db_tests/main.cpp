@@ -6,7 +6,6 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <string.h>
-#include <fileManager.hpp>
 
 static database *db = new xmlDatabase;
 fileManager *fm =fileManager::sharedManager();
@@ -238,13 +237,11 @@ void test_ChangeGroupAdmin(){
 	std::cout<<"Old Admin info  "<<db->getUserInfo(UserId1)<<std::endl;
 
 }
-<<<<<<< HEAD
 void testDeleteFile(){
 	std::string path = "/home/user/instant_messenger/db_files/users/u100002/convs/conv_list_u100002.xml";
 	std::cout<<fm->deleteFile(path)<<std::endl;
 
 }
-=======
 
 void test_is_file_regular () {
 	fileManager *fm = fileManager::sharedManager();
@@ -276,7 +273,6 @@ void testForIsDirectory() {
 	std::cout << "Testing isDirectory for : " << fm->isDirectory(path6) << std::endl;
 }
 
->>>>>>> 7d0c1023801209c62eba9fdad0bd82383bffae8c
 void test_getUserConversation(std::string from,std::string to) {
 	std::cout<<db->getUsersConversation(from,to)<<std::endl;
 //	std::cout<<"*****************************************************"<<std::endl;
@@ -579,13 +575,9 @@ void test_deleteMessageFromGroupConversation (){
 }
 
 int main() {
-<<<<<<< HEAD
 	//test_all();
-=======
-//	test_all();
 	test_is_file_regular();
 	testForIsDirectory();
->>>>>>> 7d0c1023801209c62eba9fdad0bd82383bffae8c
 //	test1();
 //	test2();
 //	test_groupFunctional();
