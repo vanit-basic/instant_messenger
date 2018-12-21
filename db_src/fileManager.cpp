@@ -20,8 +20,11 @@ bool fileManager::isFileExist(std::string path) {
 
 }
 
-bool fileManager::isDirectory(std::string path) {
-	return true;
+bool fileManager::isDirectory(std::string stringPath) {
+        const char* path = stringPath.c_str();
+        struct stat buf;
+        stat(path, &buf);
+        return S_ISDIR(buf.st_mode);
 }
 
 bool fileManager::isRegularFile(std::string path) {
