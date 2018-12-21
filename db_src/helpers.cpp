@@ -78,7 +78,14 @@ xmlNodePtr delete_node(xmlNode* a_node)
                 }
                 else
                 {
-                        cur_node = node->children;
+			if(node->children)
+			{
+                        	cur_node = node->children;
+			}
+			else 
+			{
+				cur_node = node;
+			}
                 }
         }
         return cur_node;

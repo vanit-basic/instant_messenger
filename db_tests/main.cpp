@@ -34,6 +34,7 @@
 
 static database *db = new xmlDatabase;
 static fileManager* fm = new fileManager;
+
 std::string xml2string (const char* file) {
 	std::ifstream in(file);
 	std::string info = "";
@@ -44,6 +45,7 @@ std::string xml2string (const char* file) {
 	}
 	return info;
 }
+
 bool getId (std::string &id)
 {
 	xmlDoc* doc = NULL;
@@ -69,6 +71,7 @@ bool getId (std::string &id)
 		return true;
 	}
 }
+
 void test_all()
 {
 	std::string UserInfo1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
@@ -238,6 +241,7 @@ void test_all()
 	std::cout<<"GroupId : "<<GroupId2<<std::endl;
 	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;*/
 }
+
 void test_ChangeGroupAdmin(){
 	std::string UserInfo1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
 	std::string UserId1 = db->registerUser(UserInfo1);
@@ -295,6 +299,7 @@ void test_getUserConversation(std::string from,std::string to) {
 //	std::cout<<"*****************************************************"<<std::endl;
 //	std::cout<<db->getUserConversations(from)<<std::endl;
 }
+
 void test_delete_message(){
 		std::cout<<db->getUsersConversation("u100004","u100001")<<std::endl;
 	std::string delete_mess_test = "<delete_message><from>u100004</from><to>u100001</to><messageId>m2</messageId><remove_status>0</remove_status></delete_message>";
@@ -304,6 +309,7 @@ void test_delete_message(){
 	else
 		std::cout<<"error";
 }
+
 void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
@@ -333,6 +339,7 @@ void test2 () {
 	std::string id = db->registerUser(info);
 	std::cout << db->loginUser(std::string("test2"), std::string("test1234")) << std::endl;
 }
+
 void test_IdGenerator()
 {
 	for(int i=0; i<1000; i++)
@@ -348,6 +355,7 @@ void test_IdGenerator()
 		std::cout << IDgenerator::getMessageId()<<std::endl;
 	}
 }
+
 void test_groupFunctional()
 {
 	std::cout<<"Start Group testing"<<std::endl;
@@ -403,6 +411,7 @@ void test_createGroup() {
 	std::cout << groupId << "\n";
 	std::cout << db->getGroupInfo(groupId) << std::endl;
 }
+
 void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
 {
 	std::string inf = "<info><name>VanIt</name><admin>u1000</admin><createdate>12.12.2018</createdate></info>";
@@ -443,6 +452,7 @@ void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
 		std::cout<< db->addGroupMessage(gid, id, group_mess) <<std::endl;
 	}
 }
+
 void test_addUserMessage_getUsersConversation_getUserConversations()
 {
 	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
