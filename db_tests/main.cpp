@@ -5,7 +5,6 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <string.h>
-<<<<<<< HEAD
 #include "fileManager.hpp"
 /*
    User
@@ -31,9 +30,6 @@
    removeGroupConversation(std::string groupInfo)		-
    removeMessage(std::string messageInfo)			-
    */
-=======
-#include <fileManager.hpp>
->>>>>>> 7d0c1023801209c62eba9fdad0bd82383bffae8c
 
 static database *db = new xmlDatabase;
 fileManager *fm = fileManager::sharedManager(); 
