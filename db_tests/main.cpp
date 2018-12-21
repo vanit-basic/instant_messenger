@@ -2,36 +2,13 @@
 #include <fstream>
 #include <xmlDatabase.hpp>
 #include <IDgenerator.hpp>
+#include <fileManager.hpp>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <string.h>
-/*
-   User
-   registerUser(std::string userInfo)  				+
-   getUserInfo(std::string userID)     				+
-   getUserShortInfo(std::string userID)     			+
-   loginUser(std::string login, std::string password)		+
-   addUserMessage(std::string messageInfo)			+
-   getUserConversations(std::string userID)			+
-   getUsersConversation(std::string fromID, std::string toID)	+
-   updateUserInfo(std::string userInfo)				+
-   addUserToGroup(std::string groupID, std::string userID)	+
-   removeUserConversation(std::string fromUserId,std::string toUserId)
-
-   Group
-   createGroup(std::string groupInfo)				+
-   getGroupInfo(std::string groupID)				+
-   updateGroupInfo(std::string groupInfo)			+
-   addGroupMessage(std::string messageInfo)			+
-   removeFromGroup(std::string groupID, std::string userID)	-
-   getGroupConversation(std::string groupID)			+
-   deleteGroup(std::string groupID)				-
-   removeGroupConversation(std::string groupInfo)		-
-   removeMessage(std::string messageInfo)			-
-   */
 
 static database *db = new xmlDatabase;
-
+fileManager *fm =fileManager::sharedManager();
 std::string xml2string (const char* file) {
 	std::ifstream in(file);
 	std::string info = "";
@@ -42,6 +19,7 @@ std::string xml2string (const char* file) {
 	}
 	return info;
 }
+
 bool getId (std::string &id)
 {
 	xmlDoc* doc = NULL;
@@ -67,6 +45,7 @@ bool getId (std::string &id)
 		return true;
 	}
 }
+
 void test_all()
 {
 	std::string UserInfo1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
@@ -161,6 +140,8 @@ void test_all()
 	std::cout<<"Returns bool value. Returns true if deleted and false if that file doesn't exist."<<std::endl;
 	std::cout<<"U1's coversation is deleted."<<std::endl;
 	std::cout<<db->removeUserConversation(UserId1,UserId2)<<std::endl;
+	std::cout<<"Conversations user  "<<UserId1<<"  "<<db->getUserConversations(UserId1)<<std::endl;
+	std::cout<<"Conversations user  "<<UserId2<<"  "<<db->getUserConversations(UserId2)<<std::endl;
 	std::cout<<"U2's coversation is deleted."<<std::endl;
 	std::cout<<db->removeUserConversation(UserId2,UserId1)<<std::endl;
 	std::cout<<"The conversation is deleted for both users."<<std::endl;
@@ -237,6 +218,7 @@ void test_all()
 	std::cout<<"GroupId : "<<GroupId2<<std::endl;
 	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;*/
 }
+
 void test_ChangeGroupAdmin(){
 	std::string UserInfo1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
 	std::string UserId1 = db->registerUser(UserInfo1);
@@ -258,6 +240,42 @@ void test_ChangeGroupAdmin(){
 	std::cout<<"Old Admin info  "<<db->getUserInfo(UserId1)<<std::endl;
 
 }
+void testDeleteFile(){
+	std::string path = "/home/user/instant_messenger/db_files/users/u100002/convs/conv_list_u100002.xml";
+	std::cout<<fm->deleteFile(path)<<std::endl;
+
+}
+
+void test_is_file_regular () {
+	fileManager *fm = fileManager::sharedManager();
+        std::string path1 = "../db_files/resources/gr_id.txt";
+        std::string path2 = "../db_files/resources/mes_id.txt";
+        std::string path3 = "../db_files";
+
+        std::cout << path1 << " " << path2 << " " << path3 << " " << std::endl;
+        std::cout << fm->isRegularFile(path1) <<std::endl;
+        std::cout << fm->isRegularFile(path2) <<std::endl;
+        std::cout << fm->isRegularFile(path3) <<std::endl;
+
+}
+
+void testForIsDirectory() {
+	std::string path1 = "../db_files";
+        std::string path2 = "xmls";
+        std::string path3 = "Makefile";
+        std::string path4 = "../db_files/users/u100000";
+        std::string path5 = "maneantonyan";
+	std::string path6 = "home/kolibri/manemane";
+	fileManager *fm = fileManager::sharedManager();
+	
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path1) << std::endl;
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path2) << std::endl;
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path3) << std::endl;
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path4) << std::endl;
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path5) << std::endl;
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path6) << std::endl;
+}
+
 void test_getUserConversation(std::string from,std::string to) {
 	std::cout<<db->getUsersConversation(from,to)<<std::endl;
 //	std::cout<<"*****************************************************"<<std::endl;
@@ -265,6 +283,7 @@ void test_getUserConversation(std::string from,std::string to) {
 //	std::cout<<"*****************************************************"<<std::endl;
 //	std::cout<<db->getUserConversations(from)<<std::endl;
 }
+
 void test_delete_message(){
 		std::cout<<db->getUsersConversation("u100004","u100001")<<std::endl;
 	std::string delete_mess_test = "<delete_message><from>u100004</from><to>u100001</to><messageId>m2</messageId><remove_status>0</remove_status></delete_message>";
@@ -274,6 +293,7 @@ void test_delete_message(){
 	else
 		std::cout<<"error";
 }
+
 void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
@@ -303,6 +323,7 @@ void test2 () {
 	std::string id = db->registerUser(info);
 	std::cout << db->loginUser(std::string("test2"), std::string("test1234")) << std::endl;
 }
+
 void test_IdGenerator()
 {
 	for(int i=0; i<1000; i++)
@@ -318,6 +339,7 @@ void test_IdGenerator()
 		std::cout << IDgenerator::getMessageId()<<std::endl;
 	}
 }
+
 void test_groupFunctional()
 {
 	std::cout<<"Start Group testing"<<std::endl;
@@ -373,6 +395,7 @@ void test_createGroup() {
 	std::cout << groupId << "\n";
 	std::cout << db->getGroupInfo(groupId) << std::endl;
 }
+
 void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
 {
 	std::string inf = "<info><name>VanIt</name><admin>u1000</admin><createdate>12.12.2018</createdate></info>";
@@ -413,6 +436,7 @@ void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
 		std::cout<< db->addGroupMessage(gid, id, group_mess) <<std::endl;
 	}
 }
+
 void test_addUserMessage_getUsersConversation_getUserConversations()
 {
 	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
@@ -554,7 +578,9 @@ void test_deleteMessageFromGroupConversation (){
 }
 
 int main() {
-	test_all();
+	//test_all();
+	test_is_file_regular();
+	testForIsDirectory();
 //	test1();
 //	test2();
 //	test_groupFunctional();
@@ -567,5 +593,6 @@ int main() {
 //	test_removeGroupConversation(); 
 //	test_getUserConversation("u100001","u100004");
 //	test_ChangeGroupAdmin();
+	testDeleteFile();
 	return 0;
 }
