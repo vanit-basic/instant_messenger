@@ -5,6 +5,8 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <string.h>
+#include <fileManager.hpp>
+
 /*
    User
    registerUser(std::string userInfo)  				+
@@ -31,7 +33,7 @@
    */
 
 static database *db = new xmlDatabase;
-
+static fileManager* fm = new fileManager;
 std::string xml2string (const char* file) {
 	std::ifstream in(file);
 	std::string info = "";
@@ -257,6 +259,35 @@ void test_ChangeGroupAdmin(){
 	std::cout<<"Old Admin info  "<<db->getUserInfo(UserId1)<<std::endl;
 
 }
+
+void test_is_file_regular () {
+        std::string path1 = "../db_files/resources/gr_id.txt";
+        std::string path2 = "../db_files/resources/mes_id.txt";
+        std::string path3 = "../db_files";
+
+        std::cout << path1 << " " << path2 << " " << path3 << " " << std::endl;
+        std::cout << fm->isRegularFile(path1) <<std::endl;
+        std::cout << fm->isRegularFile(path2) <<std::endl;
+        std::cout << fm->isRegularFile(path3) <<std::endl;
+
+}
+
+void testForIsDirectory() {
+	std::string path1 = "../db_files";
+        std::string path2 = "xmls";
+        std::string path3 = "Makefile";
+        std::string path4 = "../db_files/users/u100000";
+        std::string path5 = "maneantonyan";
+	std::string path6 = "home/kolibri/manemane";
+	
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path1) << std::endl;
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path2) << std::endl;
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path3) << std::endl;
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path4) << std::endl;
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path5) << std::endl;
+	std::cout << "Testing isDirectory for : " << fm->isDirectory(path6) << std::endl;
+}
+
 void test_getUserConversation(std::string from,std::string to) {
 	std::cout<<db->getUsersConversation(from,to)<<std::endl;
 //	std::cout<<"*****************************************************"<<std::endl;
@@ -553,7 +584,9 @@ void test_deleteMessageFromGroupConversation (){
 }
 
 int main() {
-	test_all();
+//	test_all();
+	test_is_file_regular();
+	testForIsDirectory();
 //	test1();
 //	test2();
 //	test_groupFunctional();
