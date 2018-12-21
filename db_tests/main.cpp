@@ -158,6 +158,8 @@ void test_all()
 	std::cout<<"Returns bool value. Returns true if deleted and false if that file doesn't exist."<<std::endl;
 	std::cout<<"U1's coversation is deleted."<<std::endl;
 	std::cout<<db->removeUserConversation(UserId1,UserId2)<<std::endl;
+	std::cout<<"Conversations user  "<<UserId1<<"  "<<db->getUserConversations(UserId1)<<std::endl;
+	std::cout<<"Conversations user  "<<UserId2<<"  "<<db->getUserConversations(UserId2)<<std::endl;
 	std::cout<<"U2's coversation is deleted."<<std::endl;
 	std::cout<<db->removeUserConversation(UserId2,UserId1)<<std::endl;
 	std::cout<<"The conversation is deleted for both users."<<std::endl;
