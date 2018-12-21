@@ -258,6 +258,18 @@ void test_ChangeGroupAdmin(){
 
 }
 
+void test_is_file_regular () {
+        std::string path1 = "../db_files/resources/gr_id.txt";
+        std::string path2 = "../db_files/resources/mes_id.txt";
+        std::string path3 = "../db_files";
+
+        std::cout << path1 << " " << path2 << " " << path3 << " " << std::endl;
+        std::cout << fm->isRegularFile(path1) <<std::endl;
+        std::cout << fm->isRegularFile(path2) <<std::endl;
+        std::cout << fm->isRegularFile(path3) <<std::endl;
+
+}
+
 void testForIsDirectory() {
 	std::string path1 = "../db_files";
         std::string path2 = "xmls";
@@ -571,6 +583,7 @@ void test_deleteMessageFromGroupConversation (){
 
 int main() {
 //	test_all();
+	test_is_file_regular();
 	testForIsDirectory();
 //	test1();
 //	test2();
