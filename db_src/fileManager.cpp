@@ -6,7 +6,21 @@
 
 static fileManager* shared = NULL;
 
-void fileManager::getFileContent(std::string path, std::string& content) {
+std::string fileManager::getFileContent(std::string path) {
+ fileManager* fm = fileManager::sharedManager();
+        std::string content ="";
+        std::string tmp ="";
+        if(!fm->isRegularFile(path) || !fm->isSymlink(path))
+                return "no such file";
+        else{
+        std::ifstream file(content);
+        while(file >> tmp){
+                content += tmp;
+        }
+        return content;
+        }
+
+
 }
 
 bool fileManager::isFileExist(std::string path) {
