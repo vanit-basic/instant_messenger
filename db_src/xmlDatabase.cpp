@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <unistd.h>
 
+#include <fileManager.hpp>
 #include <helpers.hpp>
 #include <IDgenerator.hpp>
 #include <xmlDatabase.hpp>
@@ -192,7 +193,7 @@ std::string xmlDatabase::getUserConversations(std::string userId) {
 }
 
 std::string xmlDatabase::getUsersConversation(std::string from, std::string to) {
-	std::string data ="db_files/users/"+ from + "/convs/" + to /*+ ".xml"*/;
+	std::string data ="db_files/users/"+ from + "/convs/" + to + ".xml";
 	xmlDoc* doc =NULL;
 	xmlNode* root = NULL;
 	xmlNode* node = NULL;
@@ -222,8 +223,6 @@ std::string xmlDatabase::getUsersConversation(std::string from, std::string to) 
 	conversation = (char*)info;
 	xmlFree(doc);
 	xmlFree(info);
-
-
 	return conversation;
 
 }
@@ -508,7 +507,7 @@ bool xmlDatabase::deleteUser(std::string userId){
 	std::string email = "";
 	xmlNode* node = NULL;
 	xmlNode* root = NULL;
-	std::string path = "db_files/users" + userId + "/info.xml";
+	std::string path = "db_files/users/" + userId + "/info.xml";
 	xmlDoc* doc = xmlReadFile(path.c_str(), NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	remgIdFromUinfo(root, userId);
@@ -529,15 +528,16 @@ bool xmlDatabase::deleteUser(std::string userId){
 			}
 		}
 	}
+	fileManager* fm = fileManager::sharedManager();
 	path = "db_files/register/logins/" + login;
-	rmdir(path.c_str());
+	fm->deleteFolder(path);
 	path = "db_files/register/mails/" + email;
 	remove(path.c_str());	
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	xmlMemoryDump();
-	path = "db_files/users" + userId;
-	rmdir(path.c_str());
+	path = "db_files/users/" + userId;
+	fm->deleteFolder(path);
 	return true;
 }
 
@@ -592,8 +592,9 @@ bool xmlDatabase::deleteGroup(std::string groupId) {
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	xmlMemoryDump();
-	path="rm -r db_files/groups/" + groupId;
-	system(path.c_str());
+	fileManager* fm = fileManager::sharedManager();
+	path="db_files/groups/" + groupId;
+	fm->deleteFolder(path);
 	return true;
 }
 

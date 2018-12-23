@@ -3,22 +3,22 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fstream>
-
+#include <dirent.h>
+#include <string.h>
 static fileManager* shared = NULL;
 
 std::string fileManager::getFileContent(std::string path) {
- fileManager* fm = fileManager::sharedManager();
-        std::string content ="";
-        std::string tmp ="";
-        if(!fm->isRegularFile(path) || !fm->isSymlink(path))
-                return "no such file";
-        else{
-        std::ifstream file(content);
-        while(file >> tmp){
-                content += tmp;
-        }
-        return content;
-        }
+	std::string content ="";
+	std::string tmp ="";
+	if(!shared->isRegularFile(path) || !shared->isSymLink(path))
+		return "no such file";
+	else{
+		std::ifstream file(content);
+		while(file >> tmp){
+			content += tmp;
+		}
+		return content;
+	}
 
 
 }
@@ -35,19 +35,19 @@ bool fileManager::isFileExist(std::string path) {
 }
 
 bool fileManager::isDirectory(std::string stringPath) {
-        const char* path = stringPath.c_str();
-        struct stat buf;
-        stat(path, &buf);
-        return S_ISDIR(buf.st_mode);
+	const char* path = stringPath.c_str();
+	struct stat buf;
+	stat(path, &buf);
+	return S_ISDIR(buf.st_mode);
 }
 
 bool fileManager::isRegularFile(std::string path) {
-        struct stat sb;
-        const char * pat = path.c_str();
-        if (stat(pat, &sb) == 0 && S_ISREG(sb.st_mode)) {
-                return true;
-        } else {
-                return false;
+	struct stat sb;
+	const char * pat = path.c_str();
+	if (stat(pat, &sb) == 0 && S_ISREG(sb.st_mode)) {
+		return true;
+	} else {
+		return false;
 	}
 }
 
@@ -55,7 +55,33 @@ bool fileManager::isSymLink(std::string path) {
 	return true;
 }
 
-int fileManager::deleteFolder(std::string path, bool recursive) {
+int fileManager::deleteFolder(std::string stringPath) {
+	if(!shared->isDirectory(stringPath))
+		return 1;
+	struct dirent *entry = NULL;
+	DIR *dir = NULL;
+	const char* path = stringPath.c_str();
+	dir = opendir(path);
+	while(entry = readdir(dir)){
+		DIR *sub_dir = NULL;
+		FILE *file = NULL;
+		char* abs_path = new char[256];
+		if ((*(entry->d_name) != '.') || ((strlen(entry->d_name) > 1) && (entry->d_name[1] != '.'))){
+			sprintf(abs_path, "%s/%s", path, entry->d_name);
+			if(sub_dir = opendir(abs_path))	{
+				closedir(sub_dir);
+			/*	shared->*/deleteFolder(abs_path);
+			}
+			else{
+				if(file = fopen(abs_path, "r"))	{
+					fclose(file);
+					remove(abs_path);
+				}
+			}
+		}
+		delete[] abs_path;
+	}
+	remove(path);
 	return 0;
 }
 
@@ -77,11 +103,11 @@ int fileManager::createSymlink(std::string filePath, std::string linkPath) {
 
 int fileManager::createFile(std::string path, std::string name) {
 
-        std::ofstream outfile;
-        std::string createFile = "";
-        createFile = path + "/" + name;
-        outfile.open(createFile.c_str());
-        outfile.close();
+	std::ofstream outfile;
+	std::string createFile = "";
+	createFile = path + "/" + name;
+	outfile.open(createFile.c_str());
+	outfile.close();
 
 	return 0;
 }

@@ -149,6 +149,12 @@ void test_all()
 	std::cout<<"Conversations user  "<<UserId1<<"  "<<db->getUserConversations(UserId1)<<std::endl;
 	std::cout<<"Conversations user  "<<UserId2<<"  "<<db->getUserConversations(UserId2)<<std::endl;
 	std::cout<<std::endl;
+	std::cout << std::endl;
+        std::cout<<"***********************  TEST DELETE_User()  *********************"<<std::endl;
+        std::cout<<std::endl;
+        std::cout<<"UserId : "<<UserId2<<std::endl;
+        std::cout<<"Function result for user "<<UserId2<<"   "<<db->deleteUser(UserId2)<<std::endl;
+
 	std::cout<<"*****************  TEST CREATE_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::string GroupInfo = "<info><name>VanIt</name><admin>" + UserId1 + "</admin><createdate>18.12.2018</createdate></info>";
@@ -174,13 +180,13 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST ADD_USER_TO_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
-	std::cout<<"Function result1  "<<db->addUserToGroup(GroupId, UserId2);
+	std::cout<<"Function result1  "<<db->addUserToGroup(GroupId, UserId1);
 	std::cout<<"Function result2  "<<db->addUserToGroup(GroupId, UserId3);
 	std::cout<<"Group info   "<<db->getGroupInfo(GroupId)<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST REMOVE_FROM_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
-	std::cout<<"Function result  "<<db->removeFromGroup(GroupId, UserId2);
+	std::cout<<"Function result  "<<db->removeFromGroup(GroupId, UserId1);
 	std::cout<<"Group info   "<<db->getGroupInfo(GroupId)<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST ADD_GROUP_MESSAGE()  *******************"<<std::endl;
@@ -188,22 +194,22 @@ void test_all()
 	std::string groupmess1 = "<message><date>19.12.2018</date><body>barev ankrkneliner)</body></message>";
 	std::cout<<"Function result1  "<< db->addGroupMessage(GroupId, UserId1, groupmess1) <<std::endl;
 	std::string groupmess2 = "<message><date>19.12.2018</date><body>Hazar barev </body></message>";
-	std::cout<<"Function result2  "<< db->addGroupMessage(GroupId, UserId2, groupmess2) <<std::endl;
+	std::cout<<"Function result2  "<< db->addGroupMessage(GroupId, UserId1, groupmess2) <<std::endl;
 	std::string groupmess3 = "<message><date>19.12.2018</date><body>vonc eq? </body></message>";
 	std::cout<<"Function result3  "<< db->addGroupMessage(GroupId, UserId3, groupmess3) <<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST GET_GROUP_CONVERSATION()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"Function result for user "<<UserId1<<"   "<<db->getGroupConversation(UserId1, GroupId)<<std::endl;
-	std::cout<<"Function result for user "<<UserId2<<"   "<<db->getGroupConversation(UserId2, GroupId)<<std::endl;
+	std::cout<<"Function result for user "<<UserId3<<"   "<<db->getGroupConversation(UserId3, GroupId)<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST GET_GROUP_USERS()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout <<"getGroupUsers g1"<<db->getGroupUsers(GroupId)<<std::endl;
 	std::cout <<"getGroupUsers g2  "<<db->getGroupUsers(GroupId2)<<std::endl;
-	std::cout<<"ADDing u2 in" << GroupId << " " <<db->addUserToGroup(GroupId, UserId2);
+	std::cout<<"ADDing u3 in" << GroupId << " " <<db->addUserToGroup(GroupId, UserId3);
 	std::cout <<"getGroupUsers after adding " << GroupId << " " <<db->getGroupUsers(GroupId)<<std::endl;
-	std::cout<<"REMOVE U2 FROM G1  "<<db->removeFromGroup(GroupId, UserId2);
+	std::cout<<"REMOVE u3 FROM G1  "<<db->removeFromGroup(GroupId, UserId3);
 	std::cout <<"getGroupUsers after removing g1 "<<db->getGroupUsers(GroupId)<<std::endl;
 	std::cout << std::endl;
 	std::cout<<"***********************  TEST UPDATE_GROUP_MESSAGE()  *********************"<<std::endl;
@@ -212,11 +218,11 @@ void test_all()
 	std::cout<<"Function result  " << db->updateGroupMessage(GroupId, groupNewMess)<<std::endl;
 	std::cout<<"New Group conversation  "<<UserId1<<"   "<<db->getGroupConversation(UserId1, GroupId)<<std::endl;
 
-/*	std::cout << std::endl;
+	std::cout << std::endl;
 	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"GroupId : "<<GroupId2<<std::endl;
-	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;*/
+	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
 }
 
 void test_ChangeGroupAdmin(){
@@ -243,6 +249,7 @@ void test_ChangeGroupAdmin(){
 void testDeleteFile(){
 	std::string path = "/home/user/instant_messenger/db_files/users/u100002/convs/conv_list_u100002.xml";
 	std::cout<<fm->deleteFile(path)<<std::endl;
+//	std::cout<<fm->deleteFolder("db_files/groups/g1")<<std::endl;
 
 }
 
@@ -578,9 +585,9 @@ void test_deleteMessageFromGroupConversation (){
 }
 
 int main() {
-	//test_all();
-	test_is_file_regular();
-	testForIsDirectory();
+	test_all();
+//	test_is_file_regular();
+//	testForIsDirectory();
 //	test1();
 //	test2();
 //	test_groupFunctional();
