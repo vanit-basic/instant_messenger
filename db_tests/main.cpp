@@ -2,38 +2,13 @@
 #include <fstream>
 #include <xmlDatabase.hpp>
 #include <IDgenerator.hpp>
+#include <fileManager.hpp>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <string.h>
-#include <fileManager.hpp>
-
-/*
-   User
-   registerUser(std::string userInfo)  				+
-   getUserInfo(std::string userID)     				+
-   getUserShortInfo(std::string userID)     			+
-   loginUser(std::string login, std::string password)		+
-   addUserMessage(std::string messageInfo)			+
-   getUserConversations(std::string userID)			+
-   getUsersConversation(std::string fromID, std::string toID)	+
-   updateUserInfo(std::string userInfo)				+
-   addUserToGroup(std::string groupID, std::string userID)	+
-   removeUserConversation(std::string fromUserId,std::string toUserId)
-
-   Group
-   createGroup(std::string groupInfo)				+
-   getGroupInfo(std::string groupID)				+
-   updateGroupInfo(std::string groupInfo)			+
-   addGroupMessage(std::string messageInfo)			+
-   removeFromGroup(std::string groupID, std::string userID)	-
-   getGroupConversation(std::string groupID)			+
-   deleteGroup(std::string groupID)				-
-   removeGroupConversation(std::string groupInfo)		-
-   removeMessage(std::string messageInfo)			-
-   */
 
 static database *db = new xmlDatabase;
-static fileManager* fm = new fileManager;
+fileManager *fm =fileManager::sharedManager();
 std::string xml2string (const char* file) {
 	std::ifstream in(file);
 	std::string info = "";
@@ -44,6 +19,7 @@ std::string xml2string (const char* file) {
 	}
 	return info;
 }
+
 bool getId (std::string &id)
 {
 	xmlDoc* doc = NULL;
@@ -69,6 +45,7 @@ bool getId (std::string &id)
 		return true;
 	}
 }
+
 void test_all()
 {
 	std::string UserInfo1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
@@ -130,6 +107,9 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST UPDATE_USER_MESSAGE()  *******************"<<std::endl;
 	std::cout<<std::endl;
+	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId3<< "**********"<<std::endl;
+        std::cout<<db->getUsersConversation(UserId1, UserId3)<<std::endl;
+	std::cout<<std::endl;
 	std::string newmessage = "<info><m5><body>Barev</body></m5></info>";
         db->updateUserMessage(UserId1, UserId3, newmessage);
 	std::cout<<"Conversation user "<<UserId1<<"  end  "<<UserId3<< "**********"<<std::endl;
@@ -160,6 +140,8 @@ void test_all()
 	std::cout<<"Returns bool value. Returns true if deleted and false if that file doesn't exist."<<std::endl;
 	std::cout<<"U1's coversation is deleted."<<std::endl;
 	std::cout<<db->removeUserConversation(UserId1,UserId2)<<std::endl;
+	std::cout<<"Conversations user  "<<UserId1<<"  "<<db->getUserConversations(UserId1)<<std::endl;
+	std::cout<<"Conversations user  "<<UserId2<<"  "<<db->getUserConversations(UserId2)<<std::endl;
 	std::cout<<"U2's coversation is deleted."<<std::endl;
 	std::cout<<db->removeUserConversation(UserId2,UserId1)<<std::endl;
 	std::cout<<"The conversation is deleted for both users."<<std::endl;
@@ -167,6 +149,12 @@ void test_all()
 	std::cout<<"Conversations user  "<<UserId1<<"  "<<db->getUserConversations(UserId1)<<std::endl;
 	std::cout<<"Conversations user  "<<UserId2<<"  "<<db->getUserConversations(UserId2)<<std::endl;
 	std::cout<<std::endl;
+	std::cout << std::endl;
+        std::cout<<"***********************  TEST DELETE_User()  *********************"<<std::endl;
+        std::cout<<std::endl;
+        std::cout<<"UserId : "<<UserId2<<std::endl;
+        std::cout<<"Function result for user "<<UserId2<<"   "<<db->deleteUser(UserId2)<<std::endl;
+
 	std::cout<<"*****************  TEST CREATE_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::string GroupInfo = "<info><name>VanIt</name><admin>" + UserId1 + "</admin><createdate>18.12.2018</createdate></info>";
@@ -192,13 +180,13 @@ void test_all()
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST ADD_USER_TO_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
-	std::cout<<"Function result1  "<<db->addUserToGroup(GroupId, UserId2);
+	std::cout<<"Function result1  "<<db->addUserToGroup(GroupId, UserId1);
 	std::cout<<"Function result2  "<<db->addUserToGroup(GroupId, UserId3);
 	std::cout<<"Group info   "<<db->getGroupInfo(GroupId)<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST REMOVE_FROM_GROUP()  *******************"<<std::endl;
 	std::cout<<std::endl;
-	std::cout<<"Function result  "<<db->removeFromGroup(GroupId, UserId2);
+	std::cout<<"Function result  "<<db->removeFromGroup(GroupId, UserId1);
 	std::cout<<"Group info   "<<db->getGroupInfo(GroupId)<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST ADD_GROUP_MESSAGE()  *******************"<<std::endl;
@@ -206,22 +194,22 @@ void test_all()
 	std::string groupmess1 = "<message><date>19.12.2018</date><body>barev ankrkneliner)</body></message>";
 	std::cout<<"Function result1  "<< db->addGroupMessage(GroupId, UserId1, groupmess1) <<std::endl;
 	std::string groupmess2 = "<message><date>19.12.2018</date><body>Hazar barev </body></message>";
-	std::cout<<"Function result2  "<< db->addGroupMessage(GroupId, UserId2, groupmess2) <<std::endl;
+	std::cout<<"Function result2  "<< db->addGroupMessage(GroupId, UserId1, groupmess2) <<std::endl;
 	std::string groupmess3 = "<message><date>19.12.2018</date><body>vonc eq? </body></message>";
 	std::cout<<"Function result3  "<< db->addGroupMessage(GroupId, UserId3, groupmess3) <<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST GET_GROUP_CONVERSATION()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"Function result for user "<<UserId1<<"   "<<db->getGroupConversation(UserId1, GroupId)<<std::endl;
-	std::cout<<"Function result for user "<<UserId2<<"   "<<db->getGroupConversation(UserId2, GroupId)<<std::endl;
+	std::cout<<"Function result for user "<<UserId3<<"   "<<db->getGroupConversation(UserId3, GroupId)<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"*****************  TEST GET_GROUP_USERS()  *******************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout <<"getGroupUsers g1"<<db->getGroupUsers(GroupId)<<std::endl;
 	std::cout <<"getGroupUsers g2  "<<db->getGroupUsers(GroupId2)<<std::endl;
-	std::cout<<"ADDing u2 in" << GroupId << " " <<db->addUserToGroup(GroupId, UserId2);
+	std::cout<<"ADDing u3 in" << GroupId << " " <<db->addUserToGroup(GroupId, UserId3);
 	std::cout <<"getGroupUsers after adding " << GroupId << " " <<db->getGroupUsers(GroupId)<<std::endl;
-	std::cout<<"REMOVE U2 FROM G1  "<<db->removeFromGroup(GroupId, UserId2);
+	std::cout<<"REMOVE u3 FROM G1  "<<db->removeFromGroup(GroupId, UserId3);
 	std::cout <<"getGroupUsers after removing g1 "<<db->getGroupUsers(GroupId)<<std::endl;
 	std::cout << std::endl;
 	std::cout<<"***********************  TEST UPDATE_GROUP_MESSAGE()  *********************"<<std::endl;
@@ -230,12 +218,13 @@ void test_all()
 	std::cout<<"Function result  " << db->updateGroupMessage(GroupId, groupNewMess)<<std::endl;
 	std::cout<<"New Group conversation  "<<UserId1<<"   "<<db->getGroupConversation(UserId1, GroupId)<<std::endl;
 
-/*	std::cout << std::endl;
+	std::cout << std::endl;
 	std::cout<<"***********************  TEST DELETE_GROUP()  *********************"<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"GroupId : "<<GroupId2<<std::endl;
-	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;*/
+	std::cout<<"Function result for group "<<GroupId2<<"   "<<db->deleteGroup(GroupId2)<<std::endl;
 }
+
 void test_ChangeGroupAdmin(){
 	std::string UserInfo1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
 	std::string UserId1 = db->registerUser(UserInfo1);
@@ -257,6 +246,25 @@ void test_ChangeGroupAdmin(){
 	std::cout<<"Old Admin info  "<<db->getUserInfo(UserId1)<<std::endl;
 
 }
+void testDeleteFile(){
+	std::string path = "/home/user/instant_messenger/db_files/users/u100002/convs/conv_list_u100002.xml";
+	std::cout<<fm->deleteFile(path)<<std::endl;
+//	std::cout<<fm->deleteFolder("db_files/groups/g1")<<std::endl;
+
+}
+
+void test_is_file_regular () {
+	fileManager *fm = fileManager::sharedManager();
+        std::string path1 = "../db_files/resources/gr_id.txt";
+        std::string path2 = "../db_files/resources/mes_id.txt";
+        std::string path3 = "../db_files";
+
+        std::cout << path1 << " " << path2 << " " << path3 << " " << std::endl;
+        std::cout << fm->isRegularFile(path1) <<std::endl;
+        std::cout << fm->isRegularFile(path2) <<std::endl;
+        std::cout << fm->isRegularFile(path3) <<std::endl;
+
+}
 
 void testForIsDirectory() {
 	std::string path1 = "../db_files";
@@ -265,6 +273,7 @@ void testForIsDirectory() {
         std::string path4 = "../db_files/users/u100000";
         std::string path5 = "maneantonyan";
 	std::string path6 = "home/kolibri/manemane";
+	fileManager *fm = fileManager::sharedManager();
 	
 	std::cout << "Testing isDirectory for : " << fm->isDirectory(path1) << std::endl;
 	std::cout << "Testing isDirectory for : " << fm->isDirectory(path2) << std::endl;
@@ -281,6 +290,7 @@ void test_getUserConversation(std::string from,std::string to) {
 //	std::cout<<"*****************************************************"<<std::endl;
 //	std::cout<<db->getUserConversations(from)<<std::endl;
 }
+
 void test_delete_message(){
 		std::cout<<db->getUsersConversation("u100004","u100001")<<std::endl;
 	std::string delete_mess_test = "<delete_message><from>u100004</from><to>u100001</to><messageId>m2</messageId><remove_status>0</remove_status></delete_message>";
@@ -290,6 +300,7 @@ void test_delete_message(){
 	else
 		std::cout<<"error";
 }
+
 void test1 () {
 	std::string info = xml2string("xmls/register1.xml");
 	std::cout << info << std::endl;
@@ -319,6 +330,7 @@ void test2 () {
 	std::string id = db->registerUser(info);
 	std::cout << db->loginUser(std::string("test2"), std::string("test1234")) << std::endl;
 }
+
 void test_IdGenerator()
 {
 	for(int i=0; i<1000; i++)
@@ -334,6 +346,7 @@ void test_IdGenerator()
 		std::cout << IDgenerator::getMessageId()<<std::endl;
 	}
 }
+
 void test_groupFunctional()
 {
 	std::cout<<"Start Group testing"<<std::endl;
@@ -389,6 +402,7 @@ void test_createGroup() {
 	std::cout << groupId << "\n";
 	std::cout << db->getGroupInfo(groupId) << std::endl;
 }
+
 void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
 {
 	std::string inf = "<info><name>VanIt</name><admin>u1000</admin><createdate>12.12.2018</createdate></info>";
@@ -429,6 +443,7 @@ void test_creatGroup_addUserToGroup_getGroupInfo_addGroupMessage()
 		std::cout<< db->addGroupMessage(gid, id, group_mess) <<std::endl;
 	}
 }
+
 void test_addUserMessage_getUsersConversation_getUserConversations()
 {
 	std::string info1 = "<registration_information><firstName>Jo</firstName><lastName>Black</lastName><gender>male</gender><birthDate>10.02.1990</birthDate><email>black@gmail.com</email><login>black1990</login><password>JBlack1990</password></registration_information>";
@@ -570,8 +585,9 @@ void test_deleteMessageFromGroupConversation (){
 }
 
 int main() {
-//	test_all();
-	testForIsDirectory();
+	test_all();
+//	test_is_file_regular();
+//	testForIsDirectory();
 //	test1();
 //	test2();
 //	test_groupFunctional();
@@ -584,5 +600,6 @@ int main() {
 //	test_removeGroupConversation(); 
 //	test_getUserConversation("u100001","u100004");
 //	test_ChangeGroupAdmin();
+	testDeleteFile();
 	return 0;
 }

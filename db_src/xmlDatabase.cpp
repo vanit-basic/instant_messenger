@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <unistd.h>
 
+#include <fileManager.hpp>
 #include <helpers.hpp>
 #include <IDgenerator.hpp>
 #include <xmlDatabase.hpp>
@@ -150,14 +151,12 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 	if(stat(p, &sb) == 0 && S_ISDIR(sb.st_mode)) {
 		path += "/info.xml";
 		const char * filename = path.c_str();
-
 		xmlDoc * doc = NULL;
 		xmlNode * root = NULL;
 		xmlNode * node = NULL;
 
 		doc = xmlReadFile(filename, NULL, 0);
 		root = xmlDocGetRootElement(doc);
-
 		xmlDoc * newDoc = xmlNewDoc(BAD_CAST "1.0");
 		xmlNode * newRoot = xmlNewNode(NULL, BAD_CAST "info");
 		xmlDocSetRootElement(newDoc, newRoot);
@@ -170,7 +169,6 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 				}
 			}
 		}
-
 		xmlChar* info;
 		int size;
 		xmlDocDumpMemory(newDoc, &info, &size);
@@ -178,7 +176,6 @@ std::string xmlDatabase::getUserShortInfo(std::string userId) {
 		xmlFree(info);
 		xmlFreeDoc(doc);
 		xmlFreeDoc(newDoc);
-
 	}
 	return shortInfo;
 }
@@ -226,8 +223,6 @@ std::string xmlDatabase::getUsersConversation(std::string from, std::string to) 
 	conversation = (char*)info;
 	xmlFree(doc);
 	xmlFree(info);
-
-
 	return conversation;
 
 }
@@ -268,7 +263,6 @@ std::string xmlDatabase::createGroup(std::string groupInfo) {
 	mode_t process_mask = umask (0);
 	mkdir(p , 0777);
 	umask (process_mask);
-
 	xmlDoc* doc = NULL;
 	xmlNode* root = NULL;
 
@@ -513,7 +507,7 @@ bool xmlDatabase::deleteUser(std::string userId){
 	std::string email = "";
 	xmlNode* node = NULL;
 	xmlNode* root = NULL;
-	std::string path = "db_files/users" + userId + "/info.xml";
+	std::string path = "db_files/users/" + userId + "/info.xml";
 	xmlDoc* doc = xmlReadFile(path.c_str(), NULL, 0);
 	root = xmlDocGetRootElement(doc);
 	remgIdFromUinfo(root, userId);
@@ -534,15 +528,16 @@ bool xmlDatabase::deleteUser(std::string userId){
 			}
 		}
 	}
+	fileManager* fm = fileManager::sharedManager();
 	path = "db_files/register/logins/" + login;
-	rmdir(path.c_str());
+	fm->deleteFolder(path);
 	path = "db_files/register/mails/" + email;
 	remove(path.c_str());	
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	xmlMemoryDump();
-	path = "db_files/users" + userId;
-	rmdir(path.c_str());
+	path = "db_files/users/" + userId;
+	fm->deleteFolder(path);
 	return true;
 }
 
@@ -597,8 +592,9 @@ bool xmlDatabase::deleteGroup(std::string groupId) {
 	xmlFreeDoc(doc);
 	xmlCleanupParser();
 	xmlMemoryDump();
-	path="rm -r db_files/groups/" + groupId;
-	system(path.c_str());
+	fileManager* fm = fileManager::sharedManager();
+	path="db_files/groups/" + groupId;
+	fm->deleteFolder(path);
 	return true;
 }
 
@@ -838,33 +834,15 @@ std::string xmlDatabase::getGroupUsers(std::string groupID) {
 
 bool xmlDatabase::updateUserMessage(std::string from, std::string to, std::string messageInfo) {
 	std::string messageId = "";
-	std::string correctedMessage;
+	std::string correctedMessage = "";
 	xmlDoc* doc = NULL;
 	xmlNode* root = NULL;
 	xmlNode* node = NULL;
 	xmlNode* node1 = NULL;
 
-	LIBXML_TEST_VERSION;
-	const char* info = messageInfo.c_str();
-	doc = xmlReadMemory(info, messageInfo.size(), "noname.xml", NULL, 0);
-	root = xmlDocGetRootElement(doc);
-	for (node = root->children; node; node = node->next) {
-		if (node->type == XML_ELEMENT_NODE) {
-			messageId = (char*) node->name;
-			for (node1 = node->children; node1; node1 = node1->next) {
-				if (0 == strcmp((char*)node1->name, "body")) {
-					xmlChar* buf;
-					buf = xmlNodeGetContent(node);
-					correctedMessage = (char*) buf;
-					xmlFree(buf);
-				}
-			}
-		}
-	}
-	xmlFreeDoc(doc);
-	xmlCleanupParser();
-	xmlMemoryDump();
+	findMessage(messageInfo, messageId, correctedMessage);
 
+	LIBXML_TEST_VERSION;
 	std::string path = find_path(from, to);
 	doc = xmlReadFile(path.c_str(), NULL, 0);
 	root = xmlDocGetRootElement(doc);

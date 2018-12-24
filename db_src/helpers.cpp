@@ -78,7 +78,14 @@ xmlNodePtr delete_node(xmlNode* a_node)
                 }
                 else
                 {
-                        cur_node = node->children;
+			if(node->children)
+			{
+                        	cur_node = node->children;
+			}
+			else 
+			{
+				cur_node = node;
+			}
                 }
         }
         return cur_node;
@@ -688,3 +695,28 @@ bool removeFromXml(std::string fromUserId, std::string toUserId){
         return flag;
 }
 
+void findMessage(std::string messageInfo, std::string &messageId, std::string &correctedMessage) {
+	LIBXML_TEST_VERSION;
+	const char* info = messageInfo.c_str();
+	xmlDoc* doc = xmlReadMemory(info, messageInfo.size(), "noname.xml", NULL, 0);
+	xmlNode* root = xmlDocGetRootElement(doc);
+	xmlNode* node = NULL;
+	xmlNode* node1 = NULL;
+        for (node = root->children; node; node = node->next) {
+                if (node->type == XML_ELEMENT_NODE) {
+                        messageId = (char*) node->name;
+                        for (node1 = node->children; node1; node1 = node1->next) {
+                                if (0 == strcmp((char*)node1->name, "body")) {
+                                        xmlChar* buf;
+                                        buf = xmlNodeGetContent(node);
+                                        correctedMessage = (char*) buf;
+                                        xmlFree(buf);
+                                }
+                        }
+                }
+        }
+        xmlFreeDoc(doc);
+        xmlCleanupParser();
+        xmlMemoryDump();
+
+}
