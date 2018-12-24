@@ -266,6 +266,20 @@ void test_is_file_regular () {
 
 }
 
+void test_get_file_content () {
+        fileManager *fm = fileManager::sharedManager();
+        std::string path1 = "../db_files/users/";
+        std::string path2 = "../db_files/resources/mes_id.txt";
+        std::string path3 = "../db_files";
+
+        std::cout << path1 << " " << path2 << " " << path3 << " " << std::endl;
+        std::cout << fm->getFileContent(path1) <<std::endl;
+        std::cout << fm->getFileContent(path2) <<std::endl;
+        std::cout << fm->getFileContent(path3) <<std::endl;
+}
+
+
+
 void testForIsDirectory() {
 	std::string path1 = "../db_files";
         std::string path2 = "xmls";
@@ -586,6 +600,7 @@ void test_deleteMessageFromGroupConversation (){
 
 int main() {
 	test_all();
+//	test_get_file_content();
 //	test_is_file_regular();
 //	testForIsDirectory();
 //	test1();
