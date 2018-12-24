@@ -1,4 +1,5 @@
 #include <fileManager.hpp>
+#include <iostream>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -10,8 +11,9 @@ static fileManager* shared = NULL;
 std::string fileManager::getFileContent(std::string path) {
 	std::string content ="";
 	std::string tmp ="";
-	if(!shared->isRegularFile(path) || !shared->isSymLink(path))
+	if(!shared->isRegularFile(path) || !shared->isSymLink(path)){
 		return "no such file";
+	}
 	else{
 		std::ifstream file(content);
 		while(file >> tmp){
