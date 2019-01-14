@@ -123,7 +123,7 @@ getUserConversations {
 	</info>	
 	</result>
 }
-getUsersConversation {
+getUserConversation {
 	request {
 	ip/user/getUserConversations/id
 	<info>
@@ -140,6 +140,69 @@ getUsersConversation {
 	}
 
 }
+deleteUser {
+	request {
+	ip/user/deleteUser/id
+	}
+	response {
+	<result>
+		<status> 0 </status>
+	</result>
+	}
+}
+
+addUserMessage {
+	request {
+	ip/user/addUserMessage/id
+	<info>
+		<uId> 321 </uId>
+		<messageBody> Hi!!! <messageBody>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 </status>
+	</result>
+	}
+}
+
+updateUserMessage{
+	request {
+	ip/user/updateUserMessage/id
+	<info>
+		<uId> 321 </uId>
+		<messageId> m12 </messageId>
+		<newMessageBody> Hello! </newMessageBody>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 </status>
+	</result>
+	}
+}
+
+removeUserConversation {
+	request {
+	ip/user/removeUserConversation/id
+	<info>
+		<uId> 123 </uId>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1</status>
+	</result>
+	}
+}
+
+
+///////////////////////////////////////////////////////
+
+
+
+
+
 createGroup {
     request {
     ip/group/createGroup
@@ -155,7 +218,7 @@ createGroup {
         <id>12</id>
         </result>
     }
-}////////////////////////////////////////////////////////////
+}
 deleteGroup {
     request {
     ip/path/deleteGroup/uId
