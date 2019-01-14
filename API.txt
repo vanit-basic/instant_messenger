@@ -196,6 +196,21 @@ removeUserConversation {
 	}
 }
 
+removeMessageFromUserConversation {
+	request {
+	ip/path/removeMessage/id
+	<info>
+		<uId> 12 </uId>
+		<messageId></messageId>
+		<mode> 0 | 1 </mode>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 | 2 </status>
+	</result>
+	}
+}
 
 ///////////////////////////////////////////////////////
 
@@ -389,45 +404,18 @@ removeFromGroup {
     </result>
     }
 }
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
-}
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
-}
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
-}
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
-}
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
-}
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
+removeMessageFromGroupConversation {
+	request {
+	ip/path/removeMessage/id
+	<info>
+		<gId> 12 </gId>
+		<messageId></messageId>
+		<mode> 0 | 1 </mode>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 | 2 </status>
+	</result>
+	}
 }
