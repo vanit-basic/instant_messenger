@@ -1,0 +1,8 @@
+notification
+register
+logIn
+account
+logOut
+search
+conversation
+GAME
