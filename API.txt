@@ -212,6 +212,34 @@ removeMessageFromUserConversation {
 	}
 }
 
+forgotPassword(1) {
+	request {
+	ip/path/forgotPassword/id
+	<info>
+		<email></email>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 </status>
+	</result>
+	}
+}
+
+forgotPassword(2) {
+	request {
+	ip/path/forgotPassword/id
+	<info>
+		<pinCode></pinCode>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 </status>
+	</result>
+	}
+}
+
 ///////////////////////////////////////////////////////
 
 
