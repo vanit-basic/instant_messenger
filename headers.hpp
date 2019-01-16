@@ -38,10 +38,11 @@ class connection {
 	private:
 		request harcum;
 		response patasxan;
+		std::string ip;
 	public:
 		void setRequest(std::string);
 		void setResponse(std::string);
-		void send(?????);
+		void send(std::string);
 		std::string recive();
 		connection(std::string, std::string, std::string); //(ip, path, request's string)
 		~connection();
