@@ -33,3 +33,16 @@ class response {  // patasxan
 		response(std::string);
 		~response();
 }
+
+class connection {
+	private:
+		request harcum;
+		response patasxan;
+	public:
+		void setRequest(std::string);
+		void setResponse(std::string);
+		void send(?????);
+		std::string recive();
+		connection(std::string, std::string, std::string); //(ip, path, request's string)
+		~connection();
+}
