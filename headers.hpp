@@ -1,4 +1,4 @@
-class request {
+class request {  // harcum
 	private:
 		std::string type;
 		std::string url;
@@ -18,7 +18,7 @@ class request {
 }
 
 
-class response {
+class response {  // patasxan
 	private:
 		std::string url;
 		std::string header;
