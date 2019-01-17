@@ -1,6 +1,6 @@
-class request {  // harcum
+/*class request {  // harcum
 	private:
-		std::string type;
+		type;
 		std::string url;
 		std::string header;
 		std::string body;
@@ -32,18 +32,34 @@ class response {  // patasxan
 		std::string getBody();
 		response(std::string);
 		~response();
-}
+}*/
 
 class connection {
 	private:
-		request harcum;
-		response patasxan;
 		std::string ip;
+		std::string port;
 	public:
-		void setRequest(std::string);
-		void setResponse(std::string);
+		std::string getIp();
+		std::string getPort();
 		void send(std::string);
 		std::string recive();
-		connection(std::string, std::string, std::string); //(ip, path, request's string)
+		connection( std::string, std::string ); //(ip, path, request's string)
 		~connection();
 }
+
+class Service {
+	connection DBconnection;	
+	void send(std::string);
+	std::string recive();
+	std::string getAction();
+}
+
+
+
+
+
+
+
+
+
+
