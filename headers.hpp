@@ -43,18 +43,40 @@ class connection {
 		std::string getPort();
 		void send(std::string);
 		std::string recive();
-		connection( std::string, std::string ); //(ip, path, request's string)
+		connection( std::string, std::string ); //(ip, path)
 		~connection();
 }
 
 class Service {
-	connection DBconnection;	
-	virtual void send(std::string) = 0;
-	virtual std::string recive() = 0;
-	virtual std::string getAction() = 0;
+	public:
+		connection DBconnection;	
+		virtual void send(std::string) = 0;
+		virtual std::string recive() = 0;
+		virtual std::string getAction(std::string) = 0;
+		Service();
+		~Service();
 }
 
+class FirstService: public Serivce {
+	public:
+		connection DBconnection;
+		void send(std::string);
+		std::string recive();
+		std::string getAction(std::string);
+		FirstService();
+		~FirstService();`
 
+}
+
+class SecondService: public Service {
+	public:
+		connection DBconnection;
+		void send(std::string);
+		std::string recive();
+		std::string getAction(std::string);
+		SecondService();
+		~SecondService();
+}
 
 
 
