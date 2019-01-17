@@ -49,9 +49,9 @@ class connection {
 
 class Service {
 	connection DBconnection;	
-	void send(std::string);
-	std::string recive();
-	std::string getAction();
+	virtual void send(std::string) = 0;
+	virtual std::string recive() = 0;
+	virtual std::string getAction() = 0;
 }
 
 
