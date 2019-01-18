@@ -1,27 +1,42 @@
-class request {  // harcum
+
+enum RequestType {
+	RequestTypeINVALID = -1;
+	RequestTypePOST,
+	RequestTypeGET,
+	RequestTypePUT,
+	RequestTypeDELETE,
+	RequestTypeOPTIONS
+};
+
+<request>
+<action>updateUser</action>
+<body>body</body>
+</request>
+
+
+class Request {  // harcum
 	private:
-		std::string type;
+		RequestType type;
 		std::string url;
-		std::string header;
+		std::map header;
 		std::string body;
 	public:
-		void setType(std::string);
-		void setUrl(std::string);
-		void setHeader(std::string);
-		void setBody(std::string);
-		std::string getType();
+		void setType(RequestType);
+		void setUrl(const std::string&);
+		void setHeader(const std::map&);
+		void setBody(const std::string&);
+		RequestType getType();
 		std::string getUrl();
-		std::string getHeader();
+		std::map getHeader();
 		std::string getBody();
-		request(std::string);
-		~request();
+		Request(std::string);
+		~Request();
 }
 
 
-class response {  // patasxan
+class Response {  // patasxan
 	private:
-		std::string url;
-		std::string header;
+		int status;
 		std::string body;
 	public:
 		void setUrl(std::string);
@@ -30,20 +45,19 @@ class response {  // patasxan
 		std::string getUrl();
 		std::string getHeader();
 		std::string getBody();
-		response(std::string);
-		~response();
+		Response(std::string);
+		~Response();
 }
 
-class connection {
+class Connection {
 	private:
-		request harcum;
-		response patasxan;
 		std::string ip;
+		std::string port;
 	public:
-		void setRequest(std::string);
-		void setResponse(std::string);
-		void send(std::string);
-		std::string recive();
-		connection(std::string, std::string, std::string); //(ip, path, request's string)
-		~connection();
+		std::string getIp();
+		std::string getPort();
+		void send(const std::string&);
+		const std::string& recive();
+		Connection(const std::string&, const std::string&); //(ip, port)
+		~Connection();
 }
