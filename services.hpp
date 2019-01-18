@@ -7,7 +7,7 @@ class Service {
                 virtual void send(std::string) = 0;
                 virtual std::string recive() = 0;
                 virtual std::string getAction(std::string) = 0;
-                Service();
+                Service(std::string url);
                 ~Service();
 }
 class Authetification:public Service{
@@ -18,7 +18,7 @@ class Authetification:public Service{
 		std::string forgotPassword(std::string Email);
 		std::string enterCode(std::string conde);
 
-		Authetification();
+		Authetification(std::string url);
 		~Authetification();
 }
 class Conversation:public Service{
@@ -34,7 +34,7 @@ class Conversation:public Service{
 		std::string getGroupconversation (std::string userId,std::string groupId);
 		std::string updateGroupMessage (std::string groupId,std::sstring messBody);
 		
-		Conversation();
+		Conversation(std::string url);
 		~Conversation();
 }
 
@@ -54,7 +54,7 @@ class Acaunt:public Service{
 		std::string getGroupUsers(std::string groupId);
 		std::string createGroup(std::string groupInfo);
 		
-		Acaunt();
+		Acaunt(std::string url);
 		~Acaunt();
 
 }
