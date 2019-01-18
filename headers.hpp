@@ -65,27 +65,6 @@ class Service {
 		~Service();	
 }
 
-class FirstService: public Serivce {
-	public:
-		connection DBconnection;
-		void send(std::string);
-		std::string recive();
-		std::string getAction(std::string);
-		FirstService();
-		~FirstService();`
-
-}
-
-class SecondService: public Service {
-	public:
-		connection DBconnection;
-		void send(std::string);
-		std::string recive();
-		std::string getAction(std::string);
-		SecondService();
-		~SecondService();
-}
-
 class Connection {
 	private:
 		std::string ip;

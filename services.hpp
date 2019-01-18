@@ -10,7 +10,7 @@ class Service {
                 Service(std::string url);
                 ~Service();
 }
-class Authetification:public Service{
+class Authetification:public Service {
 
         public:
 		std::string registerUser(std::string userInfo);
@@ -21,7 +21,7 @@ class Authetification:public Service{
 		Authetification(std::string url);
 		~Authetification();
 }
-class Conversation:public Service{
+class Conversation:public Service {
 	
 	public:	
 		bool addUserMessage(std::string from,std::string to,std::string massageInfo);
@@ -38,7 +38,7 @@ class Conversation:public Service{
 		~Conversation();
 }
 
-class Acaunt:public Service{
+class Account:public Service{
 	
 	public:
 		bool deleteUser (std::string userId);
@@ -54,16 +54,16 @@ class Acaunt:public Service{
 		std::string getGroupUsers(std::string groupId);
 		std::string createGroup(std::string groupInfo);
 		
-		Acaunt(std::string url);
-		~Acaunt();
+		Account(std::string url);
+		~Account();
 
 }
-class Game:public Service{
+class Game:public Service {
 
         public:
 
 }
-class Notification:public Service{
+class Notification:public Service {
 
         public:
 
