@@ -1,4 +1,3 @@
-
 enum RequestType {
 	RequestTypeINVALID = -1;
 	RequestTypePOST,
@@ -8,13 +7,13 @@ enum RequestType {
 	RequestTypeOPTIONS
 };
 
-<request>
+/*<request>
 <action>updateUser</action>
 <body>body</body>
 </request>
 
 
-class Request {  // harcum
+class Request {
 	private:
 		RequestType type;
 		std::string url;
@@ -33,20 +32,58 @@ class Request {  // harcum
 		~Request();
 }
 
-
-class Response {  // patasxan
+class Response {
 	private:
 		int status;
 		std::string body;
 	public:
-		void setUrl(std::string);
-		void setHeader(std::string);
+		void setStatus(std::string);
 		void setBody(std::string);
-		std::string getUrl();
-		std::string getHeader();
+		std::string getStatus();
 		std::string getBody();
 		Response(std::string);
 		~Response();
+}*/
+/*
+class Maker {
+	private:
+		std::string body;
+	public:
+		std::string getBody();
+		void setBody(std::string);
+		Maker(std::string);
+		~Maker();
+} */
+
+class Service {
+	public:
+		connection DBconnection;	
+		virtual void send(std::string) = 0;
+		virtual std::string recive() = 0;
+		virtual std::string getAction(std::string) = 0;
+		Service();
+		~Service();	
+}
+
+class FirstService: public Serivce {
+	public:
+		connection DBconnection;
+		void send(std::string);
+		std::string recive();
+		std::string getAction(std::string);
+		FirstService();
+		~FirstService();`
+
+}
+
+class SecondService: public Service {
+	public:
+		connection DBconnection;
+		void send(std::string);
+		std::string recive();
+		std::string getAction(std::string);
+		SecondService();
+		~SecondService();
 }
 
 class Connection {
