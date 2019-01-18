@@ -123,7 +123,7 @@ getUserConversations {
 	</info>	
 	</result>
 }
-getUsersConversation {
+getUserConversation {
 	request {
 	ip/user/getUserConversations/id
 	<info>
@@ -140,6 +140,112 @@ getUsersConversation {
 	}
 
 }
+deleteUser {
+	request {
+	ip/user/deleteUser/id
+	}
+	response {
+	<result>
+		<status> 0 </status>
+	</result>
+	}
+}
+
+addUserMessage {
+	request {
+	ip/user/addUserMessage/id
+	<info>
+		<uId> 321 </uId>
+		<messageBody> Hi!!! <messageBody>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 </status>
+	</result>
+	}
+}
+
+updateUserMessage{
+	request {
+	ip/user/updateUserMessage/id
+	<info>
+		<uId> 321 </uId>
+		<messageId> m12 </messageId>
+		<newMessageBody> Hello! </newMessageBody>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 </status>
+	</result>
+	}
+}
+
+removeUserConversation {
+	request {
+	ip/user/removeUserConversation/id
+	<info>
+		<uId> 123 </uId>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1</status>
+	</result>
+	}
+}
+
+removeMessageFromUserConversation {
+	request {
+	ip/path/removeMessage/id
+	<info>
+		<uId> 12 </uId>
+		<messageId></messageId>
+		<mode> 0 | 1 </mode>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 | 2 </status>
+	</result>
+	}
+}
+
+forgotPassword(1) {
+	request {
+	ip/path/forgotPassword/id
+	<info>
+		<email></email>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 </status>
+	</result>
+	}
+}
+
+forgotPassword(2) {
+	request {
+	ip/path/forgotPassword/id
+	<info>
+		<pinCode></pinCode>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 </status>
+	</result>
+	}
+}
+
+///////////////////////////////////////////////////////
+
+
+
+
+
 createGroup {
     request {
     ip/group/createGroup
@@ -155,7 +261,7 @@ createGroup {
         <id>12</id>
         </result>
     }
-}////////////////////////////////////////////////////////////
+}
 deleteGroup {
     request {
     ip/path/deleteGroup/uId
@@ -267,31 +373,17 @@ addUserToGroup {
     </result> 
    }
 }
-removeMessageFromGroupConversation {
-    request {
-    ip/path/removeMessageFromGroupConversation/gId
-    <info>
-    <status> 0 | 1 </status>
-    <uId>123</uId> 
-    <mId>81<mId>
-    </info>
-    }
-    response {
-    <result>
-    <status> 0 | 1 | 2 </status> ???????????????????????
-    </result>
-    }
-}
+
 removeGroupConversation {
     request {
     ip/path/removeGroupConversation/gId
 	<info>
-	<uId>12</uId>
+	<adminId>12</adminId>
 	</info>
     }
     response {
     <result>
-    <status>0</status>
+    <status>0|1</status>
    </result>
     }
 }
@@ -304,7 +396,7 @@ getGroupUsers {
     }
     response {
     <result>
-    <status>0</status>
+    //<status>0</status>
      <u15/>
      <u67/>
      <u109/>
@@ -316,55 +408,28 @@ removeFromGroup {
     request {
     ip/path/removeFromGroup/gId
     <info>
-<uId>12</uId>
-    <id>37</id>
+    <adminId>12</adminId>
+    <userId>37</userId>
     </info>
     }
     response {
     <result>
-    <status>0</status>
+    <status>0|1</status>
     </result>
     }
 }
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
-}
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
-}
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
-}
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
-}
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
-}
-call {
-    request {
-    ip/path
-    }
-    response {
-    }
+removeMessageFromGroupConversation {
+	request {
+	ip/path/removeMessage/id
+	<info>
+		<gId> 12 </gId>
+		<messageId></messageId>
+		<mode> 0 | 1 </mode>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1  </status>
+	</result>
+	}
 }
