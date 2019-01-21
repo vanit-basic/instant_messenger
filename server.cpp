@@ -17,7 +17,9 @@ int server (int client_socket)
 		/* First, read the length of the text message from the socket. If
 		   read returns zero, the client closed the connection. */
 		if (read (client_socket, &length, sizeof (length)) == 0)
+		{
 			return 0;
+		}
 		/* Allocate a buffer to hold the text.*/
 		text = (char*) malloc (length);
 		// Read the text itself, and print it.
@@ -26,10 +28,14 @@ int server (int client_socket)
 		//if(!text=="")
 		printf ("%s\n", text);
 		/* Free the buffer. */
-		free (text);
+
 		/* If the client sent the message "quit," we're all done.*/
-		if (!strcmp (text, "quit"))
+		if (!strcmp(text, "quit"))
+		{
+			free (text);
 			return 1;
+		}
+		free (text);
 	}
 }
 int main ()

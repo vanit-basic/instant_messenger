@@ -20,7 +20,7 @@ int main (/*int argc, char* const argv[]*/)
 	const char* p = "/home/narek/Documents/Tnayin/instant_messenger/socket";
 	const char* const socket_name = p;
 	std::string  m="";
-	while (! (m == "close"))
+	while (! (m == "quit"))
 	{
 		std::cout<<"Mutqagreq uxarkvox informacian\n";
 		std::cin>>m;
@@ -38,6 +38,7 @@ int main (/*int argc, char* const argv[]*/)
 		write_text (socket_fd, message);
 		close (socket_fd);
 	}
+	//remove("/home/narek/Documents/Tnayin/instant_messenger/socket");
 	return 0;
 
 }
