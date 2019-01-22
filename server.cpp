@@ -9,33 +9,42 @@
 /* Read text from the socket and print it out. Continue until the
    socket closes. Return nonzero if the client sent a "quit"
    message, zero otherwise. */
+void write_text (int socket_fd)
+{
+	std::cout<<"Write skizb\n";
+	const char* text = "Staca";
+        // Write the number of bytes in the string, including NUL-termination.
+        int length = strlen (text) + 1;
+        write (socket_fd, &length, sizeof (length));
+        // Write the string.
+        write (socket_fd, text, length);
+	std::cout<<"Write verj\n";
+}
+
 int server (int client_socket)
 {
 	while (1) {
+	std::cout<<"WHILE skizb\n";
 		int length;
 		char* text;
-		/* First, read the length of the text message from the socket. If
-		   read returns zero, the client closed the connection. */
+		
 		if (read (client_socket, &length, sizeof (length)) == 0)
 		{
 			return 0;
 		}
-		/* Allocate a buffer to hold the text.*/
 		text = (char*) malloc (length);
-		// Read the text itself, and print it.
 
 		read (client_socket, text, length);
-		//if(!text=="")
 		printf ("%s\n", text);
-		/* Free the buffer. */
+		write_text(client_socket);
 
-		/* If the client sent the message "quit," we're all done.*/
 		if (!strcmp(text, "quit"))
 		{
 			free (text);
 			return 1;
 		}
 		free (text);
+	std::cout<<"WHILE verj\n";
 	}
 }
 int main ()
@@ -70,6 +79,8 @@ int main ()
 		// Handle the connection.
 
 		client_sent_quit_message = server (client_socket_fd);
+		std::cout<<"1\n";
+		std::cout<<"2\n";
 		// Close our end of the connection.
 
 		close (client_socket_fd);
