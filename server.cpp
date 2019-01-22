@@ -6,16 +6,11 @@
 #include <unistd.h>
 #include <iostream>
 
-/* Read text from the socket and print it out. Continue until the
-   socket closes. Return nonzero if the client sent a "quit"
-   message, zero otherwise. */
 void write_text (int socket_fd)
 {
 	const char* text = "Staca";
-        // Write the number of bytes in the string, including NUL-termination.
         int length = strlen (text) + 1;
         write (socket_fd, &length, sizeof (length));
-        // Write the string.
         write (socket_fd, text, length);
 }
 

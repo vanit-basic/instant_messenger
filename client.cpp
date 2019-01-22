@@ -5,14 +5,11 @@
 #include <unistd.h>
 #include <iostream>
 #include <string>
-// Write TEXT to the socket given by file descriptor SOCKET_FD.
 
 void write_text (int socket_fd, const char* text)
 {
-	// Write the number of bytes in the string, including NUL-termination. 
 	int length = strlen (text) + 1;
 	write (socket_fd, &length, sizeof (length));
-	// Write the string.
 	write (socket_fd, text, length);
 }
 int server (int client_socket)
