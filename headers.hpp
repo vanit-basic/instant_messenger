@@ -1,5 +1,14 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+#include <string>
+#include <iostream>
+/*
 enum RequestType {
-	RequestTypeINVALID = -1;
+	RequestTypeINVALID = -1,
 	RequestTypePOST,
 	RequestTypeGET,
 	RequestTypePUT,
@@ -7,7 +16,7 @@ enum RequestType {
 	RequestTypeOPTIONS
 };
 
-/*<request>
+<request>
 <action>updateUser</action>
 <body>body</body>
 </request>
@@ -55,27 +64,30 @@ class Maker {
 		~Maker();
 } */
 
-class Service {
-	public:
-		connection DBconnection;	
-		virtual void send(std::string) = 0;
-		virtual std::string recive() = 0;
-		virtual std::string getAction(std::string) = 0;
-		Service();
-		~Service();	
-}
 
 class Connection {
 	private:
 		std::string ip;
 		std::string port;
-		int fd;
+		int socket_server_fd;
+		int socket_client_fd;
 	public:
 		std::string getIp();
 		std::string getPort();
-		void send(const std::string&);
-		const std::string& recive();
+		bool Send(const std::string&);
+		std::string Recive();
 		Connection(const std::string path,int quantity);//LocalServer,if(quantity == 0) => client,esle => server
-		Conneciton(const std::string&, const std::string&, int quantity);//InetServer,if(quantity == 0) => client,esle => server
-		~Connection();
-}
+		Connection(const std::string& ip, int port, int quantity); //InetServer,if(quantity == 0) => client,esle => server
+		Connection(){}
+		~Connection(){}
+};
+
+class Service {
+	public:
+		Connection DBconnection;	
+		virtual void send(std::string) = 0;
+		virtual std::string recive() = 0;
+		virtual std::string getAction(std::string) = 0;
+		Service();
+		~Service();	
+};
