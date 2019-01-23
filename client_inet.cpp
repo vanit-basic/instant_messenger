@@ -1,86 +1,104 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/socket.h>
-#include <sys/un.h>
-#include <unistd.h>
+#include <stdlib.h>
+#include <netinet/in.h>
+#include <string.h>
 #include <iostream>
 
-int send_all(int socket_fd, const char* msg)
-{
-        int length = strlen(msg);
+int sendAll (in& sock, char* &msg) {
+	int length = strlen(msg);
         int total = 0;
-        int n = 0;
-        std::cout<<"send length\n";
-        send (socket_fd, &length, sizeof(length), 0);
+        int num = 0;
+        std::cout << "send length" << std::endl;
+	num = send(sock, &msg, sizeof(length), 0);
 
-        while(total < length)
-        {
-                std::cout<<"send message\n";
-                n = send(socket_fd, msg + total, (strlen(msg) - total), 0);
-		std::cout<< "n = "<<n<<std::endl;
-		if (n == -1)
-                {
+        while(total < length) {
+                std::cout << "sending message:" << std::endl;
+		num = send(sock, msg + total, strlen(msg) - total, 0);
+                std::cout << "number of sending symbols: " << num << std::endl;
+                if (num == -1){
                         break;
                 }
-                total = total + n;
-		std::cout<< "n = "<<n<<std::endl;
-		std::cout<< "total = "<< total <<std::endl;
+
+                total = total + num;
+                std::cout<< "number of sending symbols: " << num << std::endl;
+                std::cout<< "total: "<< total << std::endl;
         }
-        return (n==-1 ? -1 : total);
+
+        return ((n == -1)? -1: total);
 }
 
-int recv_all(int socket_fd)
-{
+int recvAll(int sock, char* buffer) {
         int length = 0;
-        char buf[256];
+        char buf[1024];
         char* message;
-        int m = 0;
-        m = recv(socket_fd, &length, sizeof(length), 0);
-        std::cout<<"m =  "<<m<<std::endl;
-        std::cout<<"length =  "<<length<<std::endl;
-        message = (char*)malloc(length);
-        m = 0;
-        while (m < length)
-        {
-                m = recv(socket_fd, buf, sizeof(buf), 0);
-                strcpy(message, buf);
-                std::cout<<"result   "<<message<<std::endl;
-                memset(buf, 0 , 256);
+        int num = 0;
+
+        num = read(sock, buffer, 1024);
+        std::cout << "number of symbols: " << num << std::endl;
+        std::cout << "length:  " << length << std::endl;
+        message = (char*) malloc(length);
+        num = 0;
+
+        while (num < length) {
+        	num = read(sock, buffer, 1024);
+                strcpy(message, buffer);
+                std::cout << "result: " << message << std::endl;
+                memset(buffer, 0 , 1024);
         }
-        std::cout<<"Whileic heto result = "<<message<<std::endl;
-        //send_all(socket_fd, "Staca");
-        if (!strcmp(message, "quit"))
-        {
+
+        std::cout << "Finaly results: " << message << std::endl;
+        if (!strcmp(message, "quit")) {
                 return 1;
-        }
-        else
-        {
-                return 0;
+        } else {
+		return 0;
         }
 }
 
-int main() {
-	const char* path = "/home/narek/socket";
-	const char* const socket_name = path;
-	std::string msg = "";
-	while (!(msg == "quit")) {
-		std::cout << "Enter the message:" << std::endl;
-		std::getline(std::cin, msg);
-		const char* message = msg.c_str();
-		int socket_fd = 0;
-		struct sockaddr_un name;
-		socket_fd = socket(PF_LOCAL, SOCK_STREAM, 0);
-		name.sun_family = AF_LOCAL;
-		strcpy(name.sun_path, socket_name);
-		connect(socket_fd, (struct sockaddr*)& name, SUN_LEN(&name));
-		std::cout << "send all)" << std::endl;
-		std::cout << send_all(socket_fd, message) << std::endl;
-		recv_all(socket_fd);
-		//close(socket_fd);
+int main(int argc, char const *argv[]) {
+	struct sockaddr_in address;
+       	int valread = 0;
+	struct sockaddr_in serv_addr;
+
+	char buffer[1024] = {0};
+	int port = 8080;
+	std::cout << "Enter port number:" << std::endl;
+	std::cin >> port;
+	int sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock < 0) {
+		std::cout << "Socket creation error!" << std::endl;
+		return -1;
 	}
 
-	return 0;
+	memset(&serv_addr, '0', sizeof(serv_addr));
 
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_port = htons(port);
 
+	// Convert IPv4 and IPv6 addresses from text to binary form
+	if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
+		std::cout << "Invalid address or Address not supported!!!";
+		return -1;
+	}
+
+	if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+		std::cout << "Connection Failed!!!" << std::endl;
+		return -1;
+	}
+
+	char msg = "";
+	while (!(msg == "quit")) {
+		std::cout << "Enter message!" << std::endl;
+		std::getline(std::cin, msg);
+		char* message = msg.c_str();
+		while (sendAll(sock, msg) == -1) {
+			std::cout << "Sending..." << std::endl;
+		}
+		std::cout << "Your message sent!!!" << std::endl;
+		
+		if ((valread = rcvAll(sock, buffer) == 0) {
+			std::cout << "Buffer: " << buffer << std::endl;
+			return 0;
+		}
+	}
 }
