@@ -69,11 +69,13 @@ class Connection {
 	private:
 		std::string ip;
 		std::string port;
+		int fd;
 	public:
 		std::string getIp();
 		std::string getPort();
 		void send(const std::string&);
 		const std::string& recive();
-		Connection(const std::string&, const std::string&); //(ip, port)
+		Connection(const std::string path,int quantity);//LocalServer,if(quantity == 0) => client,esle => server
+		Conneciton(const std::string&, const std::string&, int quantity);//InetServer,if(quantity == 0) => client,esle => server
 		~Connection();
 }
