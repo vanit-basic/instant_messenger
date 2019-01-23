@@ -16,9 +16,8 @@ bool Connection::Send(const std::string& message) {
 	int length = strlen( msg);
         int total = 0;
         int n = 0;
-	std::cout<<this->socket_client_fd<<"socket\n";
+	std::cout<<this->socket_client_fd<<" : socket client fd send \n";
 	std::cout<<send (this->socket_client_fd, &length, sizeof(length), 0)<<"\n";
-	std::cout<<"1\n";
         while(total < length)
         {
                 n = send(this->socket_client_fd, msg + total, (strlen(msg) - total), 0);
@@ -28,7 +27,6 @@ bool Connection::Send(const std::string& message) {
                 }
                 total = total + n;
         }
-	std::cout<<"2\n";
         return (n==-1 ? false : true);
 }
 
@@ -65,8 +63,8 @@ Connection::Connection( const std::string path, int n) //(path, listen quantity)
 	//Local Client
 	if (n == 0)
 	{
-		std::cout<<connect(socket_fd, (struct sockaddr*)& name, SUN_LEN(&name))<<"\n";
-		//this->socket_client_fd = socket_fd;
+		std::cout<<"conection :"<<connect(socket_fd, (struct sockaddr*)& name, SUN_LEN(&name))<<"\n";
+		this->socket_client_fd = socket_fd;
 	}
 	//Local Server
 	else
@@ -77,9 +75,9 @@ Connection::Connection( const std::string path, int n) //(path, listen quantity)
 		socklen_t client_name_len;
 		int client_socket_fd;
 		client_socket_fd = accept(socket_fd, (struct sockaddr*) &client_name, &client_name_len);
-		std::cout<<client_socket_fd<<"\n";
+		std::cout<<"func client_socket_fd :"<<client_socket_fd<<"\n";
 		this->socket_client_fd = client_socket_fd;
-		std::cout<<this->socket_client_fd<<"\n";
-		this->socket_server_fd = socket_fd;
+		std::cout<<"Socket_client_fd constructor : "<<this->socket_client_fd<<"\n";
+		//this->socket_server_fd = socket_fd;
 	}
 } 
