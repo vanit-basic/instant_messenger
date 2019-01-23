@@ -2,7 +2,7 @@
 
 int main()
 {
-	Connection serv_obj("/home/user/socket", 4);
+	Connection serv_obj("/home/narek/socket", 4);
 	//Connection client_obj("/home/narek/socket", 0);
 	//client_obj.Send("barev server");
 	//serv_obj.Send("asdasdasdas");
