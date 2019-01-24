@@ -4,11 +4,11 @@
 #include <string>
 
 std::string Connection::getIp() {
-	
+	return this->ip;
 }
 
 std::string Connection::getPort() {
-	
+	return this->port;
 }
 
 bool Connection::Send(const std::string& message) {
