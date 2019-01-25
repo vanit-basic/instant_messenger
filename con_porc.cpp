@@ -1,4 +1,4 @@
-#include "headers.hpp"
+#include "headers_porc.hpp"
 
 #include <iostream>
 #include <string>
@@ -10,7 +10,7 @@ std::string Connection::getIp() {
 std::string Connection::getPort() {
         return this->port;
 }
-
+/*
 bool Connection::Send(const std::string& message, int socket_client_fd) {
 
         const char* msg = message.c_str();
@@ -31,28 +31,90 @@ bool Connection::Send(const std::string& message, int socket_client_fd) {
         return (n==-1 ? false : true);
 }
 
+void handleResultForConnation(request, Connection c) {
+	
+}
+
+void run() {
+
+	while (true) {
+		std::string request = Recive(fd);
+		if(request != "") {i
+			handleResultForConnation(request, fd);
+			usleep(100);
+		}
+		
+	}
+}
+
 std::string Connection::Recive(int client_fd) {
 
         char* message;
-        int length = 0;
-        char buf[1024];
-        int m = 0, n = 0;
+	char buf[1024];
+	char buffer[1024];
         memset(buf, 0, 1024);
+        memset(buffer, 0, 1024);
+        int length = 0;
+       // char buf[1024];
+        int m = 0;
+	int n = -123;
         //n = recv(client_fd, &length, sizeof(length), 0);
         message = (char*)malloc(2048 );
         //n=1;
-        while (1)
-        {
-                n = recv(client_fd, buf, 1024, 0);
-                //std::cout<<"n =  "<<n<<"\n";
-                if (n==0)
-                        break;
-                strcpy(message, buf);
-                std::cout<<"message =  "<<message<<"\n";
+	 do {
+		//std::cout<<"recv():    "<< recv(client_fd, buf, 1024, 0)<<std::endl;
                 memset(buf, 0, 1024);
+        	n = recv(client_fd, buf, 1024, MSG_DONTWAIT);
+		std::cout<<"n  "<<n<<"\n";
+		strcpy(message, buf);
+                std::cout << "message in while: " << message << std::endl;
                 //m += n;
-        }
+        } while (n > 0);
+        
+	std::cout<<"message after while: "<<message<<"\n";
         return message;
+}
+*/
+bool Connection::Send(const std::string& message, int client_fd) {
+	std::cout<<"send\n";
+	const char* msg = message.c_str();
+        int length = strlen( msg);
+        int total = 0;
+        int n = 0;
+	std::cout<<send (client_fd, &length, sizeof(length), 0)<<"/n";
+        while(total < length)
+        {
+                n = send(client_fd, msg + total, (strlen(msg) - total), 0);
+                if (n == -1)
+                {
+                        break;
+                }
+                total = total + n;
+        }
+        return (n==-1 ? false : true);
+}
+
+std::string Connection::Recive(int client_fd) {
+	std::cout<<"Recive\n";
+        int length = 0;
+        char buf[1024];
+        memset(buf, 0, 1024);
+        char* message;
+        int m = 0, n = 0;
+        n = recv(client_fd, &length, sizeof(length), 0);
+        message = (char*)malloc(length + 1);
+	std::cout<<"length:  "<<length<<"\n";
+        while (m!=length)
+        {
+                n = recv(client_fd, message + m, length - m, 0);
+                m+=n;
+		std::cout<<"m:  "<<m<<"\n";
+		std::cout<<"message:  "<<message<<"\n";
+        }
+        message[length] = '\0';
+        std::string result = std::string(message);
+        free(message);
+        return result;
 }
 
 Connection::Connection(const std::string& ip, int port, int n) {
@@ -98,7 +160,7 @@ Connection::Connection( const std::string path, int n) //(path, listen quantity)
                 {
                         client_socket_fd = accept(socket_fd, (struct sockaddr*) &client_name, &client_name_len);
                         this->socket_client_fd.push_back(client_socket_fd);
-                        quantity++;
+                        ++quantity;
                 }
         }
 }

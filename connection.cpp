@@ -38,14 +38,15 @@ std::string Connection::Recive() {
 	int m = 0, n = 0;
 	n = recv(this->socket_client_fd, &length, sizeof(length), 0);
 	message = (char*)malloc(length + 1);
-	while (m < length)
+	while (m!=lenght)
 	{
-		m = recv(this->socket_client_fd, buf, 1024, 0);
-		strcpy(message, buf);
-		memset(buf, 0, 1024);
-		m = m + n;
+		n = recv(this->socket_client_fd, message + m, length - m, 0);
+		m+=n;
 	}
-	return message;
+	message[length] = '\0';
+	std::string result = std::string(message);
+	free(message);
+	return result;
 }
 
 Connection::Connection(const std::string& ip, int port, int n) {
