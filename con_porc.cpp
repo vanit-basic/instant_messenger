@@ -76,12 +76,11 @@ std::string Connection::Recive(int client_fd) {
 }
 */
 bool Connection::Send(const std::string& message, int client_fd) {
-	std::cout<<"send\n";
 	const char* msg = message.c_str();
         int length = strlen( msg);
         int total = 0;
         int n = 0;
-	std::cout<<send (client_fd, &length, sizeof(length), 0)<<"/n";
+	send (client_fd, &length, sizeof(length), 0);
         while(total < length)
         {
                 n = send(client_fd, msg + total, (strlen(msg) - total), 0);
@@ -94,27 +93,30 @@ bool Connection::Send(const std::string& message, int client_fd) {
         return (n==-1 ? false : true);
 }
 
-std::string Connection::Recive(int client_fd) {
-	std::cout<<"Recive\n";
-        int length = 0;
-        char buf[1024];
-        memset(buf, 0, 1024);
-        char* message;
-        int m = 0, n = 0;
-        n = recv(client_fd, &length, sizeof(length), 0);
-        message = (char*)malloc(length + 1);
-	std::cout<<"length:  "<<length<<"\n";
-        while (m!=length)
-        {
-                n = recv(client_fd, message + m, length - m, 0);
-                m+=n;
-		std::cout<<"m:  "<<m<<"\n";
-		std::cout<<"message:  "<<message<<"\n";
-        }
-        message[length] = '\0';
-        std::string result = std::string(message);
-        free(message);
-        return result;
+std::string Connection::Recive(int client_fd) 
+{
+	int length = 0;
+	char* message;
+	int m = 0, n = 0;
+	bool status = false;
+	std::string result = "";
+	n = recv(client_fd, &length, sizeof(length), MSG_DONTWAIT);
+	message = (char*)malloc(length + 1);
+	while (m!=length)
+	{
+		n = recv(client_fd, message + m, length - m, MSG_DONTWAIT);
+		m+=n;
+		status = true;
+		//std::cout<<"m:  "<<m<<"\n";
+		//std::cout<<"message:  "<<message<<"\n";
+	}
+	if (status == true)
+	{
+		message[length] = '\0';
+		result = std::string(message);
+	}
+	free(message);
+	return result;
 }
 
 Connection::Connection(const std::string& ip, int port, int n) {
