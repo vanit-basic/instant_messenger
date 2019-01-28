@@ -3,6 +3,7 @@
 int main()
 {
 	Connection serv_obj("/home/narek/socket", 2);
+	serv_obj.threadJoin();
 	std::string x;
 	std::list<int> sockets = serv_obj.getSocketClientFd();
 	std::list<int>::iterator it;

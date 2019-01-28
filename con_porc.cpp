@@ -133,6 +133,21 @@ int Connection::getClientFd()
         return this->client_fd;
 }
 
+ void Connection::Accept(int socket_fd, struct sockaddr* x, socklen_t client_name_len, int n)
+{
+	int quantity = 0;
+	int client_socket_fd;
+	while (quantity<n)
+	{
+		client_socket_fd = accept(socket_fd, x, &client_name_len);
+		this->socket_client_fd.push_back(client_socket_fd);
+		++quantity;
+	}
+}
+void Connection::threadJoin()
+{
+	  accp.join();
+}
 Connection::Connection( const std::string path, int n) //(path, listen quantity)
 {
         int quantity = 0;
@@ -157,13 +172,7 @@ Connection::Connection( const std::string path, int n) //(path, listen quantity)
                 listen(socket_fd, n);
                 struct sockaddr_un client_name;
                 socklen_t client_name_len;
-                int client_socket_fd;
-                while (quantity<n)
-                {
-                        client_socket_fd = accept(socket_fd, (struct sockaddr*) &client_name, &client_name_len);
-                        this->socket_client_fd.push_back(client_socket_fd);
-                        ++quantity;
-                }
+		accp = std::thread(&Connection::Accept, this, socket_fd, (struct sockaddr*) &client_name, client_name_len, n);
         }
 }
 

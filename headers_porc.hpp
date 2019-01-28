@@ -10,6 +10,7 @@
 #include <string>
 #include <iostream>
 #include <list>
+#include <thread>
 
 class Connection {
         private:
@@ -18,7 +19,10 @@ class Connection {
                 int socket_server_fd;
                 int client_fd;
 		std::list<int> socket_client_fd;
+		std::thread accp;
         public:
+		void Accept(int socket_fd, struct sockaddr* x, socklen_t client_name_len, int n);
+		void threadJoin();
                 std::string getIp();
                 std::string getPort();
 		int getClientFd();
