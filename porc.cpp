@@ -1,16 +1,27 @@
-#include "headers.hpp"
+#include "headers_porc.hpp"
 
 int main()
 {
-	Connection serv_obj("/home/narek/socket", 4);
-	//Connection client_obj("/home/narek/socket", 0);
-	//client_obj.Send("barev server");
-	//serv_obj.Send("asdasdasdas");
+	Connection serv_obj("/home/narek/socket", 2);
+	serv_obj.threadJoin();
 	std::string x;
-	while(x=="")
+	std::list<int> sockets = serv_obj.getSocketClientFd();
+	std::list<int>::iterator it;
+
+	while(1)
 	{
-	x=serv_obj.Recive();
+		for(it = sockets.begin(); it!=sockets.end(); ++it)
+		{
+			x = serv_obj.Recive(*it);
+
+			if (!(x==""))
+			{
+				std::cout<<x<<"\n";
+				serv_obj.Send("Staca", *it);
+				
+			}
+
+		}
 	}
-	std::cout<<x<<"\n";
 	return 0;
 }
