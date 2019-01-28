@@ -23,11 +23,10 @@ int send_all(int new_socket, char* msg) {
                 total += num;
 	}
 
-        return ((n == -1)? -1: total);
+        return ((num == -1)? -1: total);
 }
 
-int recv_all(int new_socket, int buffer) {
-	read(new_socket, buffer, 1024);
+int recv_all(int new_socket, char* buffer) {
         int length;
         char buf[1024];
         char* message;
@@ -67,10 +66,11 @@ int main(int argc, char const *argv[]) {
 	int opt = 1;
 	int addrlen = sizeof(address);
 	char buffer[1024] = {0};
-	char* msg = "";
+	std::string message = "";
 	std::cout << "Enter message: " << std::endl;
-	std::getline(std::cin, msg);
+	std::getline(std::cin, message);
 
+	char* msg = (char*)message.c_str();
 	int n = 0;
 	std::cout << "Enter number of clients: " << std::endl;
 	std::cin >> n;
@@ -108,11 +108,14 @@ int main(int argc, char const *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	int sending = 0;
-	valread = recv_all(new_socket, buffer);
-	std::cout << "Buffer: " << buffer << std::endl;
-	sending = send_all(new_socket, msg);
-	std::cout << "Your message sent!" << std::endl;
+	do {
+		int sending = 0;
+		valread = recv_all(new_socket, buffer);
+		std::cout << "Buffer: " << buffer << std::endl;
+		sending = send_all(new_socket, msg);
+		std::cout << "Your message sent!" << std::endl;
+        } while (true);
+
 	return 0;
 }
 

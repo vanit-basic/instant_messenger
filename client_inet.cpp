@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
 #include <iostream>
 
-int sendAll (in& sock, char* &msg) {
+int sendAll (int& sock, char* &msg) {
 	int length = strlen(msg);
         int total = 0;
         int num = 0;
@@ -25,7 +27,7 @@ int sendAll (in& sock, char* &msg) {
                 std::cout<< "total: "<< total << std::endl;
         }
 
-        return ((n == -1)? -1: total);
+        return ((num == -1)? -1: total);
 }
 
 int recvAll(int sock, char* buffer) {
@@ -86,17 +88,19 @@ int main(int argc, char const *argv[]) {
 		return -1;
 	}
 
-	char msg = "";
-	while (!(msg == "quit")) {
+	std::string msg = "";
+	std::string quit = "quit";
+	while (!(strcmp(msg.c_str(), quit.c_str()) == 0)) {
 		std::cout << "Enter message!" << std::endl;
 		std::getline(std::cin, msg);
-		char* message = msg.c_str();
-		while (sendAll(sock, msg) == -1) {
+		char* message = (char*)msg.c_str();
+		while (sendAll(sock, message) == -1) {
 			std::cout << "Sending..." << std::endl;
 		}
 		std::cout << "Your message sent!!!" << std::endl;
 		
-		if ((valread = rcvAll(sock, buffer) == 0) {
+		valread = recvAll(sock, buffer);
+		if (valread == 0) {
 			std::cout << "Buffer: " << buffer << std::endl;
 			return 0;
 		}
