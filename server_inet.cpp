@@ -32,14 +32,14 @@ int recv_all(int new_socket, char* buffer) {
         char* message;
         int num = 0;
 
-	num = read(new_socket, &length, sizeof(length));
+        num = recv(new_socket, &length, sizeof(length),0);
         std::cout << "Number of symbols: " << num << std::endl;
         std::cout << "length: " << length << std::endl;
         message = (char*) malloc(length);
         num = 0;
 
         while (num < length) {
-                num = read(new_socket, buffer, sizeof(buffer));
+                num = recv(new_socket, buffer, sizeof(buffer),0);
                 strcpy(message, buffer);
                 std::cout << "Results: " << message << std::endl;
                 memset(buffer, 0 , 1024);
@@ -53,10 +53,10 @@ int recv_all(int new_socket, char* buffer) {
         }
 }
 
-int main(int argc, char const *argv[]) {
-	int port = 8080;
-	std::cout << "Enter port: ";
-	std::cin >> port;
+int main() {
+	int port = 8078;
+	//std::cout << "Enter port: ";
+	//std::cin >> port;
 
 	int server_fd = 0;
        	int new_socket = 0;
@@ -66,14 +66,14 @@ int main(int argc, char const *argv[]) {
 	int opt = 1;
 	int addrlen = sizeof(address);
 	char buffer[1024] = {0};
-	std::string message = "";
-	std::cout << "Enter message: " << std::endl;
-	std::getline(std::cin, message);
+	std::string message = "Barev serveric ";
+	//std::cout << "Enter message: " << std::endl;
+	//std::getline(std::cin, message);
 
 	char* msg = (char*)message.c_str();
 	int n = 0;
-	std::cout << "Enter number of clients: " << std::endl;
-	std::cin >> n;
+	//std::cout << "Enter number of clients: " << std::endl;
+	//std::cin >> n;
 
 	// Creating socket file descriptor 
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -97,7 +97,7 @@ int main(int argc, char const *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	if (listen(server_fd, n) < 0) { 
+	if (listen(server_fd, 5) < 0) { 
 		perror("listen"); 
 		exit(EXIT_FAILURE); 
 	}
@@ -107,13 +107,16 @@ int main(int argc, char const *argv[]) {
 		perror("accept");
 		exit(EXIT_FAILURE);
 	}
-
+	std::cout<<"Hasa 1 "<<std::endl;
 	do {
+	std::cout<<"Hasa 2 "<<std::endl;
 		int sending = 0;
 		valread = recv_all(new_socket, buffer);
+	std::cout<<"Hasa 3 "<<std::endl;
 		std::cout << "Buffer: " << buffer << std::endl;
 		sending = send_all(new_socket, msg);
 		std::cout << "Your message sent!" << std::endl;
+	std::cout<<"Hasa 4 "<<std::endl;
         } while (true);
 
 	return 0;

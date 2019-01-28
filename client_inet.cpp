@@ -11,11 +11,10 @@ int sendAll (int& sock, char* &msg) {
 	int length = strlen(msg);
         int total = 0;
         int num = 0;
-        std::cout << "send length" << std::endl;
 	num = send(sock, &msg, sizeof(length), 0);
+        std::cout << "send length"<<num<< std::endl;
 
         while(total < length) {
-                std::cout << "sending message:" << std::endl;
 		num = send(sock, msg + total, strlen(msg) - total, 0);
                 std::cout << "number of sending symbols: " << num << std::endl;
                 if (num == -1){
@@ -64,8 +63,8 @@ int main(int argc, char const *argv[]) {
 
 	char buffer[1024] = {0};
 	int port = 8080;
-	std::cout << "Enter port number:" << std::endl;
-	std::cin >> port;
+//	std::cout << "Enter port number:" << std::endl;
+//	std::cin >> port;
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock < 0) {
 		std::cout << "Socket creation error!" << std::endl;
