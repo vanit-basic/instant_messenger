@@ -15,7 +15,11 @@ void Account::handleGet(http_request message) {
         std::cout<< message.to_string()<<std::endl;
         auto path = requestPath(message);
         if (!path.empty()) {
-                if (path[0] == "service" && path[1] == "test1") {
+	/*	if (path[1] == "getUserInfo"){
+			
+		}
+                
+		if (path[0] == "service" && path[1] == "test1") {
                         auto response = json::value::object();
                         response["version"] = json::value::string("0.1.1");
                         response["status"] = json::value::string("ready!");
@@ -30,7 +34,7 @@ void Account::handleGet(http_request message) {
                                 response["status"] = json::value::string("verjacreci");
                                 message.reply(status_codes::OK, response);
                         }
-                }
+                }*/
         }
         else{
                 message.reply(status_codes::NotFound);
@@ -105,22 +109,22 @@ void Account::handlePost(http_request message) {
 											{
 											if(signinStatus_json["status"] == "wrong")
 											{
-												int attempt = std::stoi(signinStatus_json["attempt"].as_string());
-												if((this->max_attempt) > attempt)
-												{
-													if(((this->max_attempt) - attempt) ==1)
-													{
-													message.reply(status_codes::OK, json::value::string("Attention!!! You have one attempt left!!!"));
-													}
-													else
-													{
-													message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
-													}
-												}
-												else
-												{
-													message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
-												}
+											int attempt = std::stoi(signinStatus_json["attempt"].as_string());
+											if((this->max_attempt) > attempt)
+											{
+											if(((this->max_attempt) - attempt) ==1)
+											{
+											message.reply(status_codes::OK, json::value::string("Attention!!! You have one attempt left!!!"));
+											}
+											else
+											{
+											message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
+											}
+											}
+											else
+											{
+												message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
+											}
 											}
 											else
 											{
@@ -148,7 +152,15 @@ void Account::handlePost(http_request message) {
 					}
 					else
 					{
-						if(){}
+						else if (path_first_request[1] == "deleteAccount")
+						{
+							json::value deleteAccountInfo;
+							uri_builder deleteAccount_path(U("/deleteAccount/"));
+							deleteAccountInfo["id"] = request.at("id");
+							DataBaseClient.request(method::POST,  deleteAccount_path.to_string(), deleteAccountInfo).
+								then([message](http_response)
+								    );
+						}
 						else{}
 					}
 				}
