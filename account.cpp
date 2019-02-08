@@ -15,7 +15,11 @@ void Account::handleGet(http_request message) {
         std::cout<< message.to_string()<<std::endl;
         auto path = requestPath(message);
         if (!path.empty()) {
-                if (path[0] == "service" && path[1] == "test1") {
+	/*	if (path[1] == "getUserInfo"){
+			
+		}
+                
+		if (path[0] == "service" && path[1] == "test1") {
                         auto response = json::value::object();
                         response["version"] = json::value::string("0.1.1");
                         response["status"] = json::value::string("ready!");
@@ -30,7 +34,7 @@ void Account::handleGet(http_request message) {
                                 response["status"] = json::value::string("verjacreci");
                                 message.reply(status_codes::OK, response);
                         }
-                }
+                }*/
         }
         else{
                 message.reply(status_codes::NotFound);
@@ -42,17 +46,17 @@ void Account::handlePost(http_request message) {
 	auto path_first_request = requestPath(message);
 	message.extract_json().
 		then([message](json::value request) 
-		{
+				{
 				if (path_first_request[1] == "registration") 
 				{
-				std::string mail = request.at("email").as_string();
-				std::string login = request.at("login").as_string();
-				std::string ml = "/get/email/" + mail,"/login/" + login + "/"; 
-				uri_builder get_mail_login(U(ml));
-				DataBaseClient.request(methods::GET, get_mail_login.to_string()).
-
-				then([message, request](http_response mail_login)
-					{
+					std::string mail = request.at("email").as_string();
+					std::string login = request.at("login").as_string();
+					std::string ml = "/get/email/" + mail,"/login/" + login + "/"; 
+					uri_builder get_mail_login(U(ml));
+					DataBaseClient.request(methods::GET, get_mail_login.to_string()).
+	
+					then([message, request](http_response mail_login)
+						{
 						auto path = requestPath(mail_login);
 						if(!(path[2] ==  request.at("email").as_string() && path[4] == request.at("login").as_string()))
 						{
@@ -63,37 +67,46 @@ void Account::handlePost(http_request message) {
 								{
 								message.reply(status_codes::OK, registration_response);
 								}
-						}
-						else
-						{
-							json::value error;
-							if(path[2] ==  request.at("email").as_string())
-							{
+								}
+								else
+								{
+								json::value error;
+								if(path[2] ==  request.at("email").as_string())
+								{
 								error["email"] = json::value::string(U("Invalid"));
-							}
-							if(path[4] ==  request.at("login").as_string())
-							{
+								}
+								if(path[4] ==  request.at("login").as_string())
+								{
 								error["login"] = json::value::string(U("Invalid"));
-							}
-							message.reply(status_codes::OK, error);
+								}
+								message.reply(status_codes::OK, error);
 								});
-					});
+						});
 				}
-				else
+				else if(path_first_request[1] == "signin")
 				{
-					if(path_first_request[1] == "signin")
-					{
-						json::value signinInfo;
-						uri_builder signin_path(U("/signin/"));
-						singinInfo["login"] = request.at("login");
-						singinInfo["password"] = request.at("password");
-						DataBaseClient.request(method::POST,  signin_path.to_string(), signinInfo).
-							then([message](http_response)
-								);
+					json::value signinInfo;
+					uri_builder signin_path(U("/signin/"));
+					singinInfo["login"] = request.at("login");
+					singinInfo["password"] = request.at("password");
+					DataBaseClient.request(method::POST,  signin_path.to_string(), signinInfo).
+						then([message](http_response)
+						    );
 
-					}
 				}
-		});
+
+				else if (path_first_request[1] == "deleteAccount")
+				{
+					json::value deleteAccountInfo;
+					uri_builder deleteAccount_path(U("/deleteAccount/"));
+					deleteAccountInfo["id"] = request.at("id");
+					DataBaseClient.request(method::POST,  deleteAccount_path.to_string(), deleteAccountInfo).
+						then([message](http_response)
+						    );
+				}
+
+				
+				});
 }
 /*		
 			try {
