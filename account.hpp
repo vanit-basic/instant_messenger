@@ -23,6 +23,7 @@ class Account : public BasicController, Controller {
 	private:
 		const int max_attempt = 5;
 		http_client DatabaseClient;
+		http_client TokenDB;
 		void setToken();
 		void registration(http_request);
 		void signIn(http_request);
