@@ -42,8 +42,8 @@ void Account::handlePost(http_request message) {
 	auto path_first_request = requestPath(message);
 	message.extract_json().
 		then([message](json::value request) 
-		{
-				if (path_first_request[1] == "registration") 
+				{
+				if ( path_first_request[1] == "registration") 
 				{
 				std::string mail = request.at("email").as_string();
 				std::string login = request.at("login").as_string();
@@ -52,48 +52,107 @@ void Account::handlePost(http_request message) {
 				DataBaseClient.request(methods::GET, get_mail_login.to_string()).
 
 				then([message, request](http_response mail_login)
-					{
-						auto path = requestPath(mail_login);
-						if(!(path[2] ==  request.at("email").as_string() && path[4] == request.at("login").as_string()))
 						{
-						uri_builder registration_path(U("/registration/"));
-						DataBaseClient.request(method::POST,  registration_path.to_string(), request).
-
-						then([message](http_response registration_response)
+						//auto path = requestPath(mail_login);
+						mail_login.extract_json().
+						then([message, request](json::value mail_login_json)
 								{
-								message.reply(status_codes::OK, registration_response);
-								}
-						}
-						else
-						{
-							json::value error;
-							if(path[2] ==  request.at("email").as_string())
-							{
-								error["email"] = json::value::string(U("Invalid"));
-							}
-							if(path[4] ==  request.at("login").as_string())
-							{
-								error["login"] = json::value::string(U("Invalid"));
-							}
-							message.reply(status_codes::OK, error);
+								if(!(mail_login_json["email"] ==  request.at("email").as_string() && mail_login_json["login"] == request.at("login").as_string()))
+								{
+								uri_builder registration_path(U("/registration/"));
+								DataBaseClient.request(method::POST,  registration_path.to_string(), request).
+
+								then([message](http_response registration_response)
+										{
+										message.reply(status_codes::OK, registration_response);
+										}
+										}
+										else
+										{
+										json::value error;
+										if(mail_login_json["email"] ==  request.at("email").as_string())
+										{
+										error["email"] = json::value::string(U("Invalid"));
+										}
+										if(mail_login_json["login"] ==  request.at("login").as_string())
+										{
+										error["login"] = json::value::string(U("Invalid"));
+										}
+										message.reply(status_codes::OK, error);
+										});
 								});
-					});
+						});
 				}
 				else
 				{
-					if(path_first_request[1] == "signin")
+					if( path_first_request[1] == "signin")
 					{
 						json::value signinInfo;
 						uri_builder signin_path(U("/signin/"));
 						singinInfo["login"] = request.at("login");
 						singinInfo["password"] = request.at("password");
 						DataBaseClient.request(method::POST,  signin_path.to_string(), signinInfo).
-							then([message](http_response)
-								);
-
+							then([message](http_response signinStatus)
+									{
+									signinStatus.extract_json().
+									then([message, request](json::value signinStatus_json)
+											{
+											if (signinStatus_json["status"] == "notFound")
+											{
+											message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
+											}
+											else
+											{
+											if(signinStatus_json["status"] == "wrong")
+											{
+												int attempt = std::stoi(signinStatus_json["attempt"].as_string());
+												if((this->max_attempt) > attempt)
+												{
+													if(((this->max_attempt) - attempt) ==1)
+													{
+													message.reply(status_codes::OK, json::value::string("Attention!!! You have one attempt left!!!"));
+													}
+													else
+													{
+													message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
+													}
+												}
+												else
+												{
+													message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
+												}
+											}
+											else
+											{
+												if(signinStatus_json["status"] == "wrong")
+												{
+													std::string id = signinStatus_json["id"].as_string();
+													json::value userInfo = getUserInfo(id);	//petq e kanchenq getUserInfo() funkcian u user infon stanaluc heto  token generacnenq
+													std::string token = setToken();//funkcia vor@ petqe token generacni
+													uri_builder token_uri("/SetToken/");
+													json::value token_json;
+													token_json["token"] = json::value::string(token);
+													token_json["id"] = json::value::string(id);
+													TokenDB.request(methods::POST, token_uri.to_string(), token_json).
+														then([message, token_json, userInfo](http_response token_response)
+																{
+																userInfo["id"] = token_json["id"];
+																userInfo["token"] = token_json["token"];
+																message.reply(status_codes::OK, userInfo);
+																});
+												}
+											}
+											}
+											});
+									});
+					}
+					else
+					{
+						if(){}
+						else{}
 					}
 				}
-		});
+				});
 }
 /*		
 			try {
