@@ -12,35 +12,38 @@ void MicroserviceController::initRestOpHandlers() {
 }
 
 void Account::handleGet(http_request message) {
-        std::cout<< message.to_string()<<std::endl;
-        auto path = requestPath(message);
-        if (!path.empty()) {
-	/*	if (path[1] == "getUserInfo"){
-			
+	std::cout<< message.to_string()<<std::endl;
+	auto path = requestPath(message);
+	if (!path.empty()) {
+		if(path_first_request[1] == "UserInfo")
+		{
+			std::string userId = path[2].to_string();
+			uri_builder uInfo("/getUserInfo/" + userId + "/");
+			DataBaseClient.request(method::GET, uInfo.to_string()).
+				then([message](http_response userInfo)
+						{
+						message.reply(status_codes::OK, userInfo);
+						});
 		}
-                
-		if (path[0] == "service" && path[1] == "test1") {
-                        auto response = json::value::object();
-                        response["version"] = json::value::string("0.1.1");
-                        response["status"] = json::value::string("ready!");
-                        message.reply(status_codes::OK, response);
-                }
-
-                else {
-                        if(path[0] == "service" && path[1] == "test2")
-                        {
-                                auto response = json::value::object();
-                                response["patasxan"] = json::value::string("staca");
-                                response["status"] = json::value::string("verjacreci");
-                                message.reply(status_codes::OK, response);
-                        }
-                }*/
-        }
-        else{
-                message.reply(status_codes::NotFound);
-        }
+		else
+		{
+			if(path_first_request[1] == "UserShortInfo")
+			{
+				std::string userId = path[2].to_string();
+				uri_builder uInfo("/getUserShortInfo/" + userId + "/");
+				DataBaseClient.request(method::GET, uInfo.to_string()).
+					then([message](http_response userInfo)
+							{
+							message.reply(status_codes::OK, userInfo);
+							});
+			}
+		}
+	}
+	else
+	{
+		message.reply(status_codes::NotFound);
+	}
 }
-
 void Account::handlePost(http_request message) {
 	//    message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 	auto path_first_request = requestPath(message);
@@ -96,22 +99,22 @@ void Account::handlePost(http_request message) {
 						singinInfo["login"] = request.at("login");
 						singinInfo["password"] = request.at("password");
 						DataBaseClient.request(method::POST,  signin_path.to_string(), signinInfo).
-							then([message](http_response signinStatus)
+						then([message](http_response signinStatus)
+						{
+							signinStatus.extract_json().
+							then([message, request](json::value signinStatus_json)
+							{
+								if (signinStatus_json["status"] == "notFound")
+								{
+									message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
+								}
+								else
+								{
+									if(signinStatus_json["status"] == "wrong")
 									{
-									signinStatus.extract_json().
-									then([message, request](json::value signinStatus_json)
-											{
-											if (signinStatus_json["status"] == "notFound")
-											{
-											message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
-											}
-											else
-											{
-											if(signinStatus_json["status"] == "wrong")
-											{
-											int attempt = std::stoi(signinStatus_json["attempt"].as_string());
-											if((this->max_attempt) > attempt)
-											{
+										int attempt = std::stoi(signinStatus_json["attempt"].as_string());
+										if((this->max_attempt) > attempt)
+										{
 											if(((this->max_attempt) - attempt) ==1)
 											{
 											message.reply(status_codes::OK, json::value::string("Attention!!! You have one attempt left!!!"));
@@ -120,49 +123,64 @@ void Account::handlePost(http_request message) {
 											{
 											message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
 											}
-											}
-											else
+										}
+										else
+										{
+											message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
+										}
+									}
+									else
+									{
+										if(signinStatus_json["status"] == "wrong")
+										{
+											std::string id = signinStatus_json["id"].as_string();
+											json::value userInfo = getUserInfo(id);	//petq e kanchenq getUserInfo() funkcian u user infon stanaluc heto  token generacnenq
+											std::string token = setToken();//funkcia vor@ petqe token generacni
+											uri_builder token_uri("/SetToken/");
+											json::value token_json;
+											token_json["token"] = json::value::string(token);
+											token_json["id"] = json::value::string(id);
+											TokenDB.request(methods::POST, token_uri.to_string(), token_json).
+											then([message, token_json, userInfo](http_response token_response)
 											{
-												message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
-											}
-											}
-											else
-											{
-												if(signinStatus_json["status"] == "wrong")
-												{
-													std::string id = signinStatus_json["id"].as_string();
-													json::value userInfo = getUserInfo(id);	//petq e kanchenq getUserInfo() funkcian u user infon stanaluc heto  token generacnenq
-													std::string token = setToken();//funkcia vor@ petqe token generacni
-													uri_builder token_uri("/SetToken/");
-													json::value token_json;
-													token_json["token"] = json::value::string(token);
-													token_json["id"] = json::value::string(id);
-													TokenDB.request(methods::POST, token_uri.to_string(), token_json).
-														then([message, token_json, userInfo](http_response token_response)
-																{
-																userInfo["id"] = token_json["id"];
-																userInfo["token"] = token_json["token"];
-																message.reply(status_codes::OK, userInfo);
-																});
-												}
-											}
-											}
+												userInfo["id"] = token_json["id"];
+												userInfo["token"] = token_json["token"];
+												message.reply(status_codes::OK, userInfo);
 											});
-									});
-					}
-					else
-					{
-						else if (path_first_request[1] == "deleteAccount")
+										}
+									}
+								}
+							});
+						});
+						}
+						else
 						{
-							json::value deleteAccountInfo;
-							uri_builder deleteAccount_path(U("/deleteAccount/"));
-							deleteAccountInfo["id"] = request.at("id");
-							DataBaseClient.request(method::POST,  deleteAccount_path.to_string(), deleteAccountInfo).
+							if (path_first_request[1] == "deleteAccount")
+							{
+								json::value deleteAccountInfo;
+								uri_builder deleteAccount_path(U("/deleteAccount/"));
+								deleteAccountInfo["id"] = request.at("id");
+								DataBaseClient.request(method::POST,  deleteAccount_path.to_string(), deleteAccountInfo).
 								then([message](http_response)
 								    );
+							}
+							else
+							{
+								if(path_first_request[1] == "signout")
+								{
+									uri_builder deleteToken("/deleteToken/");
+									json::value userId
+									userId["id"] = request.at("id");
+									TokenDB.request(method::POST, deleteToken, userId);
+									message.reply(status_codes::OK, json::value::string("EXIT"));
+								}
+								else
+								{
+									if()
+									{}
+								}
+							}
 						}
-						else{}
-					}
 				}
 				});
 }
