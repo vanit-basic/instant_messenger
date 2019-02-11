@@ -10,6 +10,7 @@ void MicroserviceController::initRestOpHandlers() {
     _listener.support(methods::DEL, std::bind(&Account::handleDelete, this, std::placeholders::_1));
     _listener.support(methods::PATCH, std::bind(&Account::handlePatch, this, std::placeholders::_1));
 }
+
 std::string setToken(){
 	
 	srand(time(NULL));
@@ -115,7 +116,43 @@ void Account::handlePost(http_request message) {
 							signinStatus.extract_json().
 							then([message, request](json::value signinStatus_json)
 							{
-								if (signinStatus_json["status"] == "notFound")
+								
+								switch (signinStatus[ "status" ]) {
+									case "notFound" : 
+										message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
+										break;
+									case "wrong" : 
+										int attempt = std::stoi(signinStatus_json["attempt"].as_string());
+										switch (this->max_attemp - attemp) {
+											case 1:
+												message.reply(status_codes::OK, json::value::string("Attention!!! You have one attempt left!!!"));
+												break;
+											case 0:
+												message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
+												break;
+											default:
+												message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
+												break;
+										}
+									case "OK" :  
+											std::string id = signinStatus_json["id"].as_string();
+											json::value userInfo = getUserInfo(id);
+											std::string token = setToken();
+											uri_builder token_uri("/SetToken/");
+											json::value token_json;
+											token_json["token"] = json::value::string(token);
+											token_json["id"] = json::value::string(id);
+											TokenDB.request(methods::POST, token_uri.to_string(), token_json).
+											then([message, token_json, userInfo](http_response token_response)
+											{
+												userInfo["id"] = token_json["id"];
+												userInfo["token"] = token_json["token"];
+												message.reply(status_codes::OK, userInfo);
+											});
+											break;
+								}
+								
+								/*if (signinStatus_json["status"] == "notFound")
 								{
 									message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
 								}
@@ -142,7 +179,7 @@ void Account::handlePost(http_request message) {
 									}
 									else
 									{
-										if(signinStatus_json["status"] == "wrong")
+										if(signinStatus_json["status"] == "OK")
 										{
 											std::string id = signinStatus_json["id"].as_string();
 											json::value userInfo = getUserInfo(id);	//petq e kanchenq getUserInfo() funkcian u user infon stanaluc heto  token generacnenq
@@ -160,7 +197,7 @@ void Account::handlePost(http_request message) {
 											});
 										}
 									}
-								}
+								}*/
 							});
 						});
 						}
