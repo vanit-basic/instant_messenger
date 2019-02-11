@@ -24,7 +24,7 @@ class Account : public BasicController, Controller {
 		const int max_attempt = 5;
 		http_client DatabaseClient;
 		http_client TokenDB;
-		void setToken();
+		std::string setToken();
 		void registration(http_request);
 		void signIn(http_request);
 		

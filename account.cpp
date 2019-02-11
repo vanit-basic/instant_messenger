@@ -10,6 +10,17 @@ void MicroserviceController::initRestOpHandlers() {
     _listener.support(methods::DEL, std::bind(&Account::handleDelete, this, std::placeholders::_1));
     _listener.support(methods::PATCH, std::bind(&Account::handlePatch, this, std::placeholders::_1));
 }
+std::string setToken(){
+	
+	srand(time(NULL));
+        int tempOne = rand()% 100000000000;
+        int tempTwo = rand()% 10000;
+        std::string tokenOne = std::to_string(tempOne);
+        std::string tokenTwo = std::to_string(tempTwo);
+        std::string Token =tokenOne + tokenTwo;
+	
+	return Token;
+}
 
 void Account::handleGet(http_request message) {
 	std::cout<< message.to_string()<<std::endl;
