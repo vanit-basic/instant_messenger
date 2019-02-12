@@ -1,9 +1,9 @@
-#include "microsvc_controller.hpp"
+#include "account.hpp"
 
 using namespace web;
 using namespace http;
 
-void MicroserviceController::initRestOpHandlers() {
+void Account::initRestOpHandlers() {
     _listener.support(methods::GET, std::bind(&Account::handleGet, this, std::placeholders::_1));
     _listener.support(methods::PUT, std::bind(&Account::handlePut, this, std::placeholders::_1));
     _listener.support(methods::POST, std::bind(&Account::handlePost, this, std::placeholders::_1));
@@ -37,6 +37,22 @@ void Account::handleGet(http_request message) {
 							message.reply(status_codes::OK, userInfo);
 							});
 			}
+			else
+			{
+				if(path_first_request[1] == "groupInfo")
+				{
+					std::string groupId = path[2].to_string();
+					uri_builder gInfo("/getGroupInfo/" + groupId + "/");
+					DataBaseClient.request(method::GET, gInfo.to_string()).
+						then([message](http_response groupInfo)
+								{
+								message.reply(status_codes::OK, groupInfo);
+								});
+				}
+				else
+				{
+				}
+			}
 		}
 	}
 	else
@@ -45,7 +61,6 @@ void Account::handleGet(http_request message) {
 	}
 }
 void Account::handlePost(http_request message) {
-	//    message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 	auto path_first_request = requestPath(message);
 	message.extract_json().
 		then([message](json::value request) 
@@ -176,8 +191,25 @@ void Account::handlePost(http_request message) {
 								}
 								else
 								{
-									if()
-									{}
+									if(path_first_request[1] == "userUpdateInfo")
+									{
+										DataBaseClient.request(method::POST, message).
+										then([message](http_response response)
+										{
+											message.reply(status_codes::OK, response);
+										});
+									}
+									else
+									{
+										if(path_first_request[1] == "groupUpdateInfo")
+										{
+											DataBaseClient.request(method::POST, message).
+												then([message](http_response response)
+														{
+														message.reply(status_codes::OK, response);
+														});
+										}
+									}
 								}
 							}
 						}
@@ -209,7 +241,7 @@ void Account::handlePost(http_request message) {
 }
 
 
-void MicroserviceController::handlePost(http_request message) {
+void Account::handlePost(http_request message) {
 //    message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
         auto path = requestPath(message);
         message.extract_json().
@@ -260,42 +292,42 @@ void MicroserviceController::handlePost(http_request message) {
 
 }
 
-
-void MicroserviceController::handlePatch(http_request message) {
+*/
+void Account::handlePatch(http_request message) {
     message.reply(status_codes::NotImplemented, responseNotImpl(methods::PATCH));
 }
 
 
-void MicroserviceController::handlePut(http_request message) {
+void Account::handlePut(http_request message) {
     message.reply(status_codes::NotImplemented, responseNotImpl(methods::PUT));
 }
 
 
-void MicroserviceController::handleDelete(http_request message) {
+void Account::handleDelete(http_request message) {
     message.reply(status_codes::NotImplemented, responseNotImpl(methods::DEL));
 }
 
-void MicroserviceController::handleHead(http_request message) {
+void Account::handleHead(http_request message) {
     message.reply(status_codes::NotImplemented, responseNotImpl(methods::HEAD));
 }
 
-void MicroserviceController::handleOptions(http_request message) {
+void Account::handleOptions(http_request message) {
     message.reply(status_codes::NotImplemented, responseNotImpl(methods::OPTIONS));
 }
 
-void MicroserviceController::handleTrace(http_request message) {
+void Account::handleTrace(http_request message) {
     message.reply(status_codes::NotImplemented, responseNotImpl(methods::TRCE));
 }
 
-void MicroserviceController::handleConnect(http_request message) {
+void Account::handleConnect(http_request message) {
     message.reply(status_codes::NotImplemented, responseNotImpl(methods::CONNECT));
 }
 
-void MicroserviceController::handleMerge(http_request message) {
+void Account::handleMerge(http_request message) {
     message.reply(status_codes::NotImplemented, responseNotImpl(methods::MERGE));
 }
 
-json::value MicroserviceController::responseNotImpl(const http::method & method) {
+json::value Account::responseNotImpl(const http::method & method) {
     auto response = json::value::object();
     response["serviceName"] = json::value::string("C++ Mircroservice Sample");
     response["http_method"] = json::value::string(method);
