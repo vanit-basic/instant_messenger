@@ -21,32 +21,51 @@ json::value readConfigFile(std::string path)
 	return config;
 }
 
-Router::Router(std::string path)
+void createClients(json::value config, std::string& routerUri)
 {
-	json::value config = readConfigFile(path);
-	std::string routerUri = config["router"];
-	std::string accountUri = config["account"];
-	std::string conversationUri = config["conversation"];
-	std::string gameUri = config["game"];
-	std::string notificationUri = config["notification"];
-	std::string searchUri = config["search"];
-	std::string tokenDbUri = config["tokenDb"];
-	AccountClient = new http_client(accountUri);
+	routerUri = config.at("router").as_string();
+	AccountClient = new http_client(config.at("account").as_string());
+	ConcersationClient = new http_client(config.at("conversation").as_string);
+	GameClient = new http_client(config.at("game").as_string());
+	NotificationClient = new http_client(config.at("notification").as_string());
+	SearchClient = new http_client(config.at("search").as_string());
+	TokenDbClient = new http_client(config.at("tokenDb").as_string());
 }
-
 
 bool start () {
+	bool accServStatus = false;
+	bool convServStatus = false;
+	bool gameServStatus = false;
+	bool notifStatus = false;
+	bool searchServStatus = false;
+	bool tokDbServStatus = false;
+	uri_builder builder(U("/ServiceTest"));
 	int numberOfAttempts = 0;
-	startedServicesCount = 0;
-	while (startedServicesCount != this->servicesConut || numberOfAttempts++ < 100) {
-			try {
-				AccountClient->send();
-				startedServicesCount++;
-			} catch {
-				std::cerr << "" std::endl;
-			}
-	}
+	while (accServStatus == false || convServStatus == false || gameServStatus == false || notifServStatus == false || searchServStatus == false || tokDbServStatus == false)
+       	{
+/*		if(!accServStatus)
+		{
+		AccountClient->request(methods::GET, builder.to_string()).then([](http_response response)
+				{
+					accServStatus = true;
+				});
+		}
+		if(!accServStatus)
+		{
+		AccountClient->request(methods::GET, builder.to_string()).then([](http_response response)
+				{
+					accServStatus = true;
+				});
+		}
+*/	}
 }
+
+Router::Router(std::string path)
+{
+	std::string routerUri = "";
+	createClients(readConfigFile(path), routerUri);
+}
+
 
 void Router::initRestOpHandlers() {
     _listener.support(methods::GET, std::bind(&Account::handleGet, this, std::placeholders::_1));
