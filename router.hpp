@@ -21,12 +21,12 @@ class Router : public BasicController, Controller {
                 void handleConnect(http_request message) override;
                 void handleMerge(http_request message) override;
                 void initRestOpHandlers() override;
-                http_client TokenDbClient;
-                http_client AccountClient;
-                http_client GameClient;
-                http_client ConversationClient;
-                http_client NotificationClient;
-                http_client SearchClient;
+                http_client *TokenDbClient;
+                http_client *AccountClient;
+                http_client *GameClient;
+                http_client *ConversationClient;
+                http_client *NotificationClient;
+                http_client *SearchClient;
                 void CheckToken();
                 static json::value responseNotImpl(const http::method & method);
 };

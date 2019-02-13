@@ -1,38 +1,51 @@
 #include "router.hpp"
+#include <fstream>
+#include <string>
+#include <iostream>
 
 
 using namespace web;
 using namespace http;
 
-std::string readConfigFile(std::string path)
+json::value readConfigFile(std::string path)
 {
         std::ifstream ConfigFile(path);
-        std::string config = "";
-        do
-        {
-                if(ConfigFile.is_open())
-                {
-                        while(! ConfigFile.eof())
-                        {
-                                getline(ConfigFile, config);
-                        }
-                }
-        }
-        while(!ConfigFile.is_open())
-        ConfigFile.close();
+	json::value config;
+	if (ConfigFile.is_open()) {
+		ConfigFile>> config;
+        	ConfigFile.close();
+	}
+	else {
+		std::cerr << "ConfigFile is not exist!!!" << std::endl;
+	}
 	return config;
 }
 
 Router::Router(std::string path)
 {
-	json::value config = json::value::parse(readConfigFile(path));
+	json::value config = readConfigFile(path);
+	std::string routerUri = config["router"];
 	std::string accountUri = config["account"];
 	std::string conversationUri = config["conversation"];
 	std::string gameUri = config["game"];
 	std::string notificationUri = config["notification"];
 	std::string searchUri = config["search"];
-	std::string routerUri = config["router"];
 	std::string tokenDbUri = config["tokenDb"];
+	AccountClient = new http_client(accountUri);
+}
+
+
+bool start () {
+	int numberOfAttempts = 0;
+	startedServicesCount = 0;
+	while (startedServicesCount != this->servicesConut || numberOfAttempts++ < 100) {
+			try {
+				AccountClient->send();
+				startedServicesCount++;
+			} catch {
+				std::cerr << "" std::endl;
+			}
+	}
 }
 
 void Router::initRestOpHandlers() {
