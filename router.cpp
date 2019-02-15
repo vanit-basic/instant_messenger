@@ -25,7 +25,7 @@ json::value readConfigFile(std::string path)
 void createClients(json::value config)
 {
 	AccountClient = new http_client(config.at("account").as_string());
-	ConcersationClient = new http_client(config.at("conversation").as_string);
+	ConversationClient = new http_client(config.at("conversation").as_string);
 	GameClient = new http_client(config.at("game").as_string());
 	NotificationClient = new http_client(config.at("notification").as_string());
 	SearchClient = new http_client(config.at("search").as_string());
@@ -72,7 +72,7 @@ bool Router::checkServices()
 	bool accServStatus = false;
 	bool convServStatus = false;
 	bool gameServStatus = false;
-	bool notifStatus = false;
+	bool notifServStatus = false;
 	bool searchServStatus = false;
 	bool tokDbServStatus = false;
 	accServStatus = ServiceStart(AccountClient, "Account");
@@ -81,8 +81,8 @@ bool Router::checkServices()
 	if(convServStatus){
 		gameServStatus = ServiceStart(GameClient, "Game");}
 	if(gameServStatus){
-		notifStatus = ServiceStart(NotificationClient, "Notification");}
-	if(notifStatus){
+		notifServStatus = ServiceStart(NotificationClient, "Notification");}
+	if(notifServStatus){
 		searchServStatus = ServiceStart(SearchClient, "Search");}
 	if(searchServStatus){
 		tokDbServStatus = ServiceStart(TokenDbClient, "TokenDB");}
@@ -109,8 +109,66 @@ void Router::initRestOpHandlers() {
 }
 
 void Account::handleGet(http_request message) {
-        http_request msg = message;
-	auto path = requestPath(msg);
+	TokenDbClient->request(methods::Get, message).
+		then([message](http_response tokenStatus){
+				auto token = requestPath(tokenStatus);
+				if(token[1] == "valid")
+				{
+					http_request msg = message;
+					auto path = requestPath(msg);
+					if(path[0] == "Account")
+					{
+					pplx::task<void> = AccountClient->request(methods::GET, message);
+					then([message](http_response response){
+						message.reply(status_codes::OK, response);
+						});
+					}
+					else
+					{
+						if(path[0] == "Conversation")
+						{
+						pplx::task<void> = ConversationClient->request(methods::GET, message).
+						then([message](http_response response){
+							message.reply(status_codes::OK, response);
+						});
+						}		
+						else
+						{
+							if(path[0] == "Search")
+							{
+							pplx::task<void> = SearchClient->request(methods::GET, message);
+							then([message](http_response response){
+								message.reply(status_codes::OK, response);
+								});
+							}
+							else
+							{
+								if(path[0] == "Game")
+								{
+								pplx::task<void> = GameClient->request(methods::GET, message);
+								then([message](http_response response){
+									message.reply(status_codes::OK, response);
+									});
+								}
+								else
+								{
+									if(path[0] == "Notification")
+									{
+									pplx::task<void> = NotificationClient->request(methods::GET, message);
+									then([message](http_response response){
+										message.reply(status_codes::OK, response);
+										});
+									}
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET) );
+				}
+		});
 }
 
 void Account::handlePost(http_request message) {
