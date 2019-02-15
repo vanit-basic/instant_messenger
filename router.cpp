@@ -18,12 +18,12 @@ json::value readConfigFile(std::string path)
 	else {
 		std::cerr << "ConfigFile is not exist!!!" << std::endl;
 	}
+	this->routerUri = config.at("router").as_string();
 	return config;
 }
 
-void createClients(json::value config, std::string& routerUri)
+void createClients(json::value config)
 {
-	routerUri = config.at("router").as_string();
 	AccountClient = new http_client(config.at("account").as_string());
 	ConcersationClient = new http_client(config.at("conversation").as_string);
 	GameClient = new http_client(config.at("game").as_string());
@@ -32,38 +32,71 @@ void createClients(json::value config, std::string& routerUri)
 	TokenDbClient = new http_client(config.at("tokenDb").as_string());
 }
 
-bool start () {
+//http_client client(U("http://127.0.1.1:6502/v1/ivmero/api"));
+bool ServiceStart (http_client* client, std::string serviceName) {
+	uri_builder builder(U("/ServiceTest/"));
+	std::error_code error;
+
+        int count = 0;
+        int exequtionCount = 0;
+        const int maxExequtionCount = 10;
+        const int maxCount = 60;
+        do{
+                if(count == maxCount)
+                {
+			//avelacnel exequtor funkciayi kanch(vor@ petq e start ani servicner@)
+                        if(exequtionCount >= maxExequtionCount)
+                        {
+				std::cout<<serviceName<<" service is dead!!!"<<std::endl;
+                                return false;
+                        }
+                        ++exequtionCount;
+                        count = 0;
+                }
+                usleep(100000);
+                error.clear();
+                try {
+                        count++;
+                        pplx::task<web::http::http_response> requestTask = client->request(methods::GET, builder.to_string());
+                        requestTask.wait();
+                } catch (http_exception e) {
+                        error = e.error_code();
+                }}
+        while (error.value());
+        return true;
+}
+
+bool Router::checkServices()
+{
+	bool status = false;
 	bool accServStatus = false;
 	bool convServStatus = false;
 	bool gameServStatus = false;
 	bool notifStatus = false;
 	bool searchServStatus = false;
 	bool tokDbServStatus = false;
-	uri_builder builder(U("/ServiceTest"));
-	int numberOfAttempts = 0;
-	while (accServStatus == false || convServStatus == false || gameServStatus == false || notifServStatus == false || searchServStatus == false || tokDbServStatus == false)
-       	{
-/*		if(!accServStatus)
-		{
-		AccountClient->request(methods::GET, builder.to_string()).then([](http_response response)
-				{
-					accServStatus = true;
-				});
-		}
-		if(!accServStatus)
-		{
-		AccountClient->request(methods::GET, builder.to_string()).then([](http_response response)
-				{
-					accServStatus = true;
-				});
-		}
-*/	}
+	accServStatus = ServiceStart(AccountClient, "Account");
+	if(accServStatus){
+		convServStatus = ServiceStart(ConversationClient, "Conversation");}
+	if(convServStatus){
+		gameServStatus = ServiceStart(GameClient, "Game");}
+	if(gameServStatus){
+		notifStatus = ServiceStart(NotificationClient, "Notification");}
+	if(notifStatus){
+		searchServStatus = ServiceStart(SearchClient, "Search");}
+	if(searchServStatus){
+		tokDbServStatus = ServiceStart(TokenDbClient, "TokenDB");}
+	if (tokDbServStatus)
+	{
+		this->setEndpoint(routerUri);
+		status = true;
+	}
+	return status;
 }
 
 Router::Router(std::string path)
 {
-	std::string routerUri = "";
-	createClients(readConfigFile(path), routerUri);
+	createClients(readConfigFile(path));
 }
 
 
