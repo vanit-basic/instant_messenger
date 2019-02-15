@@ -36,7 +36,7 @@ bool dateValidation(std::string date,int count){
      int Second =stoi(second);
      std::cout<<Second<<std::endl;
 */
-if(count>=5){
+if(5 >= count){
      if(Year == (1900+ltm->tm_year)){
     
 	    if((1+ltm->tm_mon)== Month){
@@ -68,7 +68,7 @@ if(count>=5){
      	return true;
      }
 }else{
-	return true;
+	return false;
 }
 // print various components of tm structure.
 //   cout << "Month: "<< 1 + ltm->tm_mon<< endl;
