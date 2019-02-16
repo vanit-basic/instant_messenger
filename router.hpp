@@ -1,17 +1,26 @@
 #pragma once 
 
-#include <basic_controller.hpp>
-
+#include </home/narek/Documents/Tnayin/micro-service/source/foundation/include/basic_controller.hpp>
+#include </home/narek/Documents/Tnayin/micro-service/libs/cpprestsdk/Release/include/cpprest/http_client.h>
+#include </home/narek/Documents/Tnayin/micro-service/libs/cpprestsdk/Release/include/cpprest/filestream.h>
 using namespace cfx;
+using namespace utility;                   
+using namespace web;                       
+using namespace web::http;                 
+using namespace web::http::client;         
+using namespace concurrency::streams;  
+
 
 class Router : public BasicController, Controller {
         public:
+
 		bool checkServices();
-                Router(std::string) : BasicController();
+                Router(std::string) : BasicController(){}
                 ~Router() {}
 
         private:
 		std::string routerUri;
+		void createClients(json::value config);
                 http_client *TokenDbClient;
                 http_client *AccountClient;
                 http_client *GameClient;
@@ -28,7 +37,8 @@ class Router : public BasicController, Controller {
                 void handleTrace(http_request message) override;// = delete;
                 void handleConnect(http_request message) override; // = delete;
                 void handleMerge(http_request message) override; // = delete;
-                void initRestOpHandlers() override;
+                
+		void initRestOpHandlers() override;
 
                 static json::value responseNotImpl(const http::method & method);
 };
