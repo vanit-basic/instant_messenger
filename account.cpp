@@ -1,7 +1,82 @@
 #include "account.hpp"
+#include <cpprest/http_client.h>
+#include <cpprest/filestream.h>
+#include </home/narek/Documents/Tnayin/micro-service/source/foundation/include/std_micro_service.hpp>
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
-using namespace web;
-using namespace http;
+
+bool Account::createClients(std::string path)
+{
+        std::ifstream ConfigFile(path);
+        json::value config;
+        if (ConfigFile.is_open()) {
+                ConfigFile>> config;
+                ConfigFile.close();
+                DatabaseClient = new http_client(config.at("dataBase").as_string());
+                TokenDbClient = new http_client(config.at("tokenDb").as_string());
+                this->accountUri = config.at("account").as_string();
+                return true;
+        }
+        else {
+                std::cerr << "ConfigFile is not exist!!!" << std::endl;
+                return false;
+        }
+}
+
+bool ServiceStart (http_client* client, std::string serviceName) {
+        uri_builder builder(U("/ServiceTest/"));
+        std::error_code error;
+
+        int count = 0;
+        int exequtionCount = 0;
+        const int maxExequtionCount = 10;
+        const int maxCount = 60;
+        do{
+                if(count == maxCount)
+                {
+                        //avelacnel exequtor funkciayi kanch(vor@ petq e start ani DBservicner@)
+                        if(exequtionCount >= maxExequtionCount)
+                        {
+                                std::cout<<serviceName<<" DBservices is dead!!!"<<std::endl;
+                                return false;
+                        }
+                        ++exequtionCount;
+                        count = 0;
+                }
+                usleep(100000);
+                error.clear();
+                try {
+                        count++;
+                        pplx::task<web::http::http_response> requestTask = client->request(methods::GET, builder.to_string());
+                        requestTask.wait();
+                } catch (http_exception e) {
+                        error = e.error_code();
+                }}
+        while (error.value());
+        return true;
+}
+
+bool Account::checkServices()
+{
+        bool status = false;
+        bool DbServStatus = false;
+        bool tokDbServStatus = false;
+        DbServStatus = ServiceStart(DatabaseClient, "Account Database");
+        if(DbServStatus){
+                tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");}
+        if (tokDbServStatus)
+        {
+                this->setEndpoint(accountUri);
+                status = true;
+        }
+        return status;
+}
+
 
 void Account::initRestOpHandlers() {
     _listener.support(methods::GET, std::bind(&Account::handleGet, this, std::placeholders::_1));

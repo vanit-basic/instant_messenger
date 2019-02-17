@@ -1,13 +1,27 @@
 #pragma once 
 
-#include <basic_controller.hpp>
+#include </home/narek/Documents/Tnayin/micro-service/source/foundation/include/basic_controller.hpp> 
+#include <cpprest/http_client.h>
+#include <cpprest/filestream.h>
 
 using namespace cfx;
+using namespace utility;
+using namespace web;
+using namespace web::http;
+using namespace web::http::client;
+using namespace concurrency::streams;
 
 class Account : public BasicController, Controller {
 	public:
+		bool checkServices();
+		bool createClients(std::string path);
 		Account() : BasicController() {}
 		~Account() {}
+
+	private:
+		http_client *DatabaseClient;
+		http_client *TokenDBClient;
+		std::string accountUri;
 		void handleGet(http_request message) override;
 		void handlePut(http_request message) override;
 		void handlePost(http_request message) override;
@@ -20,15 +34,6 @@ class Account : public BasicController, Controller {
 		void handleMerge(http_request message) override;
 		void initRestOpHandlers() override;
 
-	private:
-		const int max_attempt = 5;
-		http_client DatabaseClient;
-		http_client TokenDB;
-		std::string setToken();
-		void registration(http_request);
-		void signIn(http_request);
-		
-		void deleteUser(http_request);
 		static json::value responseNotImpl(const http::method & method);
 };
 

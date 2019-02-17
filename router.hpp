@@ -1,8 +1,8 @@
 #pragma once 
 
 #include </home/narek/Documents/Tnayin/micro-service/source/foundation/include/basic_controller.hpp>
-#include </home/narek/Documents/Tnayin/micro-service/libs/cpprestsdk/Release/include/cpprest/http_client.h>
-#include </home/narek/Documents/Tnayin/micro-service/libs/cpprestsdk/Release/include/cpprest/filestream.h>
+#include <cpprest/http_client.h>
+#include <cpprest/filestream.h>
 using namespace cfx;
 using namespace utility;                   
 using namespace web;                       
@@ -13,14 +13,13 @@ using namespace concurrency::streams;
 
 class Router : public BasicController, Controller {
         public:
-
+		bool createClients(std::string path);
 		bool checkServices();
                 Router(std::string) : BasicController(){}
                 ~Router() {}
 
         private:
 		std::string routerUri;
-		void createClients(json::value config);
                 http_client *TokenDbClient;
                 http_client *AccountClient;
                 http_client *GameClient;

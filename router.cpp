@@ -9,14 +9,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-using namespace utility;                    
-using namespace web;                        
-using namespace web::http;                  
-using namespace web::http::client;          
-using namespace concurrency::streams;       
-
-
-
+/*
 json::value readConfigFile(std::string path)
 {
         std::ifstream ConfigFile(path);
@@ -29,17 +22,28 @@ json::value readConfigFile(std::string path)
 		std::cerr << "ConfigFile is not exist!!!" << std::endl;
 	}
 	return config;
-}
+}*/
 
-void Router::createClients(json::value config)
+bool Router::createClients(std::string path)
 {
-	AccountClient = new http_client(config.at("account").as_string());
-	ConversationClient = new http_client(config.at("conversation").as_string());
-	GameClient = new http_client(config.at("game").as_string());
-	NotificationClient = new http_client(config.at("notification").as_string());
-	SearchClient = new http_client(config.at("search").as_string());
-	TokenDbClient = new http_client(config.at("tokenDb").as_string());
-	this->routerUri = config.at("router").as_string();
+	std::ifstream ConfigFile(path);
+        json::value config;
+	if (ConfigFile.is_open()) {
+		ConfigFile>> config;
+		ConfigFile.close();
+		AccountClient = new http_client(config.at("account").as_string());
+		ConversationClient = new http_client(config.at("conversation").as_string());
+		GameClient = new http_client(config.at("game").as_string());
+		NotificationClient = new http_client(config.at("notification").as_string());
+		SearchClient = new http_client(config.at("search").as_string());
+		TokenDbClient = new http_client(config.at("tokenDb").as_string());
+		this->routerUri = config.at("router").as_string();
+		return true;
+	}
+        else {
+                std::cerr << "ConfigFile is not exist!!!" << std::endl;
+		return false;
+        }
 }
 
 //http_client client(U("http://127.0.1.1:6502/v1/ivmero/api"));
