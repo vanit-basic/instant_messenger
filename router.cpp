@@ -119,59 +119,53 @@ void Router::initRestOpHandlers() {
 }
 
 void Router::handleGet(http_request message) {
-	auto msg = message;
-	auto mess1 = message.headers();
-	auto path = requestPath(msg);
-	msg.extract_json().then([message, this, path, msg](json::value mess){
-	TokenDbClient->request(methods::GET, message).
-		then([message, mess, msg, this](http_response tokenStatus){
-				tokenStatus.extract_json().then([message, mess, this](json::value token){
-				//auto token = requestPath(tokenStatus);
+	TokenDbClient->request(message).
+		then([message, this](http_response tokenStatus){
+				tokenStatus.extract_json().then([message, this](json::value token){
 				if(token.at("token").as_string() == "valid")
 				{
-					//http_request msg = message;
-					auto path = requestPath(msg);
+					auto path = requestPath(message);
 					if(path[0] == "Account")
 					{
-					AccountClient->request(methods::GET, message).
+					AccountClient->request(message).
 					then([message](http_response response){
-						message.reply(status_codes::OK, response);
+						message.reply(response);
 						});
 					}
 					else
 					{
 						if(path[0] == "Conversation")
 						{
-						ConversationClient->request(methods::GET, mess).
+						ConversationClient->request(message).
 						then([message](http_response response){
-							message.reply(status_codes::OK, response);
+							message.reply(response);
 						});
 						}		
 						else
 						{
 							if(path[0] == "Search")
 							{
-							SearchClient->request(methods::GET, mess).
+							SearchClient->request(message).
 							then([message](http_response response){
-								message.reply(status_codes::OK, response);
+								message.reply(response);
 								});
 							}
 							else
 							{
 								if(path[0] == "Game")
 								{
-								GameClient->request(methods::GET, mess).
+								GameClient->request(message).
 								then([message](http_response response){
-									message.reply(status_codes::OK, response);
+									message.reply(response);
 									});
 								}
 								else
 								{
 									if(path[0] == "Notification")
 									{
-									NotificationClient->request(methods::GET, mess).
+									NotificationClient->request(message).
 									then([message](http_response response){
-										message.reply(status_codes::OK, response);
+										message.reply(response);
 										});
 									}
 								}
@@ -185,61 +179,56 @@ void Router::handleGet(http_request message) {
 				}
 				});
 		});
-	});
 }
 
 void Router::handlePost(http_request message) {
-	auto msg = message;
-	msg.extract_json().then([message, this](json::value mess){
-	TokenDbClient->request(methods::POST, mess).
-		then([message, mess, this](http_response tokenStatus){
-				//auto token = requestPath(tokenStatus);
-				tokenStatus.extract_json().then([message, mess, this](json::value token){
+	TokenDbClient->request(message).
+		then([message, this](http_response tokenStatus){
+				tokenStatus.extract_json().then([message, this](json::value token){
 				if(token.at("token").as_string() == "valid")
 				{
-					http_request msg = message;
-					auto path = requestPath(msg);
+					auto path = requestPath(message);
 					if(path[0] == "Account")
 					{
-					AccountClient->request(methods::GET, mess).
+					AccountClient->request(message).
 					then([message](http_response response){
-						message.reply(status_codes::OK, response);
+						message.reply(response);
 						});
 					}
 					else
 					{
 						if(path[0] == "Conversation")
 						{
-						ConversationClient->request(methods::GET, mess).
+						ConversationClient->request(message).
 						then([message](http_response response){
-							message.reply(status_codes::OK, response);
+							message.reply(response);
 						});
 						}		
 						else
 						{
 							if(path[0] == "Search")
 							{
-							SearchClient->request(methods::GET, mess).
+							SearchClient->request(message).
 							then([message](http_response response){
-								message.reply(status_codes::OK, response);
+								message.reply(response);
 								});
 							}
 							else
 							{
 								if(path[0] == "Game")
 								{
-								GameClient->request(methods::GET, mess).
+								GameClient->request(message).
 								then([message](http_response response){
-									message.reply(status_codes::OK, response);
+									message.reply(response);
 									});
 								}
 								else
 								{
 									if(path[0] == "Notification")
 									{
-									NotificationClient->request(methods::GET, mess).
+									NotificationClient->request(message).
 									then([message](http_response response){
-										message.reply(status_codes::OK, response);
+										message.reply(response);
 										});
 									}
 								}
@@ -253,7 +242,6 @@ void Router::handlePost(http_request message) {
 				}
 				});
 		});
-	});
 }
 
 void Router::handlePatch(http_request message) {
@@ -296,4 +284,3 @@ json::value Router::responseNotImpl(const http::method & method) {
     response["http_method"] = json::value::string(method);
     return response ;
 }
-
