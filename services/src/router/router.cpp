@@ -1,7 +1,7 @@
 #include <cpprest/http_client.h>
 #include <cpprest/filestream.h>
-#include </home/narek/Documents/Tnayin/micro-service/source/foundation/include/std_micro_service.hpp>
-#include "router.hpp"
+#include <std_micro_service.hpp>
+#include <router/router.hpp>
 #include <fstream>
 #include <string>
 #include <iostream>
