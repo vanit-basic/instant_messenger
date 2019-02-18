@@ -34,10 +34,6 @@ endif()
 # Project construction ...
 
 # source files ...
-add_executable("external"		./external/source/main.cpp
-				./external/source/microsvc_controller.cpp
-				./external/source/foundation/network_utils.cpp
-				./external/source/foundation/basic_controller.cpp)
 
 add_executable("router" 		./services/src/router/main.cpp
 				./services/src/router/router.cpp
@@ -64,7 +60,5 @@ message(CPPRESTSDK_LIBRARY " ${CPPRESTSDK_LIBRARY}")
 message(LIBRARIES_SEARCH_PATHS " ${LIBRARIES_SEARCH_PATHS}")
 
 include_directories(${HEADER_SEARCH_PATHS})
-
-target_link_libraries("external" ${LIBRARIES_SEARCH_PATHS})
 
 target_link_libraries("router" ${LIBRARIES_SEARCH_PATHS})
