@@ -82,7 +82,7 @@ bool ServiceStart (http_client* client, std::string serviceName) {
 
 bool Router::checkServices()
 {
-	bool status = false;
+/*	bool status = false;
 	bool accServStatus = false;
 	bool convServStatus = false;
 	bool gameServStatus = false;
@@ -106,6 +106,9 @@ bool Router::checkServices()
 		status = true;
 	}
 	return status;
+*/
+	this->setEndpoint(routerUri);
+	return true;
 }
 /*
 Router::Router(std::string path)
@@ -123,6 +126,8 @@ void Router::initRestOpHandlers() {
 }
 
 void Router::handleGet(http_request message) {
+	std::cout<<message.to_string()<<std::endl;
+	/*
 	TokenDbClient->request(message).
 		then([message, this](http_response tokenStatus){
 				tokenStatus.extract_json().then([message, this](json::value token){
@@ -183,9 +188,14 @@ void Router::handleGet(http_request message) {
 				}
 				});
 		});
+	*/
 }
 
 void Router::handlePost(http_request message) {
+	std::cout<<message.to_string()<<std::endl;	
+/*	auto checkAction = requestPath(message);
+	if(!(checkAction[1] == "registration" || checkAction[1] == "signin" || checkAction[1] == "forgotPassword"))
+	{
 	TokenDbClient->request(message).
 		then([message, this](http_response tokenStatus){
 				tokenStatus.extract_json().then([message, this](json::value token){
@@ -246,6 +256,16 @@ void Router::handlePost(http_request message) {
 				}
 				});
 		});
+	}
+	else
+	{
+		AccountClient->request(message).
+			then([message](http_response response){
+					message.reply(response);
+					});
+
+	}
+*/
 }
 
 void Router::handlePatch(http_request message) {
