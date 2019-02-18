@@ -138,8 +138,59 @@ void Account::handleGet(http_request message) {
 				}
 				else
 				{
+					if(path_first_request[1] == "groupDelete"){
+                                        std::string adminId = path[2].to_string();
+                                        std::string groupId = path[3].to_string();
+                                        uri_builder groupInfo("/adminId/" + adminId + "/groupId/"+groupId+"/");
+                                        DataBaseClient.request(method::GET, groupInfo.to_string()).
+                                                then([message](http_response deleteGroup)
+                                                {
+							deleteGroup.extract_json().
+							then([message])(json::value deleteGroup)
+							{
+								if(!(deleteGroup["adminId"]==request.at("adminId").as_string() && deleteGroup["groupId"]== request.at("groupId").as_string()))
+								{
+									uri_builder groupDelete_path(U("/groupDelete/"));
+                                                               		DataBaseClient.request(method::POST,  groupDelete_path.to_string(), request).
+									then([message](http_response groupDelete_response)
+                                                                                {
+                                                                                message.reply(status_codes::OK, groupDelete_response);
+                                                                                }
+								}
+							}
+                                                });
+                                	}
+					else
+					{
+						 if(path_first_request[1] == "groupRemoveUser"){
+                                        		std::string adminId = path[2].to_string();
+                                        		std::string groupId = path[3].to_string();
+                                        		std::string userId  = path[4].to_string();
+                                       			uri_builder groupRUser("/adminId/" + adminId + "/groupId/"+groupId+"/userId/"+userId+"/");
+                                        		DataBaseClient.request(method::GET, groupRUser.to_string()).
+                                                	then([message](http_response remove)
+                                                	{	
+                                                        	deleteGroup.extract_json().
+                                                        	then([message])(json::value remove)
+                                                        	{
+                                                                if(!(remove["adminId"]==request.at("adminId").as_string() && remove["groupId"]== request.at("groupId").as_string()))
+                                                                {       
+                                                                        uri_builder groupRemoveUser_path(U("/groupRemoveUser/"));
+                                                                        DataBaseClient.request(method::POST,  groupRemoveUser_path.to_string(), request).
+                                                                        then([message](http_response groupDelete_response)
+                                                                                {
+                                                                                message.reply(status_codes::OK, groupRemoveUser_response);
+                                                                                }
+                                                                }
+                                                        	}
+                                               		 });
+                                        	}
+	
+					}
+
 				}
 			}
+
 		}
 	}
 	else
