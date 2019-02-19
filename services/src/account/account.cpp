@@ -1,19 +1,12 @@
-#include "account.hpp"
-#include <cpprest/http_client.h>
-#include <cpprest/filestream.h>
-#include </home/narek/Documents/Tnayin/micro-service/source/foundation/include/std_micro_service.hpp>
+#include <account/account.hpp>
+#include <std_micro_service.hpp>
 #include <fstream>
-#include <string>
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
 
-Account::Account(std::string path)
-{
-        this->createClients(path);
-}
 
 bool Account::createClients(std::string path)
 {
@@ -31,6 +24,11 @@ bool Account::createClients(std::string path)
                 std::cerr << "ConfigFile is not exist!!!" << std::endl;
                 return false;
         }
+}
+
+Account::Account(std::string path)
+{
+        this->createClients(path);
 }
 
 bool ServiceStart (http_client* client, std::string serviceName) {
