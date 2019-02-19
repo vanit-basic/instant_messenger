@@ -10,6 +10,11 @@
 #include <sys/stat.h>
 
 
+Account::Account(std::string path)
+{
+        this->createClients(path);
+}
+
 bool Account::createClients(std::string path)
 {
         std::ifstream ConfigFile(path);
