@@ -98,99 +98,79 @@ std::string setToken(){
 	return Token;
 }
 
+http_response getUserInfo(std::string userId, http_client* DataBaseClient){
+	uri_builder uInfo("/getUserInfo/" + userId + "/");
+	DataBaseClient->request(method::GET, uInfo.to_string()).
+		then([message](http_response userInfo)
+			{
+				return userInfo;
+			});
+}
+
+http_response getUserShortInfo(http_request message, http_client* DataBaseClient){
+	auto path = requestPath(message);
+	std::string userId = path[2].to_string();
+	uri_builder uInfo("/getUserShortInfo/" + userId + "/");
+	DataBaseClient->request(method::GET, uInfo.to_string()).
+		then([message](http_response userInfo)
+			{
+				return userShortInfo;
+			});
+}
+
+http_response getGroupInfo(http_request message, http_client* DataBaseClient){
+	auto path = requestPath(message);
+	std::string groupId = path[2].to_string();
+	uri_builder gInfo("/getGroupInfo/" + groupId + "/");
+	DataBaseClient->request(method::GET, gInfo.to_string()).
+		then([message](http_response groupInfo)
+			{
+				return groupInfo;
+			});
+}
+
+void getGroupUsers(http_request message, http_client* DataBaseClient){
+	auto path = requestPath(message);
+	std::string groupId = path[2].to_string();
+	uri_builder gInfo("/getGroupUsers/" + groupId + "/");
+	DataBaseClient->request(method::GET, gInfo.to_string()).
+		then([message](http_response groupUsers)
+			{
+				return groupUsers;
+			});
+}
+
 void Account::handleGet(http_request message) {
 	std::cout<< message.to_string()<<std::endl;
 	auto path = requestPath(message);
 	if (!path.empty()) {
-		if(path_first_request[1] == "UserInfo")
+		if(path_first_request[1] == "getUserInfo")
 		{
+			auto path = requestPath(message);
 			std::string userId = path[2].to_string();
-			uri_builder uInfo("/getUserInfo/" + userId + "/");
-			DataBaseClient.request(method::GET, uInfo.to_string()).
-				then([message](http_response userInfo)
-						{
-						message.reply(status_codes::OK, userInfo);
-						});
+			auto userInfo = getUserInfo(userId);
+			message.reply(userInfo);
 		}
 		else
 		{
-			if(path_first_request[1] == "UserShortInfo")
+			if(path_first_request[1] == "getUserShortInfo")
 			{
-				std::string userId = path[2].to_string();
-				uri_builder uInfo("/getUserShortInfo/" + userId + "/");
-				DataBaseClient.request(method::GET, uInfo.to_string()).
-					then([message](http_response userInfo)
-							{
-							message.reply(status_codes::OK, userInfo);
-							});
+				auto userShortInfo = getUseriShortInfo(meesage);
+				message.reply(userShortInfo);
 			}
 			else
 			{
 				if(path_first_request[1] == "groupInfo")
 				{
-					std::string groupId = path[2].to_string();
-					uri_builder gInfo("/getGroupInfo/" + groupId + "/");
-					DataBaseClient.request(method::GET, gInfo.to_string()).
-						then([message](http_response groupInfo)
-								{
-								message.reply(status_codes::OK, groupInfo);
-								});
+					auto groupInfo = getGroupInfo(meesage);
+					message.reply(groupInfo);
 				}
 				else
 				{
-					if(path_first_request[1] == "groupDelete"){
-                                        std::string adminId = path[2].to_string();
-                                        std::string groupId = path[3].to_string();
-                                        uri_builder groupInfo("/adminId/" + adminId + "/groupId/"+groupId+"/");
-                                        DataBaseClient.request(method::GET, groupInfo.to_string()).
-                                                then([message](http_response deleteGroup)
-                                                {
-							deleteGroup.extract_json().
-							then([message])(json::value deleteGroup)
-							{
-								if(!(deleteGroup["adminId"]==request.at("adminId").as_string() && deleteGroup["groupId"]== request.at("groupId").as_string()))
-								{
-									uri_builder groupDelete_path(U("/groupDelete/"));
-                                                               		DataBaseClient.request(method::POST,  groupDelete_path.to_string(), request).
-									then([message](http_response groupDelete_response)
-                                                                                {
-                                                                                message.reply(status_codes::OK, groupDelete_response);
-                                                                                }
-								}
-							}
-                                                });
-                                	}
-					else
-					{
-						 if(path_first_request[1] == "groupRemoveUser"){
-                                        		std::string adminId = path[2].to_string();
-                                        		std::string groupId = path[3].to_string();
-                                        		std::string userId  = path[4].to_string();
-                                       			uri_builder groupRUser("/adminId/" + adminId + "/groupId/"+groupId+"/userId/"+userId+"/");
-                                        		DataBaseClient.request(method::GET, groupRUser.to_string()).
-                                                	then([message](http_response remove)
-                                                	{	
-                                                        	deleteGroup.extract_json().
-                                                        	then([message])(json::value remove)
-                                                        	{
-                                                                if(!(remove["adminId"]==request.at("adminId").as_string() && remove["groupId"]== request.at("groupId").as_string()))
-                                                                {       
-                                                                        uri_builder groupRemoveUser_path(U("/groupRemoveUser/"));
-                                                                        DataBaseClient.request(method::POST,  groupRemoveUser_path.to_string(), request).
-                                                                        then([message](http_response groupDelete_response)
-                                                                                {
-                                                                                message.reply(status_codes::OK, groupRemoveUser_response);
-                                                                                }
-                                                                }
-                                                        	}
-                                               		 });
-                                        	}
-	
-					}
-
+					auto groupUsers = getGroupUsers(message);
+					message.reply(groupUsers);
 				}
 			}
-
 		}
 	}
 	else
@@ -198,6 +178,132 @@ void Account::handleGet(http_request message) {
 		message.reply(status_codes::NotFound);
 	}
 }
+
+void registration(http_request message){
+        message.extract_json().then([message](json::value info)
+	{
+        std::string ml = "/get/mail_login"; 
+        json::value login_mail;
+        login_mail["email"] = info.at("email").as_string();
+        login_mail["login"] = info.at("login").as_string();
+        uri_builder get_mail_login(U(ml));
+        DataBaseClient->request(methods::POST, get_mail_login.to_string(), login_mail).
+
+		then([message, info](http_response mail_login)
+		{
+			mail_login.extract_json().
+			then([message, info](json::value mail_login_json)
+			{
+				if(!(mail_login_json["email"] ==  info.at("email").as_string() && mail_login_json["login"] == info.at("login").as_string()))
+				{
+					DataBaseClient->request(message).
+					then([message](http_response registration_response)
+					{
+						message.reply(registration_response);
+					});
+				}
+				else
+				{
+					json::value error;
+					if(mail_login_json["email"] ==  info.at("email").as_string())
+					{
+						error["email"] = json::value::string(U("Invalid"));
+					}
+					if(mail_login_json["login"] ==  info.at("login").as_string())
+					{
+						error["login"] = json::value::string(U("Invalid"));
+					}
+						message.reply(status_codes::OK, error);
+				}		
+			});
+		});
+	});
+}
+
+void signIn(http_request request){
+	message.extract_json();
+	json::value signinInfo;
+	uri_builder signin_path(U("/signin/"));
+	singinInfo["login"] = request.at("login");
+	singinInfo["password"] = request.at("password");
+	DataBaseClient.request(method::POST,  signin_path.to_string(), signinInfo).
+	then([message](http_response signinStatus)
+	{
+		signinStatus.extract_json().
+		then([message, request](json::value signinStatus_json)
+		{
+			if (signinStatus_json["status"] == "notFound")
+			{
+				message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
+			}
+			else
+			{
+				if(signinStatus_json["status"] == "wrong")
+				{
+					int attempt = std::stoi(signinStatus_json["attempt"].as_string());
+					if((this->max_attempt) > attempt)
+					{
+						if(((this->max_attempt) - attempt) ==1)
+						{
+							message.reply(status_codes::OK, json::value::string("Attention!!! You have one attempt left!!!"));
+						}
+						else
+						{
+							message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
+						}
+					}
+					else
+					{
+						message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
+					}
+				}
+				else
+				{
+					if(signinStatus_json["status"] == "OK")
+					{
+						std::string id = signinStatus_json["id"].as_string();
+						json::value userInfo = getUserInfo(id);	//petq e kanchenq getUserInfo() funkcian u user infon stanaluc heto  token generacnenq  // !!!! functian verevum stanum a http_request return a anum http_response
+						std::string token = setToken();//funkcia vor@ petqe token generacni
+						uri_builder token_uri("/SetToken/");
+						json::value token_json;
+						token_json["token"] = json::value::string(token);
+						token_json["id"] = json::value::string(id);
+						TokenDB.request(methods::POST, token_uri.to_string(), token_json).
+						then([message, token_json, userInfo](http_response token_response)
+						{
+							userInfo["id"] = token_json["id"];
+							userInfo["token"] = token_json["token"];
+							message.reply(status_codes::OK, userInfo);
+						});
+					}
+				}
+			}
+		});
+	});
+}
+
+http_response deleteAccount(http_request message){
+	json::value deleteAccountInfo;
+	uri_builder deleteAccount_path(U("/deleteAccount/"));
+	deleteAccountInfo["id"] = request.at("id");
+	DataBaseClient.request(method::POST,  deleteAccount_path.to_string(), deleteAccountInfo).
+	then([message](http_response status)
+		return status;
+	);
+}
+
+
+http_response ignOut(http_request message){
+	uri_builder deleteToken("/deleteToken/");
+	json::value userId
+	userId["id"] = request.at("id");
+	TokenDB.request(method::POST, deleteToken, userId);
+	then([message](http_response status){
+		return status;		
+	}
+}
+
+
 void Account::handlePost(http_request message) {
 	auto path_first_request = requestPath(message);
 	message.extract_json().
@@ -205,163 +311,27 @@ void Account::handlePost(http_request message) {
 				{
 				if ( path_first_request[1] == "registration") 
 				{
-				std::string mail = request.at("email").as_string();
-				std::string login = request.at("login").as_string();
-				std::string ml = "/get/email/" + mail,"/login/" + login + "/"; 
-				uri_builder get_mail_login(U(ml));
-				DataBaseClient.request(methods::GET, get_mail_login.to_string()).
-
-				then([message, request](http_response mail_login)
-						{
-						//auto path = requestPath(mail_login);
-						mail_login.extract_json().
-						then([message, request](json::value mail_login_json)
-								{
-								if(!(mail_login_json["email"] ==  request.at("email").as_string() && mail_login_json["login"] == request.at("login").as_string()))
-								{
-								uri_builder registration_path(U("/registration/"));
-								DataBaseClient.request(method::POST,  registration_path.to_string(), request).
-
-								then([message](http_response registration_response)
-										{
-										message.reply(status_codes::OK, registration_response);
-										}
-										}
-										else
-										{
-										json::value error;
-										if(mail_login_json["email"] ==  request.at("email").as_string())
-										{
-										error["email"] = json::value::string(U("Invalid"));
-										}
-										if(mail_login_json["login"] ==  request.at("login").as_string())
-										{
-										error["login"] = json::value::string(U("Invalid"));
-										}
-										message.reply(status_codes::OK, error);
-										});
-								});
-						});
+					registration(message);
 				}
 				else
 				{
 					if( path_first_request[1] == "signin")
 					{
-						json::value signinInfo;
-						uri_builder signin_path(U("/signin/"));
-						singinInfo["login"] = request.at("login");
-						singinInfo["password"] = request.at("password");
-						DataBaseClient.request(method::POST,  signin_path.to_string(), signinInfo).
-						then([message](http_response signinStatus)
-						{
-							signinStatus.extract_json().
-							then([message, request](json::value signinStatus_json)
-							{
-								
-								switch (signinStatus[ "status" ]) {
-									case "notFound" : 
-										message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
-										break;
-									case "wrong" : 
-										int attempt = std::stoi(signinStatus_json["attempt"].as_string());
-										switch (this->max_attemp - attemp) {
-											case 1:
-												message.reply(status_codes::OK, json::value::string("Attention!!! You have one attempt left!!!"));
-												break;
-											case 0:
-												message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
-												break;
-											default:
-												message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
-												break;
-										}
-									case "OK" :  
-											std::string id = signinStatus_json["id"].as_string();
-											json::value userInfo = getUserInfo(id);
-											std::string token = setToken();
-											uri_builder token_uri("/SetToken/");
-											json::value token_json;
-											token_json["token"] = json::value::string(token);
-											token_json["id"] = json::value::string(id);
-											TokenDB.request(methods::POST, token_uri.to_string(), token_json).
-											then([message, token_json, userInfo](http_response token_response)
-											{
-												userInfo["id"] = token_json["id"];
-												userInfo["token"] = token_json["token"];
-												message.reply(status_codes::OK, userInfo);
-											});
-											break;
-								}
-								
-								/*if (signinStatus_json["status"] == "notFound")
-								{
-									message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
-								}
-								else
-								{
-									if(signinStatus_json["status"] == "wrong")
-									{
-										int attempt = std::stoi(signinStatus_json["attempt"].as_string());
-										if((this->max_attempt) > attempt)
-										{
-											if(((this->max_attempt) - attempt) ==1)
-											{
-											message.reply(status_codes::OK, json::value::string("Attention!!! You have one attempt left!!!"));
-											}
-											else
-											{
-											message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
-											}
-										}
-										else
-										{
-											message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
-										}
-									}
-									else
-									{
-										if(signinStatus_json["status"] == "OK")
-										{
-											std::string id = signinStatus_json["id"].as_string();
-											json::value userInfo = getUserInfo(id);	//petq e kanchenq getUserInfo() funkcian u user infon stanaluc heto  token generacnenq
-											std::string token = setToken();//funkcia vor@ petqe token generacni
-											uri_builder token_uri("/SetToken/");
-											json::value token_json;
-											token_json["token"] = json::value::string(token);
-											token_json["id"] = json::value::string(id);
-											TokenDB.request(methods::POST, token_uri.to_string(), token_json).
-											then([message, token_json, userInfo](http_response token_response)
-											{
-												userInfo["id"] = token_json["id"];
-												userInfo["token"] = token_json["token"];
-												message.reply(status_codes::OK, userInfo);
-											});
-										}
-									}
-								}*/
-							});
-						});
-						}
+						signIn(message);
+					}
 						else
 						{
 							if (path_first_request[1] == "deleteAccount")
 							{
-								json::value deleteAccountInfo;
-								uri_builder deleteAccount_path(U("/deleteAccount/"));
-								deleteAccountInfo["id"] = request.at("id");
-								DataBaseClient.request(method::POST,  deleteAccount_path.to_string(), deleteAccountInfo).
-								then([message](http_response)
-								    );
+								auto resp = deleteAccount(message);
+								message.reply(status_codes::OK, resp);
 							}
 							else
 							{
 								if(path_first_request[1] == "signout")
 								{
-									uri_builder deleteToken("/deleteToken/");
-									json::value userId
-									userId["id"] = request.at("id");
-									TokenDB.request(method::POST, deleteToken, userId);
-									message.reply(status_codes::OK, json::value::string("EXIT"));
+									auto resp = deleteAccount(message);
+									message.reply(status_codes::OK, resp);
 								}
 								else
 								{
