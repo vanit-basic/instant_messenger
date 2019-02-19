@@ -139,32 +139,6 @@ http_response getGroupUsers(std::string groupId, http_client* DataBaseClient){
 			});
 }
 
-http_response groupRemoveUser (http_request message, http_client* DateBaseClient)
-{ 
-	auto path = requestPath(message);
-	std::string adminId = path[2]; 
-	std::string groupId = path[3]; 
-	std::string userId  = path[4]; 
-	auto gInfo = getGroupInfo(groupId);
-	gInfo.extract_json().
-	then([message](http_response groupInfo) 
-	{        
-		if(adminId == groupInfo.at("adminId").as_string()) 
-		{        
-			uri_builder groupRemoveUser_path(U("/groupRemoveUser/"+ adminId + "/"+groupId+"/"+userId+"/")); 
-			DataBaseClient.request(method::GET,  groupRemoveUser_path.to_string()). 
-			then([message](http_response userRemove_response) 
-			{ 
-				return userRemove_response; 
-			} 
-		}
-	       	else
-		{
-			// ???????????????????????
-		}	
-	}); 
-} 
-
 				 
 
 
@@ -347,6 +321,34 @@ http_response signOut(std::string userId, http_client* TokenDb){
 		return status;		
 	}
 }
+
+http_response groupRemoveUser (http_request message, http_client* DateBaseClient)
+{ 
+	message.extract_json().
+	then([message](http_response groupInfo) 
+	{
+		std::string adminId = path[2]; 
+		std::string groupId = path[3]; 
+		std::string userId  = path[4]; 
+		auto gInfo = getGroupInfo(groupId, DateBaseClient);
+		gInfo.extract_json().
+		then([message](http_response groupInfo) 
+		{        
+			if(adminId == groupInfo.at("adminId").as_string()) 
+			{        
+				uri_builder groupRemoveUser_path(U("/groupRemoveUser/"+ adminId + "/"+groupId+"/"+userId+"/")); 
+				DataBaseClient.request(method::GET,  groupRemoveUser_path.to_string()). 
+				then([message](http_response userRemove_response) 
+				{ 
+					return userRemove_response; 
+				} 
+			}
+	       		else
+			{
+			// ???????????????????????
+			}	
+	}); 
+} 
 
 
 void Account::handlePost(http_request message) {
