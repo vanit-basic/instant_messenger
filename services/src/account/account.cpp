@@ -182,11 +182,7 @@ void Account::handleGet(http_request message) {
 					}
 					else
 					{
-						if(path_first_request[1] == "groupRemoveUser")
-						{
-							auto resp = getGroupUsers(groupId, this -> DatabaseClient);
-							message.reply(resp);
-						}
+						/////////////////
 					}
 				}
 			}
@@ -325,11 +321,11 @@ http_response signOut(std::string userId, http_client* TokenDb){
 http_response groupRemoveUser (http_request message, http_client* DateBaseClient)
 { 
 	message.extract_json().
-	then([message](http_response groupInfo) 
+	then([message](http_response reqInfo) 
 	{
-		std::string adminId = path[2]; 
-		std::string groupId = path[3]; 
-		std::string userId  = path[4]; 
+		std::string adminId = reqInfo.at("adminId").as_string(); 
+		std::string groupId = reqInfo.at("groupId").as_string(); 
+		std::string userId = reqInfo.at("userId").as_string(); 
 		auto gInfo = getGroupInfo(groupId, DateBaseClient);
 		gInfo.extract_json().
 		then([message](http_response groupInfo) 
@@ -401,6 +397,13 @@ void Account::handlePost(http_request message) {
 														{
 														message.reply(status_codes::OK, response);
 														});
+										}
+										else
+										{
+											if(path_first_request[1] == "removeFromGroup"){
+												auto resp = signOut(message, this -> TokenDBClient);
+												message.reply(status_codes::OK, resp);
+											}
 										}
 									}
 								}
