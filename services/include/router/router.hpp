@@ -3,6 +3,7 @@
 #include <basic_controller.hpp>
 #include <cpprest/http_client.h>
 #include <cpprest/filestream.h>
+#include <string>
 using namespace cfx;
 using namespace utility;                   
 using namespace web;                       
@@ -13,9 +14,8 @@ using namespace concurrency::streams;
 
 class Router : public BasicController, Controller {
         public:
-		bool createClients(std::string path);
 		bool checkServices();
-                Router(std::string) : BasicController(){}
+                Router(std::string);
                 ~Router() {}
 
         private:
@@ -26,7 +26,8 @@ class Router : public BasicController, Controller {
                 http_client *ConversationClient;
                 http_client *NotificationClient;
                 http_client *SearchClient;
-                void handleGet(http_request message) override;
+                bool createClients(std::string path);
+		void handleGet(http_request message) override;
                 void handlePut(http_request message) override;// = delete;
                 void handlePost(http_request message) override;
                 void handlePatch(http_request message) override;// = delete;
