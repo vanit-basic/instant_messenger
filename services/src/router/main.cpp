@@ -1,7 +1,6 @@
 #include <usr_interrupt_handler.hpp>
 #include <runtime_utils.hpp>
-#include "/home/narek/Documents/instant_messenger/services/include/router/router.hpp"
-#include <iostream>
+#include <router/router.hpp>
 using namespace web;
 using namespace cfx;
 
@@ -9,9 +8,7 @@ int main(int argc, const char * argv[])
 {
 	InterruptHandler::hookSIGINT();
 
-	Router server;
-	if(server.createClients("ConfigFile.txt"))
-	{
+	Router server("ConfigFile.txt");
 		if(server.checkServices())
 		{
 
@@ -31,6 +28,5 @@ int main(int argc, const char * argv[])
 				RuntimeUtils::printStackTrace();
 			}
 		}
-	}
 	return 0;
 }
