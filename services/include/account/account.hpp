@@ -4,6 +4,7 @@
 #include <cpprest/http_client.h>
 #include <cpprest/filestream.h>
 #include <string>
+
 using namespace cfx;
 using namespace utility;
 using namespace web;
