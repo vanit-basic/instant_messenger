@@ -21,13 +21,13 @@ endif()
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
     message("-- configuring clang options")
-    set(CMAKE_CXX_FLAGS "-arch x86_64 -std=c++11 -stdlib=libc++ -DBOOST_LOG_DYN_LINK -Wno-deprecated-declarations")
+    set(CMAKE_CXX_FLAGS "-arch x86_64 -std=c++11 -stdlib=libc++ -DBOOST_LOG_DYN_LINK -Wno-deprecated-declarations -I/usr/local/include/mongocxx/v_noabi -I/usr/local/include/bsoncxx/v_noabi -L/usr/local/lib -lmongocxx -lbsoncxx")
 
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 
     message("-- configuring gcc options")
 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -DBOOST_LOG_DYN_LINK")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -DBOOST_LOG_DYN_LINK -I/usr/local/include/mongocxx/v_noabi -I/usr/local/include/bsoncxx/v_noabi -L/usr/local/lib -lmongocxx -lbsoncxx")
 
 endif()
 
@@ -37,6 +37,11 @@ endif()
 
 add_executable("router" 		./services/src/router/main.cpp
 				./services/src/router/router.cpp
+				./external/source/foundation/network_utils.cpp
+				./external/source/foundation/basic_controller.cpp)
+
+add_executable("dbservice" 		./services/src/dbservice/main.cpp
+				./services/src/dbservice/dbservice.cpp
 				./external/source/foundation/network_utils.cpp
 				./external/source/foundation/basic_controller.cpp)
 
@@ -52,7 +57,7 @@ set(HEADER_SEARCH_PATHS ${CPPRESTSDK_INCLUDE_DIR} ${EXTERNAL_INCLUDE_DIR} ${SERV
 set(OPENSSL_LIBS "${OPENSSL_LIBRARIES}")
 set(CPPRESTSDK_LIBRARY "${PROJECT_SOURCE_DIR}/external/lib/libcpprest.a")
 
-set(LIBRARIES_SEARCH_PATHS ${CPPRESTSDK_LIBRARY} ${OPENSSL_LIBS} ${Boost_LIBRARIES})
+set(LIBRARIES_SEARCH_PATHS ${CPPRESTSDK_LIBRARY} ${OPENSSL_LIBS} ${Boost_LIBRARIES} -L/usr/local/lib)
 
 message(BOOST_LIBS " ${Boost_LIBRARIES}")
 message(OPENSSL_LIBS " ${OPENSSL_LIBRARIES}")
@@ -62,3 +67,5 @@ message(LIBRARIES_SEARCH_PATHS " ${LIBRARIES_SEARCH_PATHS}")
 include_directories(${HEADER_SEARCH_PATHS})
 
 target_link_libraries("router" ${LIBRARIES_SEARCH_PATHS})
+
+target_link_libraries("dbservice" ${LIBRARIES_SEARCH_PATHS})
