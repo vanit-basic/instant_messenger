@@ -31,6 +31,25 @@ Account::Account(std::string path)
         this->createClients(path);
 }
 
+bool checkToken(http_request message, http_client* TokenDB){
+	TokenDb->request(message).
+        then([=](http_response tokenStatus)
+	{
+		tokenStatus.extract_json().
+		then([message, this](json::value token)
+		{
+                      	if(token.at("token").as_string() == "valid")
+                        {
+				returm true;
+			}
+			else
+			{
+				return false;
+			}
+		});
+	});	
+}
+
 bool ServiceStart (http_client* client, std::string serviceName) {
         uri_builder builder(U("/ServiceTest/"));
         std::error_code error;
@@ -227,7 +246,7 @@ void Account::handleGet(http_request message) {
 				}
 				else
 				{
-					if(path_first_request[1] == "groupInfo")
+					if(path_first_request[1] == "groupUsers")
 					{
 						auto path = requestPath(meesage);
 						std::string userId  = path[2].to_string();
@@ -312,10 +331,10 @@ void signIn(http_request message, http_client* DateBaseClient, http_client* Toke
 	singinInfo["login"] = request.at("login");
 	singinInfo["password"] = request.at("password");
 	DataBaseClient->request(method::POST,  signin_path.to_string(), signinInfo).
-	then([message](http_response signinStatus)
+	then([=](http_response signinStatus)
 	{
 		signinStatus.extract_json().
-		then([message, request](json::value signinStatus_json)
+		then([=](json::value signinStatus_json)
 		{
 			if (signinStatus_json["status"] == "notFound")
 			{
@@ -347,14 +366,14 @@ void signIn(http_request message, http_client* DateBaseClient, http_client* Toke
 					if(signinStatus_json["status"] == "OK")
 					{
 						std::string id = signinStatus_json["id"].as_string();
-						json::value userInfo = getUserInfo(id, this -> DatabaseClient);	//petq e kanchenq getUserInfo() funkcian u user infon stanaluc heto  token generacnenq  //
-						std::string token = setToken();//funkcia vor@ petqe token generacni
+						json::value userInfo = getUserInfo(id, this -> DatabaseClient);
+						std::string token = setToken();
 						uri_builder token_uri("/SetToken/");
 						json::value token_json;
 						token_json["token"] = json::value::string(token);
 						token_json["id"] = json::value::string(id);
 						TokenDB -> request(methods::POST, token_uri.to_string(), token_json).
-						then([message, token_json, userInfo](http_response token_response)
+						then([=](http_response token_response)
 						{
 							userInfo["id"] = token_json["id"];
 							userInfo["token"] = token_json["token"];
@@ -369,14 +388,14 @@ void signIn(http_request message, http_client* DateBaseClient, http_client* Toke
 http_response groupRemoveUser (http_request message, http_client* DateBaseClient)
 { 
 	message.extract_json().
-	then([message](http_response reqInfo) 
+	then([=](http_response reqInfo) 
 	{
 		std::string adminId = reqInfo.at("adminId").as_string(); 
 		std::string groupId = reqInfo.at("groupId").as_string(); 
 		std::string userId = reqInfo.at("userId").as_string(); 
 		auto gInfo = getGroupInfo(groupId, DateBaseClient);
 		gInfo.extract_json().
-		then([message](http_response groupInfo) 
+		then([=](http_response groupInfo) 
 		{        
 			if(adminId == groupInfo.at("adminId").as_string()) 
 			{        
@@ -389,11 +408,25 @@ http_response groupRemoveUser (http_request message, http_client* DateBaseClient
 			}
 	       		else
 			{
-			// ???????????????????????
+			///////////////////
 			}	
 	}); 
 } 
 
+http_response createGroup(http_request message, http_client* DateBaseClient)
+{
+	message.extract_json().
+	then([=](http_response reqInfo) 
+	{
+		uri_builder createGroup_path(U("/creatGroup/")); 
+		DataBaseClient.request(method::GET,  createGroup_path.to_string(), reqInfo). 
+		then([message](http_response createGroup_response) 
+		{ 
+			return createGroup_response; 
+		} 
+		//////////
+	});
+}
 
 void Account::handlePost(http_request message) {
 	auto path_first_request = requestPath(message);
@@ -437,6 +470,14 @@ void Account::handlePost(http_request message) {
 									auto resp = signOut(message, this -> TokenDBClient);
 									message.reply(status_codes::OK, resp);
 								}
+								else 
+								{
+									if(path_first_request[1] == "createGroup")
+									{
+										auto resp = createGroup(message, this -> DatebaseClient);
+										message.reply(status_codes::OK, resp);
+									}
+								}
 							}
 						}
 					}
@@ -444,7 +485,6 @@ void Account::handlePost(http_request message) {
 			}
 		});
 }
-
 
 void Account::handlePatch(http_request message) {
     message.reply(status_codes::NotImplemented, responseNotImpl(methods::PATCH));

@@ -4,7 +4,7 @@
 using namespace web;
 using namespace cfx;
 
-int main(int argc, const char * argv[]) 
+int main(int argc, const char * argv[])
 {
 	InterruptHandler::hookSIGINT();
 
