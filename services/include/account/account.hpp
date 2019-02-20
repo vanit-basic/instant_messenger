@@ -15,7 +15,7 @@ using namespace concurrency::streams;
 class Account : public BasicController, Controller {
 	public:
 		bool checkServices();
-		Account();
+		Account(std::string);
 		~Account() {}
 
 	private:
