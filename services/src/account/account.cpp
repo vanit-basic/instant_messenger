@@ -16,7 +16,7 @@ bool Account::createClients(std::string path)
                 ConfigFile>> config;
                 ConfigFile.close();
                 DatabaseClient = new http_client(config.at("dataBase").as_string());
-                TokenDbClient = new http_client(config.at("tokenDb").as_string());
+                TokenDBClient = new http_client(config.at("tokenDb").as_string());
                 this->accountUri = config.at("account").as_string();
                 return true;
         }
@@ -32,7 +32,7 @@ Account::Account(std::string path)
 }
 
 bool checkToken(http_request message, http_client* TokenDB){
-	TokenDb->request(message).
+	TokenDB->request(message).
         then([=](http_response tokenStatus)
 	{
 		tokenStatus.extract_json().
@@ -40,7 +40,7 @@ bool checkToken(http_request message, http_client* TokenDB){
 		{
                       	if(token.at("token").as_string() == "valid")
                         {
-				returm true;
+				return true;
 			}
 			else
 			{
@@ -122,14 +122,14 @@ std::string setToken(){
 
 http_response getUserInfo(std::string userId, http_client* DataBaseClient){
 	uri_builder uInfo("/getUserInfo/" + userId + "/");
-	DataBaseClient->request(method::GET, uInfo.to_string()).
+	DataBaseClient->request(methods::GET, uInfo.to_string()).
 		then([=](http_response userInfo ) 
 			{
 				return userInfo;
 			});
 }
 
-http_response getUserShortInfo(td::string userId http_client* DataBaseClient){
+http_response getUserShortInfo(std::string userId, http_client* DataBaseClient){
 	uri_builder uInfo("/getUserShortInfo/" + userId + "/");
 	DataBaseClient->request(method::GET, uInfo.to_string()).
 	then([=](http_response userShortInfo) 
@@ -138,21 +138,30 @@ http_response getUserShortInfo(td::string userId http_client* DataBaseClient){
 			});
 }
 
+http_response getGroupUsers(std::string groupId, http_client* DataBaseClient){
+	uri_builder gInfo("/getGroupUsers/" + groupId + "/");
+	DataBaseClient->request(methods::GET, gInfo.to_string()).
+		then([=](http_response groupUsers) 
+			{
+				return groupUsers;
+			});
+}
+
 http_response getGroupInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
-	auto groupInfo = getGroupInfo(groupId, this -> DatabaseClient);
+	auto groupInfo = getGroupInfo(groupId, DataBaseClient);
 	groupInfo.extract_json().
 		then([=](http_response groupInfo)
 		{
-			if(groupInfo.at("acces") == "private")
+			if(groupInfo.at("acces").as_string() == "private")
 			{
-				auto groupUsers = getGroupUsers(groupId, this -> DatabaseClient);
+				auto groupUsers = getGroupUsers(groupId, DatabaseClient);
 				groupUsers.extract_json().
 				then([=](http_response groupUsers)
 				{
-					if(!(groupUsers.at(userId) == NULL))
+					if(!(groupUsers.at(userId).as_string() == NULL))
 					{
 						uri_builder gInfo("/getGroupInfo/" + groupId + "/");
-						DataBaseClient->request(method::GET, gInfo.to_string()).
+						DataBaseClient->request(methods::GET, gInfo.to_string()).
 						then([=](http_response groupInfo)
 						{
 							return groupInfo;
@@ -160,11 +169,10 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 					}
 					else
 					{
-						http_response resp;
-						resp.set_status_code(status_code::OK);
+						http_response resp(status_code::OK);
 						json::value groupInfoResp;
-						groupInfoResp["status"] = "Not Found";
-						resp.set_body(&groupInfoResp);
+						groupInfoResp["status"] = json::value::string(U("Not Found"));
+						resp.set_body(groupInfoResp);
 						return resp;
 					}
 				});
@@ -172,7 +180,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 			else
 			{
 				uri_builder gInfo("/getGroupInfo/" + groupId + "/");
-				DataBaseClient->request(method::GET, gInfo.to_string()).
+				DataBaseClient->request(methods::GET, gInfo.to_string()).
 				then([=](http_response groupInfo)
 				{
 					return groupInfo;
@@ -181,24 +189,15 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 		}
 }
 
-http_response getGroupUsers(std::string groupId, http_client* DataBaseClient){
-	uri_builder gInfo("/getGroupUsers/" + groupId + "/");
-	DataBaseClient->request(method::GET, gInfo.to_string()).
-		then([=](http_response groupUsers) 
-			{
-				return groupUsers;
-			});
-}
 
-
-http_response userDelete(std::string userId, http_cliemt* DateBaseClient){
+http_response userDelete(std::string userId, http_client* DateBaseClient){
 	json::value userDeleteInfo;
 	uri_builder userDelete_path(U("/userDelete/"));
-	userDeleteInfo["id"] = userId;
-	DataBaseClient.request(method::POST,  userDelete_path.to_string(), userDeleteInfo).
-	then([](http_response status)
+	userDeleteInfo["id"] = json::value::string(U(userId));
+	DataBaseClient.request(methods::POST,  userDelete_path.to_string(), userDeleteInfo).
+	then([](http_response status){
 		return status;
-	);
+	});
 }
 
 
