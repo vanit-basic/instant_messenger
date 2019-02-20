@@ -123,7 +123,7 @@ std::string setToken(){
 http_response getUserInfo(std::string userId, http_client* DataBaseClient){
 	uri_builder uInfo("/getUserInfo/" + userId + "/");
 	DataBaseClient->request(method::GET, uInfo.to_string()).
-		then([](http_response userInfo ) // [] - pakagceri mej@ ?
+		then([=](http_response userInfo ) 
 			{
 				return userInfo;
 			});
@@ -132,7 +132,7 @@ http_response getUserInfo(std::string userId, http_client* DataBaseClient){
 http_response getUserShortInfo(td::string userId http_client* DataBaseClient){
 	uri_builder uInfo("/getUserShortInfo/" + userId + "/");
 	DataBaseClient->request(method::GET, uInfo.to_string()).
-	then([](http_response userShortInfo) // [] - pakagceri mej@ ?
+	then([=](http_response userShortInfo) 
 			{
 				return userShortInfo;
 			});
@@ -184,7 +184,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 http_response getGroupUsers(std::string groupId, http_client* DataBaseClient){
 	uri_builder gInfo("/getGroupUsers/" + groupId + "/");
 	DataBaseClient->request(method::GET, gInfo.to_string()).
-		then([](http_response groupUsers) // [] - pakagceri mej@ ?
+		then([=](http_response groupUsers) 
 			{
 				return groupUsers;
 			});
