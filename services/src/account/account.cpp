@@ -246,7 +246,7 @@ void Account::handleGet(http_request message) {
 				}
 				else
 				{
-					if(path_first_request[1] == "groupInfo")
+					if(path_first_request[1] == "groupUsers")
 					{
 						auto path = requestPath(meesage);
 						std::string userId  = path[2].to_string();
@@ -366,8 +366,8 @@ void signIn(http_request message, http_client* DateBaseClient, http_client* Toke
 					if(signinStatus_json["status"] == "OK")
 					{
 						std::string id = signinStatus_json["id"].as_string();
-						json::value userInfo = getUserInfo(id, this -> DatabaseClient);	//petq e kanchenq getUserInfo() funkcian u user infon stanaluc heto  token generacnenq  //
-						std::string token = setToken();//funkcia vor@ petqe token generacni
+						json::value userInfo = getUserInfo(id, this -> DatabaseClient);
+						std::string token = setToken();
 						uri_builder token_uri("/SetToken/");
 						json::value token_json;
 						token_json["token"] = json::value::string(token);
@@ -399,16 +399,42 @@ http_response groupRemoveUser (http_request message, http_client* DateBaseClient
 		{        
 			if(adminId == groupInfo.at("adminId").as_string()) 
 			{        
-				uri_builder groupRemoveUser_path(U("/groupRemoveUser/"+ adminId + "/"+groupId+"/"+userId+"/")); 
-				DataBaseClient.request(method::GET,  groupRemoveUser_path.to_string()). 
-				then([message](http_response userRemove_response) 
-				{ 
+				if(adminId == userId){
+					
+					http_response resp(status_codes::OK);
+					json::value info;
+					info["error"] = json::value::string("change admin");
+					resp.set_body(&info);
+					return resp;	
+				}
+				else
+				{
+					uri_builder groupRemoveUser_path(U("/groupRemoveUser/"+ adminId + "/"+groupId+"/"+userId+"/")); 
+					DataBaseClient.request(method::GET,  groupRemoveUser_path.to_string()). 
+					then([message](http_response userRemove_response) 
+					{ 
 					return userRemove_response; 
-				} 
+					}
+				}	
 			}
 	       		else
 			{
-			///////////////////
+				if(adminId == userId)
+				{
+					uri_builder groupRemoveUser_path(U("/groupRemoveUser/"+ adminId + "/"+groupId+"/"+userId+"/")); 
+					DataBaseClient.request(method::GET,  groupRemoveUser_path.to_string()). 
+					then([message](http_response userRemove_response) 
+					{ 
+					return userRemove_response; 
+					}
+				}
+				else{
+					http_response resp(status_codes::OK);
+					json::value info;
+					info["error"] = json::value::string("you are not admin");
+					resp.set_body(&info);
+					return resp;	
+				}
 			}	
 	}); 
 } 
@@ -474,7 +500,7 @@ void Account::handlePost(http_request message) {
 								{
 									if(path_first_request[1] == "createGroup")
 									{
-										auto resp = createGroup(messag, this -> DatebaseClient);
+										auto resp = createGroup(message, this -> DatebaseClient);
 										message.reply(status_codes::OK, resp);
 									}
 								}
