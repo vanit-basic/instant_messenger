@@ -36,14 +36,11 @@ using namespace web::http;
 using namespace web::http::client;         
 using namespace concurrency::streams; 
 
-/*void DbService::initRestOpHandlers() {
-	_listener.support(methods::GET, std::bind(&DbService::handleGet, this, std::placeholders::_1));
-	_listener.support(methods::PUT, std::bind(&DbService::handlePut, this, std::placeholders::_1));
-	_listener.support(methods::POST, std::bind(&DbService::handlePost, this, std::placeholders::_1));
-	_listener.support(methods::DEL, std::bind(&DbService::handleDelete, this, std::placeholders::_1));
-	_listener.support(methods::PATCH, std::bind(&DbService::handlePatch, this, std::placeholders::_1));
+void DbService::initRestOpHandlers() {
+    _listener.support(methods::GET, std::bind(&DbService::handleGet, this, std::placeholders::_1));
+    _listener.support(methods::POST, std::bind(&DbService::handlePost, this, std::placeholders::_1));
 }
-*/
+
 
 std::string generateID() {
 	mongocxx::uri uri{"mongodb://localhost:27017"};
@@ -139,6 +136,10 @@ DbService::DbService(std::string dbname) : BasicController() {
 	std::string path = decideDB(dbname);
 	mongocxx::uri uri{path};
 	mongocxx::pool pool{uri};
+}
+
+DbService::~DbService() {
+
 }
 
 void DbService::handleGet(http_request message) {
@@ -254,4 +255,36 @@ void DbService::handlePost(http_request message) {
 
 		});
 	});
+}
+
+void DbService::handlePatch(http_request message) {
+    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PATCH));
+}
+
+void DbService::handlePut(http_request message) {
+    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PUT));
+}
+
+void DbService::handleDelete(http_request message) {    
+    message.reply(status_codes::NotImplemented, responseNotImpl(methods::DEL));
+}
+
+void DbService::handleHead(http_request message) {
+    message.reply(status_codes::NotImplemented, responseNotImpl(methods::HEAD));
+}
+
+void DbService::handleOptions(http_request message) {
+    message.reply(status_codes::NotImplemented, responseNotImpl(methods::OPTIONS));
+}
+
+void DbService::handleTrace(http_request message) {
+    message.reply(status_codes::NotImplemented, responseNotImpl(methods::TRCE));
+}
+
+void DbService::handleConnect(http_request message) {
+    message.reply(status_codes::NotImplemented, responseNotImpl(methods::CONNECT));
+}
+
+void DbService::handleMerge(http_request message) {
+    message.reply(status_codes::NotImplemented, responseNotImpl(methods::MERGE));
 }

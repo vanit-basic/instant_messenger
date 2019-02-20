@@ -7,6 +7,8 @@ if(UNIX) # Darwing or Linux
 
 	find_package(Boost REQUIRED COMPONENTS system thread log program_options chrono)
 	find_package(Threads REQUIRED)
+	find_package(libmongocxx REQUIRED)
+	find_package(libbsoncxx REQUIRED)
 
 	find_package(OpenSSL 1.0.1 REQUIRED)
 	set(OPENSSL_VERSION "1.0.1")
@@ -56,8 +58,13 @@ set(HEADER_SEARCH_PATHS ${CPPRESTSDK_INCLUDE_DIR} ${EXTERNAL_INCLUDE_DIR} ${SERV
 # library search paths ...
 set(OPENSSL_LIBS "${OPENSSL_LIBRARIES}")
 set(CPPRESTSDK_LIBRARY "${PROJECT_SOURCE_DIR}/external/lib/libcpprest.a")
+set(LIBRARIES_SEARCH_PATHS ${CPPRESTSDK_LIBRARY} ${OPENSSL_LIBS} ${Boost_LIBRARIES} ${LIBMONGOCXX_LIBRARIES} ${LIBBSONCXX_LIBRARIES})
 
-set(LIBRARIES_SEARCH_PATHS ${CPPRESTSDK_LIBRARY} ${OPENSSL_LIBS} ${Boost_LIBRARIES} -L/usr/local/lib)
+message(MONGO_LIBS "${LIBMONGOCXX_LIBRARIES}")
+message(BSON_LIBS "${LIBBSONCXX_LIBRARIES}")
+
+message(MONGO_INC "${LIBMONGOCXX_INCLUDE_DIR}")
+message(BSON_INC "${LIBBSONCXX_INCLUDE_DIR}")
 
 message(BOOST_LIBS " ${Boost_LIBRARIES}")
 message(OPENSSL_LIBS " ${OPENSSL_LIBRARIES}")
