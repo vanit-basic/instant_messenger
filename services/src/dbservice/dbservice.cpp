@@ -19,7 +19,6 @@
 
 #include <std_micro_service.hpp>
 #include <basic_controller.hpp>
-#include <microsvc_controller.hpp>
 
 #include <dbservice/dbservice.hpp>
 
@@ -255,8 +254,4 @@ void DbService::handlePost(http_request message) {
 
 		});
 	});
-}
-
-int main() {
-	return 0;
 }
