@@ -399,16 +399,42 @@ http_response groupRemoveUser (http_request message, http_client* DateBaseClient
 		{        
 			if(adminId == groupInfo.at("adminId").as_string()) 
 			{        
-				uri_builder groupRemoveUser_path(U("/groupRemoveUser/"+ adminId + "/"+groupId+"/"+userId+"/")); 
-				DataBaseClient.request(method::GET,  groupRemoveUser_path.to_string()). 
-				then([message](http_response userRemove_response) 
-				{ 
+				if(adminId == userId){
+					
+					http_response resp(status_codes::OK);
+					json::value info;
+					info["error"] = json::value::string("change admin");
+					resp.set_body(&info);
+					return resp;	
+				}
+				else
+				{
+					uri_builder groupRemoveUser_path(U("/groupRemoveUser/"+ adminId + "/"+groupId+"/"+userId+"/")); 
+					DataBaseClient.request(method::GET,  groupRemoveUser_path.to_string()). 
+					then([message](http_response userRemove_response) 
+					{ 
 					return userRemove_response; 
-				} 
+					}
+				}	
 			}
 	       		else
 			{
-			///////////////////
+				if(adminId == userId)
+				{
+					uri_builder groupRemoveUser_path(U("/groupRemoveUser/"+ adminId + "/"+groupId+"/"+userId+"/")); 
+					DataBaseClient.request(method::GET,  groupRemoveUser_path.to_string()). 
+					then([message](http_response userRemove_response) 
+					{ 
+					return userRemove_response; 
+					}
+				}
+				else{
+					http_response resp(status_codes::OK);
+					json::value info;
+					info["error"] = json::value::string("you are not admin");
+					resp.set_body(&info);
+					return resp;	
+				}
 			}	
 	}); 
 } 
@@ -424,7 +450,7 @@ http_response createGroup(http_request message, http_client* DateBaseClient)
 		{ 
 			return createGroup_response; 
 		} 
-		//////////
+		
 	});
 }
 
