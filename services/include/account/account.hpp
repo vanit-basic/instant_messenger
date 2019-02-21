@@ -20,7 +20,7 @@ class Account : public BasicController, Controller {
 
 	private:
 		std::string accountUri;
-		http_client *DatabaseClient;
+		http_client *DataBaseClient;
 		http_client *TokenDBClient;
 		bool createClients(std::string path);
 		void handleGet(http_request message) override;

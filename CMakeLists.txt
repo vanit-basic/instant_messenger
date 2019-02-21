@@ -47,6 +47,12 @@ add_executable("dbservice" 		./services/src/dbservice/main.cpp
 				./external/source/foundation/network_utils.cpp
 				./external/source/foundation/basic_controller.cpp)
 
+add_executable("account" 		./services/src/account/main.cpp
+				./services/src/account/account.cpp
+				./external/source/foundation/network_utils.cpp
+				./external/source/foundation/basic_controller.cpp)
+
+
 # headers search paths ...
 set(CPPRESTSDK_INCLUDE_DIR "./external/include")
 set(EXTERNAL_INCLUDE_DIR "./external/source/foundation/include")
@@ -76,3 +82,5 @@ include_directories(${HEADER_SEARCH_PATHS})
 target_link_libraries("router" ${LIBRARIES_SEARCH_PATHS})
 
 target_link_libraries("dbservice" ${LIBRARIES_SEARCH_PATHS})
+
+target_link_libraries("account" ${LIBRARIES_SEARCH_PATHS})
