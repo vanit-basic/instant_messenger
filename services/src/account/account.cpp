@@ -161,7 +161,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 				groupUsers.extract_json().
 				then([=](json::value groupUsersResp)
 				{
-					if(!(groupUsersResp.at(userId) == NULL))
+					if(!(groupUsersResp.at(userId).is_null()))
 					{
 						return groupInfo;
 					}
