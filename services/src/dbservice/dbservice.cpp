@@ -82,6 +82,7 @@ std::string date() {
 	std::string date = dt;
 	return date;
 }
+/*
 bool createConfigFile() {
         std::ofstream myfile ("config.txt", std::ios::out);
         std::string dbport = "mongodb://localhost:27017";
@@ -101,6 +102,7 @@ bool createConfigFile() {
                 return false;
         }
 }
+*/
 std::string decideDB(std::string dbname) {
         std::string line = "";
         std::string path = "";
@@ -119,6 +121,9 @@ std::string decideDB(std::string dbname) {
                 }
                 myfile.close();
         }
+	else {
+		std::cout << "File not found\n";
+	}
 
         return path;
 }
@@ -131,6 +136,7 @@ DbService::DbService(std::string dbname) : BasicController() {
 	}
 */
 	std::string path = decideDB(dbname);
+	std::cout << path << "\n";
 	mongocxx::uri uri{path};
 	mongocxx::pool pool{uri};
 }
@@ -193,7 +199,7 @@ void DbService::handleGet(http_request message) {
 void DbService::handlePost(http_request message) {
 	mongocxx::uri uri{"mongodb://localhost:27017"};
 	mongocxx::pool pool{uri};
-	 auto threadfunc = [](mongocxx::client& client, std::string dbname) {
+	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
                 auto coll = client[dbname]["coll"].insert_one({});
         };
         std::thread t([&]() {
