@@ -1,0 +1,2 @@
+cmake-data libboost-atomic-dev libboost-chrono-dev libboost-filesystem-dev libboost-random-dev libboost-regex-dev libboost-system-dev
+  libboost-thread-dev libjsoncpp1 librhash0 libssl-doc libwebsocketpp-dev
