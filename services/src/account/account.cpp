@@ -36,7 +36,7 @@ bool checkToken(http_request message, http_client* TokenDB){
         then([=](http_response tokenStatus)
 	{
 		tokenStatus.extract_json().
-		then([message, this](json::value token)
+		then([=](json::value token)
 		{
                       	if(token.at("token").as_string() == "valid")
                         {
@@ -131,7 +131,7 @@ http_response getUserInfo(std::string userId, http_client* DataBaseClient){
 
 http_response getUserShortInfo(std::string userId, http_client* DataBaseClient){
 	uri_builder uInfo("/getUserShortInfo/" + userId + "/");
-	DataBaseClient->request(method::GET, uInfo.to_string()).
+	DataBaseClient->request(methods::GET, uInfo.to_string()).
 	then([=](http_response userShortInfo) 
 			{
 				return userShortInfo;
@@ -148,24 +148,22 @@ http_response getGroupUsers(std::string groupId, http_client* DataBaseClient){
 }
 
 http_response getGroupInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
-	auto groupInfo = getGroupInfo(groupId, DataBaseClient);
-	groupInfo.extract_json().
-		then([=](http_response groupInfo)
+	uri_builder gInfo("/getGroupInfo/" + groupId + "/");
+	DataBaseClient->request(methods::GET, gInfo.to_string()).
+	then([=](http_response groupInfo)
+	{
+		groupInfo.extract_json().
+		then([=](json::value groupInf)
 		{
-			if(groupInfo.at("acces").as_string() == "private")
+			if(groupInf.at("acces").as_string() == "private")
 			{
-				auto groupUsers = getGroupUsers(groupId, DatabaseClient);
+				auto groupUsers = getGroupUsers(groupId, DataBaseClient);
 				groupUsers.extract_json().
-				then([=](http_response groupUsers)
+				then([=](json::value groupUsersResp)
 				{
-					if(!(groupUsers.at(userId).as_string() == NULL))
+					if(!(groupUsersResp.at(userId).as_string() == NULL))
 					{
-						uri_builder gInfo("/getGroupInfo/" + groupId + "/");
-						DataBaseClient->request(methods::GET, gInfo.to_string()).
-						then([=](http_response groupInfo)
-						{
-							return groupInfo;
-						});
+						return groupInfo;
 					}
 					else
 					{
@@ -179,14 +177,10 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 			}
 			else
 			{
-				uri_builder gInfo("/getGroupInfo/" + groupId + "/");
-				DataBaseClient->request(methods::GET, gInfo.to_string()).
-				then([=](http_response groupInfo)
-				{
-					return groupInfo;
-				});
+				return groupInfo;
 			}
-		}
+		});
+	}
 }
 
 
