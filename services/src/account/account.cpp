@@ -161,15 +161,15 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 				groupUsers.extract_json().
 				then([=](json::value groupUsersResp)
 				{
-					if(!(groupUsersResp.at(userId).as_string() == NULL))
+					if(!(groupUsersResp.at(userId) == NULL))
 					{
 						return groupInfo;
 					}
 					else
 					{
-						http_response resp(status_code::OK);
+						http_response resp;
 						json::value groupInfoResp;
-						groupInfoResp["status"] = json::value::string(U("Not Found"));
+						groupInfoResp["status"] = json::value::string("Not Found");
 						resp.set_body(groupInfoResp);
 						return resp;
 					}
@@ -180,15 +180,15 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 				return groupInfo;
 			}
 		});
-	}
+	});
 }
 
 
-http_response userDelete(std::string userId, http_client* DateBaseClient){
+http_response userDelete(std::string userId, http_client* DataBaseClient){
 	json::value userDeleteInfo;
 	uri_builder userDelete_path(U("/userDelete/"));
-	userDeleteInfo["id"] = json::value::string(U(userId));
-	DataBaseClient.request(methods::POST,  userDelete_path.to_string(), userDeleteInfo).
+	userDeleteInfo["id"] = json::value::string(userId);
+	DataBaseClient.request(methods::POST, userDelete_path.to_string(), userDeleteInfo).
 	then([](http_response status){
 		return status;
 	});
@@ -198,9 +198,10 @@ http_response userDelete(std::string userId, http_client* DateBaseClient){
 http_response signOut(std::string userId, http_client* TokenDb){
 	uri_builder deleteToken("/deleteToken/");
 	json::value userIdInfo;
-	userIdInfo["id"] = userId;
-	TokenDB.request(method::POST, deleteToken, userIdInfo);
-	then([](http_response status){
+	userIdInfo["id"] = json::value::string(userId);
+	TokenDb.request(methods::POST, deleteToken, userIdInfo);
+	then([](http_response status)
+	{
 		return status;		
 	}
 }
