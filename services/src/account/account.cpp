@@ -15,7 +15,7 @@ bool Account::createClients(std::string path)
         if (ConfigFile.is_open()) {
                 ConfigFile>> config;
                 ConfigFile.close();
-                DatabaseClient = new http_client(config.at("dataBase").as_string());
+                DataBaseClient = new http_client(config.at("dataBase").as_string());
                 TokenDBClient = new http_client(config.at("tokenDb").as_string());
                 this->accountUri = config.at("account").as_string();
                 return true;
@@ -88,7 +88,7 @@ bool Account::checkServices()
         bool status = false;
         bool DbServStatus = false;
         bool tokDbServStatus = false;
-        DbServStatus = ServiceStart(DatabaseClient, "Account Database");
+        DbServStatus = ServiceStart(DataBaseClient, "Account Database");
         if(DbServStatus){
                 tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");}
         if (tokDbServStatus)
@@ -189,7 +189,7 @@ http_response userDelete(std::string userId, http_client* DataBaseClient){
 	uri_builder userDelete_path(U("/userDelete/"));
 	userDeleteInfo["id"] = json::value::string(userId);
 	DataBaseClient->request(methods::POST, userDelete_path.to_string(), userDeleteInfo).
-	then([](http_response status){
+	then([=](http_response status){
 		return status;
 	});
 }
@@ -199,8 +199,8 @@ http_response signOut(std::string userId, http_client* TokenDb){
 	uri_builder deleteToken("/deleteToken/");
 	json::value userIdInfo;
 	userIdInfo["id"] = json::value::string(userId);
-	TokenDb->request(methods::POST, deleteToken, userIdInfo);
-	then([](http_response status)
+	TokenDb->request(methods::POST, deleteToken.to_string(), userIdInfo).
+	then([=](http_response status)
 	{
 		return status;		
 	});
@@ -215,34 +215,34 @@ void Account::handleGet(http_request message) {
 	if (!(path_first_request.empty())) {
 		if(path_first_request[1] == "getUserInfo")
 		{
-			std::string userId = path_first_request[3].to_string();
-			auto userInfo = getUserInfo(userId, this -> DatabaseClient);
+			std::string userId = path_first_request[3];
+			auto userInfo = getUserInfo(userId, this -> DataBaseClient);
 			message.reply(userInfo);
 		}
 		else
 		{
 			if(path_first_request[1] == "getUserShortInfo")
 			{
-				std::string userId = path_first_request[3].to_string();
-				auto userShortInfo = getUserShortInfo(userId, this -> DatabaseClient);
+				std::string userId = path_first_request[3];
+				auto userShortInfo = getUserShortInfo(userId, this -> DataBaseClient);
 				message.reply(userShortInfo);
 			}
 			else
 			{
 				if(path_first_request[1] == "groupInfo")
 				{
-					std::string userId = path_first_request[2].to_string();
-					std::string groupId = path_first_request[3].to_string();
-					auto groupInfo = getGroupInfo(userId,groupId, this->DatabaseClient);
+					std::string userId = path_first_request[2];
+					std::string groupId = path_first_request[3];
+					auto groupInfo = getGroupInfo(userId,groupId, this->DataBaseClient);
 					message.reply(groupInfo);
 				}
 				else
 				{
 					if(path_first_request[1] == "groupUsers")
 					{
-						std::string userId  = path_first_request[2].to_string();
-						std::string groupId = path_first_request[3].to_string();
-						auto groupUsers = getGroupUsers(userId, groupId, this -> DatabaseClient);
+						std::string userId  = path_first_request[2];
+						std::string groupId = path_first_request[3];
+						auto groupUsers = getGroupUsers(userId, groupId, this -> DataBaseClient);
 						message.reply(groupUsers);
 					}
 					else
@@ -250,16 +250,16 @@ void Account::handleGet(http_request message) {
 						if (path_first_request[1] == "userDelete")
 						{	
 							std::string userId = path_first_request[2];
-							auto resp = userDelete(userId, DatabaseClient);
-							message.reply(status_codes::OK, resp);
+							auto resp = userDelete(userId, this->DataBaseClient);
+							message.reply(resp);
 						}
 						else
 						{
 							if(path_first_request[1] == "signOut")
 							{
-								std::string userId = request.at("id");
+								std::string userId = path_first_request[2];
 								auto resp = signOut(userId, this->TokenDBClient);
-								message.reply(status_codes::OK, resp);
+								message.reply(resp);
 							}
 						}
 					}
@@ -273,13 +273,13 @@ void Account::handleGet(http_request message) {
 	}
 }
 
-void registration(http_request message , http_client* DateBaseClient){
+void registration(http_request message , http_client* DataBaseClient){
         message.extract_json().then([=](json::value info)
 	{
         std::string ml = "/get/mail_login"; 
         json::value login_mail;
-        login_mail["email"] = info.at("email").as_string();
-        login_mail["login"] = info.at("login").as_string();
+        login_mail["email"] = json::value::string(info.at("email").as_string());
+        login_mail["login"] = json::value::string(info.at("login").as_string());
         uri_builder get_mail_login(U(ml));
         DataBaseClient->request(methods::POST, get_mail_login.to_string(), login_mail).
 
