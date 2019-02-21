@@ -184,7 +184,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 }
 
 
-http_response userDelete(std::string userId, http_client* DateBaseClient){
+http_response userDelete(std::string userId, http_client* DataBaseClient){
 	json::value userDeleteInfo;
 	uri_builder userDelete_path(U("/userDelete/"));
 	userDeleteInfo["id"] = json::value::string(userId);
@@ -199,8 +199,9 @@ http_response signOut(std::string userId, http_client* TokenDb){
 	uri_builder deleteToken("/deleteToken/");
 	json::value userIdInfo;
 	userIdInfo["id"] = json::value::string(userId);
-	TokenDB.request(method::POST, deleteToken, userIdInfo);
-	then([](http_response status){
+	TokenDb.request(methods::POST, deleteToken, userIdInfo);
+	then([](http_response status)
+	{
 		return status;		
 	}
 }
