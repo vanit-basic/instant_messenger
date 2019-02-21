@@ -138,7 +138,7 @@ http_response getUserShortInfo(std::string userId, http_client* DataBaseClient){
 			});
 }
 
-http_response getGroupUsers(std::string groupId, http_client* DataBaseClient){
+http_response getGroupUsers(std::string userId, std::string groupId, http_client* DataBaseClient){
 	uri_builder gInfo("/getGroupUsers/" + groupId + "/");
 	DataBaseClient->request(methods::GET, gInfo.to_string()).
 		then([=](http_response groupUsers) 
@@ -157,7 +157,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 		{
 			if(groupInf.at("acces").as_string() == "private")
 			{
-				auto groupUsers = getGroupUsers(groupId, DataBaseClient);
+				auto groupUsers = getGroupUsers(userId, groupId, DataBaseClient);
 				groupUsers.extract_json().
 				then([=](json::value groupUsersResp)
 				{
@@ -188,7 +188,7 @@ http_response userDelete(std::string userId, http_client* DataBaseClient){
 	json::value userDeleteInfo;
 	uri_builder userDelete_path(U("/userDelete/"));
 	userDeleteInfo["id"] = json::value::string(userId);
-	DataBaseClient.request(methods::POST, userDelete_path.to_string(), userDeleteInfo).
+	DataBaseClient->request(methods::POST, userDelete_path.to_string(), userDeleteInfo).
 	then([](http_response status){
 		return status;
 	});
@@ -199,11 +199,11 @@ http_response signOut(std::string userId, http_client* TokenDb){
 	uri_builder deleteToken("/deleteToken/");
 	json::value userIdInfo;
 	userIdInfo["id"] = json::value::string(userId);
-	TokenDb.request(methods::POST, deleteToken, userIdInfo);
+	TokenDb->request(methods::POST, deleteToken, userIdInfo);
 	then([](http_response status)
 	{
 		return status;		
-	}
+	});
 }
 
 				 
@@ -215,8 +215,7 @@ void Account::handleGet(http_request message) {
 	if (!(path_first_request.empty())) {
 		if(path_first_request[1] == "getUserInfo")
 		{
-			auto path_first_request = requestPath(message);
-			std::string userId = path[2].to_string();
+			std::string userId = path_first_request[3].to_string();
 			auto userInfo = getUserInfo(userId, this -> DatabaseClient);
 			message.reply(userInfo);
 		}
@@ -224,8 +223,7 @@ void Account::handleGet(http_request message) {
 		{
 			if(path_first_request[1] == "getUserShortInfo")
 			{
-				auto path = requestPath(message);
-				std::string userId = path[2].to_string();
+				std::string userId = path_first_request[3].to_string();
 				auto userShortInfo = getUserShortInfo(userId, this -> DatabaseClient);
 				message.reply(userShortInfo);
 			}
@@ -233,19 +231,17 @@ void Account::handleGet(http_request message) {
 			{
 				if(path_first_request[1] == "groupInfo")
 				{
-					auto path = requestPath(meesage);
-					std::string groupId = path[2].to_string();
-					auto groupInfo = getGroupInfo(groupId, this -> DatabaseClient);
+					std::string userId = path_first_request[2].to_string();
+					std::string groupId = path_first_request[3].to_string();
+					auto groupInfo = getGroupInfo(userId,groupId, this->DatabaseClient);
 					message.reply(groupInfo);
 				}
 				else
 				{
 					if(path_first_request[1] == "groupUsers")
 					{
-						auto path = requestPath(meesage);
-						std::string userId  = path[2].to_string();
-						std::string groupId = path[3].to_string();
-
+						std::string userId  = path_first_request[2].to_string();
+						std::string groupId = path_first_request[3].to_string();
 						auto groupUsers = getGroupUsers(userId, groupId, this -> DatabaseClient);
 						message.reply(groupUsers);
 					}
@@ -259,10 +255,10 @@ void Account::handleGet(http_request message) {
 						}
 						else
 						{
-							if(path_first_request[1] == "signout")
+							if(path_first_request[1] == "signOut")
 							{
 								std::string userId = request.at("id");
-								auto resp = signOut(userId, this -> TokenDBClient);
+								auto resp = signOut(userId, this->TokenDBClient);
 								message.reply(status_codes::OK, resp);
 							}
 						}
