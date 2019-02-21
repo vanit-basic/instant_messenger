@@ -278,7 +278,7 @@ void Account::handleGet(http_request message) {
 }
 
 void registration(http_request message , http_client* DateBaseClient){
-        message.extract_json().then([message](json::value info)
+        message.extract_json().then([=](json::value info)
 	{
         std::string ml = "/get/mail_login"; 
         json::value login_mail;
@@ -287,12 +287,12 @@ void registration(http_request message , http_client* DateBaseClient){
         uri_builder get_mail_login(U(ml));
         DataBaseClient->request(methods::POST, get_mail_login.to_string(), login_mail).
 
-		then([message, info](http_response mail_login)
+		then([=](http_response mail_login)
 		{
 			mail_login.extract_json().
-			then([message, info](json::value mail_login_json)
+			then([=](json::value mail_login_json)
 			{
-				if(!(mail_login_json["email"] ==  info.at("email").as_string() && mail_login_json["login"] == info.at("login").as_string()))
+				if(!(mail_login_json["email"] ==  info.at("email") && mail_login_json["login"] == info.at("login")))
 				{
 					DataBaseClient->request(message).
 					then([message](http_response registration_response)
@@ -303,7 +303,7 @@ void registration(http_request message , http_client* DateBaseClient){
 				else
 				{
 					json::value error;
-					if(mail_login_json["email"] ==  info.at("email").as_string())
+					if(mail_login_json["email"] ==  info.at("email"))
 					{
 						error["email"] = json::value::string(U("Invalid"));
 					}
@@ -361,7 +361,8 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 					{
 						std::string id = signinStatus_json["id"].as_string();
 						http_response res = getUserInfo(id, DataBaseClient);
-						res.extract_json().then([=](json::value userInfo){
+						res.extract_json().then([=](json::value userInf){
+						json::value userInfo = userInf;
 						std::string token = setToken();
 						uri_builder token_uri("/SetToken/");
 						json::value token_json;
@@ -390,9 +391,9 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
 		std::string adminId = reqInfo.at("adminId").as_string(); 
 		std::string groupId = reqInfo.at("groupId").as_string(); 
 		std::string userId = reqInfo.at("userId").as_string(); 
-		auto gInfo = getGroupInfo(groupId, DataBaseClient);
+		auto gInfo = getGroupInfo(adminId ,groupId, DataBaseClient);
 		gInfo.extract_json().
-		then([=](http_response groupInfo) 
+		then([=](json::value groupInfo) 
 		{        
 			if(adminId == groupInfo.at("adminId").as_string()) 
 			{        
@@ -439,25 +440,24 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
 	});	
 } 
 
-http_response createGroup(http_request message, http_client* DateBaseClient)
+http_response createGroup(http_request message, http_client* DataBaseClient)
 {
 	message.extract_json().
 	then([=](http_response reqInfo) 
 	{
 		uri_builder createGroup_path(U("/creatGroup/")); 
-		DataBaseClient.request(method::GET,  createGroup_path.to_string(), reqInfo). 
+		DataBaseClient->request(methods::GET,  createGroup_path.to_string(), reqInfo). 
 		then([message](http_response createGroup_response) 
 		{ 
 			return createGroup_response; 
-		} 
-		
+		}); 
 	});
 }
 
 void Account::handlePost(http_request message) {
 auto path_first_request = requestPath(message);
 message.extract_json().
-then([message](json::value request) 
+then([=](json::value request) 
 	{
 		if ( path_first_request[1] == "registration") 
 		{
@@ -467,13 +467,13 @@ then([message](json::value request)
 		{
 			if( path_first_request[1] == "signin")
 			{
-			signIn(message, DatabaseClient, TokenDBClient);
+				signIn(message, DatabaseClient, TokenDBClient);
 			}
 			else
 			{
 				if(path_first_request[1] == "userUpdateInfo")
 				{
-					DataBaseClient.request(method::POST, message).
+					DataBaseClient->request(methods::POST, message).
 					then([message](http_response response)
 					{
 					message.reply(status_codes::OK, response);
@@ -483,7 +483,7 @@ then([message](json::value request)
 				{
 					if(path_first_request[1] == "groupUpdateInfo")
 					{
-						DataBaseClient.request(method::POST, message).
+						DataBaseClient->request(method::POST, message).
 						then([message](http_response response)
 						{
 						message.reply(status_codes::OK, response);
