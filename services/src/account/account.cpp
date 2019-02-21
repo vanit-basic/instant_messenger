@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 
 
-
+static int max_attempt = 5;
 bool Account::createClients(std::string path)
 {
         std::ifstream ConfigFile(path);
@@ -317,30 +317,30 @@ void registration(http_request message , http_client* DateBaseClient){
 	});
 }
 
-void signIn(http_request message, http_client* DateBaseClient, http_client* TokenDB){ 
-	message.extract_json().then([message](json::value request))
+void signIn(http_request message, http_client* DataBaseClient, http_client* TokenDB){ 
+	message.extract_json().then([message](json::value request){
 	json::value signinInfo;
 	uri_builder signin_path(U("/signin/"));
-	singinInfo["login"] = request.at("login");
-	singinInfo["password"] = request.at("password");
-	DataBaseClient->request(method::POST,  signin_path.to_string(), signinInfo).
+	signinInfo["login"] = request.at("login");
+	signinInfo["password"] = request.at("password");
+	DataBaseClient->request(methods::POST,  signin_path.to_string(), signinInfo).
 	then([=](http_response signinStatus)
 	{
 		signinStatus.extract_json().
 		then([=](json::value signinStatus_json)
 		{
-			if (signinStatus_json["status"] == "notFound")
+			if (signinStatus_json["status"] == json::value::string("notFound"))
 			{
 				message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
 			}
 			else
 			{
-				if(signinStatus_json["status"] == "wrong")
+				if(signinStatus_json["status"] == json::value::string("wrong"))
 				{
 					int attempt = std::stoi(signinStatus_json["attempt"].as_string());
-					if((this->max_attempt) > attempt)
+					if(max_attempt > attempt)
 					{
-						if(((this->max_attempt) - attempt) == 1)
+						if((max_attempt - attempt) == 1)
 						{
 							message.reply(status_codes::OK, json::value::string("Attention!!! You have one attempt left!!!"));
 						}
@@ -356,10 +356,10 @@ void signIn(http_request message, http_client* DateBaseClient, http_client* Toke
 				}
 				else
 				{
-					if(signinStatus_json["status"] == "OK")
+					if(signinStatus_json["status"] == json::value::string("OK"))
 					{
 						std::string id = signinStatus_json["id"].as_string();
-						json::value userInfo = getUserInfo(id, this -> DatabaseClient);
+						json::value userInfo = getUserInfo(id, DatabaseClient);
 						std::string token = setToken();
 						uri_builder token_uri("/SetToken/");
 						json::value token_json;
@@ -377,8 +377,9 @@ void signIn(http_request message, http_client* DateBaseClient, http_client* Toke
 			}
 		});
 	});
+	});
 }
-http_response groupRemoveUser (http_request message, http_client* DateBaseClient)
+http_response groupRemoveUser (http_request message, http_client* DataBaseClient)
 { 
 	message.extract_json().
 	then([=](http_response reqInfo) 
@@ -403,11 +404,11 @@ http_response groupRemoveUser (http_request message, http_client* DateBaseClient
 				else
 				{
 					uri_builder groupRemoveUser_path(U("/groupRemoveUser/"+ adminId + "/"+groupId+"/"+userId+"/")); 
-					DataBaseClient.request(method::GET,  groupRemoveUser_path.to_string()). 
+					DataBaseClient->request(methods::GET,  groupRemoveUser_path.to_string()). 
 					then([message](http_response userRemove_response) 
 					{ 
 					return userRemove_response; 
-					}
+					});
 				}	
 			}
 	       		else
@@ -415,11 +416,11 @@ http_response groupRemoveUser (http_request message, http_client* DateBaseClient
 				if(adminId == userId)
 				{
 					uri_builder groupRemoveUser_path(U("/groupRemoveUser/"+ adminId + "/"+groupId+"/"+userId+"/")); 
-					DataBaseClient.request(method::GET,  groupRemoveUser_path.to_string()). 
+					DataBaseClient->request(methods::GET,  groupRemoveUser_path.to_string()). 
 					then([message](http_response userRemove_response) 
 					{ 
 					return userRemove_response; 
-					}
+					});
 				}
 				else{
 					http_response resp(status_codes::OK);
