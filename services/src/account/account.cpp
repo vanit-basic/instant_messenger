@@ -365,10 +365,10 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 						token_json["token"] = json::value::string(token);
 						token_json["id"] = json::value::string(id);
 						TokenDBClient -> request(methods::POST, token_uri.to_string(), token_json).
-						then([=](http_response token_response)
+						then([message, &userInfo](http_response token_response)
 						{
-							userInfo["id"] = token_json["id"];
-							userInfo["token"] = token_json["token"];
+							userInfo["id"] = json::value::string(id);
+							userInfo["token"] = json::value::string(token);
 							message.reply(status_codes::OK, userInfo);
 						});
 						});
@@ -438,16 +438,11 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
 
 http_response createGroup(http_request message, http_client* DataBaseClient)
 {
-	message.extract_json().
-	then([=](http_response reqInfo) 
-	{
-		uri_builder createGroup_path(U("/creatGroup/")); 
-		DataBaseClient->request(methods::GET,  createGroup_path.to_string(), reqInfo). 
+		DataBaseClient->request(message). 
 		then([message](http_response createGroup_response) 
 		{ 
 			return createGroup_response; 
 		}); 
-	});
 }
 
 void Account::handlePost(http_request message) {
@@ -457,47 +452,47 @@ then([=](json::value request)
 	{
 		if ( path_first_request[1] == "registration") 
 		{
-			registration(message, this -> DatabaseClient)
+			registration(message, this -> DataBaseClient);
 		}
 		else
 		{
 			if( path_first_request[1] == "signin")
 			{
-				signIn(message, DatabaseClient, TokenDBClient);
+				signIn(message, DataBaseClient, TokenDBClient);
 			}
 			else
 			{
 				if(path_first_request[1] == "userUpdateInfo")
 				{
-					DataBaseClient->request(methods::POST, message).
+					this->DataBaseClient->request(message).
 					then([message](http_response response)
 					{
-					message.reply(status_codes::OK, response);
+					message.reply(response);
 					});
 				}
 				else
 				{
 					if(path_first_request[1] == "groupUpdateInfo")
 					{
-						DataBaseClient->request(method::POST, message).
+						this->DataBaseClient->request(message).
 						then([message](http_response response)
 						{
-						message.reply(status_codes::OK, response);
+						message.reply(response);
 						});
 					}
 					else
 					{
 						if(path_first_request[1] == "removeFromGroup")
 						{
-							auto resp = signOut(message, this -> TokenDBClient);
-							message.reply(status_codes::OK, resp);
+							auto resp = signOut(request.at("id").as_string(), this -> TokenDBClient);
+							message.reply(resp);
 						}
 						else 
 						{
 							if(path_first_request[1] == "createGroup")
 							{
-								auto resp = createGroup(message, this -> DatebaseClient);
-								message.reply(status_codes::OK, resp);
+								auto resp = createGroup(message, this -> DataBaseClient);
+								message.reply(resp);
 							}
 							else
 							{
