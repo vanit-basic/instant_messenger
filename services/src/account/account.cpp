@@ -274,7 +274,7 @@ void Account::handleGet(http_request message) {
 }
 
 void registration(http_request message , http_client* DateBaseClient){
-        message.extract_json().then([message](json::value info)
+        message.extract_json().then([=](json::value info)
 	{
         std::string ml = "/get/mail_login"; 
         json::value login_mail;
@@ -283,12 +283,12 @@ void registration(http_request message , http_client* DateBaseClient){
         uri_builder get_mail_login(U(ml));
         DataBaseClient->request(methods::POST, get_mail_login.to_string(), login_mail).
 
-		then([message, info](http_response mail_login)
+		then([=](http_response mail_login)
 		{
 			mail_login.extract_json().
-			then([message, info](json::value mail_login_json)
+			then([=](json::value mail_login_json)
 			{
-				if(!(mail_login_json["email"] ==  info.at("email").as_string() && mail_login_json["login"] == info.at("login").as_string()))
+				if(!(mail_login_json["email"] ==  info.at("email") && mail_login_json["login"] == info.at("login")))
 				{
 					DataBaseClient->request(message).
 					then([message](http_response registration_response)
@@ -299,11 +299,11 @@ void registration(http_request message , http_client* DateBaseClient){
 				else
 				{
 					json::value error;
-					if(mail_login_json["email"] ==  info.at("email").as_string())
+					if(mail_login_json["email"] ==  info.at("email"))
 					{
 						error["email"] = json::value::string(U("Invalid"));
 					}
-					if(mail_login_json["login"] ==  info.at("login").as_string())
+					if(mail_login_json["login"] ==  info.at("login"))
 					{
 						error["login"] = json::value::string(U("Invalid"));
 					}
@@ -314,8 +314,8 @@ void registration(http_request message , http_client* DateBaseClient){
 	});
 }
 
-void signIn(http_request message, http_client* DataBaseClient, http_client* TokenDB){ 
-	message.extract_json().then([message](json::value request){
+void signIn(http_request message, http_client* DataBaseClient, http_client* TokenDBClient){ 
+	message.extract_json().then([=](json::value request){
 	json::value signinInfo;
 	uri_builder signin_path(U("/signin/"));
 	signinInfo["login"] = request.at("login");
@@ -356,18 +356,21 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 					if(signinStatus_json["status"] == json::value::string("OK"))
 					{
 						std::string id = signinStatus_json["id"].as_string();
-						json::value userInfo = getUserInfo(id, DatabaseClient);
+						http_response res = getUserInfo(id, DataBaseClient);
+						res.extract_json().then([=](json::value userInf){
+						json::value userInfo = userInf;
 						std::string token = setToken();
 						uri_builder token_uri("/SetToken/");
 						json::value token_json;
 						token_json["token"] = json::value::string(token);
 						token_json["id"] = json::value::string(id);
-						TokenDB -> request(methods::POST, token_uri.to_string(), token_json).
+						TokenDBClient -> request(methods::POST, token_uri.to_string(), token_json).
 						then([=](http_response token_response)
 						{
 							userInfo["id"] = token_json["id"];
 							userInfo["token"] = token_json["token"];
 							message.reply(status_codes::OK, userInfo);
+						});
 						});
 					}
 				}
@@ -379,23 +382,24 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 http_response groupRemoveUser (http_request message, http_client* DataBaseClient)
 { 
 	message.extract_json().
-	then([=](http_response reqInfo) 
+	then([=](json::value reqInfo) 
 	{
 		std::string adminId = reqInfo.at("adminId").as_string(); 
 		std::string groupId = reqInfo.at("groupId").as_string(); 
 		std::string userId = reqInfo.at("userId").as_string(); 
-		auto gInfo = getGroupInfo(groupId, DateBaseClient);
+		auto gInfo = getGroupInfo(adminId ,groupId, DataBaseClient);
 		gInfo.extract_json().
-		then([=](http_response groupInfo) 
+		then([=](json::value groupInfo) 
 		{        
 			if(adminId == groupInfo.at("adminId").as_string()) 
 			{        
 				if(adminId == userId){
 					
-					http_response resp(status_codes::OK);
+					http_response resp;
+					resp.set_status_code(status_codes::OK);
 					json::value info;
 					info["error"] = json::value::string("change admin");
-					resp.set_body(&info);
+					resp.set_body(info);
 					return resp;	
 				}
 				else
@@ -420,87 +424,91 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
 					});
 				}
 				else{
-					http_response resp(status_codes::OK);
+					http_response resp;
+					resp.set_status_code(status_codes::OK);
 					json::value info;
 					info["error"] = json::value::string("you are not admin");
-					resp.set_body(&info);
+					resp.set_body(info);
 					return resp;	
 				}
 			}	
-	}); 
+	});
+	});	
 } 
 
-http_response createGroup(http_request message, http_client* DateBaseClient)
+http_response createGroup(http_request message, http_client* DataBaseClient)
 {
 	message.extract_json().
 	then([=](http_response reqInfo) 
 	{
 		uri_builder createGroup_path(U("/creatGroup/")); 
-		DataBaseClient.request(method::GET,  createGroup_path.to_string(), reqInfo). 
+		DataBaseClient->request(methods::GET,  createGroup_path.to_string(), reqInfo). 
 		then([message](http_response createGroup_response) 
 		{ 
 			return createGroup_response; 
-		} 
-		
+		}); 
 	});
 }
 
 void Account::handlePost(http_request message) {
-	auto path_first_request = requestPath(message);
-	message.extract_json().
-		then([message](json::value request) 
+auto path_first_request = requestPath(message);
+message.extract_json().
+then([=](json::value request) 
+	{
+		if ( path_first_request[1] == "registration") 
 		{
-			if ( path_first_request[1] == "registration") 
+			registration(message, this -> DatabaseClient)
+		}
+		else
+		{
+			if( path_first_request[1] == "signin")
 			{
-				registration(message, this -> DatabaseClient)
+				signIn(message, DatabaseClient, TokenDBClient);
 			}
 			else
 			{
-				if( path_first_request[1] == "signin")
+				if(path_first_request[1] == "userUpdateInfo")
 				{
-					signIn(message, DatabaseClient, TokenDBClient);
+					DataBaseClient->request(methods::POST, message).
+					then([message](http_response response)
+					{
+					message.reply(status_codes::OK, response);
+					});
 				}
 				else
 				{
-					if(path_first_request[1] == "userUpdateInfo")
+					if(path_first_request[1] == "groupUpdateInfo")
 					{
-							DataBaseClient.request(method::POST, message).
-							then([message](http_response response)
-							{
-								message.reply(status_codes::OK, response);
-							});
-						}
-						else
+						DataBaseClient->request(method::POST, message).
+						then([message](http_response response)
 						{
-							if(path_first_request[1] == "groupUpdateInfo")
+						message.reply(status_codes::OK, response);
+						});
+					}
+					else
+					{
+						if(path_first_request[1] == "removeFromGroup")
+						{
+							auto resp = signOut(message, this -> TokenDBClient);
+							message.reply(status_codes::OK, resp);
+						}
+						else 
+						{
+							if(path_first_request[1] == "createGroup")
 							{
-								DataBaseClient.request(method::POST, message).
-								then([message](http_response response)
-								{
-									message.reply(status_codes::OK, response);
-								});
+								auto resp = createGroup(message, this -> DatebaseClient);
+								message.reply(status_codes::OK, resp);
 							}
 							else
 							{
-								if(path_first_request[1] == "removeFromGroup")
-								{
-									auto resp = signOut(message, this -> TokenDBClient);
-									message.reply(status_codes::OK, resp);
-								}
-								else 
-								{
-									if(path_first_request[1] == "createGroup")
-									{
-										auto resp = createGroup(message, this -> DatebaseClient);
-										message.reply(status_codes::OK, resp);
-									}
-								}
+    								message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 							}
 						}
 					}
 				}
 			}
-		});
+		}
+	});
 }
 
 void Account::handlePatch(http_request message) {
