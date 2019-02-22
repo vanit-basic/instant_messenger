@@ -82,57 +82,54 @@ std::string date() {
 	std::string date = dt;
 	return date;
 }
+bool createConfigFile() {
+        std::ofstream myfile ("config.txt", std::ios::out);
+        std::string dbport = "mongodb://localhost:27017";
+        std::string mydbport = "mongodb://localhost:27016";
+        std::string tokendbport = "mongodb://localhost:27006";
 
-
-std::string decideDB(std::string dbname) {
-        std::string line;
-        std::string path;
-	std::fstream myfile;
-	myfile.open ("config.txt", std::ios::out);
         if (myfile.is_open()) {
-		std::cout << "my File is open!" << std::endl;
-                while (std::getline(myfile, line)) {
-			std::cout << "mtav while!" << std::endl;
+                myfile << "db" << std::endl;
+                myfile << dbport << std::endl;
+                myfile << "mydb" << std::endl;;
+                myfile << mydbport << std::endl;
+                myfile << "tokendb" << std::endl;
+                myfile << tokendbport << std::endl;
+                myfile.close();
+                return true;
+        } else {
+                return false;
+        }
+}
+std::string decideDB(std::string dbname) {
+        std::string line = "";
+        std::string path = "";
+        std::ifstream myfile ("config.txt");
+        if (myfile.is_open()) {
+                std::cout << "Openning myFile!" << std::endl;
+                while (getline(myfile, line)) {
+                        std::cout << "mtav while!" << std::endl;
                         if (strcmp(line.c_str(), dbname.c_str()) == 0) {
-				std::cout << "gtav db" << std::endl;
+                                std::cout << "gtav db" << std::endl;
                                 if (getline(myfile, path)) {
-					std::cout << "gtav path)" << std::endl;
-                                	return path;
+                                        std::cout << "gtav path)" << std::endl;
+                                        return path;
                                 }
                         }
                 }
                 myfile.close();
-        } else {
-		std::cout << "File cant open!" << std::endl;
-	}
+        }
 
         return path;
 }
 
-
-bool createConfigFile() {
-	std::ofstream myfile;
-	myfile.open("config.txt", std::ios::in);
-	std::string dbport = "mongodb://localhost:27000";
-	std::string mydbport = "mongodb://localhost:27001";
-	std::string tokendbport = "mongodb://localhost:27002";
-	myfile << "db" << std::endl;
-	myfile << dbport << std::endl;
-	myfile << "mydb" << std::endl;
-	myfile << mydbport << std::endl;
-	myfile << "tokendb" << std::endl;
-	myfile << tokendbport << std::endl;
-	myfile.close();
-	return true;
-}
-
 DbService::DbService(std::string dbname) : BasicController() {
-	static int count = 0;
+/*	static int count = 0;
 	if (count < 1) {
 		++count;
 		mongocxx::instance instance{};
 	}
-
+*/
 	std::string path = decideDB(dbname);
 	mongocxx::uri uri{path};
 	mongocxx::pool pool{uri};
