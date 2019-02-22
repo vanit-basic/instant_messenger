@@ -83,21 +83,18 @@ std::string date() {
 	return date;
 }
 
-DbService::DbService(std::string dbname) : BasicController() {
-/*	static int count = 0;
+DbService::DbService(std::string path, database* m) : BasicController() {
+	static int count = 0;
 	if (count < 1) {
 		++count;
 		mongocxx::instance instance{};
 	}
-*/
-	std::string path = decideDB(dbname);
-	std::cout << path << "\n";
-	mongocxx::uri uri{path};
-	mongocxx::pool pool{uri};
+
+	createPool(std::string path);
+	this->m_db = m;
 }
 
 DbService::~DbService() {
-
 }
 
 bool DbService::createClients(std::string path, std::string dbname) {
