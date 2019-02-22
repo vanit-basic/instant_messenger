@@ -1,10 +1,10 @@
-#include <messaging/messaging.hpp>
-#include <std_micro_service.hpp>
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include <messaging/messaging.hpp>
 
 bool Messaging::createClients(std::string path)
 {
@@ -80,10 +80,7 @@ bool Messaging::checkServices()
 
 void Account::initRestOpHandlers() {
     _listener.support(methods::GET, std::bind(&Messaging::handleGet, this, std::placeholders::_1));
-    _listener.support(methods::PUT, std::bind(&Messaging::handlePut, this, std::placeholders::_1));
     _listener.support(methods::POST, std::bind(&Messaging::handlePost, this, std::placeholders::_1));
-    _listener.support(methods::DEL, std::bind(&Messaging::handleDelete, this, std::placeholders::_1));
-    _listener.support(methods::PATCH, std::bind(&Messaging::handlePatch, this, std::placeholders::_1));
 }
 
 http_response userRemoveMessage(std::sting firstUserId , std::string secondUserId , messageId , http_client* DataBaseClient){
@@ -294,46 +291,3 @@ void Messaging::handlePost(http_request message) {
 		}
 	});
 }
-
-void Messaging::handlePatch(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PATCH));
-}
-
-
-void Messaging::handlePut(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PUT));
-}
-
-
-void Messaging::handleDelete(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::DEL));
-}
-
-void Messaging::handleHead(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::HEAD));
-}
-
-void Messaging::handleOptions(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::OPTIONS));
-}
-
-void Messaging::handleTrace(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::TRCE));
-}
-
-void Messaging::handleConnect(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::CONNECT));
-}
-
-void Messaging::handleMerge(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::MERGE));
-}
-
-json::value Account::responseNotImpl(const http::method & method) {
-    auto response = json::value::object();
-    response["serviceName"] = json::value::string("C++ Mircroservice Sample");
-    response["http_method"] = json::value::string(method);
-    return response ;
-}
-
-

@@ -1,5 +1,5 @@
 //
-//  Created by Ivan Mejia on 12/08/16.
+//  Created by Ivan Mejia on 12/03/16.
 //
 // MIT License
 //
@@ -26,22 +26,32 @@
 
 #pragma once
 
-#include <execinfo.h>
-#include <unistd.h>
+#include <string>
+#include <cpprest/http_listener.h>
+#include <pplx/pplxtasks.h>
+#include <base/controller.hpp>
+
+using namespace web;
+using namespace http::experimental::listener;
 
 namespace cfx {
-    class RuntimeUtils {
-    public:
-        static void printStackTrace() {
-            const int MAX_CALLSTACK = 100;
-            void * callstack[MAX_CALLSTACK];
-            int frames;
-                        
-            // get void*'s for all entries on the stack...
-            frames = backtrace(callstack, MAX_CALLSTACK);
+    class BasicController {
+    protected:
+        http_listener _listener; // main micro service network endpoint
 
-            // print out all the frames to stderr...
-            backtrace_symbols_fd(callstack, frames, STDERR_FILENO);
+    public:
+        BasicController();
+        ~BasicController();
+
+        void setEndpoint(const std::string & value);
+        std::string endpoint() const;
+        pplx::task<void> accept();
+        pplx::task<void> shutdown();
+
+        virtual void initRestOpHandlers() { 
+            /* had to be implemented by the child class */ 
         }
+
+        std::vector<utility::string_t> requestPath(const http_request & message);
     };
 }

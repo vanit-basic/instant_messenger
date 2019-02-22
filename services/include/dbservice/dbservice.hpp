@@ -3,8 +3,7 @@
 
 #include <string>
 
-#include <controller.hpp>
-#include <basic_controller.hpp>
+#include <base/basic_controller.hpp>
 #include <dbservice/database.hpp>
 #include <cpprest/http_client.h>
 //#include <mongoDb.hpp>
@@ -31,17 +30,7 @@ class DbService: public BasicController, Controller {
 		bool createPool(std::string path);
 		void handleGet(http_request message) override;
 		void handlePost(http_request message) override;
-		void handlePut(http_request message) override;
-		void handleDelete(http_request message) override;
-		void handlePatch(http_request messge) override;
-		void handleHead(http_request message) override;
-		void handleOptions(http_request message) override;
-		void handleTrace(http_request message) override;
-		void handleConnect(http_request message) override;
-		void handleMerge(http_request message) override;
     		void initRestOpHandlers() override;
-
-		static json::value responseNotImpl(const http::method & method) {}
 };
 
 #endif

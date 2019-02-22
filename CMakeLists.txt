@@ -32,27 +32,30 @@ endif()
 
 # source files ...
 
-add_executable("router" 		./services/src/router/main.cpp
+add_executable("router" 		
+	./services/src/router/main.cpp
 	./services/src/router/router.cpp
-	./external/source/foundation/network_utils.cpp
-	./external/source/foundation/basic_controller.cpp)
+	./services/src/base/basic_controller.cpp
+	./utilities/network_utils.cpp)
 
-add_executable("dbservice" 		./services/src/dbservice/main.cpp
+add_executable("dbservice" 		
+	./services/src/dbservice/main.cpp
 	./services/src/dbservice/dbservice.cpp
-	./external/source/foundation/network_utils.cpp
-	./external/source/foundation/basic_controller.cpp)
+	./services/src/base/basic_controller.cpp
+	./utilities/network_utils.cpp)
 
-add_executable("account" 		./services/src/account/main.cpp
+add_executable("account" 		
+	./services/src/account/main.cpp
 	./services/src/account/account.cpp
-	./external/source/foundation/network_utils.cpp
-	./external/source/foundation/basic_controller.cpp)
+	./services/src/base/basic_controller.cpp
+	./utilities/network_utils.cpp)
 
 
 # headers search paths ...
-set(EXTERNAL_INCLUDE_DIR "./external/source/foundation/include")
 set(SERVICES_INCLUDE_DIR "./services/include")
+set(UTILITIES_INCLUDE_DIR "./utilities")
 find_path(CPPRESTSDK_INCLUDE_DIR cpprest)
-set(HEADER_SEARCH_PATHS ${CPPRESTSDK_INCLUDE_DIR} ${EXTERNAL_INCLUDE_DIR} ${SERVICES_INCLUDE_DIR} ${LIBMONGOCXX_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
+set(HEADER_SEARCH_PATHS ${CPPRESTSDK_INCLUDE_DIR} ${SERVICES_INCLUDE_DIR} ${UTILITIES_INCLUDE_DIR} ${LIBMONGOCXX_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
 message(bson ${LIBMONGOCXX_INCLUDE_DIRS})
 
 # library search paths ...

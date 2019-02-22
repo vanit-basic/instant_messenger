@@ -17,9 +17,6 @@
 #include <cpprest/filestream.h>
 #include <bsoncxx/types.hpp>
 
-#include <std_micro_service.hpp>
-#include <basic_controller.hpp>
-
 #include <dbservice/dbservice.hpp>
 
 mongocxx::instance instance{};
@@ -226,36 +223,4 @@ void DbService::handlePost(http_request message) {
 
 		});
 	});
-}
-
-void DbService::handlePatch(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PATCH));
-}
-
-void DbService::handlePut(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PUT));
-}
-
-void DbService::handleDelete(http_request message) {    
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::DEL));
-}
-
-void DbService::handleHead(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::HEAD));
-}
-
-void DbService::handleOptions(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::OPTIONS));
-}
-
-void DbService::handleTrace(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::TRCE));
-}
-
-void DbService::handleConnect(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::CONNECT));
-}
-
-void DbService::handleMerge(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::MERGE));
 }
