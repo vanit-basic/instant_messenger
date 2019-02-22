@@ -85,8 +85,35 @@ void Account::initRestOpHandlers() {
     _listener.support(methods::DEL, std::bind(&Messaging::handleDelete, this, std::placeholders::_1));
     _listener.support(methods::PATCH, std::bind(&Messaging::handlePatch, this, std::placeholders::_1));
 }
+http_response userRemoveMessage(std::sting firstUserId,std::string secondUserId,http_client* DataBaseClient){
+  
+	uri_bilder uRremoveMessage("/userRemoveMessage/"+firstUserId+"/"+secondUserId+"/"+messageId+"/");
+ 	DataBaseClient->request(method::GET,uRemoveMessage.to_string());
+  	then([=](http_response removeMessage)
+	{
+		return removeMessage;
+	});
+}
 void Messaging::handleGet(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+	auto path = requestPath(message);
+	if(!(path.empty()))
+	{
+		if(path[1] == "userRemoveMessage")
+		{
+			std::string firstUserId  = path[2];
+			std::string secondUserId = path[3];
+			std::string messageId    = path[4];
+			auto  removeMessage =userRemoveMessage(firstUserId,secondUserId,this->DataBaseClient);
+			message.reply(removeMessage);
+		}else
+		{
+		
+		}
+		
+	}else
+	{
+    		message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+	}
 }
 
 
