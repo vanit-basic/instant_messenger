@@ -8,7 +8,7 @@ pkg_query="pkg-config --exists"
 
 mongo_packages="libbson-1.0 libbsoncxx libmongoc-1.0 libmongocxx"
 
-packages="libcpprest-dev libcpprest2.10 cmake libssl-dev libsasl2-dev"
+packages="libcpprest-dev libcpprest2.10 cmake libssl-dev libsasl2-dev libboost-log-dev libboost-program-options-dev"
 
 missing_packages=""
 
