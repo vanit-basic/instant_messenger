@@ -85,13 +85,90 @@ void Account::initRestOpHandlers() {
     _listener.support(methods::DEL, std::bind(&Messaging::handleDelete, this, std::placeholders::_1));
     _listener.support(methods::PATCH, std::bind(&Messaging::handlePatch, this, std::placeholders::_1));
 }
+
 void Messaging::handleGet(http_request message) {
     message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 }
 
+http_response userUpdateMessage (http_request message, http_client* DataBaseClient){
+	message.extract_json().
+	then([=](json::value req){
+		uri_builder userUpdateMessage_path(U("/userUpdateMessage/"));
+		DataBaseClient->request(methods::POST, userUpdateMessage_path.to_string(), req).
+		then([=](http_response status){
+			return status;
+		});
+	});
+}
+
+http_response userSendMessage (http_request message, http_client* DataBaseClient){
+	message.extract_json().
+	then([=](json::value req){
+		uri_builder userSenaMessage_path(U("/userSendMessage/"));
+		DataBaseClient->request(methods::POST, userSendMessage_path.to_string(), req).
+		then([=](http_response status){
+			return status;
+		});
+	});
+}
+
+http_response groupUpdateMessage (http_request message, http_client* DataBaseClient){
+	message.extract_json().
+	then([=](json::value req){
+		uri_builder groupUpdateMessage_path(U("/groupUpdateMessage/"));
+		DataBaseClient->request(methods::POST, groupUpdateMessage_path.to_string(), req).
+		then([=](http_response status){
+			return status;
+		});
+	});
+}
+
+http_response groupSendMessage (http_request message, http_client* DataBaseClient){
+	message.extract_json().
+	then([=](json::value req){
+		uri_builder userSenaMessage_path(U("/groupSendMessage/"));
+		DataBaseClient->request(methods::POST, groupSendMessage_path.to_string(), req).
+		then([=](http_response status){
+			return status;
+		});
+	});
+}
 
 void Messaging::handlePost(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
+	auto path = requestPath(message);
+	message.extract_json().
+	then([=](json::value request)
+	{
+		if(path[1] == "userUpdateMessage"){
+			auto resp = userUpdateMessage (message, this -> DataBaseClient);
+			message.reply(resp);
+		}
+		else
+		{
+			if(path[1] == "userSendMessage"){
+				auto resp = userSendMessage (message, this -> DataBaseClient);
+				message.reply(resp);
+			}
+			else
+			{
+				if(path[1] == "groupUpdateMessage"){
+					auto resp = groupUpdateMessage (message, this -> DataBaseClient);
+					message.reply(resp);
+				}
+				else
+				{
+					if(path[1] == "groupSendMessage"){
+						auto resp = groupSendMessage (message, this -> DataBaseClient);
+						message.reply(resp);
+					}
+					else
+					{
+						message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
+					}
+				}
+			}
+		}
+	});
 }
 
 void Messaging::handlePatch(http_request message) {
