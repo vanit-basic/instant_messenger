@@ -82,51 +82,6 @@ std::string date() {
 	std::string date = dt;
 	return date;
 }
-/*
-bool createConfigFile() {
-        std::ofstream myfile ("config.txt", std::ios::out);
-        std::string dbport = "mongodb://localhost:27017";
-        std::string mydbport = "mongodb://localhost:27016";
-        std::string tokendbport = "mongodb://localhost:27006";
-
-        if (myfile.is_open()) {
-                myfile << "db" << std::endl;
-                myfile << dbport << std::endl;
-                myfile << "mydb" << std::endl;;
-                myfile << mydbport << std::endl;
-                myfile << "tokendb" << std::endl;
-                myfile << tokendbport << std::endl;
-                myfile.close();
-                return true;
-        } else {
-                return false;
-        }
-}
-*/
-std::string decideDB(std::string dbname) {
-        std::string line = "";
-        std::string path = "";
-        std::ifstream myfile ("config.txt");
-        if (myfile.is_open()) {
-                std::cout << "Openning myFile!" << std::endl;
-                while (getline(myfile, line)) {
-                        std::cout << "mtav while!" << std::endl;
-                        if (strcmp(line.c_str(), dbname.c_str()) == 0) {
-                                std::cout << "gtav db" << std::endl;
-                                if (getline(myfile, path)) {
-                                        std::cout << "gtav path)" << std::endl;
-                                        return path;
-                                }
-                        }
-                }
-                myfile.close();
-        }
-	else {
-		std::cout << "File not found\n";
-	}
-
-        return path;
-}
 
 DbService::DbService(std::string dbname) : BasicController() {
 /*	static int count = 0;
@@ -144,6 +99,23 @@ DbService::DbService(std::string dbname) : BasicController() {
 DbService::~DbService() {
 
 }
+
+bool DbService::createClients(std::string path, std::string dbname) {
+        std::ifstream configFile(path);
+        json::value config;
+        if (configFile.is_open()) {
+                configFile >> config;
+                configFile.close();
+                poolMydb = new mongocxx::pool (config.at("db").as_string());
+                poolDB = new mongocxx::pool (config.at("myfb").as_string());
+                this->dbserviceUri = config.at("dbservice").as_string();
+                return true;
+        } else {
+                std::cerr << "ConfigFile is not exist!!!" << std::endl;
+                return false;
+        }
+}
+
 
 void DbService::handleGet(http_request message) {
 	mongocxx::uri uri{"mongodb://localhost:27017"};
