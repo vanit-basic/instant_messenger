@@ -97,7 +97,7 @@ DbService::DbService(std::string path, database* m) : BasicController() {
 DbService::~DbService() {
 }
 
-bool DbService::createClients(std::string path, std::string dbname) {
+bool DbService::createPool(std::string path) {
         std::ifstream configFile(path);
         json::value config;
         if (configFile.is_open()) {
@@ -112,7 +112,6 @@ bool DbService::createClients(std::string path, std::string dbname) {
                 return false;
         }
 }
-
 
 void DbService::handleGet(http_request message) {
 	mongocxx::uri uri{"mongodb://localhost:27017"};
