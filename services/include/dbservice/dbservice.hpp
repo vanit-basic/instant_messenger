@@ -7,6 +7,7 @@
 #include <basic_controller.hpp>
 #include <dbservice/database.hpp>
 #include <cpprest/http_client.h>
+//#include <mongoDb.hpp>
 
 #include <cpprest/filestream.h>
 
@@ -19,50 +20,17 @@ using namespace concurrency::streams;
 
 
 class DbService: public BasicController, Controller {
-	protected:
-		http_listener _listener; 
 	public:
-		std::string registerUser(std::string userInfo);
-		std::string loginUser(std::string login, std::string password);
-		bool updateUserInfo(std::string userInfo);
-		std::string getUserInfo(std::string userID);
-		std::string getUserShortInfo(std::string userID);
-		bool singOut(std::string id);
-		bool forgotPassword(std::string);
-		bool deleteUser(std::string userId);
-
-		std::string createGroup(std::string groupInfo);
-		bool deleteGroup(std::string groupID);
-		bool addUserToGroup(std::string groupID, std::string userID);
-		bool removeFromGroup(std::string groupID, std::string userID);
-		std::string getGroupInfo(std::string groupID);
-		bool updateGroupInfo(std::string groupInfo);
-		std::string getGroupUsers(std::string groupId);
-		std::string getUserConversations(std::string userID);
-		std::string getUsersConversation(std::string fromID, std::string toID);
-		std::string addUserMessage(std::string from, std::string to, std::string message);
-
-		bool updateUserMessage(std::string from, std::string to, std::string messageInfo);
-		bool removeUserConversation(std::string fromUserId, std::string toUserId);
-		bool removeMessage(std::string messageInfo);
-		bool removeGroupConversation(std::string groupInfo);
-		bool removeMessageFromGroupConversation(std::string groupInfo);
-		std::string getGroupConversation(std::string userID, std::string groupID);
-		std::string addGroupMessage(std::string groupId, std::string userId, std::string message);
-		bool updateGroupMessage(std::string groupId, std::string messBody);
-
-		void setEndpoint(const std::string & value);
-		std::string endpoint() const;
-		pplx::task<void> accept();
-		pplx::task<void> shutdown();
-
-
-		void handleGet(http_request message) override;
-		void handlePost(http_request message) override;
-
 		DbService(std::string);
 		virtual ~DbService();
 	private:
+		database * m_db;
+		std::string dbserviceUri; 
+		mongocxx::pool * poolMydb;
+		mongocxx::pool * poolDB;
+		bool createPool(std::string path);
+		void handleGet(http_request message) override;
+		void handlePost(http_request message) override;
 		void handlePut(http_request message) override;
 		void handleDelete(http_request message) override;
 		void handlePatch(http_request messge) override;

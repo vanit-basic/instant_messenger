@@ -6,7 +6,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-
 bool Messaging::createClients(std::string path)
 {
         std::ifstream ConfigFile(path);
@@ -28,6 +27,7 @@ Messaging::Messaging(std::string path)
 {
         this->createClients(path);
 }
+
 bool ServiceStart (http_client* client, std::string serviceName) {
         uri_builder builder(U("/ServiceTest/"));
         std::error_code error;
@@ -86,51 +86,66 @@ void Account::initRestOpHandlers() {
     _listener.support(methods::PATCH, std::bind(&Messaging::handlePatch, this, std::placeholders::_1));
 }
 
-void Messaging::handleGet(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+http_response userRemoveMessage(std::sting firstUserId,std::string secondUserId,http_client* DataBaseClient){
+	uri_bilder uRremoveMessage("/userRemoveMessage/"+firstUserId+"/"+secondUserId+"/"+messageId+"/");
+ 	DataBaseClient->request(method::GET,uRemoveMessage.to_string());
+  	then([=](http_response removeMessage)
+	{
+		return removeMessage;
+	});
 }
 
-http_response userUpdateMessage (http_request message, http_client* DataBaseClient){
-	message.extract_json().
-	then([=](json::value req){
+void Messaging::handleGet(http_request message) {
+	auto path = requestPath(message);
+	if(!(path.empty()))
+	{
+		if(path[1] == "userRemoveMessage")
+		{
+			std::string firstUserId  = path[2];
+			std::string secondUserId = path[3];
+			std::string messageId    = path[4];
+			auto  removeMessage =userRemoveMessage(firstUserId,secondUserId,this->DataBaseClient);
+			message.reply(removeMessage);
+		}else
+		{
+		
+		}
+		
+	}else
+	{
+    		message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+	}
+}
+
+http_response userUpdateMessage (json::value req, http_client* DataBaseClient){
 		uri_builder userUpdateMessage_path(U("/userUpdateMessage/"));
 		DataBaseClient->request(methods::POST, userUpdateMessage_path.to_string(), req).
 		then([=](http_response status){
 			return status;
 		});
-	});
 }
 
-http_response userSendMessage (http_request message, http_client* DataBaseClient){
-	message.extract_json().
-	then([=](json::value req){
+http_response userSendMessage (json::value req, http_client* DataBaseClient){
 		uri_builder userSenaMessage_path(U("/userSendMessage/"));
 		DataBaseClient->request(methods::POST, userSendMessage_path.to_string(), req).
 		then([=](http_response status){
 			return status;
 		});
-	});
 }
 
-http_response groupUpdateMessage (http_request message, http_client* DataBaseClient){
-	message.extract_json().
-	then([=](json::value req){
+http_response groupUpdateMessage (json::value req, http_client* DataBaseClient){
 		uri_builder groupUpdateMessage_path(U("/groupUpdateMessage/"));
 		DataBaseClient->request(methods::POST, groupUpdateMessage_path.to_string(), req).
 		then([=](http_response status){
 			return status;
 		});
-	});
 }
 
-http_response groupSendMessage (http_request message, http_client* DataBaseClient){
-	message.extract_json().
-	then([=](json::value req){
-		uri_builder userSenaMessage_path(U("/groupSendMessage/"));
-		DataBaseClient->request(methods::POST, groupSendMessage_path.to_string(), req).
-		then([=](http_response status){
-			return status;
-		});
+http_response groupSendMessage (json::value req, http_client* DataBaseClient){
+	uri_builder userSenaMessage_path(U("/groupSendMessage/"));
+	DataBaseClient->request(methods::POST, groupSendMessage_path.to_string(), req).
+	then([=](http_response status){
+		return status;
 	});
 }
 
@@ -140,25 +155,25 @@ void Messaging::handlePost(http_request message) {
 	then([=](json::value request)
 	{
 		if(path[1] == "userUpdateMessage"){
-			auto resp = userUpdateMessage (message, this -> DataBaseClient);
+			auto resp = userUpdateMessage (request, this -> DataBaseClient);
 			message.reply(resp);
 		}
 		else
 		{
 			if(path[1] == "userSendMessage"){
-				auto resp = userSendMessage (message, this -> DataBaseClient);
+				auto resp = userSendMessage (request, this -> DataBaseClient);
 				message.reply(resp);
 			}
 			else
 			{
 				if(path[1] == "groupUpdateMessage"){
-					auto resp = groupUpdateMessage (message, this -> DataBaseClient);
+					auto resp = groupUpdateMessage (request, this -> DataBaseClient);
 					message.reply(resp);
 				}
 				else
 				{
 					if(path[1] == "groupSendMessage"){
-						auto resp = groupSendMessage (message, this -> DataBaseClient);
+						auto resp = groupSendMessage (request, this -> DataBaseClient);
 						message.reply(resp);
 					}
 					else
