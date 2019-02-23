@@ -1,18 +1,27 @@
 {
-	"account":"http://host_auto_ip4:27018/v1/mafclub/api",
-	"accountClient":"http://127.0.1.1:27018/v1/mafclub/api",
-	"conversation":"http://host_auto_ip4:27019/v1/mafclub/api",
-	"conversationClient":"http://127.0.1.1:27019/v1/mafclub/api",
-	"router":"http://host_auto_ip4:27020/v1/mafclub/api",
-	"routerClient":"http://127.0.1.1:27020/v1/mafclub/api",
-	"game":"http://host_auto_ip4:27021/v1/mafclub/api",
-	"gameClient":"http://127.0.1.1:27021/v1/mafclub/api",
-	"search":"http://host_auto_ip4:27022/v1/mafclub/api",
-	"searchClient":"http://127.0.1.1:27022/v1/mafclub/api",
-	"tokenDb":"http://host_auto_ip4:27023/v1/mafclub/api",
-	"tokenDbClient":"http://127.0.1.1:27023/v1/mafclub/api",
-	"DbService":"http://host_auto_ip4:27024/v1/mafclub/api",
-	"DbServiceClient":"http://127.0.1.1:27024/v1/mafclub/api",
-	"notification":"http://host_auto_ip4:27025/v1/mafclub/api",
-	"notificationClient":"http://127.0.1.1:27025/v1/mafclub/api"
+		"account":"http://host_auto_ip4:27018/v1/mafclub/api",
+		"accountClient":"http://host_auto_ip4:27018/v1/mafclub/api",
+
+		"conversation":"http://host_auto_ip4:27019/v1/mafclub/api",
+		"conversationClient":"http://host_auto_ip4:27019/v1/mafclub/api",
+
+		"router":"http://host_auto_ip4:27020/v1/mafclub/api",
+		"routerClient":"http://host_auto_ip4:27020/v1/mafclub/api",
+
+		"game":"http://host_auto_ip4:27021/v1/mafclub/api",
+		"gameClient":"http://host_auto_ip4:27021/v1/mafclub/api",
+
+		"search":"http://host_auto_ip4:27022/v1/mafclub/api",
+		"searchClient":"http://host_auto_ip4:27022/v1/mafclub/api",
+
+		"tokenDb":"http://host_auto_ip4:27023/v1/mafclub/api",
+		"tokenDbClient":"http://host_auto_ip4:27023/v1/mafclub/api",
+
+		"DbService":"http://host_auto_ip4:27024/v1/mafclub/api",
+		"DbServiceClient":"http://host_auto_ip4:27024/v1/mafclub/api",
+
+		"notification":"http://host_auto_ip4:27025/v1/mafclub/api",
+		"notificationClient":"http://host_auto_ip4:27025/v1/mafclub/api",
+
+		"executor":{"uri":"http://host_auto_ip4:27026/v1/mafclub/api", "services":["router","account","DbService"]}
 }

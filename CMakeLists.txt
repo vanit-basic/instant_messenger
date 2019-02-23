@@ -38,6 +38,12 @@ add_executable("router"
 	./services/src/base/basic_controller.cpp
 	./utilities/network_utils.cpp)
 
+add_executable("executor" 		
+	./services/src/executor/main.cpp
+	./services/src/executor/executor.cpp
+	./services/src/base/basic_controller.cpp
+	./utilities/network_utils.cpp)
+
 add_executable("dbservice" 		
 	./services/src/dbservice/main.cpp
 	./services/src/dbservice/dbservice.cpp
@@ -71,6 +77,8 @@ message(HEADER_SEARCH_PATHS " ${HEADER_SEARCH_PATHS}")
 include_directories(${HEADER_SEARCH_PATHS})
 
 target_link_libraries("router" ${LIBRARIES_SEARCH_PATHS})
+
+target_link_libraries("executor" ${LIBRARIES_SEARCH_PATHS})
 
 target_link_libraries("dbservice" ${LIBRARIES_SEARCH_PATHS})
 
