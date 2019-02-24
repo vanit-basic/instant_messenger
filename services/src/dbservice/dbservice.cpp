@@ -19,7 +19,7 @@
 
 #include <dbservice/dbservice.hpp>
 
-mongocxx::instance instance{};
+//mongocxx::instance instance{};
 
 using bsoncxx::builder::stream::close_array;
 using bsoncxx::builder::stream::close_document;
@@ -40,8 +40,8 @@ void DbService::initRestOpHandlers() {
 
 
 std::string generateID() {
-	mongocxx::uri uri{"mongodb://localhost:27017"};
-	mongocxx::pool pool{uri};
+//	mongocxx::uri uri{"mongodb://localhost:27017"};
+//	mongocxx::pool pool{uri};
 
 	std::string id;
 	mongocxx::client client{mongocxx::uri{"mongodb://localhost:27017"}};
@@ -87,7 +87,7 @@ DbService::DbService(std::string path, database* m) : BasicController() {
 		mongocxx::instance instance{};
 	}
 
-	createPool(std::string path);
+	createPool(path);
 	this->m_db = m;
 }
 
@@ -97,16 +97,16 @@ DbService::~DbService() {
 bool DbService::createPool(std::string path) {
 	mongocxx::uri uri1{"mongodb://localhost:27017"};
 	mongocxx::uri uri2{"mongodb://localhost:27016"};
-	mongocxx::pool poolMydb{uri1};
-	mongocxx::pool poolDB{uri2};
+//	mongocxx::pool poolMydb{uri1};
+//	mongocxx::pool poolDB{uri2};
         
 	std::ifstream configFile(path);
         json::value config;
         if (configFile.is_open()) {
                 configFile >> config;
                 configFile.close();
-                poolMydb = new mongocxx::pool (config.at("db").as_string());
-                poolDB = new mongocxx::pool (config.at("mydb").as_string());
+                this->poolMydb = new mongocxx::pool ({config.at("db").as_string()});
+                this->poolDB = new mongocxx::pool ({config.at("mydb").as_string()});
                 this->dbserviceUri = config.at("dbservice").as_string();
                 return true;
         } else {

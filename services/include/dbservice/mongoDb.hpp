@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "../../../../micro-service/source/foundation/include/basic_controller.hpp"
+#include <base/basic_controller.hpp>
 #include <dbservice/database.hpp>
 #include <cpprest/http_client.h>
 
