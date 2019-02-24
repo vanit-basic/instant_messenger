@@ -22,14 +22,14 @@ using namespace concurrency::streams;
 
 class DbService: public BasicController, Controller {
 	public:
-		DbService(std::string path, database* m);
+		DbService(std::string , database*);
 		virtual ~DbService();
 	private:
 		database * m_db;
 		std::string dbserviceUri; 
 		mongocxx::pool* poolMydb;
 		mongocxx::pool* poolDB;
-		bool createPool(std::string path);
+		bool createPool(std::string);
 		void handleGet(http_request message) override;
 		void handlePost(http_request message) override;
     		void initRestOpHandlers() override;
