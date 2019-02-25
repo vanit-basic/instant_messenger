@@ -50,7 +50,7 @@ namespace cfx {
        return nullptr;
    }
 
-   uri NetworkUtils::hostURI (std::string & value) {
+   uri NetworkUtils::hostURI (const std::string & value) {
 	   uri endpointURI(value);
 	   uri_builder endpointBuilder;
 

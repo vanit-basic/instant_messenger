@@ -3,6 +3,15 @@
 
 #include <executor/executor.hpp>
 
+struct serviceInfo {
+	int status;
+	std::string url;
+	std::string name;
+	std::vector <std::string> friendServices;
+	serviceInfo();
+	serviceInfo(json::value info);
+};
+
 Executor::Executor(std::string path) {
 	std::ifstream ConfigFile(path);
         json::value config;
@@ -30,11 +39,6 @@ Executor::Executor(std::string path) {
         }
 }
 
-Executor::~Executor() {
-	//TODO 
-	//clean the m_services
-}
-
 bool Executor::startServices() {
 	return true;
 }
@@ -49,6 +53,10 @@ bool Executor::stopService(std::string serViceName) {
 
 bool Executor::restartService(std::string serviceName) {
 	return true;
+}
+
+bool Executor::isServiceRunning(std::string serviceName) {
+
 }
 
 void Executor::initRestOpHandlers() {
@@ -67,4 +75,9 @@ void Executor::handleGet(http_request message) {
 
 void Executor::handlePost(http_request message) {
 		message.reply(status_codes::OK);
+}
+
+Executor::~Executor() {
+	//TODO 
+	//clean the m_services
 }

@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <network_utils.hpp>
+
 #include <router/router.hpp>
 
 /*
@@ -28,7 +30,7 @@ bool Router::createClients(std::string path)
 	if (ConfigFile.is_open()) {
 		ConfigFile>> config;
 		ConfigFile.close();
-		AccountClient = new http_client(config.at("account").as_string());
+		AccountClient = new http_client(NetworkUtils::hostURI(config.at("account").as_string()));
 		ConversationClient = new http_client(config.at("conversation").as_string());
 		GameClient = new http_client(config.at("game").as_string());
 		NotificationClient = new http_client(config.at("notification").as_string());
@@ -66,13 +68,19 @@ bool ServiceStart (http_client* client, std::string serviceName) {
                 usleep(100000);
                 error.clear();
                 try {
+			std::cout << __LINE__ << std::endl;
                         count++;
                         pplx::task<http_response> requestTask = client->request(methods::GET, builder.to_string());
-			requestTask.then([=](http_response resp){std::cout<<resp.to_string()<<std::endl;;});
+			requestTask.then([=](http_response resp){
+			std::cout << __LINE__ << std::endl;
+					std::cout<<resp.to_string()<<std::endl;
+					});
                         requestTask.wait();
+			std::cout << __LINE__ << std::endl;
                 } catch (http_exception e) {
+			std::cout << __LINE__ << std::endl;
                         error = e.error_code();
-			//std::cerr<<e.what()<<std::endl;
+			std::cerr<<e.what()<<std::endl;
                 }}
         while (error.value());
         return true;

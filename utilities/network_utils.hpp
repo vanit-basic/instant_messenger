@@ -58,6 +58,6 @@ namespace cfx {
 				return ip::host_name();
 			}
 
-			static web::uri hostURI (std::string & url); 
+			static web::uri hostURI (const std::string & url); 
 	};   
 }

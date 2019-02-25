@@ -14,6 +14,7 @@ class Executor : public BasicController, Controller {
 		std::map<std::string, http_client*> m_services;
 		
 	public:
+		bool isServiceRunning(std::string serviceName);
 		bool startServices();
 		bool startService(std::string serviceName);
 		bool stopService(std::string serViceName);
