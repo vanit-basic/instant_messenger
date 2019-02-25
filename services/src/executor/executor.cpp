@@ -1,6 +1,8 @@
 #include <cpprest/http_client.h>
 #include <cpprest/filestream.h>
 
+#include <general_exceptions.hpp>
+
 #include <executor/executor.hpp>
 
 struct serviceInfo {
@@ -31,7 +33,7 @@ Executor::Executor(std::string path) {
 				m_services[srvName] = c;
 			}
 		} else {
-			std::cout << servicesValue  << "is not array" << std::endl;
+			throw InvalidConfig();
 		}
 	}
         else {
