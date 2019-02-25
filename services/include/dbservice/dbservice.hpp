@@ -3,10 +3,12 @@
 
 #include <string>
 
+//#include <mongocxx/uri.hpp>
+#include <mongocxx/pool.hpp>
 #include <base/basic_controller.hpp>
 #include <dbservice/database.hpp>
 #include <cpprest/http_client.h>
-//#include <mongoDb.hpp>
+//#include "mongoDb.hpp"
 
 #include <cpprest/filestream.h>
 
@@ -25,8 +27,8 @@ class DbService: public BasicController, Controller {
 	private:
 		database * m_db;
 		std::string dbserviceUri; 
-		mongocxx::pool * poolMydb;
-		mongocxx::pool * poolDB;
+		mongocxx::pool* poolMydb;
+		mongocxx::pool* poolDB;
 		bool createPool(std::string path);
 		void handleGet(http_request message) override;
 		void handlePost(http_request message) override;
