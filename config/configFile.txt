@@ -5,7 +5,7 @@
 		"game":"http://host_auto_ip4:27021/v1/mafclub/api",
 		"search":"http://host_auto_ip4:27022/v1/mafclub/api",
 		"tokenDb":"http://host_auto_ip4:27023/v1/mafclub/api",
-		"DbService":"http://host_auto_ip4:27024/v1/mafclub/api",
+		"dbservice":"http://host_auto_ip4:27024/v1/mafclub/api",
 		"notification":"http://host_auto_ip4:27025/v1/mafclub/api",
-		"executor":{"uri":"http://host_auto_ip4:27026/v1/mafclub/api", "services":["router","account","DbService"]}
+		"executor":{"uri":"http://host_auto_ip4:27026/v1/mafclub/api", "services":["router","account","dbservice"]}
 }
