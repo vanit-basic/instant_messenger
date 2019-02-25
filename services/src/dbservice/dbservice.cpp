@@ -191,7 +191,7 @@ void DbService::handlePost(http_request message) {
   					<< bsoncxx::builder::stream::finalize;
 					auto result = coll.insert_one(std::move(doc_value));
 					
-					json::value response;
+					auto response = json::value::object();
 					response["status"] = json::value::string("successfullyRegistered");
 					response["id"] = json::value::string(id);
 					response["firstname"] = json::value::string(request.at("firstname").as_string());
