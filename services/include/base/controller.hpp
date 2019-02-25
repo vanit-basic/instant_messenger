@@ -26,32 +26,28 @@
 
 #pragma once
 
-#include <string>
-#include <cpprest/http_listener.h>
-#include <pplx/pplxtasks.h>
-#include "controller.hpp"
+#include <cpprest/http_msg.h>
 
 using namespace web;
-using namespace http::experimental::listener;
+using namespace http;
 
 namespace cfx {
-    class BasicController {
-    protected:
-        http_listener _listener; // main micro service network endpoint
 
-    public:
-        BasicController();
-        ~BasicController();
+   /*!
+    * Dispatcher class represents the basic interface for a 
+    * web serivce handler.
+    */
+    class Controller {
 
-        void setEndpoint(const std::string & value);
-        std::string endpoint() const;
-        pplx::task<void> accept();
-        pplx::task<void> shutdown();
+    public: 
+        virtual void handleGet(http_request message) = 0;
+        virtual void handlePost(http_request message) = 0;
 
-        virtual void initRestOpHandlers() { 
-            /* had to be implemented by the child class */ 
-        }
-
-        std::vector<utility::string_t> requestPath(const http_request & message);
+	json::value responseNotImpl(const http::method & method) {
+		auto response = json::value::object();
+		response["message"] = json::value::string("Not Implemented");
+		response["http_method"] = json::value::string(method);
+		return response ;
+	}
     };
 }

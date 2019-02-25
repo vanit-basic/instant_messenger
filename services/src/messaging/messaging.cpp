@@ -1,10 +1,10 @@
-#include <messaging/messaging.hpp>
-#include <std_micro_service.hpp>
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include <messaging/messaging.hpp>
 
 bool Messaging::createClients(std::string path)
 {
@@ -80,13 +80,10 @@ bool Messaging::checkServices()
 
 void Account::initRestOpHandlers() {
     _listener.support(methods::GET, std::bind(&Messaging::handleGet, this, std::placeholders::_1));
-    _listener.support(methods::PUT, std::bind(&Messaging::handlePut, this, std::placeholders::_1));
     _listener.support(methods::POST, std::bind(&Messaging::handlePost, this, std::placeholders::_1));
-    _listener.support(methods::DEL, std::bind(&Messaging::handleDelete, this, std::placeholders::_1));
-    _listener.support(methods::PATCH, std::bind(&Messaging::handlePatch, this, std::placeholders::_1));
 }
 
-http_response userRemoveMessage(std::sting firstUserId,std::string secondUserId,http_client* DataBaseClient){
+http_response userRemoveMessage(std::sting firstUserId , std::string secondUserId , messageId , http_client* DataBaseClient){
 	uri_bilder uRremoveMessage("/userRemoveMessage/"+firstUserId+"/"+secondUserId+"/"+messageId+"/");
  	DataBaseClient->request(method::GET,uRemoveMessage.to_string());
   	then([=](http_response removeMessage)
@@ -94,6 +91,63 @@ http_response userRemoveMessage(std::sting firstUserId,std::string secondUserId,
 		return removeMessage;
 	});
 }
+http_response userRemoveConversation(std::sting firstUserId,std::string secondUserId,http_client* DataBaseClient){
+        uri_bilder uRremoveConversation("/userRemoveConversation/"+firstUserId+"/"+secondUserId+"/");
+        DataBaseClient->request(method::GET,uRemoveConversation.to_string());
+        then([=](http_response removeConversation)
+        {
+                return removeConversation;
+        });
+}
+//conversation
+http_response getUserConversation(std::sting firstUserId,std::string secondUserId,http_client* DataBaseClient){
+        uri_bilder gUserConversation("/userRemoveConversation/"+firstUserId+"/"+secondUserId+"/");
+        DataBaseClient->request(method::GET,gUserConversation.to_string());
+        then([=](http_response userConversation)
+        {
+                return userConversation;
+        });
+}
+//conversations
+http_response getUserConversations(std::sting userId,http_client* DataBaseClient){
+        uri_bilder gUserConversations("/getUserConversations/"+userId+"/");
+        DataBaseClient->request(method::GET,gUserConversations.to_string());
+        then([=](http_response userConversations)
+        {
+                return userConversations;
+        });
+}
+
+http_response getGroupConversation(std::sting userId,std::string groupId ,http_client* DataBaseClient){
+        uri_bilder gGroupConversation("/getGroupConversation/"+userId+"/"+groupId+"/");
+        DataBaseClient->request(method::GET,gGroupConversation.to_string());
+        then([=](http_response groupConversation)
+        {
+                return groupConversation;
+        });
+}
+
+http_response groupRemoveConversation(std::sting userId,std::string groupId ,http_client* DataBaseClient){
+        uri_bilder gRemoveConversation("/groupRemoveConversation/"+userId+"/"+groupId+"/");
+        DataBaseClient->request(method::GET,gRemoveConversation.to_string());
+        then([=](http_response removeConversation)
+        {
+                return removeConversation;
+        });
+}
+
+http_response groupRemoveMessage(std::sting userId,std::string groupId , std::string messageId , http_client* DataBaseClient){
+        uri_bilder gRemoveMessage("/groupRemoveMessage/"+userId+"/"+groupId+"/"+messageId+"/");
+        DataBaseClient->request(method::GET,gRemoveMessage.to_string());
+        then([=](http_response removeMessage)
+        {
+                return removeMessage;
+        });
+}
+
+
+
+
 
 void Messaging::handleGet(http_request message) {
 	auto path = requestPath(message);
@@ -104,11 +158,63 @@ void Messaging::handleGet(http_request message) {
 			std::string firstUserId  = path[2];
 			std::string secondUserId = path[3];
 			std::string messageId    = path[4];
-			auto  removeMessage =userRemoveMessage(firstUserId,secondUserId,this->DataBaseClient);
+			auto  removeMessage =userRemoveMessage(firstUserId , secondUserId , messageId , this->DataBaseClient);
 			message.reply(removeMessage);
 		}else
 		{
-		
+			if(path[1] == "userRemoveConversation")
+			{
+				std::string firstUserId  = path[2];
+				std::string secondUserId = path[3];
+				auto removeConversation  = userRemoveConversation(firstUserId,secondUserId,this->DataBaseClient);
+				message.reply(removeConversation);
+			}else
+			{
+				if(path[1] == "getUserConversation")
+				{
+					std::string firstUserId  = path[2];
+                                	std::string secondUserId = path[3];
+                                	auto userConversation  = getUserConversation(firstUserId,secondUserId,this->DataBaseClient);
+                                	message.reply(userConversation);
+				}else
+				{
+					if(path[1] == "getUserConversations")
+                                	{	
+						std::string userId  = path[2];
+                                		auto userConversations  = getUserConversations(userId,this->DataBaseClient);
+                                		message.reply(userConversations);
+                                	}else
+                                	{
+						if(path[1] == "getGroupConversation")
+						{
+							std::string userId  = path[2];
+							std::string groupId = path[3];
+							auto groupConversation = getGroupConversation(userId,groupId,this->DataBaseClient);
+							message.reply(groupConversation);
+						}else
+						{
+							if(path[1] == "groupRemoveConversation")
+							{
+								std::string userId  = path[2];
+                	                                        std::string groupId = path[3];
+        	                                                auto removeConversation = grouptRemoveConversation(userId,groupId,this->DataBaseClient);
+	                                                        message.reply(removeConversation);
+
+							}else
+							{
+								if(path[1] =="groupRemoveMessage")
+								{
+									std::string userId    = path[2];
+                                                                	std::string groupId   = path[3];
+                                                                	std::string messageId = path[4];
+									auto removeMessage = grouptRemoveMessage(userId , groupId , messageId , this->DataBaseClient);
+                                                                	message.reply(removeMessage;
+								}
+							}
+						}
+                               		}
+				}
+			}
 		}
 		
 	}else
@@ -185,46 +291,3 @@ void Messaging::handlePost(http_request message) {
 		}
 	});
 }
-
-void Messaging::handlePatch(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PATCH));
-}
-
-
-void Messaging::handlePut(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PUT));
-}
-
-
-void Messaging::handleDelete(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::DEL));
-}
-
-void Messaging::handleHead(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::HEAD));
-}
-
-void Messaging::handleOptions(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::OPTIONS));
-}
-
-void Messaging::handleTrace(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::TRCE));
-}
-
-void Messaging::handleConnect(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::CONNECT));
-}
-
-void Messaging::handleMerge(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::MERGE));
-}
-
-json::value Account::responseNotImpl(const http::method & method) {
-    auto response = json::value::object();
-    response["serviceName"] = json::value::string("C++ Mircroservice Sample");
-    response["http_method"] = json::value::string(method);
-    return response ;
-}
-
-

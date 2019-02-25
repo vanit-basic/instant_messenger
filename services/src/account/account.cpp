@@ -1,5 +1,5 @@
 #include <account/account.hpp>
-#include <std_micro_service.hpp>
+#include <base/std_micro_service.hpp>
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
@@ -102,10 +102,7 @@ bool Account::checkServices()
 
 void Account::initRestOpHandlers() {
     _listener.support(methods::GET, std::bind(&Account::handleGet, this, std::placeholders::_1));
-    _listener.support(methods::PUT, std::bind(&Account::handlePut, this, std::placeholders::_1));
     _listener.support(methods::POST, std::bind(&Account::handlePost, this, std::placeholders::_1));
-    _listener.support(methods::DEL, std::bind(&Account::handleDelete, this, std::placeholders::_1));
-    _listener.support(methods::PATCH, std::bind(&Account::handlePatch, this, std::placeholders::_1));
 }
 
 std::string setToken(){
@@ -505,45 +502,3 @@ then([=](json::value request)
 		}
 	});
 }
-
-void Account::handlePatch(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PATCH));
-}
-
-
-void Account::handlePut(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PUT));
-}
-
-
-void Account::handleDelete(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::DEL));
-}
-
-void Account::handleHead(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::HEAD));
-}
-
-void Account::handleOptions(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::OPTIONS));
-}
-
-void Account::handleTrace(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::TRCE));
-}
-
-void Account::handleConnect(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::CONNECT));
-}
-
-void Account::handleMerge(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::MERGE));
-}
-
-json::value Account::responseNotImpl(const http::method & method) {
-    auto response = json::value::object();
-    response["serviceName"] = json::value::string("C++ Mircroservice Sample");
-    response["http_method"] = json::value::string(method);
-    return response ;
-}
-

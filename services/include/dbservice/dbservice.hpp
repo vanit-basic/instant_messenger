@@ -3,11 +3,12 @@
 
 #include <string>
 
-#include <controller.hpp>
-#include <basic_controller.hpp>
+//#include <mongocxx/uri.hpp>
+#include <mongocxx/pool.hpp>
+#include <base/basic_controller.hpp>
 #include <dbservice/database.hpp>
 #include <cpprest/http_client.h>
-//#include <mongoDb.hpp>
+//#include "mongoDb.hpp"
 
 #include <cpprest/filestream.h>
 
@@ -21,27 +22,17 @@ using namespace concurrency::streams;
 
 class DbService: public BasicController, Controller {
 	public:
-		DbService(std::string);
+		DbService(std::string , database*);
 		virtual ~DbService();
 	private:
 		database * m_db;
 		std::string dbserviceUri; 
-		mongocxx::pool * poolMydb;
-		mongocxx::pool * poolDB;
-		bool createPool(std::string path);
+		mongocxx::pool* poolMydb;
+		mongocxx::pool* poolDB;
+		bool createPool(std::string);
 		void handleGet(http_request message) override;
 		void handlePost(http_request message) override;
-		void handlePut(http_request message) override;
-		void handleDelete(http_request message) override;
-		void handlePatch(http_request messge) override;
-		void handleHead(http_request message) override;
-		void handleOptions(http_request message) override;
-		void handleTrace(http_request message) override;
-		void handleConnect(http_request message) override;
-		void handleMerge(http_request message) override;
     		void initRestOpHandlers() override;
-
-		static json::value responseNotImpl(const http::method & method) {}
 };
 
 #endif

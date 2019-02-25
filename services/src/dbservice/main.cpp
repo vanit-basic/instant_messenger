@@ -1,28 +1,13 @@
 #include <iostream>
 #include <dbservice/dbservice.hpp>
-
-bool createConfigFile() {
-        std::ofstream myfile ("config.txt", std::ios::out);
-        std::string dbport = "mongodb://localhost:27017";
-        std::string mydbport = "mongodb://localhost:27016";
-        std::string tokendbport = "mongodb://localhost:27006";
-
-        if (myfile.is_open()) {
-                myfile << "db" << std::endl;
-                myfile << dbport << std::endl;
-                myfile << "mydb" << std::endl;;
-                myfile << mydbport << std::endl;
-                myfile << "tokendb" << std::endl;
-                myfile << tokendbport << std::endl;
-                myfile.close();
-                return true;
-        } else {
-                return false;
-        }
-}
+#include "../../include/dbservice/mongoDb.hpp"
 
 int main () {
-	bool t = createConfigFile();
-	DbService db("mydb");
+	MongoDB* mongo;
+	DbService db("config.json", mongo);
+	db.accept().wait();
+	std::cout << "Start " << std::endl;
+	db.shutdown().wait();
+
 	return 0;
 }

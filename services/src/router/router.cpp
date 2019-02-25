@@ -1,10 +1,10 @@
-#include <router/router.hpp>
-#include <std_micro_service.hpp>
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#include <router/router.hpp>
 
 /*
 json::value readConfigFile(std::string path)
@@ -116,10 +116,7 @@ Router::Router(std::string path)
 
 void Router::initRestOpHandlers() {
     _listener.support(methods::GET, std::bind(&Router::handleGet, this, std::placeholders::_1));
-    _listener.support(methods::PUT, std::bind(&Router::handlePut, this, std::placeholders::_1));
     _listener.support(methods::POST, std::bind(&Router::handlePost, this, std::placeholders::_1));
-    _listener.support(methods::DEL, std::bind(&Router::handleDelete, this, std::placeholders::_1));
-    _listener.support(methods::PATCH, std::bind(&Router::handlePatch, this, std::placeholders::_1));
 }
 
 void Router::handleGet(http_request message) {
@@ -261,45 +258,4 @@ void Router::handlePost(http_request message) {
 
 	}
 
-}
-
-void Router::handlePatch(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PATCH));
-}
-
-
-void Router::handlePut(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PUT));
-}
-
-
-void Router::handleDelete(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::DEL));
-}
-
-void Router::handleHead(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::HEAD));
-}
-
-void Router::handleOptions(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::OPTIONS));
-}
-
-void Router::handleTrace(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::TRCE));
-}
-
-void Router::handleConnect(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::CONNECT));
-}
-
-void Router::handleMerge(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::MERGE));
-}
-
-json::value Router::responseNotImpl(const http::method & method) {
-    auto response = json::value::object();
-    response["serviceName"] = json::value::string("C++ Mircroservice Sample");
-    response["http_method"] = json::value::string(method);
-    return response ;
 }

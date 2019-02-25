@@ -1,6 +1,6 @@
 #pragma once 
 
-#include <basic_controller.hpp>
+#include <base/basic_controller.hpp>
 #include <cpprest/http_client.h>
 #include <cpprest/filestream.h>
 #include <string>
@@ -28,18 +28,8 @@ class Router : public BasicController, Controller {
                 http_client *SearchClient;
                 bool createClients(std::string path);
 		void handleGet(http_request message) override;
-                void handlePut(http_request message) override;// = delete;
                 void handlePost(http_request message) override;
-                void handlePatch(http_request message) override;// = delete;
-                void handleDelete(http_request message) override;// = delete;
-                void handleHead(http_request message) override;// = delete;
-                void handleOptions(http_request message) override;// = delete;
-                void handleTrace(http_request message) override;// = delete;
-                void handleConnect(http_request message) override; // = delete;
-                void handleMerge(http_request message) override; // = delete;
-                
 		void initRestOpHandlers() override;
 
-                static json::value responseNotImpl(const http::method & method);
 };
 

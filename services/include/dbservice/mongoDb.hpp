@@ -3,8 +3,7 @@
 
 #include <string>
 
-#include <controller.hpp>
-#include <basic_controller.hpp>
+#include <base/basic_controller.hpp>
 #include <dbservice/database.hpp>
 #include <cpprest/http_client.h>
 
@@ -72,4 +71,6 @@ class MongoDB : public database {
 		MongoDB() {}
 		~MongoDB() {}
 
-}
+};
+
+#endif

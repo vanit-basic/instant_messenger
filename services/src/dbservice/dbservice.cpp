@@ -17,12 +17,9 @@
 #include <cpprest/filestream.h>
 #include <bsoncxx/types.hpp>
 
-#include <std_micro_service.hpp>
-#include <basic_controller.hpp>
-
 #include <dbservice/dbservice.hpp>
 
-mongocxx::instance instance{};
+//mongocxx::instance instance{};
 
 using bsoncxx::builder::stream::close_array;
 using bsoncxx::builder::stream::close_document;
@@ -43,8 +40,8 @@ void DbService::initRestOpHandlers() {
 
 
 std::string generateID() {
-	mongocxx::uri uri{"mongodb://localhost:27017"};
-	mongocxx::pool pool{uri};
+//	mongocxx::uri uri{"mongodb://localhost:27017"};
+//	mongocxx::pool pool{uri};
 
 	std::string id;
 	mongocxx::client client{mongocxx::uri{"mongodb://localhost:27017"}};
@@ -90,7 +87,7 @@ DbService::DbService(std::string path, database* m) : BasicController() {
 		mongocxx::instance instance{};
 	}
 
-	createPool(std::string path);
+	createPool(path);
 	this->m_db = m;
 }
 
@@ -98,13 +95,18 @@ DbService::~DbService() {
 }
 
 bool DbService::createPool(std::string path) {
-        std::ifstream configFile(path);
+	mongocxx::uri uri1{"mongodb://localhost:27017"};
+	mongocxx::uri uri2{"mongodb://localhost:27016"};
+//	mongocxx::pool poolMydb{uri1};
+//	mongocxx::pool poolDB{uri2};
+        
+	std::ifstream configFile(path);
         json::value config;
         if (configFile.is_open()) {
                 configFile >> config;
                 configFile.close();
-                poolMydb = new mongocxx::pool (config.at("db").as_string());
-                poolDB = new mongocxx::pool (config.at("myfb").as_string());
+                this->poolMydb = new mongocxx::pool ({config.at("db").as_string()});
+                this->poolDB = new mongocxx::pool ({config.at("mydb").as_string()});
                 this->dbserviceUri = config.at("dbservice").as_string();
                 return true;
         } else {
@@ -114,13 +116,13 @@ bool DbService::createPool(std::string path) {
 }
 
 void DbService::handleGet(http_request message) {
-	mongocxx::uri uri{"mongodb://localhost:27017"};
-	mongocxx::pool pool{uri};
+	//mongocxx::uri uri{"mongodb://localhost:27017"};
+	//mongocxx::pool pool{uri};
 	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
 		auto coll = client[dbname]["account"].insert_one({});
 	};
 	std::thread t([&]() {
-			auto c = pool.acquire();
+			auto c = poolMydb->acquire();
 			threadfunc(*c, "mydb");
 			//	});
 
@@ -165,24 +167,24 @@ void DbService::handleGet(http_request message) {
 }
 
 void DbService::handlePost(http_request message) {
-	mongocxx::uri uri{"mongodb://localhost:27017"};
-	mongocxx::pool pool{uri};
+	//mongocxx::uri uri{"mongodb://localhost:27017"};
+	//mongocxx::pool pool{uri};
 	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
                 auto coll = client[dbname]["coll"].insert_one({});
         };
         std::thread t([&]() {
-                auto c = pool.acquire();
-                threadfunc(*c, "mydb");
-                threadfunc(*c, "db");
+                auto c1 = poolMydb->acquire();
+                auto c2 = poolDB->acquire();
+                threadfunc(*c1, "mydb");
+                threadfunc(*c2, "db");
 //        });
 
-	auto coll = (*c)["mydb"]["account"];
-	auto coll2 = (*c)["db"]["signin"];
+	auto coll = (*c1)["mydb"]["account"];
+	auto coll2 = (*c2)["db"]["signin"];
 	auto path_first_request = requestPath(message);
 	message.extract_json()
 		.then([message, path_first_request, &coll, &coll2](json::value request) {
 			if (path_first_request[1] == "registration") {
-				//auto coll = (*c)["mydb"]["account"];
 				std::string id = generateID();
 				std::string password = request.at("password").as_string();
 
@@ -226,36 +228,4 @@ void DbService::handlePost(http_request message) {
 
 		});
 	});
-}
-
-void DbService::handlePatch(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PATCH));
-}
-
-void DbService::handlePut(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::PUT));
-}
-
-void DbService::handleDelete(http_request message) {    
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::DEL));
-}
-
-void DbService::handleHead(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::HEAD));
-}
-
-void DbService::handleOptions(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::OPTIONS));
-}
-
-void DbService::handleTrace(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::TRCE));
-}
-
-void DbService::handleConnect(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::CONNECT));
-}
-
-void DbService::handleMerge(http_request message) {
-    message.reply(status_codes::NotImplemented, responseNotImpl(methods::MERGE));
 }

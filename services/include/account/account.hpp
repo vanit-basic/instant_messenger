@@ -1,6 +1,6 @@
 #pragma once 
 
-#include <basic_controller.hpp>
+#include <base/basic_controller.hpp>
 #include <cpprest/http_client.h>
 #include <cpprest/filestream.h>
 #include <string>
@@ -24,17 +24,7 @@ class Account : public BasicController, Controller {
 		http_client *TokenDBClient;
 		bool createClients(std::string path);
 		void handleGet(http_request message) override;
-		void handlePut(http_request message) override;
 		void handlePost(http_request message) override;
-		void handlePatch(http_request message) override;
-		void handleDelete(http_request message) override;
-		void handleHead(http_request message) override;
-		void handleOptions(http_request message) override;
-		void handleTrace(http_request message) override;
-		void handleConnect(http_request message) override;
-		void handleMerge(http_request message) override;
-		void initRestOpHandlers() override;
-
-		static json::value responseNotImpl(const http::method & method);
+    		void initRestOpHandlers() override;
 };
 
