@@ -1,7 +1,7 @@
 {
 		"account":"http://host_auto_ip4:6502/v1/ivmero/api",
 
-		"conversation":"http://host_auto_ip4:6503/v1/mafclub/api",
+		"messaging":"http://host_auto_ip4:6503/v1/mafclub/api",
 
 		"router":"http://host_auto_ip4:6504/v1/mafclub/api",
 

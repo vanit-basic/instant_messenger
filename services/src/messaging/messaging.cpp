@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <network_utils.hpp>
+
 #include <messaging/messaging.hpp>
 
 bool Messaging::createClients(std::string path)
@@ -13,7 +15,7 @@ bool Messaging::createClients(std::string path)
         if (ConfigFile.is_open()) {
                 ConfigFile>> config;
                 ConfigFile.close();
-                DataBaseClient = new http_client(NetworkUtils::hostURI(config.at("dataBase").as_string()));
+                DataBaseClient = new http_client(NetworkUtils::hostURI(config.at("dbservice").as_string()));
                 AccountClient = new http_client(NetworkUtils::hostURI(config.at("account").as_string()));
                 NotificationClient = new http_client(NetworkUtils::hostURI(config.at("notification").as_string()));
                 this -> messagingUri = config.at("messaging").as_string();
@@ -68,7 +70,7 @@ bool Messaging::checkServices()
         bool status = false;
         bool DbServStatus = false;
         bool tokDbServStatus = false;
-        DbServStatus = ServiceStart(DataBaseClient, "Messaging Database");
+        //DbServStatus = ServiceStart(DataBaseClient, "Messaging Database");
         /*if(DbServStatus){
                 tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");}
         if (tokDbServStatus)
@@ -76,7 +78,8 @@ bool Messaging::checkServices()
                 this->setEndpoint(messagingUri);
                 status = true;
         }*/
-        return status;
+        this->setEndpoint(messagingUri);
+        return true;
 }
 
 
@@ -152,10 +155,13 @@ http_response groupRemoveMessage(std::string userId,std::string groupId , std::s
 
 
 void Messaging::handleGet(http_request message) {
+	std::cout<<message.to_string()<<std::endl;
 	auto path = requestPath(message);
 	if(!(path.empty()))
 	{
-		if(path[1] == "userRemoveMessage")
+		if(path[0] == "ServiceTest")
+		{message.reply(status_codes::OK,"Messaging_Start");}
+		else if(path[1] == "userRemoveMessage")
 		{
 			std::string firstUserId  = path[2];
 			std::string secondUserId = path[3];

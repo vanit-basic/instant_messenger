@@ -31,7 +31,7 @@ bool Router::createClients(std::string path)
 		ConfigFile>> config;
 		ConfigFile.close();
 		AccountClient = new http_client(NetworkUtils::hostURI(config.at("account").as_string()));
-		ConversationClient = new http_client(NetworkUtils::hostURI(config.at("conversation").as_string()));
+		ConversationClient = new http_client(NetworkUtils::hostURI(config.at("messaging").as_string()));
 		GameClient = new http_client(NetworkUtils::hostURI(config.at("game").as_string()));
 		NotificationClient = new http_client(NetworkUtils::hostURI(config.at("notification").as_string()));
 		SearchClient = new http_client(NetworkUtils::hostURI(config.at("search").as_string()));
@@ -95,7 +95,7 @@ bool Router::checkServices()
 /*	qani der patrast chen bolor MikroServicener@ toxnel vorpes comment
  
 	if(accServStatus){
-		convServStatus = ServiceStart(ConversationClient, "Conversation");}
+		convServStatus = ServiceStart(ConversationClient, "Messaging");}
 	if(convServStatus){
 		gameServStatus = ServiceStart(GameClient, "Game");}
 	if(gameServStatus){
@@ -112,8 +112,10 @@ bool Router::checkServices()
 	return status;
 */
 	if (accServStatus){
+		convServStatus = ServiceStart(ConversationClient, "Messaging");}
+	if (convServStatus){
 	this->setEndpoint(routerUri);}
-	return accServStatus;
+	return convServStatus;
 }
 
 Router::Router(std::string path)
