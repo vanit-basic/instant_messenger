@@ -31,6 +31,7 @@ int main(int argc, const char * argv[])
 
 	catch(std::exception & e) {
 		std::cerr << e.what() << '\n';
+		RuntimeUtils::printStackTrace();
 	}
 	catch(...) {
 		RuntimeUtils::printStackTrace();

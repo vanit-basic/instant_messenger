@@ -11,7 +11,9 @@ using namespace web::http::client;
 
 class Executor : public BasicController, Controller {
 	private:
-		std::map<std::string, http_client*> m_services;
+		std::string m_configFilePath;
+		std::map<std::string, http_client*> m_clients;
+		std::vector<std::string> m_services;
 		
 	public:
 		bool isServiceRunning(std::string serviceName);
