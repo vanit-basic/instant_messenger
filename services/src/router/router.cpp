@@ -28,12 +28,12 @@ bool Router::createClients(std::string path)
 	if (ConfigFile.is_open()) {
 		ConfigFile>> config;
 		ConfigFile.close();
-		AccountClient = new http_client(config.at("accountClient").as_string());
+		AccountClient = new http_client(config.at("account").as_string());
 		ConversationClient = new http_client(config.at("conversation").as_string());
 		GameClient = new http_client(config.at("game").as_string());
 		NotificationClient = new http_client(config.at("notification").as_string());
 		SearchClient = new http_client(config.at("search").as_string());
-		TokenDbClient = new http_client(config.at("tokenDb").as_string());
+		TokenDbClient = new http_client(config.at("tokendbservice").as_string());
 		this->routerUri = config.at("router").as_string();
 		return true;
 	}

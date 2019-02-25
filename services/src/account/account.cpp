@@ -15,8 +15,8 @@ bool Account::createClients(std::string path)
         if (ConfigFile.is_open()) {
                 ConfigFile>> config;
                 ConfigFile.close();
-                DataBaseClient = new http_client(config.at("DbService").as_string());
-                TokenDBClient = new http_client(config.at("tokenDb").as_string());
+                DataBaseClient = new http_client(config.at("dbservice").as_string());
+                TokenDBClient = new http_client(config.at("tokendbservice").as_string());
                 this->accountUri = config.at("account").as_string();
                 return true;
         }

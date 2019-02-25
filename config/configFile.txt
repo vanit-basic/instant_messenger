@@ -9,9 +9,9 @@
 
 		"search":"http://host_auto_ip4:6506/v1/mafclub/api",
 
-		"tokenDb":"http://host_auto_ip4:6507/v1/mafclub/api",
+		"tokendbservice":"http://host_auto_ip4:6507/v1/mafclub/api",
 
-		"DbService":"http://host_auto_ip4:6508/v1/mafclub/api",
+		"dbservice":"http://host_auto_ip4:6508/v1/mafclub/api",
 
 		"notification":"http://host_auto_ip4:6509/v1/mafclub/api",
 		
@@ -22,5 +22,5 @@
 		"executor":{
 				"uri":"http://host_auto_ip4:6510/v1/mafclub/api",
 				 "services":["router","account","DbService"]
-				}
+			   }
 }
