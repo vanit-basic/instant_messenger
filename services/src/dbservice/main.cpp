@@ -1,5 +1,6 @@
 #include <iostream>
 #include <dbservice/dbservice.hpp>
+#include "../../include/dbservice/mongoDb.hpp"
 
 bool createConfigFile() {
         std::ofstream myfile ("config.txt", std::ios::out);
@@ -23,6 +24,7 @@ bool createConfigFile() {
 
 int main () {
 	bool t = createConfigFile();
-	DbService db("mydb");
+	MongoDB* mongo;
+	DbService db("mydb", mongo);
 	return 0;
 }

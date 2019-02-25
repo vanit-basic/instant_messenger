@@ -22,7 +22,7 @@ using namespace concurrency::streams;
 
 class DbService: public BasicController, Controller {
 	public:
-		DbService(std::string);
+		DbService(std::string path, database* m);
 		virtual ~DbService();
 	private:
 		database * m_db;
