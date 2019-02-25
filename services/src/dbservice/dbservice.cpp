@@ -19,7 +19,6 @@
 
 #include <dbservice/dbservice.hpp>
 
-//mongocxx::instance instance{};
 
 using bsoncxx::builder::stream::close_array;
 using bsoncxx::builder::stream::close_document;
@@ -39,14 +38,9 @@ void DbService::initRestOpHandlers() {
 }
 
 
-std::string generateID() {
-//	mongocxx::uri uri{"mongodb://localhost:27017"};
-//	mongocxx::pool pool{uri};
+std::string generateID(mongocxx::collection collection) {
 
 	std::string id;
-	mongocxx::client client{mongocxx::uri{"mongodb://localhost:27017"}};
-	mongocxx::database db = client["db"];
-	auto collection = client["db"]["signin"];
 	bsoncxx::builder::stream::document document{};
 
 	auto lastId = collection.find_one({});
@@ -80,34 +74,18 @@ std::string date() {
 	return date;
 }
 
-DbService::DbService(std::string path, database* m) : BasicController() {
-	static int count = 0;
-	if (count < 1) {
-		++count;
-		mongocxx::instance instance{};
-	}
-
-	createPool(path);
-	this->m_db = m;
-}
-
-DbService::~DbService() {
-}
-
 bool DbService::createPool(std::string path) {
-	mongocxx::uri uri1{"mongodb://localhost:27017"};
-	mongocxx::uri uri2{"mongodb://localhost:27016"};
-//	mongocxx::pool poolMydb{uri1};
-//	mongocxx::pool poolDB{uri2};
         
 	std::ifstream configFile(path);
         json::value config;
         if (configFile.is_open()) {
                 configFile >> config;
                 configFile.close();
-                this->poolMydb = new mongocxx::pool ({config.at("db").as_string()});
-                this->poolDB = new mongocxx::pool ({config.at("mydb").as_string()});
+                this->poolMydb = new mongocxx::pool ({config.at("infoDB").as_string()});
+                this->poolDB = new mongocxx::pool ({config.at("tokenDB").as_string()});
                 this->dbserviceUri = config.at("dbservice").as_string();
+		this->setEndpoint(dbserviceUri);
+		std::cout<<"dbservice uri   "<<dbserviceUri<<std::endl;
                 return true;
         } else {
                 std::cerr << "ConfigFile is not exist!!!" << std::endl;
@@ -115,15 +93,28 @@ bool DbService::createPool(std::string path) {
         }
 }
 
+DbService::DbService(std::string path, database* m) : BasicController() {
+	static int count = 0;
+	if (count < 1) {
+		++count;
+		mongocxx::instance instance{};
+	}
+	
+	createPool(path);
+	this->m_db = m;
+}
+
+DbService::~DbService() {
+}
+
+
 void DbService::handleGet(http_request message) {
-	//mongocxx::uri uri{"mongodb://localhost:27017"};
-	//mongocxx::pool pool{uri};
 	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
 		auto coll = client[dbname]["account"].insert_one({});
 	};
 	std::thread t([&]() {
 			auto c = poolMydb->acquire();
-			threadfunc(*c, "mydb");
+			threadfunc(*c, "infoDB");
 			//	});
 
 			std::cout<< message.to_string()<<std::endl;
@@ -131,7 +122,7 @@ void DbService::handleGet(http_request message) {
 			if (!path.empty()) {
 				if (path[0] == "get") {
 					if (path[1] == "mail" && path[3] == "login") {
-						auto coll = (*c)["mydb"]["account"];
+						auto coll = (*c)["infoDB"]["account"];
 						bsoncxx::stdx::optional<bsoncxx::document::value> mailResult =
 							coll.find_one(document{} << "mail" << path[2] << finalize);
 
@@ -167,25 +158,23 @@ void DbService::handleGet(http_request message) {
 }
 
 void DbService::handlePost(http_request message) {
-	//mongocxx::uri uri{"mongodb://localhost:27017"};
-	//mongocxx::pool pool{uri};
 	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
                 auto coll = client[dbname]["coll"].insert_one({});
         };
         std::thread t([&]() {
                 auto c1 = poolMydb->acquire();
                 auto c2 = poolDB->acquire();
-                threadfunc(*c1, "mydb");
-                threadfunc(*c2, "db");
+                threadfunc(*c1, "infoDB");
+                threadfunc(*c2, "tokenDB");
 //        });
 
-	auto coll = (*c1)["mydb"]["account"];
-	auto coll2 = (*c2)["db"]["signin"];
+	auto coll = (*c1)["infoDB"]["account"];
+	auto coll2 = (*c2)["tokenDB"]["signin"];
 	auto path_first_request = requestPath(message);
 	message.extract_json()
 		.then([message, path_first_request, &coll, &coll2](json::value request) {
 			if (path_first_request[1] == "registration") {
-				std::string id = generateID();
+				std::string id = generateID(coll2);
 				std::string password = request.at("password").as_string();
 
 					std::string joinDate = date();

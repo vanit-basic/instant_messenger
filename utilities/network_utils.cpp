@@ -26,6 +26,8 @@
 
 #include <network_utils.hpp>
 
+using namespace web;
+
 namespace cfx {
 
    HostInetInfo NetworkUtils::queryHostInetInfo() {
@@ -47,5 +49,20 @@ namespace cfx {
        }
        return nullptr;
    }
-   
+
+   uri NetworkUtils::hostURI (std::string & value) {
+	   uri endpointURI(value);
+	   uri_builder endpointBuilder;
+
+	   endpointBuilder.set_scheme(endpointURI.scheme());
+	   if (endpointURI.host() == "host_auto_ip4") {
+		   endpointBuilder.set_host(NetworkUtils::hostIP4());        
+	   }
+	   else if (endpointURI.host() == "host_auto_ip6") {
+		   endpointBuilder.set_host(NetworkUtils::hostIP6());
+	   }
+	   endpointBuilder.set_port(endpointURI.port());
+	   endpointBuilder.set_path(endpointURI.path());
+	   return endpointBuilder.to_uri();
+   }
 }

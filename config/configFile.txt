@@ -1,11 +1,9 @@
 {
 		"account":"http://host_auto_ip4:6502/v1/ivmero/api",
-		"accountClient":"http://127.0.1.1:6502/v1/ivmero/api",
 
 		"conversation":"http://host_auto_ip4:6503/v1/mafclub/api",
 
 		"router":"http://host_auto_ip4:6504/v1/mafclub/api",
-		"routerClient":"http://127.0.1.1:6504/v1/mafclub/api",
 
 		"game":"http://host_auto_ip4:6505/v1/mafclub/api",
 
@@ -16,6 +14,10 @@
 		"DbService":"http://host_auto_ip4:6508/v1/mafclub/api",
 
 		"notification":"http://host_auto_ip4:6509/v1/mafclub/api",
+		
+		"infoDB":"mongodb://localhost:27017",
+		
+		"tokenDB":"mongodb://localhost:27016",
 
 		"executor":{
 				"uri":"http://host_auto_ip4:6510/v1/mafclub/api",
