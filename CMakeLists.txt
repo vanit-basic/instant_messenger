@@ -59,9 +59,8 @@ add_executable("account"
 add_executable("messaging" 		
 	./services/src/messaging/main.cpp
 	./services/src/messaging/messaging.cpp
-	./external/source/foundation/network_utils.cpp
-	./external/source/foundation/basic_controller.cpp
-	)
+	./services/src/base/basic_controller.cpp
+	./utilities/network_utils.cpp)
 
 
 # headers search paths ...
