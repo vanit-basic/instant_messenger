@@ -221,8 +221,7 @@ void Account::handleGet(http_request message) {
 	if (!(path_first_request.empty())) {
 		if (path_first_request[0] == "ServiceTest")
 		{
-			uri_builder builder("/AccountStart");
-			message.reply(status_codes::OK, builder.to_string());
+			message.reply(status_codes::OK, "Account_Start");
 		}
 		else if(path_first_request[1] == "getUserInfo")
 		{
