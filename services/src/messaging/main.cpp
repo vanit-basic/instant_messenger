@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <usr_interrupt_handler.hpp>
 #include <runtime_utils.hpp>
 #include <messaging/messaging.hpp>
@@ -6,28 +7,36 @@ using namespace cfx;
 
 int main(int argc, const char * argv[])
 {
-        InterruptHandler::hookSIGINT();
+	if(argc < 2)
+	{
+		std::cerr << "Config file is not specified" << std::endl;
+		exit (-1);
+	}
+	else
+	{
+		std::string path = std::string(argv[1]);
+		InterruptHandler::hookSIGINT();
 
-        Messaging server("ConfigFile.txt");
-                if(server.checkServices())
-                {
+		Messaging server(path);
+		if(server.checkServices())
+		{
 
-                        try {
-                                // wait for server initialization...
-                                server.accept().wait();
-                                std::cout << "Router start " << std::endl;
+			try {
+				server.accept().wait();
+				std::cout << "Messaging Service start " << std::endl;
 
-                                InterruptHandler::waitForUserInterrupt();
+				InterruptHandler::waitForUserInterrupt();
 
-                                server.shutdown().wait();
-                        }
-                        catch(std::exception & e) {
-                                std::cerr << "somehitng wrong happen! :(" << '\n';
-                        }
-                        catch(...) {
-                                RuntimeUtils::printStackTrace();
-                        }
-                }
-        return 0;
+				server.shutdown().wait();
+			}
+			catch(std::exception & e) {
+				std::cerr << "somehitng wrong happen! :(" << '\n';
+			}
+			catch(...) {
+				RuntimeUtils::printStackTrace();
+			}
+		}
+	}
+	return 0;
 }
 

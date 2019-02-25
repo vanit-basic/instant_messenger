@@ -13,9 +13,9 @@ bool Messaging::createClients(std::string path)
         if (ConfigFile.is_open()) {
                 ConfigFile>> config;
                 ConfigFile.close();
-                DataBaseClient = new http_client(config.at("dataBase").as_string());
-                AccountClient = new http_client(config.at("account").as_string());
-                NotificationClient = new http_client(config.at("notification").as_string());
+                DataBaseClient = new http_client(NetworkUtils::hostURI(config.at("dataBase").as_string()));
+                AccountClient = new http_client(NetworkUtils::hostURI(config.at("account").as_string()));
+                NotificationClient = new http_client(NetworkUtils::hostURI(config.at("notification").as_string()));
                 this -> messagingUri = config.at("messaging").as_string();
                 return true;
         }

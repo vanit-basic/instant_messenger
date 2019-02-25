@@ -10,8 +10,9 @@ int main(int argc, const char * argv[])
 {
 	InterruptHandler::hookSIGINT();
 
-	if(argc < 1)
+	if(argc < 2)
 	{ 
+		std::cerr << "Config file is not specified" << std::endl;
 		exit(-1);
 	}
 	else
