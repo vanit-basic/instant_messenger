@@ -10,30 +10,31 @@ int main(int argc, const char * argv[])
 {
 	InterruptHandler::hookSIGINT();
 
-	std::string path;
-	if(argc < 1) 
+	if(argc < 1)
+	{ 
 		exit(-1);
+	}
 	else
-		path = std::string(argv[1]);
-
-	Router server(path);
-	if(server.checkServices())
 	{
+		std::string path = std::string(argv[1]);
 
-		try {
-			// wait for server initialization...
-			server.accept().wait();
-			std::cout << "Router start " << std::endl;
+		Router server(path);
+		if(server.checkServices())
+		{
+			try {
+				server.accept().wait();
+				std::cout << "Router start " << std::endl;
 
-			InterruptHandler::waitForUserInterrupt();
+				InterruptHandler::waitForUserInterrupt();
 
-			server.shutdown().wait();
-		}
-		catch(std::exception & e) {
-			std::cerr << "somehitng wrong happen! :(" << '\n';
-		}
-		catch(...) {
-			RuntimeUtils::printStackTrace();
+				server.shutdown().wait();
+			}
+			catch(std::exception & e) {
+				std::cerr << "somehitng wrong happen! :(" << '\n';
+			}
+			catch(...) {
+				RuntimeUtils::printStackTrace();
+			}
 		}
 	}
 	return 0;

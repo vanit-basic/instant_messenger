@@ -15,7 +15,7 @@ bool Account::createClients(std::string path)
         if (ConfigFile.is_open()) {
                 ConfigFile>> config;
                 ConfigFile.close();
-                DataBaseClient = new http_client(config.at("dataBase").as_string());
+                DataBaseClient = new http_client(config.at("DbService").as_string());
                 TokenDBClient = new http_client(config.at("tokenDb").as_string());
                 this->accountUri = config.at("account").as_string();
                 return true;
@@ -75,6 +75,7 @@ bool ServiceStart (http_client* client, std::string serviceName) {
                 try {
                         count++;
                         pplx::task<web::http::http_response> requestTask = client->request(methods::GET, builder.to_string());
+			requestTask.then([](http_response resp){std::cout<<resp.to_string()<<std::endl;});
                         requestTask.wait();
                 } catch (http_exception e) {
                         error = e.error_code();
@@ -85,6 +86,8 @@ bool ServiceStart (http_client* client, std::string serviceName) {
 
 bool Account::checkServices()
 {
+/*	qani der patrast chen DbServicner@ toxnel vorpes comment
+
         bool status = false;
         bool DbServStatus = false;
         bool tokDbServStatus = false;
@@ -96,7 +99,10 @@ bool Account::checkServices()
                 this->setEndpoint(accountUri);
                 status = true;
         }
-        return status;
+        return status;*/
+
+                this->setEndpoint(accountUri);
+		return true;
 }
 
 
@@ -210,7 +216,12 @@ void Account::handleGet(http_request message) {
 	std::cout<< message.to_string()<<std::endl;
 	auto path_first_request = requestPath(message);
 	if (!(path_first_request.empty())) {
-		if(path_first_request[1] == "getUserInfo")
+		if (path_first_request[0] == "ServiceTest")
+		{
+			uri_builder builder("/AccountStart");
+			message.reply(status_codes::OK, builder.to_string());
+		}
+		else if(path_first_request[1] == "getUserInfo")
 		{
 			std::string userId = path_first_request[3];
 			auto userInfo = getUserInfo(userId, this -> DataBaseClient);

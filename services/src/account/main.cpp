@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include <usr_interrupt_handler.hpp>
 #include <runtime_utils.hpp>
 
@@ -8,16 +10,23 @@ using namespace cfx;
 
 int main(int argc, const char * argv[])
 {
+	if (argc < 1)
+	{
+		exit (-1);
+	}
+	else
+	{
+		std::string path = std::string(argv[1]);
         InterruptHandler::hookSIGINT();
 
-        Account server("ConfigFile.txt");
+        Account server(path);
                 if(server.checkServices())
                 {
 
                         try {
                                 // wait for server initialization...
                                 server.accept().wait();
-                                std::cout << "Router start " << std::endl;
+                                std::cout << "Account service start " << std::endl;
 
                                 InterruptHandler::waitForUserInterrupt();
 
@@ -30,5 +39,6 @@ int main(int argc, const char * argv[])
                                 RuntimeUtils::printStackTrace();
                         }
                 }
+	}
         return 0;
 }

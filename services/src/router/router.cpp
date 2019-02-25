@@ -28,7 +28,7 @@ bool Router::createClients(std::string path)
 	if (ConfigFile.is_open()) {
 		ConfigFile>> config;
 		ConfigFile.close();
-		AccountClient = new http_client(config.at("account").as_string());
+		AccountClient = new http_client(config.at("accountClient").as_string());
 		ConversationClient = new http_client(config.at("conversation").as_string());
 		GameClient = new http_client(config.at("game").as_string());
 		NotificationClient = new http_client(config.at("notification").as_string());
@@ -43,7 +43,6 @@ bool Router::createClients(std::string path)
         }
 }
 
-//http_client client(U("http://127.0.1.1:6502/v1/ivmero/api"));
 bool ServiceStart (http_client* client, std::string serviceName) {
 	uri_builder builder(U("/ServiceTest/"));
 	std::error_code error;
@@ -68,10 +67,12 @@ bool ServiceStart (http_client* client, std::string serviceName) {
                 error.clear();
                 try {
                         count++;
-                        pplx::task<web::http::http_response> requestTask = client->request(methods::GET, builder.to_string());
+                        pplx::task<http_response> requestTask = client->request(methods::GET, builder.to_string());
+			requestTask.then([=](http_response resp){std::cout<<resp.to_string()<<std::endl;;});
                         requestTask.wait();
                 } catch (http_exception e) {
                         error = e.error_code();
+			//std::cerr<<e.what()<<std::endl;
                 }}
         while (error.value());
         return true;
@@ -87,6 +88,8 @@ bool Router::checkServices()
 	bool searchServStatus = false;
 	bool tokDbServStatus = false;
 	accServStatus = ServiceStart(AccountClient, "Account");
+/*	qani der patrast chen bolor MikroServicener@ toxnel vorpes comment
+ 
 	if(accServStatus){
 		convServStatus = ServiceStart(ConversationClient, "Conversation");}
 	if(convServStatus){
@@ -103,9 +106,10 @@ bool Router::checkServices()
 		status = true;
 	}
 	return status;
-/*
-	this->setEndpoint(routerUri);
-	return true;*/
+*/
+	if (accServStatus){
+	this->setEndpoint(routerUri);}
+	return accServStatus;
 }
 
 Router::Router(std::string path)
@@ -120,7 +124,7 @@ void Router::initRestOpHandlers() {
 }
 
 void Router::handleGet(http_request message) {
-//	std::cout<<message.to_string()<<std::endl;
+	std::cout<<message.to_string()<<std::endl;
 	TokenDbClient->request(message).
 		then([message, this](http_response tokenStatus){
 				tokenStatus.extract_json().then([message, this](json::value token){
@@ -184,7 +188,7 @@ void Router::handleGet(http_request message) {
 }
 
 void Router::handlePost(http_request message) {
-//	std::cout<<message.to_string()<<std::endl;	
+	std::cout<<message.to_string()<<std::endl;	
 	auto checkAction = requestPath(message);
 	if(!(checkAction[1] == "registration" || checkAction[1] == "signin" || checkAction[1] == "forgotPassword"))
 	{
