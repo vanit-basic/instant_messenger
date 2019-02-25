@@ -22,6 +22,8 @@
 
 		"notification":"http://host_auto_ip4:27025/v1/mafclub/api",
 		"notificationClient":"http://host_auto_ip4:27025/v1/mafclub/api",
-
-		"executor":{"uri":"http://host_auto_ip4:27026/v1/mafclub/api", "services":["router","account","DbService"]}
+		"executor":{"uri":"http://host_auto_ip4:27026/v1/mafclub/api", "services":["router","account","DbService"]},
+		"infoDB":"mongodb://localhost:27017",
+		"tokenDB":"mongodb://localhost:27016",
+		"dbservice":"http://host_auto_ip4:6502/v1/ivmero/api"
 }

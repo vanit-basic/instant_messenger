@@ -40,8 +40,6 @@ void DbService::initRestOpHandlers() {
 
 
 std::string generateID() {
-//	mongocxx::uri uri{"mongodb://localhost:27017"};
-//	mongocxx::pool pool{uri};
 
 	std::string id;
 	mongocxx::client client{mongocxx::uri{"mongodb://localhost:27017"}};
@@ -80,34 +78,18 @@ std::string date() {
 	return date;
 }
 
-DbService::DbService(std::string path, database* m) : BasicController() {
-	static int count = 0;
-	if (count < 1) {
-		++count;
-		mongocxx::instance instance{};
-	}
-
-	createPool(path);
-	this->m_db = m;
-}
-
-DbService::~DbService() {
-}
-
 bool DbService::createPool(std::string path) {
-	mongocxx::uri uri1{"mongodb://localhost:27017"};
-	mongocxx::uri uri2{"mongodb://localhost:27016"};
-//	mongocxx::pool poolMydb{uri1};
-//	mongocxx::pool poolDB{uri2};
         
 	std::ifstream configFile(path);
         json::value config;
         if (configFile.is_open()) {
                 configFile >> config;
                 configFile.close();
-                this->poolMydb = new mongocxx::pool ({config.at("db").as_string()});
-                this->poolDB = new mongocxx::pool ({config.at("mydb").as_string()});
+                this->poolMydb = new mongocxx::pool ({config.at("infoDB").as_string()});
+                this->poolDB = new mongocxx::pool ({config.at("tokenDB").as_string()});
                 this->dbserviceUri = config.at("dbservice").as_string();
+		this->setEndpoint(dbserviceUri);
+		std::cout<<"dbservice uri   "<<dbserviceUri<<std::endl;
                 return true;
         } else {
                 std::cerr << "ConfigFile is not exist!!!" << std::endl;
@@ -115,9 +97,22 @@ bool DbService::createPool(std::string path) {
         }
 }
 
+DbService::DbService(std::string path, database* m) : BasicController() {
+	static int count = 0;
+	if (count < 1) {
+		++count;
+		mongocxx::instance instance{};
+	}
+	
+	createPool(path);
+	this->m_db = m;
+}
+
+DbService::~DbService() {
+}
+
+
 void DbService::handleGet(http_request message) {
-	//mongocxx::uri uri{"mongodb://localhost:27017"};
-	//mongocxx::pool pool{uri};
 	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
 		auto coll = client[dbname]["account"].insert_one({});
 	};
@@ -167,8 +162,6 @@ void DbService::handleGet(http_request message) {
 }
 
 void DbService::handlePost(http_request message) {
-	//mongocxx::uri uri{"mongodb://localhost:27017"};
-	//mongocxx::pool pool{uri};
 	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
                 auto coll = client[dbname]["coll"].insert_one({});
         };
