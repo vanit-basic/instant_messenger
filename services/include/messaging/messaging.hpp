@@ -21,7 +21,8 @@ class Messaging : public BasicController, Controller {
 	private:
 		std::string messagingUri;
 		http_client *DataBaseClient;
-		http_client *TokenDBClient;
+		http_client *AccountClient;
+		http_client *NotificationClient;
 
 		bool createClients(std::string path);
 		void handleGet(http_request message) override;

@@ -14,6 +14,8 @@ bool Messaging::createClients(std::string path)
                 ConfigFile>> config;
                 ConfigFile.close();
                 DataBaseClient = new http_client(config.at("dataBase").as_string());
+                AccountClient = new http_client(config.at("account").as_string());
+                NotificationClient = new http_client(config.at("notification").as_string());
                 this -> messagingUri = config.at("messaging").as_string();
                 return true;
         }
@@ -67,13 +69,13 @@ bool Messaging::checkServices()
         bool DbServStatus = false;
         bool tokDbServStatus = false;
         DbServStatus = ServiceStart(DataBaseClient, "Messaging Database");
-        if(DbServStatus){
+        /*if(DbServStatus){
                 tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");}
         if (tokDbServStatus)
         {
                 this->setEndpoint(messagingUri);
                 status = true;
-        }
+        }*/
         return status;
 }
 
