@@ -1,11 +1,13 @@
-#include <account/account.hpp>
-#include <base/std_micro_service.hpp>
 #include <fstream>
 #include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <network_utils.hpp>
+#include <base/std_micro_service.hpp>
+
+#include <account/account.hpp>
 
 static int max_attempt = 5;
 bool Account::createClients(std::string path)
@@ -15,8 +17,8 @@ bool Account::createClients(std::string path)
         if (ConfigFile.is_open()) {
                 ConfigFile>> config;
                 ConfigFile.close();
-                DataBaseClient = new http_client(config.at("dbservice").as_string());
-                TokenDBClient = new http_client(config.at("tokendbservice").as_string());
+                DataBaseClient = new http_client(NetworkUtils::hostURI(config.at("dbservice").as_string()));
+                TokenDBClient = new http_client(NetworkUtils::hostURI(config.at("tokendbservice").as_string()));
                 this->accountUri = config.at("account").as_string();
                 return true;
         }
@@ -79,6 +81,7 @@ bool ServiceStart (http_client* client, std::string serviceName) {
                         requestTask.wait();
                 } catch (http_exception e) {
                         error = e.error_code();
+			std::cout<<e.what()<<std::endl;
                 }}
         while (error.value());
         return true;

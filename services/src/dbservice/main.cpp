@@ -5,7 +5,7 @@
 #include "../../include/dbservice/mongoDb.hpp"
 
 int main (int argc, char** argv) {
-	if (argc < 1) {
+	if (argc < 2) {
 		std::cerr << "Config file is not specified" << std::endl;
 		exit(-1);
 	}

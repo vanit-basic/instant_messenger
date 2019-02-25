@@ -10,21 +10,21 @@ using namespace cfx;
 
 int main(int argc, const char * argv[])
 {
-	if (argc < 1)
+	if (argc < 2)
 	{
+		std::cerr << "Config file is not specified" << std::endl;
 		exit (-1);
 	}
 	else
 	{
 		std::string path = std::string(argv[1]);
-        InterruptHandler::hookSIGINT();
+        	InterruptHandler::hookSIGINT();
 
-        Account server(path);
+        	Account server(path);
                 if(server.checkServices())
                 {
 
                         try {
-                                // wait for server initialization...
                                 server.accept().wait();
                                 std::cout << "Account service start " << std::endl;
 
