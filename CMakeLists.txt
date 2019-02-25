@@ -56,6 +56,12 @@ add_executable("account"
 	./services/src/base/basic_controller.cpp
 	./utilities/network_utils.cpp)
 
+add_executable("messaging" 		
+	./services/src/messaging/main.cpp
+	./services/src/messaging/messaging.cpp
+	./services/src/base/basic_controller.cpp
+	./utilities/network_utils.cpp)
+
 
 # headers search paths ...
 set(SERVICES_INCLUDE_DIR "./services/include")
@@ -83,3 +89,5 @@ target_link_libraries("executor" ${LIBRARIES_SEARCH_PATHS})
 target_link_libraries("dbservice" ${LIBRARIES_SEARCH_PATHS})
 
 target_link_libraries("account" ${LIBRARIES_SEARCH_PATHS})
+
+target_link_libraries("messaging" ${LIBRARIES_SEARCH_PATHS})
