@@ -21,6 +21,6 @@
 
 		"executor":{
 				"uri":"http://host_auto_ip4:6510/v1/mafclub/api",
-				 "services":["router","account","dbservice"]
+				 "services":["dbservice", "account", "messaging", "router"]
 			   }
 }

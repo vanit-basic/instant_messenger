@@ -86,4 +86,4 @@ restart_service () {
 }
 
 execute=""$ACTION"_service $SERVICE_NAME"
-`$execute`
+echo `$execute`

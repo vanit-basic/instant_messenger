@@ -291,13 +291,11 @@ void registration(http_request message , http_client* DataBaseClient){
         login_mail["login"] = json::value::string(info.at("login").as_string());
         uri_builder get_mail_login(U(ml));
         DataBaseClient->request(methods::POST, get_mail_login.to_string(), login_mail).
-
 		then([=](http_response mail_login)
 		{
 			mail_login.extract_json().
 			then([=](json::value mail_login_json)
 			{
-				//if("notUsing" ==  info.at("mailStatus") && "notUsing" == info.at("loginStatus"))
 				if(mail_login_json.at("mailStatus").as_string() == "notUsing" && mail_login_json.at("loginStatus").as_string() == "notUsing")
 				{
 					uri_builder reg_path(U("/insert"));
@@ -310,11 +308,11 @@ void registration(http_request message , http_client* DataBaseClient){
 				else
 				{
 					json::value error;
-					if("alreadyTaken" ==  mail_login_json.at("mailStatus"))
+					if("alreadyTaken" ==  mail_login_json.at("mailStatus").as_string())
 					{
 						error["email"] = json::value::string(U("Invalid"));
 					}
-					if("alreadyTaken" ==  mail_login_json.at("loginStatus"))
+					if("alreadyTaken" ==  mail_login_json.at("loginStatus").as_string())
 					{
 						error["login"] = json::value::string(U("Invalid"));
 					}
