@@ -224,7 +224,7 @@ void Account::handleGet(http_request message) {
 		}
 		else if(path_first_request[1] == "getUserInfo")
 		{
-			std::string userId = path_first_request[3];
+			std::string userId = path_first_request[2];
 			auto userInfo = getUserInfo(userId, this -> DataBaseClient);
 			message.reply(userInfo);
 		}
@@ -285,7 +285,7 @@ void Account::handleGet(http_request message) {
 void registration(http_request message , http_client* DataBaseClient){
         message.extract_json().then([=](json::value info)
 	{
-        std::string ml = "/check/mail_&_login"; 
+        std::string ml = "/check/mail&login"; 
         json::value login_mail;
         login_mail["email"] = json::value::string(info.at("email").as_string());
         login_mail["login"] = json::value::string(info.at("login").as_string());
@@ -297,9 +297,11 @@ void registration(http_request message , http_client* DataBaseClient){
 			mail_login.extract_json().
 			then([=](json::value mail_login_json)
 			{
-				if(!(mail_login_json["email"] ==  info.at("email") && mail_login_json["login"] == info.at("login")))
+				//if("notUsing" ==  info.at("mailStatus") && "notUsing" == info.at("loginStatus"))
+				if(mail_login_json.at("mailStatus").as_string() == "notUsing" && mail_login_json.at("loginStatus").as_string() == "notUsing")
 				{
-					DataBaseClient->request(message).
+					uri_builder reg_path(U("/insert"));
+					DataBaseClient->request(methods::POST,  reg_path.to_string(), info).
 					then([message](http_response registration_response)
 					{
 						message.reply(registration_response);
@@ -308,11 +310,11 @@ void registration(http_request message , http_client* DataBaseClient){
 				else
 				{
 					json::value error;
-					if(mail_login_json["email"] ==  info.at("email"))
+					if("alreadyTaken" ==  mail_login_json.at("mailStatus"))
 					{
 						error["email"] = json::value::string(U("Invalid"));
 					}
-					if(mail_login_json["login"] ==  info.at("login"))
+					if("alreadyTaken" ==  mail_login_json.at("loginStatus"))
 					{
 						error["login"] = json::value::string(U("Invalid"));
 					}
@@ -441,7 +443,7 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
 					return resp;	
 				}
 			}	
-	});
+		});
 	});	
 } 
 
