@@ -17,6 +17,7 @@
 #include <cpprest/filestream.h>
 #include <bsoncxx/types.hpp>
 
+#include <dbservice/database.hpp>
 #include <dbservice/dbservice.hpp>
 
 
@@ -84,8 +85,6 @@ bool DbService::createPool(std::string path) {
                 this->poolMydb = new mongocxx::pool ({config.at("infoDB").as_string()});
                 this->poolDB = new mongocxx::pool ({config.at("tokenDB").as_string()});
                 this->dbserviceUri = config.at("dbservice").as_string();
-		this->setEndpoint(dbserviceUri);
-		std::cout<<"dbservice uri   "<<dbserviceUri<<std::endl;
                 return true;
         } else {
                 std::cerr << "ConfigFile is not exist!!!" << std::endl;
@@ -99,8 +98,9 @@ DbService::DbService(std::string path, database* m) : BasicController() {
 		++count;
 		mongocxx::instance instance{};
 	}
-	
 	createPool(path);
+	std::cout<<dbserviceUri<<std::endl;
+	this->setEndpoint(dbserviceUri);
 	this->m_db = m;
 }
 
@@ -109,7 +109,7 @@ DbService::~DbService() {
 
 
 void DbService::handleGet(http_request message) {
-	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
+/*	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
 		auto coll = client[dbname]["account"].insert_one({});
 	};
 	std::thread t([&]() {
@@ -117,17 +117,46 @@ void DbService::handleGet(http_request message) {
 			threadfunc(*c, "infoDB");
 			//	});
 
+			auto c = poolMydb->acquire();
 			std::cout<< message.to_string()<<std::endl;
 			auto path = requestPath(message);
+
+	});*/
+	std::cout<< message.to_string()<<std::endl;
+	auto path = requestPath(message);
+	if (!(path.empty())) {
+		if (path[0] == "ServiceTest"){
+			message.reply(status_codes::OK, "DbService_Start");
+		}
+	}else{
+		message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+	}
+}
+
+void DbService::handlePost(http_request message) {
+	/*auto threadfunc = [](mongocxx::client& client, std::string dbname) {
+                auto coll = client[dbname]["coll"].insert_one({});
+        };*/
+//        std::thread t([&]() {
+                auto c1 = poolMydb->acquire();
+                auto c2 = poolDB->acquire();
+               // threadfunc(*c1, "infoDB");
+               // threadfunc(*c2, "tokenDB");
+//        });
+
+	auto coll1 = (*c1)["infoDB"]["account"];
+	auto coll2 = (*c2)["passDB"]["signin"];
+	auto path = requestPath(message);
+	message.extract_json()
+		.then([message, path, &coll1, &coll2, &c1, &c2, this](json::value request) {
 			if (!path.empty()) {
-				if (path[0] == "get") {
-					if (path[1] == "mail" && path[3] == "login") {
-						auto coll = (*c)["infoDB"]["account"];
+				if (path[0] == "check") {
+					if (path[1] == "mail&login") {
 						bsoncxx::stdx::optional<bsoncxx::document::value> mailResult =
-							coll.find_one(document{} << "mail" << path[2] << finalize);
+							coll1.find_one(document{} << "mail" << request.at("email").as_string() << finalize);
 
 						bsoncxx::stdx::optional<bsoncxx::document::value> loginResult =
-							coll.find_one(document{} << "login" << path[4] << finalize);
+							coll1.find_one(document{} << "login" << request.at("login").as_string() << finalize);
 
 						auto response = json::value::object();
 
@@ -144,36 +173,15 @@ void DbService::handleGet(http_request message) {
 							response["mailStatus"] = json::value::string("notUsing");
 						}
 
-						response["status"] = json::value::string("OK");
+						//response["status"] = json::value::string("OK");
 						message.reply(status_codes::OK, response);
 
 					} else {
 						message.reply(status_codes::NotFound);
 					}
 				} else {
-					message.reply(status_codes::NotFound);
-				}
-			}
-	});
-}
-
-void DbService::handlePost(http_request message) {
-	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
-                auto coll = client[dbname]["coll"].insert_one({});
-        };
-        std::thread t([&]() {
-                auto c1 = poolMydb->acquire();
-                auto c2 = poolDB->acquire();
-                threadfunc(*c1, "infoDB");
-                threadfunc(*c2, "tokenDB");
-//        });
-
-	auto coll = (*c1)["infoDB"]["account"];
-	auto coll2 = (*c2)["tokenDB"]["signin"];
-	auto path_first_request = requestPath(message);
-	message.extract_json()
-		.then([message, path_first_request, &coll, &coll2](json::value request) {
-			if (path_first_request[1] == "registration") {
+			if (path[0] == "insert") {
+				if (path[1] == "userRegistration") {
 				std::string id = generateID(coll2);
 				std::string password = request.at("password").as_string();
 
@@ -189,7 +197,7 @@ void DbService::handlePost(http_request message) {
   					<< "gender" << request.at("gender").as_string()
   					<< "joinDate" << joinDate
   					<< bsoncxx::builder::stream::finalize;
-					auto result = coll.insert_one(std::move(doc_value));
+					auto result = coll1.insert_one(std::move(doc_value));
 					
 					auto response = json::value::object();
 					response["status"] = json::value::string("successfullyRegistered");
@@ -209,12 +217,20 @@ void DbService::handlePost(http_request message) {
 					<< "password" << request.at("password").as_string()
 					<< "id" << id
 					<< "visitCount" << 0
-					<< "status" << "good"
   					<< close_document
   					<< bsoncxx::builder::stream::finalize;
 					result = coll2.insert_one(std::move(doc_value));
+				} else {
 				}
+			}
+		//	else{}
+				}
+			}
+	                else
+                        {
+                                  message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
+                        }
 
 		});
-	});
+//	});
 }

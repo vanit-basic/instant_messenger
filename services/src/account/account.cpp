@@ -89,23 +89,22 @@ bool ServiceStart (http_client* client, std::string serviceName) {
 
 bool Account::checkServices()
 {
-/*	qani der patrast chen DbServicner@ toxnel vorpes comment
+//	qani der patrast chen DbServicner@ toxnel vorpes comment
 
         bool status = false;
         bool DbServStatus = false;
         bool tokDbServStatus = false;
-        DbServStatus = ServiceStart(DataBaseClient, "Account Database");
+        DbServStatus = ServiceStart(DataBaseClient, "Database");
         if(DbServStatus){
-                tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");}
+                this->setEndpoint(accountUri);
+		status = true;}
+/*      {          tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");
         if (tokDbServStatus)
         {
                 this->setEndpoint(accountUri);
                 status = true;
-        }
-        return status;*/
-
-                this->setEndpoint(accountUri);
-		return true;
+        }*/
+        return status;
 }
 
 
@@ -286,7 +285,7 @@ void Account::handleGet(http_request message) {
 void registration(http_request message , http_client* DataBaseClient){
         message.extract_json().then([=](json::value info)
 	{
-        std::string ml = "/get/mail_login"; 
+        std::string ml = "/check/mail_&_login"; 
         json::value login_mail;
         login_mail["email"] = json::value::string(info.at("email").as_string());
         login_mail["login"] = json::value::string(info.at("login").as_string());
@@ -366,7 +365,7 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 					if(signinStatus_json["status"] == json::value::string("OK"))
 					{
 						std::string id = signinStatus_json["id"].as_string();
-						http_response res = getUserInfo(id, DataBaseClient);
+						http_response res = getUserInfo(id, DataBaseClient);//hanel
 						res.extract_json().then([=](json::value userInf){
 						json::value userInfo = userInf;
 						std::string token = setToken();
