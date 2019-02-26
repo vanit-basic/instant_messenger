@@ -1,11 +1,20 @@
-#include "page1.h"
-#include <QApplication>
-
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+#include <QQmlComponent>
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    Page1 w;
-    w.show();
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    return a.exec();
+    QGuiApplication app(argc, argv);
+
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    QQmlEngine engineForPic;
+        QQmlComponent componet(&engineForPic,
+                QUrl(QStringLiteral("qrc:/HomePage.qml")));
+       // QObject *object = componet.create();
+    if (engine.rootObjects().isEmpty())
+        return -1;
+
+    return app.exec();
 }

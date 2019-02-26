@@ -1,0 +1,40 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Sign_up.qml</file>
+        <file>Sign_in.qml</file>
+        <file>5ab8bcb464f2c(1).png</file>
+        <file>5ab8bcb464f2c(2).png</file>
+        <file>5ab8bcb464f2c(3).png</file>
+        <file>51062817_2189626127969158_7173693744896540672_n.png</file>
+        <file>Home.qml</file>
+        <file>Forgot_Password.qml</file>
+        <file>Message.qml</file>
+        <file>DelegateList.qml</file>
+        <file>Conversation.qml</file>
+        <file>HomePage.qml</file>
+        <file>chat.png</file>
+        <file>home.png</file>
+        <file>joinGroup.png</file>
+        <file>leaderTrophy.png</file>
+        <file>not.png</file>
+        <file>searchb.png</file>
+        <file>start.png</file>
+        <file>watchGame.png</file>
+        <file>MyProfile.qml</file>
+        <file>editprofile.png</file>
+        <file>language.png</file>
+        <file>password.png</file>
+        <file>settings.png</file>
+        <file>signout.png</file>
+        <file>support.png</file>
+        <file>terms.png</file>
+        <file>vector-gray-wooden-planks-background.jpg</file>
+        <file>volume.png</file>
+        <file>ToolBarQml.qml</file>
+        <file>menu.png</file>
+        <file>Edit_Profile.qml</file>
+        <file>Change_Password.qml</file>
+        <file>taxtak.png</file>
+    </qresource>
+</RCC>
