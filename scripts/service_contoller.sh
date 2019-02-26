@@ -1,19 +1,55 @@
 #!/bin/bash
 
-SERVICE_NAME=$1
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
 
-CONFIG_FILE=$2
+case $key in
+    -c|--config)
+    CONFIG_FILE="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -s|--services)
+    SERVICES_DIR="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -a|--action)
+    ACTION="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -n|--name)
+    SERVICE_NAME="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    --default)
+    DEFAULT=YES
+    shift # past argument
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
 
-SERVICES_DIR=$3
+echo DEFAULT     = "${DEFAULT}"
+echo CONFIG FILE = "${CONFIG_FILE}"
+echo ACTION      = "${ACTION}"
+echo SERVICE NAME= "${SERVICE_NAME}"
+echo SERVICES DIR= "${SERVICES_DIR}"
 
 COMMAND=`basename $0`
 
-if [[ $# -ne 3 ]]; then
-    echo "Usage : $COMMAND <service name> <config file path>"
+if [[ !($CONFIG_FILE && $ACTION && $SERVICE_NAME && $SERVICES_DIR) ]]; then
+    echo "Usage : $COMMAND -n <router|account|game|messaging|search|tokendb|dbservice> -c <config file path> -s <services directory> -a <start|stop|restart>"
     exit 4
 fi
-
-S_PID=0
 
 check_service_name () {
 	pid=`pidof $1`
@@ -28,7 +64,7 @@ check_service_name () {
 start_service () {
 	running=`check_service_name $1`
 	if [[ $running -ne 0 ]]; then
-		./$SERVICES_DIR/$SERVICE_NAME $CONFIG_FILE &
+		./$SERVICES_DIR/$SERVICE_NAME $CONFIG_FILE
 		S_PID=$!
 		echo "Started with $S_PID PID"
 	else
@@ -37,12 +73,17 @@ start_service () {
 }
 
 stop_service () {
-	echo "Stop"
+	name=$1
+	pid=`pidof $name`
+	if [ "$pid" != "" ]; then
+		kill -9 $pid
+	fi
 }
 
 restart_service () {
-	echo "Restart"
+	stop_service $1
+	start_service $1
 }
 
-
-start_service $SERVICE_NAME
+execute=""$ACTION"_service $SERVICE_NAME"
+`$execute`
