@@ -257,48 +257,142 @@ void Account::handleGet(http_request message) {
 		{
 			if(path_first_request[1] == "getUserShortInfo")
 			{
-//	for (it = i.begin(); it!=i.end(); ++it)
-				std::string userId = path_first_request[3];
-				auto userShortInfo = getUserShortInfo(userId, this -> DataBaseClient);
-				message.reply(userShortInfo);
-			}
-			else
-			{
-				if(path_first_request[1] == "groupInfo")
+				std::string userId = "";
+				for (it = i.begin(); it!=i.end(); ++it)
 				{
-//	for (it = i.begin(); it!=i.end(); ++it)
-					std::string userId = path_first_request[2];
-					std::string groupId = path_first_request[3];
-					auto groupInfo = getGroupInfo(userId,groupId, this->DataBaseClient);
-					message.reply(groupInfo);
+					if(it->first == "userId")
+					{
+						std::string userId = it->second;
+						std::cout << "userId = " << userId << std::endl;
+					}
+				}
+				if(!(userId == ""))
+				{
+					auto userShortInfo = getUserShortInfo(userId, this -> DataBaseClient);
+					message.reply(userShortInfo);
 				}
 				else
 				{
-					if(path_first_request[1] == "groupUsers")
+					message.reply(status_codes::NotFound);
+				}
+			}
+			else
+			{
+				if(path_first_request[1] == "getGroupInfo")
+				{
+					std::string userId = "";
+					std::string groupId = "";
+					for (it = i.begin(); it!=i.end(); ++it)
 					{
-//	for (it = i.begin(); it!=i.end(); ++it)
-						std::string userId  = path_first_request[2];
-						std::string groupId = path_first_request[3];
-						auto groupUsers = getGroupUsers(userId, groupId, this -> DataBaseClient);
-						message.reply(groupUsers);
+						if(it->first == "clientId")
+						{
+							std::string userId = it->second;
+							std::cout << "userId = " << userId << std::endl;
+						}
+						if(it->first == "groupId")
+						{
+							std::string groupId = it->second;
+							std::cout << "groupId = " << groupId << std::endl;
+						}
+					}
+					if(!(userId == ""))
+					{
+						if(!(groupId == ""))
+						{
+							auto groupInfo = getGroupInfo(userId,groupId, this->DataBaseClient);
+							message.reply(groupInfo);
+						}
+						else
+						{
+							message.reply(status_codes::NotFound);
+						}
+					}
+					else
+					{
+						message.reply(status_codes::NotFound);
+					}
+				}
+				else
+				{
+					if(path_first_request[1] == "getGroupUsers")
+					{
+						std::string userId = "";
+						std::string groupId = "";
+						for (it = i.begin(); it!=i.end(); ++it)
+						{
+							if(it->first == "clientId")
+							{
+								std::string userId = it->second;
+								std::cout << "userId = " << userId << std::endl;
+							}
+							if(it->first == "groupId")
+							{
+								std::string groupId = it->second;
+								std::cout << "groupId = " << groupId << std::endl;
+							}
+						}
+						if(!(userId == ""))
+						{
+							if(!(groupId == ""))
+							{
+								auto groupUsers = getGroupUsers(userId, groupId, this -> DataBaseClient);
+								message.reply(groupUsers);
+							}
+							else
+							{
+								message.reply(status_codes::NotFound);
+							}
+						}
+						else
+						{
+							message.reply(status_codes::NotFound);
+						}
 					}
 					else
 					{
 						if (path_first_request[1] == "userDelete")
 						{	
-//	for (it = i.begin(); it!=i.end(); ++it)
-							std::string userId = path_first_request[2];
-							auto resp = userDelete(userId, this->DataBaseClient);
-							message.reply(resp);
+							std::string userId = "";
+							for (it = i.begin(); it!=i.end(); ++it)
+							{
+								if(it->first == "clientId")
+								{
+									std::string userId = it->second;
+									std::cout << "userId = " << userId << std::endl;
+								}
+							}
+							if(!(userId == ""))
+							{
+								auto resp = userDelete(userId, this->DataBaseClient);
+								message.reply(resp);
+							}
+							else
+							{
+								message.reply(status_codes::NotFound);
+							}
 						}
 						else
 						{
 							if(path_first_request[1] == "signOut")
 							{
-//	for (it = i.begin(); it!=i.end(); ++it)
-								std::string userId = path_first_request[2];
-								auto resp = signOut(userId, this->TokenDBClient);
-								message.reply(resp);
+								std::string userId = "";
+								for (it = i.begin(); it!=i.end(); ++it)
+								{
+									if(it->first == "clientId")
+									{
+										std::string userId = it->second;
+										std::cout << "userId = " << userId << std::endl;
+									}
+								}
+								if(!(userId == ""))
+								{
+									auto resp = signOut(userId, this->TokenDBClient);
+									message.reply(resp);
+								}
+								else
+								{
+									message.reply(status_codes::NotFound);
+								}
 							}
 						}
 					}
