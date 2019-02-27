@@ -89,23 +89,22 @@ bool ServiceStart (http_client* client, std::string serviceName) {
 
 bool Account::checkServices()
 {
-/*	qani der patrast chen DbServicner@ toxnel vorpes comment
+//	qani der patrast chen DbServicner@ toxnel vorpes comment
 
         bool status = false;
         bool DbServStatus = false;
         bool tokDbServStatus = false;
-        DbServStatus = ServiceStart(DataBaseClient, "Account Database");
+        DbServStatus = ServiceStart(DataBaseClient, "Database");
         if(DbServStatus){
-                tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");}
+                this->setEndpoint(accountUri);
+		status = true;}
+/*      {          tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");
         if (tokDbServStatus)
         {
                 this->setEndpoint(accountUri);
                 status = true;
-        }
-        return status;*/
-
-                this->setEndpoint(accountUri);
-		return true;
+        }*/
+        return status;
 }
 
 
@@ -305,7 +304,7 @@ void registration(http_request message , http_client* DataBaseClient){
 				//if("notUsing" ==  info.at("mailStatus") && "notUsing" == info.at("loginStatus"))
 				if(mail_login_json.at("mailStatus").as_string() == "notUsing" && mail_login_json.at("loginStatus").as_string() == "notUsing")
 				{
-					uri_builder reg_path(U("/insert/"));
+					uri_builder reg_path(U("/insert"));
 					DataBaseClient->request(methods::POST,  reg_path.to_string(), info).
 					then([message](http_response registration_response)
 					{
@@ -372,7 +371,7 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 					if(signinStatus_json["status"] == json::value::string("OK"))
 					{
 						std::string id = signinStatus_json["id"].as_string();
-						http_response res = getUserInfo(id, DataBaseClient);
+						http_response res = getUserInfo(id, DataBaseClient);//hanel
 						res.extract_json().then([=](json::value userInf){
 						json::value userInfo = userInf;
 						std::string token = setToken();

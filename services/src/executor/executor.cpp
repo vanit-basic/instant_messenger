@@ -45,14 +45,14 @@ Executor::Executor(std::string path) : m_configFilePath(path) {
 void executeSrevice(const std::string & serviceName, const std::string & configFile) {
 	std::string command = "";
 	command += "../scripts/service_contoller.sh";
-	command += " ";
+	command += " -n ";
 	command += serviceName;
-	command += " ";
+	command += " -c ";
 	command += configFile;
 	command += " ";
-	command += ".";
-	command += " ";
-	command += ">> result";
+	command += " -a start ";
+	command += " -s . ";
+	command += ">> result &";
 	system(command.c_str());
 }
 
