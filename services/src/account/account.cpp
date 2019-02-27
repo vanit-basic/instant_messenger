@@ -217,6 +217,10 @@ http_response signOut(std::string userId, http_client* TokenDb){
 
 void Account::handleGet(http_request message) {
 	std::cout<< message.to_string()<<std::endl;
+	std::cout<< message.request_uri().to_string()<<std::endl;
+	std::cout<< message.relative_uri()to_string()<<std::endl;
+	std::cout<< message.absolute_uri()to_string()<<std::endl;
+
 	auto path_first_request = requestPath(message);
 	if (!(path_first_request.empty())) {
 		if (path_first_request[0] == "ServiceTest")
