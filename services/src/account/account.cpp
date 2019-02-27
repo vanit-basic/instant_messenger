@@ -217,8 +217,8 @@ http_response signOut(std::string userId, http_client* TokenDb){
 void Account::handleGet(http_request message) {
 	std::cout<< message.to_string()<<std::endl;
 	std::cout<< message.request_uri().to_string()<<std::endl;
-	std::cout<< message.relative_uri()to_string()<<std::endl;
-	std::cout<< message.absolute_uri()to_string()<<std::endl;
+	std::cout<< message.relative_uri().to_string()<<std::endl;
+	std::cout<< message.absolute_uri().to_string()<<std::endl;
 
 	auto path_first_request = requestPath(message);
 	if (!(path_first_request.empty())) {
@@ -314,11 +314,11 @@ void registration(http_request message , http_client* DataBaseClient){
 				else
 				{
 					json::value error;
-					if("alreadyTaken" ==  mail_login_json.at("mailStatus"))
+					if("alreadyTaken" ==  mail_login_json.at("mailStatus").as_string())
 					{
 						error["email"] = json::value::string(U("Invalid"));
 					}
-					if("alreadyTaken" ==  mail_login_json.at("loginStatus"))
+					if("alreadyTaken" ==  mail_login_json.at("loginStatus").as_string())
 					{
 						error["login"] = json::value::string(U("Invalid"));
 					}
