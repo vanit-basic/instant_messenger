@@ -237,14 +237,30 @@ void Account::handleGet(http_request message) {
 		}
 		else if(path_first_request[1] == "getUserInfo")
 		{
-			std::string userId = path_first_request[2];
-			auto userInfo = getUserInfo(userId, this -> DataBaseClient);
-			message.reply(userInfo);
+			std::string userId = "";
+			for (it = i.begin(); it!=i.end(); ++it)
+			{
+				if(it->first == "clientId")
+				{
+					std::string userId = it->second;
+					std::cout << "userId = " << userId << std::endl;
+				}
+			}
+			if(!(userId == ""))
+			{
+				auto userInfo = getUserInfo(userId, this -> DataBaseClient);
+				message.reply(userInfo);
+			}
+			else
+			{
+				message.reply(status_codes::NotFound);
+			}
 		}
 		else
 		{
 			if(path_first_request[1] == "getUserShortInfo")
 			{
+//	for (it = i.begin(); it!=i.end(); ++it)
 				std::string userId = path_first_request[3];
 				auto userShortInfo = getUserShortInfo(userId, this -> DataBaseClient);
 				message.reply(userShortInfo);
@@ -253,6 +269,7 @@ void Account::handleGet(http_request message) {
 			{
 				if(path_first_request[1] == "groupInfo")
 				{
+//	for (it = i.begin(); it!=i.end(); ++it)
 					std::string userId = path_first_request[2];
 					std::string groupId = path_first_request[3];
 					auto groupInfo = getGroupInfo(userId,groupId, this->DataBaseClient);
@@ -262,6 +279,7 @@ void Account::handleGet(http_request message) {
 				{
 					if(path_first_request[1] == "groupUsers")
 					{
+//	for (it = i.begin(); it!=i.end(); ++it)
 						std::string userId  = path_first_request[2];
 						std::string groupId = path_first_request[3];
 						auto groupUsers = getGroupUsers(userId, groupId, this -> DataBaseClient);
@@ -271,6 +289,7 @@ void Account::handleGet(http_request message) {
 					{
 						if (path_first_request[1] == "userDelete")
 						{	
+//	for (it = i.begin(); it!=i.end(); ++it)
 							std::string userId = path_first_request[2];
 							auto resp = userDelete(userId, this->DataBaseClient);
 							message.reply(resp);
@@ -279,6 +298,7 @@ void Account::handleGet(http_request message) {
 						{
 							if(path_first_request[1] == "signOut")
 							{
+//	for (it = i.begin(); it!=i.end(); ++it)
 								std::string userId = path_first_request[2];
 								auto resp = signOut(userId, this->TokenDBClient);
 								message.reply(resp);
