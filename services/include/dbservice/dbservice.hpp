@@ -27,9 +27,6 @@ class DbService: public BasicController, Controller {
 	private:
 		database * m_db;
 		std::string dbserviceUri; 
-		mongocxx::pool* poolMydb;
-		mongocxx::pool* poolDB;
-		bool createPool(std::string);
 		void handleGet(http_request message) override;
 		void handlePost(http_request message) override;
     		void initRestOpHandlers() override;

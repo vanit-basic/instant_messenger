@@ -18,21 +18,22 @@ using namespace concurrency::streams;
 
 class MongoDB : public database {
 	public:
-		std::string registerUser(std::string userInfo);
+		json::value mail&login(json::value);
+		json::value registerUser(json::value);
 
-		std::string loginUser(std::string login, std::string password);
+		bool loginUser(std::string login, std::string password);
 
 		bool updateUserInfo(std::string userInfo);
 
-		std::string getUserInfo(std::string userID);
+		bool getUserInfo(std::string userID);
 
-		std::string getUserShortInfo(std::string userID);
+		bool getUserShortInfo(std::string userID);
 
-		std::string getUserConversations(std::string userID);
+		bool getUserConversations(std::string userID);
 
-		std::string getUsersConversation(std::string fromID, std::string toID);
+		bool getUsersConversation(std::string fromID, std::string toID);
 
-		std::string addUserMessage(std::string from, std::string to, std::string message);
+		bool addUserMessage(std::string from, std::string to, std::string message);
 
 		bool updateUserMessage(std::string from, std::string to, std::string messageInfo);
 
@@ -42,7 +43,7 @@ class MongoDB : public database {
 
 		//group related queries
 
-		std::string createGroup(std::string groupInfo);
+		bool createGroup(std::string groupInfo);
 
 		bool deleteGroup(std::string groupID);
 
@@ -56,20 +57,25 @@ class MongoDB : public database {
 
 		bool removeMessageFromGroupConversation(std::string groupInfo);
 
-		std::string getGroupInfo(std::string groupID);
+		bool getGroupInfo(std::string groupID);
 
-		std::string getGroupConversation(std::string userID, std::string groupID);
+		bool getGroupConversation(std::string userID, std::string groupID);
 
 		bool updateGroupInfo(std::string groupInfo);
 
-		std::string addGroupMessage(std::string groupId, std::string userId, std::string message);
+		bool addGroupMessage(std::string groupId, std::string userId, std::string message);
 
-		std::string getGroupUsers(std::string groupId);
+		bool getGroupUsers(std::string groupId);
 
 		bool updateGroupMessage(std::string groupId, std::string messBody);
 
 		MongoDB() {}
 		~MongoDB() {}
+
+	private:
+		mongocxx::pool* poolMydb;
+                mongocxx::pool* poolDB;
+                bool createPool(std::string);
 
 };
 
