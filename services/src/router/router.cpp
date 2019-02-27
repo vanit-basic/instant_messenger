@@ -8,20 +8,6 @@
 
 #include <router/router.hpp>
 
-/*
-json::value readConfigFile(std::string path)
-{
-        std::ifstream ConfigFile(path);
-	json::value config;
-	if (ConfigFile.is_open()) {
-		ConfigFile>> config;
-        	ConfigFile.close();
-	}
-	else {
-		std::cerr << "ConfigFile is not exist!!!" << std::endl;
-	}
-	return config;
-}*/
 
 bool Router::createClients(std::string path)
 {
@@ -198,7 +184,7 @@ void Router::handlePost(http_request message) {
 	auto checkAction = requestPath(message);
 	if(!(checkAction[1] == "registration" || checkAction[1] == "signin" || checkAction[1] == "forgotPassword"))
 	{
-	TokenDbClient->request(message).
+		TokenDbClient->request(message).
 		then([message, this](http_response tokenStatus){
 				tokenStatus.extract_json().then([message, this](json::value token){
 				if(token.at("token").as_string() == "valid")
@@ -261,11 +247,17 @@ void Router::handlePost(http_request message) {
 	}
 	else
 	{
-		AccountClient->request(message).
+		if(checkAction[1] == "registration" || checkAction[1] == "signin" || checkAction[1] == "forgotPassword")
+		{
+			AccountClient->request(message).
 			then([message](http_response response){
 					message.reply(response);
 					});
-
+		}
+		else
+		{
+			message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET) );
+		}
 	}
 
 }

@@ -219,9 +219,6 @@ http_response signOut(std::string userId, http_client* TokenDb){
 
 void Account::handleGet(http_request message) {
 	std::cout<<"message  " <<message.to_string()<<std::endl;
-	std::cout<<"request uri  " <<message.request_uri().to_string()<<std::endl;
-	std::cout<<"relative uri  " <<message.relative_uri().to_string()<<std::endl;
-	std::cout<< "absolute uri  "<<message.absolute_uri().to_string()<<std::endl;
 	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
 	std::map<std::string, std::string>::iterator it;
 	for (it = i.begin(); it!=i.end(); ++it)
