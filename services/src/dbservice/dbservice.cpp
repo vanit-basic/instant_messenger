@@ -168,12 +168,11 @@ void DbService::handlePost(http_request message) {
 
 
 						if (mailResult) {
-						response["mailStatus"] = json::value::string("alreadyTaken");
+							response["mailStatus"] = json::value::string("alreadyTaken");
 						} else {
 							response["mailStatus"] = json::value::string("notUsing");
 						}
 
-						//response["status"] = json::value::string("OK");
 						message.reply(status_codes::OK, response);
 
 					} else {
@@ -220,7 +219,60 @@ void DbService::handlePost(http_request message) {
   					<< close_document
   					<< bsoncxx::builder::stream::finalize;
 					result = coll2.insert_one(std::move(doc_value));
-				} else {
+				} else if (path[1] == "userLogin") {
+                                        bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
+                                                coll1.find_one(document{} << "login" << request.at("login").as_string()
+                                      	 		<< "password" << request.at("password").as_string() << finalize);
+					auto response = json::value::object();
+                                        if(loginPassResult) {
+                                        	bsoncxx::stdx::optional<bsoncxx::document::value> infoResult =
+                                                coll1.find_one(document{} << "login" << request.at("login").as_string()
+						bsoncxx::document::view doc_view{logiPassResult.view()};
+						auto id = doc_view["id"];
+                                                coll2.find_one(document{} << id << open_document
+							<< "login" << request.at("login").as_string()
+							<< close_document << finalize);
+						
+						bsoncxx::document::view infoView{infoResult.view()};
+						auto response = json::value::object();
+						
+						response["id"] = json::value::string(id);
+						response["firstname"] = json::value::string(infoView["firstname"].as_string());
+						response["lastname"] = json::value::string(infoView["lastname"].as_string());
+						response["birthdate"] = json::value::string(infoView["birthdate"].as_string());
+						response["gender"] = json::value::string(infoView["gender"].as_string());
+						response["email"] = json::value::string(infoView["email"].as_string());
+						response["login"] = json::value::string(infoView["login"].as_string());
+						response["joinDate"] = json::value::string(infoView["joinDate"].as_string());
+						
+						message.reply(status_codes::OK, response);
+                                        } else {
+                                                bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
+                                                coll1.find_one(document{} << "login" << request.at("login").as_string() << finalize);
+                                                if (loginResult) {
+                                                        response["passResult"] = json::value::string("wrongPass");
+                                                        std::string loginDate = date();
+                                                	
+							coll1.find_one(document{} << "login" << request.at("login").as_string()
+							bsoncxx::document::view doc_view{logiPassResult.view()};
+							auto id = doc_view["id"];
+
+                                                        collection.update_one(document{} << id << open_document
+								<< "login" << login << close_document << finalize,
+                                                                document{} << "$set" << open_document <<
+                                                                document{} << "$inc" << open_document <<
+								"visitCount" << 1 << close_document << finalize);
+
+                                                        collection.update_one(document{} << id << open_document
+								<< "login" << login << close_document << finalize,
+                                                                document{} << "$set" << open_document <<
+								"visitTime" << date() << close_document << finalize);
+                                                } else {
+                                                        response["loginStatus"] = json::value::string("unknownLogin");
+                                                }
+
+                                        }
+
 				}
 			}
 		//	else{}
