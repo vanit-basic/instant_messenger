@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <map>
+#include <iterator>
 
 #include <network_utils.hpp>
 #include <base/std_micro_service.hpp>
@@ -94,17 +96,18 @@ bool Account::checkServices()
         bool status = false;
         bool DbServStatus = false;
         bool tokDbServStatus = false;
-        DbServStatus = ServiceStart(DataBaseClient, "Database");
+/*        DbServStatus = ServiceStart(DataBaseClient, "Database");
         if(DbServStatus){
                 this->setEndpoint(accountUri);
 		status = true;}
-/*      {          tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");
+      {          tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");
         if (tokDbServStatus)
         {
                 this->setEndpoint(accountUri);
                 status = true;
         }*/
-        return status;
+	this->setEndpoint(accountUri);
+        return true;
 }
 
 
@@ -215,10 +218,16 @@ http_response signOut(std::string userId, http_client* TokenDb){
 
 
 void Account::handleGet(http_request message) {
-	std::cout<< message.to_string()<<std::endl;
-	std::cout<< message.request_uri().to_string()<<std::endl;
-	std::cout<< message.relative_uri().to_string()<<std::endl;
-	std::cout<< message.absolute_uri().to_string()<<std::endl;
+	std::cout<<"message  " <<message.to_string()<<std::endl;
+	std::cout<<"request uri  " <<message.request_uri().to_string()<<std::endl;
+	std::cout<<"relative uri  " <<message.relative_uri().to_string()<<std::endl;
+	std::cout<< "absolute uri  "<<message.absolute_uri().to_string()<<std::endl;
+	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
+	std::map<std::string, std::string>::iterator it;
+	for (it = i.begin(); it!=i.end(); ++it)
+	{
+		std::cout<<(it->first)<<"   "<<(it->second)<<std::endl;
+	}
 
 	auto path_first_request = requestPath(message);
 	if (!(path_first_request.empty())) {

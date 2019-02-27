@@ -46,7 +46,7 @@ bool Router::createClients(std::string path)
 }
 
 bool ServiceStart (http_client* client, std::string serviceName) {
-	uri_builder builder(U("/ServiceTest/"));
+	uri_builder builder(U("/ServiceTest/ServiceTest?id=12"));
 	std::error_code error;
 
         int count = 0;
@@ -112,10 +112,10 @@ bool Router::checkServices()
 	return status;
 */
 	if (accServStatus){
-		convServStatus = ServiceStart(ConversationClient, "Messaging");}
-	if (convServStatus){
+//		convServStatus = ServiceStart(ConversationClient, "Messaging");}
+//	if (convServStatus){
 	this->setEndpoint(routerUri);}
-	return convServStatus;
+	return accServStatus;
 }
 
 Router::Router(std::string path)
