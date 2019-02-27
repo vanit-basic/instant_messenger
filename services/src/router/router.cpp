@@ -46,7 +46,7 @@ bool Router::createClients(std::string path)
 }
 
 bool ServiceStart (http_client* client, std::string serviceName) {
-	uri_builder builder(U("/ServiceTest/ServiceTest?id=12"));
+	uri_builder builder(U("/account/getUserinfo?clientId=12"));
 	std::error_code error;
 
         int count = 0;
