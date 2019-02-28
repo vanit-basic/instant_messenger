@@ -235,14 +235,8 @@ void Account::handleGet(http_request message) {
 		else if(path_first_request[1] == "getUserInfo")
 		{
 			std::string userId = "";
-			for (it = i.begin(); it!=i.end(); ++it)
-			{
-				if(it->first == "clientId")
-				{
-					std::string userId = it->second;
-					std::cout << "userId = " << userId << std::endl;
-				}
-			}
+			userId = i.find("clientId")->second;
+			std::cout << "userId = " << userId << std::endl;
 			if(!(userId == ""))
 			{
 				auto userInfo = getUserInfo(userId, this -> DataBaseClient);
@@ -258,14 +252,8 @@ void Account::handleGet(http_request message) {
 			if(path_first_request[1] == "getUserShortInfo")
 			{
 				std::string userId = "";
-				for (it = i.begin(); it!=i.end(); ++it)
-				{
-					if(it->first == "userId")
-					{
-						std::string userId = it->second;
-						std::cout << "userId = " << userId << std::endl;
-					}
-				}
+				userId = i.find("clientId")->second;
+				std::cout << "userId = " << userId << std::endl;
 				if(!(userId == ""))
 				{
 					auto userShortInfo = getUserShortInfo(userId, this -> DataBaseClient);
@@ -282,19 +270,10 @@ void Account::handleGet(http_request message) {
 				{
 					std::string userId = "";
 					std::string groupId = "";
-					for (it = i.begin(); it!=i.end(); ++it)
-					{
-						if(it->first == "clientId")
-						{
-							std::string userId = it->second;
-							std::cout << "userId = " << userId << std::endl;
-						}
-						if(it->first == "groupId")
-						{
-							std::string groupId = it->second;
-							std::cout << "groupId = " << groupId << std::endl;
-						}
-					}
+					userId = i.find("clientId")->second;
+					groupId = i.find("groupId")->second;
+					std::cout << "userId = " << userId << std::endl;
+					std::cout << "groupId = " << groupId << std::endl;
 					if(!(userId == ""))
 					{
 						if(!(groupId == ""))
@@ -318,19 +297,10 @@ void Account::handleGet(http_request message) {
 					{
 						std::string userId = "";
 						std::string groupId = "";
-						for (it = i.begin(); it!=i.end(); ++it)
-						{
-							if(it->first == "clientId")
-							{
-								std::string userId = it->second;
-								std::cout << "userId = " << userId << std::endl;
-							}
-							if(it->first == "groupId")
-							{
-								std::string groupId = it->second;
-								std::cout << "groupId = " << groupId << std::endl;
-							}
-						}
+						userId = i.find("clientId")->second;
+						groupId = i.find("groupId")->second;
+						std::cout << "userId = " << userId << std::endl;
+						std::cout << "groupId = " << groupId << std::endl;
 						if(!(userId == ""))
 						{
 							if(!(groupId == ""))
@@ -353,14 +323,8 @@ void Account::handleGet(http_request message) {
 						if (path_first_request[1] == "userDelete")
 						{	
 							std::string userId = "";
-							for (it = i.begin(); it!=i.end(); ++it)
-							{
-								if(it->first == "clientId")
-								{
-									std::string userId = it->second;
-									std::cout << "userId = " << userId << std::endl;
-								}
-							}
+							userId = i.find("clientId")->second;
+							std::cout << "userId = " << userId << std::endl;
 							if(!(userId == ""))
 							{
 								auto resp = userDelete(userId, this->DataBaseClient);
@@ -376,14 +340,8 @@ void Account::handleGet(http_request message) {
 							if(path_first_request[1] == "signOut")
 							{
 								std::string userId = "";
-								for (it = i.begin(); it!=i.end(); ++it)
-								{
-									if(it->first == "clientId")
-									{
-										std::string userId = it->second;
-										std::cout << "userId = " << userId << std::endl;
-									}
-								}
+								userId = i.find("clientId")->second;
+								std::cout << "userId = " << userId << std::endl;
 								if(!(userId == ""))
 								{
 									auto resp = signOut(userId, this->TokenDBClient);
