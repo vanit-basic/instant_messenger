@@ -1,0 +1,433 @@
+signup {
+    request {
+        ip/user/signup
+            <info>
+            <firstName>Valod</firstName>
+            <lastName>Valodyan</lastName>
+            <login>v.valodyan</login>
+            <password>Valodik90</password>
+            <gender>Male</gender>
+            <email>v.valodyan@mail.com</email>
+            <birthDate>12.12.1990</birthDate>
+            </info>
+    }
+    response {
+        <result>
+        <status> 0 | 1 | 2 </status>
+        <id>1234</id>   
+        </result> 
+    }
+}
+signin {
+    request {
+        ip/user/signin
+        <info>
+        <login>v.valodyan</login>
+        <password>Valodik90</password>
+        </info>
+    }
+    
+    response {
+        <result>
+        <status> 0 | 1 | 2 | 3 </status>
+        <id>123</id>
+        </result>
+    }
+}
+signout {
+    request {
+    ip/user/signout/id
+    }
+    response {
+    <result>
+    <status>0</status>
+    </result>
+    }
+}
+getUserInfo {
+    request {
+    ip/user/getUserInfo/id
+    }
+    response {
+        <result>
+            <status>0</status>
+            <firstName>Valod</firstName>
+            <lastName>Valodyan</lastName>
+            <login>v.valodyan</login>
+            <gender>Male</gender>
+            <email>v.valodyan@mail.com</email>
+            <birthDate>12.12.1990</birthDate>
+            <avatar>sth.jpg</avatar>
+        </result>
+    }
+}
+getUserShortInfo {
+    request {
+    ip/user/getUserShortInfo/id
+    }
+    response {
+        <result>
+            <status>0</status>
+            <firstName>Valod</firstName>
+            <lastName>Valodyan</lastName>
+            <gender>Male</gender>
+            <birthDate>12.12.1990</birthDate>
+            <avatar>sth.jpg</avatar>
+        </result>
+    }
+}
+updateUserInfo {
+    request {
+    ip/user/updateUserInfo/id
+    <info>
+    <firstName>Valod</firstName>
+    <lastName>Valodyan</lastName>
+    <gender>Male</gender>
+    <birthDate>12.12.1990</birthDate>
+    <avatar>sth.jpg</avatar>
+    </info>
+    }
+    response {
+        <result>
+            <status>0</status>
+            <firstName>Valod</firstName>
+            <lastName>Valodyan</lastName>
+            <gender>Male</gender>
+            <birthDate>12.12.1990</birthDate>
+            <avatar>sth.jpg</avatar>
+        </result>
+    }
+}
+getUserConversations {
+	request {
+	ip/user/getUserConversations/id
+}
+	response {
+        <result>
+	<status> 0 </status>
+	<info>
+	<u12>
+	<firstName>Valod</firstName>
+	<lastName>Valodyan</lastName>
+	<avatar>sth.jpg</avatar>
+	<lastMessage>barev</lastMessage>
+	</u12>
+	<u23>
+        <firstName>Heriq</firstName>
+        <lastName>Heriqyan</lastName>
+        <avatar>atp.jpg</avatar>
+        <lastMessage>hajox</lastMessage>
+        </u23>
+	</info>	
+	</result>
+}
+getUserConversation {
+	request {
+	ip/user/getUserConversations/id
+	<info>
+	<uId>12</uId>
+	</info>
+	}
+	response {
+	<result>
+	<status> 0 | 1 </status>
+	<m10 from="u1"><date>19.12.2018</date><body>Hazar barev </body></m10>
+	<m110 from="u2"><date>18.01.2019</date><body>erkuhazar barev </body></m110>
+	//quantity -> 20
+	</result>
+	}
+
+}
+deleteUser {
+	request {
+	ip/user/deleteUser/id
+	}
+	response {
+	<result>
+		<status> 0 </status>
+	</result>
+	}
+}
+
+addUserMessage {
+	request {
+	ip/user/addUserMessage/id
+	<info>
+		<uId> 321 </uId>
+		<messageBody> Hi!!! <messageBody>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 </status>
+	</result>
+	}
+}
+
+updateUserMessage{
+	request {
+	ip/user/updateUserMessage/id
+	<info>
+		<uId> 321 </uId>
+		<messageId> m12 </messageId>
+		<newMessageBody> Hello! </newMessageBody>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 </status>
+	</result>
+	}
+}
+
+removeUserConversation {
+	request {
+	ip/user/removeUserConversation/id
+	<info>
+		<uId> 123 </uId>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1</status>
+	</result>
+	}
+}
+
+removeMessageFromUserConversation {
+	request {
+	ip/path/removeMessage/id
+	<info>
+		<uId> 12 </uId>
+		<messageId></messageId>
+		<mode> 0 | 1 </mode>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 | 2 </status>
+	</result>
+	}
+}
+
+forgotPassword(1) {
+	request {
+	ip/path/forgotPassword/id
+	<info>
+		<email></email>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 </status>
+	</result>
+	}
+}
+
+forgotPassword(2) {
+	request {
+	ip/path/forgotPassword/id
+	<info>
+		<pinCode></pinCode>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1 </status>
+	</result>
+	}
+}
+
+///////////////////////////////////////////////////////
+
+
+
+
+
+createGroup {
+    request {
+    ip/group/createGroup
+    <info>
+    <groupName>Best</groupName>
+    <admin>123</admin>
+    <access>private</access>
+    </info>
+    }
+    response {
+        <result>
+        <status>0</status>
+        <id>12</id>
+        </result>
+    }
+}
+deleteGroup {
+    request {
+    ip/path/deleteGroup/uId
+	<info>
+		<gId>123</gId>
+	</info>
+    }
+    response {
+         <result>
+        <status>0</status>
+        </result>   
+    }
+}
+getGroupInfo {
+    request {
+    ip/path/getGroupInfo/uId
+	<info>
+                <gId>123</gId>
+        </info>
+    }
+    response {
+    <result>
+    <status> 0 | 1 </status>
+   <name>ChkaMerNmany</name> 
+   <admin>u10</admin>
+   <usersquantity>13</usersquantity>  
+   <avatar>sth.jpg</avatar>
+   <createDate>13.12.2018</createDate> 
+   <result>
+    }
+}
+getGroupConversation {
+    request {
+    ip/path/getGroupConversation/uId
+    <info>
+    <gId>15</gId>
+    </info>
+   }
+    response {
+	<result>
+	<status> 0 | 1 </status>
+	<m10 from="u1"><date>19.12.2018</date><body>Hazar barev </body></m10>
+	<m11 from="u3"><date>19.12.2018</date><body>vonc eq? </body></m11>
+	<m9><date>14.12.2018</date><body>barev ara</body></m9>
+	</result>
+    }
+}
+updateGroupInfo {
+    request {
+    ip/path/updateGroupInfo/uId
+    <info>
+    <gId>123</gId>
+     <name>MafiaForever </name> 
+   <admin>u10</admin>
+   <usersquantity>13</usersquantity>  
+   <avatar>sth.jpg</avatar>
+   <createDate>13.12.2018</createDate> 
+    </info>
+    }
+    response {
+    <result>
+    <status>0</status>
+    <name>MafiaForever</name> 
+    <admin>u10</admin>
+    <usersquantity>13</usersquantity>  
+    <avatar>sth.jpg</avatar>
+    <createDate>13.12.2018</createDate>
+    </result> 
+    }
+}
+updateGroupMessage {
+    request {
+    ip/path/updateGroupMessage/gId
+    <info>
+	<m10 from="u1"><body>Hazar barev </body></m10>    
+    </info>
+    }
+    response {
+	<result>
+	<status> 0 | 1 </status>
+	</result>
+    }
+}
+addGroupMessage {
+    request {
+    ip/path/addGroupMessage/gId
+   <info>
+	<uId>12</uId>
+	<body>Hazar barev </body>
+   </info>
+    }
+    response {
+    <result>
+    <status>0</status>
+    </result>
+    }
+}
+addUserToGroup {
+    request {
+    ip/path/addUserGroup/gId
+    <info>
+    <uId>123</uId>
+    <id>263</id>
+    </info>
+    }
+    response {
+    <reslut>
+    <status> 0 | 1 </status>
+    </result> 
+   }
+}
+
+removeGroupConversation {
+    request {
+    ip/path/removeGroupConversation/gId
+	<info>
+	<adminId>12</adminId>
+	</info>
+    }
+    response {
+    <result>
+    <status>0|1</status>
+   </result>
+    }
+}
+getGroupUsers {
+    request {
+    ip/path/getGroupUsers/gId
+	<info>
+        <uId>12</uId>
+        </info>
+    }
+    response {
+    <result>
+    //<status>0</status>
+     <u15/>
+     <u67/>
+     <u109/>
+    </result>
+    }
+}
+
+removeFromGroup {
+    request {
+    ip/path/removeFromGroup/gId
+    <info>
+    <adminId>12</adminId>
+    <userId>37</userId>
+    </info>
+    }
+    response {
+    <result>
+    <status>0|1</status>
+    </result>
+    }
+}
+removeMessageFromGroupConversation {
+	request {
+	ip/path/removeMessage/id
+	<info>
+		<gId> 12 </gId>
+		<messageId></messageId>
+		<mode> 0 | 1 </mode>
+	</info>
+	}
+	response {
+	<result>
+		<status> 0 | 1  </status>
+	</result>
+	}
+}
