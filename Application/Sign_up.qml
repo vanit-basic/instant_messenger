@@ -3,11 +3,13 @@ import QtQuick.Window 2.2
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Controls 2.5
 Page {
-     focus: true
-//    width: Screen.width
-//    height: Screen.height
+    focus: true
+    //    width: Screen.width
+    //    height: Screen.height
     id:wind
     property variant days: [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+    property variant zuyg: [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+    property variant aaaa: [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
     property variant february: [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
     property variant month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     property var years: [2005,2004,2003,2002,2001,2000,1999,1998,1997,1996,1995,1994,1993,1992,1991,1990,1989,1988,1987,1986,1985,1984,1983,1982,1981,1980,1979,1978,1977,1976,1975,1974,1973,1972,1971,1970,1969,1968,1967,1966,1965,1964,1963,1962,1961,1960,1959,1958,1957,1956,1955,1954,1953,1952,1951,1950,1949]
@@ -125,80 +127,24 @@ Page {
 
 
                         //anchors.centerIn: parent
-                        Rectangle{
-                            id:birthday
-                            x:-column.x
+                        //                        Rectangle{
+                        //                            id:birthday
+                        //                            x:-column.x
 
-                            visible: false
-                            width: Screen.width
-                            height: Screen.height
-                            color: "transparent"
-                            MouseArea{
-                                id: mouseArea
+                        //                            visible: false
+                        //                            width: Screen.width
+                        //                            height: Screen.height
+                        //                            color: "transparent"
+                        //                            MouseArea{
+                        //                                id: mouseArea
 
-                                anchors.fill:parent
-                                onPressed: {birthday.visible = false}
+                        //                                anchors.fill:parent
+                        //                                onPressed: {birthday.visible = false
+                        //                                popup.close()}
 
-                                Rectangle{
-                                    id: rectangle
 
-                                    width: parent.width
-                                    height: 8*username.height
-                                    anchors.centerIn: parent
-                                    anchors.left: parent.left
-                                    anchors.right: parent.right
-                                    color: "gray"
-
-                                    Tumbler {
-                                        id: day_t
-                                        // x: parent.x
-                                        y: parent.y
-                                        width: parent.width/3
-                                        height: parent.height
-                                        anchors.left: parent.left
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        font.pointSize: 14
-                                        visibleItemCount: 3
-                                        //model: days
-                                        currentIndex: 4
-                                        font.bold: true
-                                    }
-
-                                    Tumbler {
-                                        id: month_t
-                                        //x: day_t.x+day_t.width
-                                        y: parent.y
-                                        width: parent.width/3
-                                        height: parent.height
-                                        anchors.centerIn: parent
-                                        font.pointSize: 14
-                                        //model:  month
-                                        visibleItemCount: 3
-                                        onContentItemChanged:   {
-                                            if(currentIndex == 1 || currentIndex ==2 || currentIndex == 3){
-                                                day_t.model = february
-                                            }
-                                        }
-                                    }
-
-                                    Tumbler {
-                                        id: year_t
-                                        //x: parent.x
-                                        y: parent.y
-                                        width: parent.width/3
-                                        height: parent.height
-                                        anchors.right:  parent.right
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        font.pointSize: 14
-                                        visibleItemCount: 3
-                                        //model: years
-                                        currentIndex: 5
-                                        //wrap: true
-
-                                    }
-                                }
-                            }
-                        }
+                        //                            }
+                        //                        }
                         TextField{
                             id:username
                             enabled: true
@@ -280,11 +226,130 @@ Page {
                             width: parent.width
                             height: username.height
                             editable: false
+                            font.pointSize: 22
+
+                            displayText: {
+
+                                "dd    mm    yyyy"
+                            }
+
+                            Popup{
+                                id: popup
+                                x:parent.x
+                                //y:surname.y
+
+                                //anchors.centerIn: Overlay.overlay
+                                width:parent.width
+                                height: 6*username.height
+                                modal: true
+
+                                //                                    width: parent.width
+                                //                                    height: 8*username.height
+                                //                                    anchors.centerIn: parent
+                                //                                    anchors.left: parent.left
+                                //                                    anchors.right: parent.right
+                                background: Rectangle{
+                                    color: "gray"
+                                }
+                                //                                MouseArea{
+
+                                //                                    width: Screen.width
+                                //                                    height: Screen.height
+                                //                                    onClicked: {
+                                //                                    comboBox.displayText = day_t.currentIndex.toString()+"    "+month_t.currentIndex.toString()+"    "+year_t.currentIndex.toString()
+                                //                                    }
+                                contentItem: Column{
+                                    Row{
+                                        height: parent.height-50
+                                        width: parent.width
+                                        // spacing: 10
+
+
+                                        Tumbler {
+                                            id: day_t
+                                            // x: parent.x
+                                            //                                    y: parent.y
+                                            width: parent.width/4
+                                            height: parent.height
+                                            //                                    anchors.left: parent.left
+                                            //                                    anchors.verticalCenter: parent.verticalCenter
+                                            font.pointSize: 14
+                                            visibleItemCount: 3
+                                            model: days
+                                            currentIndex: 0
+                                            font.bold: true
+                                        }
+
+                                        Tumbler {
+                                            id: month_t
+                                            //x: day_t.x+day_t.width
+                                            //                                    y: parent.y
+                                            width: parent.width/2
+                                            height: parent.height
+                                            //                                    anchors.centerIn: parent
+                                            font.pointSize: 14
+                                            model:  month
+                                            visibleItemCount: 3
+                                            onCurrentIndexChanged:    {
+                                                if(currentIndex == 1){
+                                                    day_t.model = february
+                                                }
+                                                else if(currentIndex ==3 || currentIndex ==5 || currentIndex ==8 ||currentIndex ==10){
+                                                    day_t.model = zuyg
+                                                }
+//                                                else if(currentIndex ==1 && years[year_t.currentIndex]/%4 == 0)
+//                                            }
+                                                else{
+                                                day_t.model = days
+                                                }
+                                        }
+                                        }
+
+                                        Tumbler {
+                                            id: year_t
+                                            //x: parent.x
+                                            //                                    y: parent.y
+                                            width: parent.width/4
+                                            height: parent.height
+                                            //                                    anchors.right:  parent.right
+                                            //                                    anchors.verticalCenter: parent.verticalCenter
+                                            font.pointSize: 14
+                                            visibleItemCount: 3
+                                            model: years
+                                            currentIndex: 0
+                                            //wrap: true
+
+                                        }
+                                    }
+
+                                    Button{
+                                        height: sign_in.height
+                                        width: sign_in.width-30
+                                        text: "Save"
+                                        //anchors.bottom: parent.bottom
+                                        anchors.horizontalCenter: parent.horizontalCenter
+
+                                        background: Rectangle{
+                                            radius: 30
+                                            color: "red"
+                                            //opacity: 0.75
+
+                                        }
+                                        onClicked: {
+                                            comboBox.displayText =days[day_t.currentIndex]+"  "+ month[month_t.currentIndex]+"  "+years[year_t.currentIndex]
+                                            popup.close()
+                                        }
+
+                                    }
+                                    // }
+                                }
+                            }
                             onPressedChanged: {
                                 bbbb.start()
-                                birthday.visible = true
-                                year_t.model = years;day_t.model = days;month_t.model = month
-                                birthday.y = -column.y
+                                // birthday.visible = true
+                                // year_t.model = years;day_t.model = days;month_t.model = month
+                                // birthday.y = -column.y
+                                popup.open()
                             }
                         }
 
