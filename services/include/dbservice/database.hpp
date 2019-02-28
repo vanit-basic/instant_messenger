@@ -2,15 +2,28 @@
 #define DATABASE_HPP
 
 #include <string>
+#include <base/basic_controller.hpp>
+#include <dbservice/database.hpp>
+#include <cpprest/http_client.h>
+
+#include <cpprest/filestream.h>
+
+using namespace cfx;
+using namespace utility;
+using namespace web;
+using namespace web::http;
+using namespace web::http::client;
+using namespace concurrency::streams;
 
 class database {
 
 	//Public pure virtual functions
 	public:
 		//user related queries
-		virtual std::string registerUser(std::string userInfo) = 0;
+		virtual json::value mail_login(json::value) = 0;
+		virtual json::value registerUser(json::value) = 0;
 		
-		virtual std::string loginUser(std::string login, std::string password) = 0;
+		virtual json::value loginUser(json::value) = 0;
 
 		virtual bool updateUserInfo(std::string userInfo) = 0;
 		

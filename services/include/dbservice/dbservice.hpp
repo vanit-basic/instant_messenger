@@ -27,6 +27,7 @@ class DbService: public BasicController, Controller {
 	private:
 		database * m_db;
 		std::string dbserviceUri; 
+		bool getUri(std::string);
 		void handleGet(http_request message) override;
 		void handlePost(http_request message) override;
     		void initRestOpHandlers() override;
