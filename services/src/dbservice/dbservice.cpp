@@ -172,12 +172,12 @@ void DbService::handlePost(http_request message) {
 
                                 
                                         if (result) {   
-                                                /*bsoncxx::stdx::optional<bsoncxx::document::value> infoResult =
+                                                bsoncxx::stdx::optional<bsoncxx::document::value> infoResult =
                                                         coll2.find_one(document{} << "login" << request.at("login").as_string()
-                                                                bsoncxx::document::view doc_view{result.view()};
-                                                        auto id = doc_view["id"];*/
+                                                                bsoncxx::document::view doc_view{*result.view()};
+                                                        auto id = doc_view["id"];
                                                          //auto cursor = db["restaurants"].find({});
-                                                auto infoResult = coll1.find(document{} << "login" << login << finalize);
+                                  /*              auto infoResult = coll1.find(document{} << "login" << login << finalize);
                                                 auto builder = bsoncxx::builder::stream::document{};
                                                 auto doc = document{};
                                                 //bsoncxx::document::value doc_value;
@@ -186,9 +186,9 @@ void DbService::handlePost(http_request message) {
                                                 doc = builder << bsoncxx::to_json(doc1);
                                                         //<< bsoncxx::builder::stream::finalize;
                                                         std::cout << bsoncxx::to_json(doc1) << std::endl;
-                                                }
+                                                } */
 
-                                        /*      bsoncxx::document::element elementID = doc["id"];
+                                              bsoncxx::document::element elementID = doc["id"];
                                                 std::string id = elementID.get_utf8().value.to_string();
 
                                                 bsoncxx::document::element elementfn = view["firstname"];
@@ -217,8 +217,8 @@ void DbService::handlePost(http_request message) {
                                                 response["gender"] = json::value::string(gender);
                                                 response["email"] = json::value::string(mail);
                                                 response["login"] = json::value::string(login);
-                                        */
-
+                                        
+/*
                                                 response["id"] = infoResult["id"];
 
                                                 message.reply(status_codes::OK, response);
@@ -250,7 +250,7 @@ void DbService::handlePost(http_request message) {
 
                                 }
                         }
-
+*/
 		});
 	//	});
 }
