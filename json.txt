@@ -124,6 +124,32 @@ checkingCode{
         }
 }
 
+newPassword {
+	request {
+		uri - uri/account/newPassword
+		body - {
+			password : "valod1990",
+			email : "v.valodyan@msil.com"
+		}
+	}
+	resonpse {
+		if OK 
+		{
+			token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                        userId : "u1",
+                        firstName : "Valod",
+                        lastName : "Valodyan",
+                        gender : "male",
+                        email : "v.valodyan@msil.com",
+                        birthDate : "12.12.1990"
+		}
+		else 
+		{
+			status : "invalid email or password"
+		}
+	}
+}
+
 signOut{
         request{
                 uri - uri/account/signOut?clientId=u123
@@ -151,8 +177,8 @@ getUserInfo{
                 {
                         firstName : "Valod",
                         lastName : "Valodyan",
+			avatar : "base64_string",
                         login : "v.valodyan",
-                        password : "Valodik90",
                         gender : "male",
                         email : "v.valodyan@mail.com",
                         birthDate : "12.12.1990"
@@ -160,3 +186,34 @@ getUserInfo{
         }
 }
 
+getUserShortInfo {
+        request {
+                uri - uri/account/getUserShortInfo?clientId=u85&userId=u438
+                header - token
+        }
+        response {
+                if OK
+                {
+                        firstName : "Valod",
+                        lastName : "Valodyan",
+			avatar : "base64_string",
+                        gender : "male",
+                        email : "v.valodyan@mail.com",
+                        birthDate : "12.12.1990"
+                }
+                else
+                {
+                        status : "invalidId"
+                }
+}
+
+updateUserInfo {
+	requset {
+		uri - uri/account/updateUserInfo
+		body - {
+			userId : "u167",
+			firstName : "Valod",
+
+		}
+		
+	}
