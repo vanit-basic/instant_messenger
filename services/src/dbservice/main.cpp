@@ -26,7 +26,7 @@ int main (int argc, char** argv) {
                                 db.shutdown().wait();
                         }
                         catch(std::exception & e) {
-                                std::cerr << "somehitng wrong happen! :(" << '\n';
+                                std::cerr << "something wrong happen! :(" << '\n';
                         }
                         catch(...) {
                                 RuntimeUtils::printStackTrace();

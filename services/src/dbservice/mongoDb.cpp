@@ -20,6 +20,11 @@
 #include <dbservice/mongoDb.hpp>
 #include <dbservice/database.hpp>
 
+using bsoncxx::builder::stream::close_array;
+using bsoncxx::builder::stream::close_document;
+using bsoncxx::builder::stream::document;
+using bsoncxx::builder::stream::finalize;
+using bsoncxx::builder::stream::open_document;
 using namespace cfx;
 using namespace utility;
 using namespace web;
@@ -177,8 +182,8 @@ json::value MongoDB::loginUser(json::value request) {
                                         if (result) {
                                                 bsoncxx::stdx::optional<bsoncxx::document::value> infoResult =
                                                         coll2.find_one(document{} << "login" << request.at("login").as_string()
-                                                                bsoncxx::document::view doc_view{*result.view()};
-                                                        auto id = doc_view["id"];
+                                                                bsoncxx::document::view doc{*result.view()};
+                                                        //auto id = doc_view["id"];
                                                          //auto cursor = db["restaurants"].find({});
                                   /*              auto infoResult = coll1.find(document{} << "login" << login << finalize);
                                                 auto builder = bsoncxx::builder::stream::document{};
@@ -194,22 +199,22 @@ json::value MongoDB::loginUser(json::value request) {
                                               bsoncxx::document::element elementID = doc["id"];
                                                 std::string id = elementID.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementfn = view["firstname"];
+                                                bsoncxx::document::element elementfn = doc["firstname"];
                                                 std::string firstname = elementfn.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementln = view["lastname"];
+                                                bsoncxx::document::element elementln = doc["lastname"];
                                                 std::string lastname = elementln.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementbd = view["birthdate"];
+                                                bsoncxx::document::element elementbd = doc["birthdate"];
                                                 std::string birthdate = elementbd.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementgn = view["gender"];
+                                                bsoncxx::document::element elementgn = doc["gender"];
                                                 std::string gender = elementgn.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementml = view["email"];
+                                                bsoncxx::document::element elementml = doc["email"];
                                                 std::string mail = elementml.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementlg = view["login"];
+                                                bsoncxx::document::element elementlg = doc["login"];
                                                 std::string login = elementlg.get_utf8().value.to_string();
 
 

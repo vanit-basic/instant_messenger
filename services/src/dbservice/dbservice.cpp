@@ -6,33 +6,11 @@
 #include <stdio.h>
 #include <thread>
 
-#include <bsoncxx/json.hpp>
-#include <mongocxx/client.hpp>
-#include <mongocxx/stdx.hpp>
-#include <mongocxx/uri.hpp>
-#include <mongocxx/pool.hpp>
-#include <bsoncxx/builder/stream/document.hpp>
-#include <mongocxx/instance.hpp>
-#include <cpprest/http_client.h>
-#include <cpprest/filestream.h>
-#include <bsoncxx/types.hpp>
-
 #include <dbservice/database.hpp>
 #include <dbservice/mongoDb.hpp>
 #include <dbservice/dbservice.hpp>
 
 
-using bsoncxx::builder::stream::close_array;
-using bsoncxx::builder::stream::close_document;
-using bsoncxx::builder::stream::document;
-using bsoncxx::builder::stream::finalize;
-using bsoncxx::builder::stream::open_document;
-using namespace cfx;
-using namespace utility;                   
-using namespace web;                       
-using namespace web::http;                 
-using namespace web::http::client;         
-using namespace concurrency::streams; 
 
 void DbService::initRestOpHandlers() {
     _listener.support(methods::GET, std::bind(&DbService::handleGet, this, std::placeholders::_1));
