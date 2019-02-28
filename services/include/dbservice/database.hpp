@@ -23,7 +23,7 @@ class database {
 		virtual json::value mail_login(json::value) = 0;
 		virtual json::value registerUser(json::value) = 0;
 		
-		virtual std::string loginUser(std::string login, std::string password) = 0;
+		virtual json::value loginUser(json::value) = 0;
 
 		virtual bool updateUserInfo(std::string userInfo) = 0;
 		
