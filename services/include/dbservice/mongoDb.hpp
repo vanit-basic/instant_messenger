@@ -18,22 +18,22 @@ using namespace concurrency::streams;
 
 class MongoDB : public database {
 	public:
-		json::value mail&login(json::value);
+		json::value mail_login(json::value);
 		json::value registerUser(json::value);
 
-		bool loginUser(std::string login, std::string password);
+		std::string loginUser(std::string login, std::string password);
 
 		bool updateUserInfo(std::string userInfo);
 
-		bool getUserInfo(std::string userID);
+		std::string getUserInfo(std::string userID);
 
-		bool getUserShortInfo(std::string userID);
+		std::string getUserShortInfo(std::string userID);
 
-		bool getUserConversations(std::string userID);
+		std::string getUserConversations(std::string userID);
 
-		bool getUsersConversation(std::string fromID, std::string toID);
+		std::string getUsersConversation(std::string fromID, std::string toID);
 
-		bool addUserMessage(std::string from, std::string to, std::string message);
+		std::string addUserMessage(std::string from, std::string to, std::string message);
 
 		bool updateUserMessage(std::string from, std::string to, std::string messageInfo);
 
@@ -43,7 +43,7 @@ class MongoDB : public database {
 
 		//group related queries
 
-		bool createGroup(std::string groupInfo);
+		std::string createGroup(std::string groupInfo);
 
 		bool deleteGroup(std::string groupID);
 
@@ -57,15 +57,15 @@ class MongoDB : public database {
 
 		bool removeMessageFromGroupConversation(std::string groupInfo);
 
-		bool getGroupInfo(std::string groupID);
+		std::string getGroupInfo(std::string groupID);
 
-		bool getGroupConversation(std::string userID, std::string groupID);
+		std::string getGroupConversation(std::string userID, std::string groupID);
 
 		bool updateGroupInfo(std::string groupInfo);
 
-		bool addGroupMessage(std::string groupId, std::string userId, std::string message);
+		std::string addGroupMessage(std::string groupId, std::string userId, std::string message);
 
-		bool getGroupUsers(std::string groupId);
+		std::string getGroupUsers(std::string groupId);
 
 		bool updateGroupMessage(std::string groupId, std::string messBody);
 
