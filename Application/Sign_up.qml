@@ -221,16 +221,49 @@ Page {
 
                         ComboBox {
                             id: comboBox
+
                             //anchors.verticalCenter: parent.verticalCenter
                             //anchors.left: parent.left
                             width: parent.width
                             height: username.height
                             editable: false
-                            font.pointSize: 22
+
+                            //font.pointSize: 22
+                            //opacity: 0
+                            Rectangle {
+                                id:combo
+                                color: "white"
+                                height: 1
+                                width: parent.width
+                                anchors.bottom: parent.bottom
+                            }
+
+                            background: Rectangle{
+                                color: "transparent"
+                           // border.color: left= "red"
+                            }
+                            delegate: ItemDelegate{
+                                width: parent.width
+                            contentItem: Text {
+                                anchors.centerIn: parent
+                                text: "modelData"
+                            color: "white"
+                            }
+
+                            }
+                            indicator: Text{
+                                text: "v"
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+                                color: "white"
+                                anchors.rightMargin: 15
+                                font.pointSize: 24
+                            }
 
                             displayText: {
 
-                                "dd    mm    yyyy"
+
+                               "Birth date"
                             }
 
                             Popup{
