@@ -4,21 +4,21 @@ ip=192.168.1.12
 Account Service
 
 signUp {
-        request{
+        request {
                 uri - uri/account/registration
                 body - {
                                 firstName : "Valod",
                                 lastName : "Valodyan",
-                                login : "v.valodyan",
-                                password : "Valodik90",
                                 gender : "male",
                                 email : "v.valodyan@mail.com",
-                                birthDate : "12.12.1990"
+                                birthDate : "12.12.1990",
+				login : "v.valodyan",
+                                password : "Valodik90"
 		}
         }
 
-        response{
-                if OK {
+        response {
+//              if OK 
                         token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                         userId : "u1",
                         firstName : "Valod",
@@ -27,15 +27,14 @@ signUp {
                         email : "v.valodyan@mail.com",
                         birthDate : "12.12.1990",
 			login : "v.valodyan"
-                } else {
+//		else 
                         mailStatus : "inValid",
                         loginStatus : "inValid"
-                }
         }
 }
 
 signIn {
-        request{
+        request {
                 uri - uri/account/signIn
                 body -  {
                                 login : "v.valodyan",
@@ -43,9 +42,8 @@ signIn {
                         }
         }
 
-        response{
-                if OK
-                {
+        response {
+//              if OK 
                         token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                         userId : "u1",
                         firstName : "Valod",
@@ -53,25 +51,15 @@ signIn {
                         gender : "male",
                         email : "v.valodyan@msil.com",
                         birthDate : "12.12.1990"
-                }
-                else
-                {
-                        if (login - in valid)
-                        {
-                                "Login or Password is Wrong!!!"
-                        }
-                        if (login - isvalid && count < max_attempt-1)
-                        {
-                                "Login or Password is Wrong!!!"
-                        }
-                        if (login - isvalid && count = max_attempt-1)
-                        {
-                                "Attention!!! You have one attempt left!!!"
-  			}
-                        if (login - isvalid && count >= max_attempt)
-                        {
-                                "Attempt failed!!!"
-                        }
+//              else 
+//                      if (login - in valid)
+                        	status : "Login or Password is Wrong!!!"
+//                      if (login - isvalid && count < max_attempt-1)
+                                status : "Login or Password is Wrong!!!"
+//                      if (login - isvalid && count = max_attempt-1)
+                                status : "Attention!!! You have one attempt left!!!"
+//                      if (login - isvalid && count >= max_attempt)
+                                status : "Attempt failed!!!"
                 }
         }
 }
@@ -85,14 +73,10 @@ forgotPassword {
                 }
 
         response {
-                if OK
-                {
-                        "you have a code message in mail. Please, input code"
-                }
-                else
-                {
-                        "invalid mail"
-                }
+//              if OK
+			status : "you have a code message in mail. Please, input code"
+//              else
+                        status : "invalid mail"
         }
 }
 
@@ -105,20 +89,11 @@ checkingCode {
                 }
         }
         response {
-                if OK
-                {
+//              if OK
                         token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                         userId : "u1",
-                        firstName : "Valod",
-                        lastName : "Valodyan",
-                        gender : "male",
-                        email : "v.valodyan@msil.com",
-                        birthDate : "12.12.1990"
-                }
-                else
-                {
-                        "invalid code"
-                }
+//              else
+                        status : "invalid code"
         }
 }
 
@@ -126,13 +101,12 @@ newPassword {
 	request {
 		uri - uri/account/newPassword
 		body - {
-			password : "valod1990",
-			email : "v.valodyan@mail.com"
+			token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			password : "valod1990"
 		}
 	}
 	resonpse {
-		if OK 
-		{
+//		if OK 
 			token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                         userId : "u1",
                         firstName : "Valod",
@@ -140,11 +114,8 @@ newPassword {
                         gender : "male",
                         email : "v.valodyan@msil.com",
                         birthDate : "12.12.1990"
-		}
-		else 
-		{
-			status : "invalid email or password"
-		}
+//		else 
+			status : "invalid password"
 	}
 }
 
@@ -155,10 +126,8 @@ signOut {
         }
 
         response{
-                if OK
-                {
-                        status = "OK"
-                }
+//              if OK
+			status : "OK"
         }
 }
 
@@ -168,8 +137,7 @@ getUserInfo {
                 header - token
         }
         response {
-                if OK
-                {
+//              if OK
                         firstName : "Valod",
                         lastName : "Valodyan",
 			avatar : "base64_string",
@@ -177,7 +145,6 @@ getUserInfo {
                         gender : "male",
                         email : "v.valodyan@mail.com",
                         birthDate : "12.12.1990"
-                }
         }
 }
 
@@ -187,19 +154,15 @@ getUserShortInfo {
                 header - token
         }
         response {
-                if OK
-                {
+//              if OK
                         firstName : "Heriqnaz",
                         lastName : "Heriqyan",
 			avatar : "base64_string",
                         gender : "female",
                         email : "heriqnaz@mail.com",
                         birthDate : "12.12.1995"
-                }
-                else
-                {
+//              else
                         status : "invalidId"
-                }
 }
 
 updateUserInfo {
@@ -208,20 +171,18 @@ updateUserInfo {
 		body - {
                         token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			firstName : "Valod",
-			lastname : "Valodyan"'
-			avatar : "base64_string"
+			lastname : "Valodyan",
+			avatar : "base64_string",
+			
 		}
 
 	response {
-                if OK
-                {
+//              if OK
                         firstName : "Valod",
                         lastName : "Valodyan",
-                        avatar : "base64_string",
-			avatar : "base64_string"
-                } else {
-                        status : "0/1/2"
-                }
+			avatar : "base64_string",
+//              else 
+                        status : ""
 	}
 }
 
@@ -255,10 +216,11 @@ createGroup {
 
 deleteGroup {
     request {
-        uri - uri/path/deleteGroup?adminId=u542
+        uri - uri/path/deleteGroup
         body - {
+		adminId : "u542",
                 token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-                groupID : "g123",
+                groupID : "g123"
         }
     }
 
@@ -274,17 +236,16 @@ getGroupInfo {
         }
 
         response {
-                if OK {
+//              if OK 
                         name : "ChkaMerNmany",
                         adminID : "u10",
                         usersquantity : "13",
                         avatar : "base64_string",
                         createDate : "13.12.2018"
-                }
-                else {
+//              else 
                         status : "this is a private group"
-                }
         }
+
 }
 
 updateGroupInfo {
@@ -295,17 +256,15 @@ updateGroupInfo {
                 groupID : "g123",
                 name : "MafiaForever",
                 adminID : "u10",
-        //      usersquantity : "13",
                 avatar : "base64_string",
             }
     }
 
     response {
-        status : "0",
+	groupID : "g123",
         name : "MafiaForever",
         adminID : "u10",
-    //  usersquantity : "13",
-        avatar : "base64_string",
+        avatar : "base64_string"
     }
 }
 
@@ -316,7 +275,10 @@ getGroupUsers {
     }
 
     response {
+//	for public group
         id : ["u1", "u12", "u18"]
+//	for privat group
+	status : ""
     }
 }
 
@@ -331,12 +293,10 @@ removeFromGroup {
     }
 
     response {
-            if OK {
+//          if OK 
                 status : "removed"
-            }
-            else {
+//          else 
                 status : ""
-            }
     }
 }
 
