@@ -69,6 +69,7 @@ Page{
         Button {
             id: editprofile
             width:(drawer.width)/2
+            height: 30
             Text{
                 text: " Edit profile"
                 color: "white"
@@ -90,6 +91,10 @@ Page{
                     height: 30
                     width: 30
                 }
+                onClicked:{
+                      drawer.close()
+                  stack.push(Qt.resolvedUrl("Edit_Profile.qml"))
+                }
             }
             anchors.top: parent.top
             anchors.topMargin: 74
@@ -104,6 +109,7 @@ Page{
         Button {
             id: change_pass
             width:(drawer.width)/2
+            height: 30
             Text{
                 text: " Change Password"
                 color: "white"
@@ -124,6 +130,11 @@ Page{
                     source: "qrc:/password.png"
                     height: 30
                     width: 30
+                }
+                onClicked: {
+                    drawer.close()
+                  // homepage.homeStack.push(Qt.resolvedUrl("Change_Password.qml"))
+                   stack.push(Qt.resolvedUrl("Change_Password.qml"))
                 }
             }
 
