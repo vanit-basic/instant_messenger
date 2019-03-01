@@ -6,7 +6,7 @@ Account Service
 signUp{
         request{
                 uri - uri/account/registration
-                body -  {
+                body - {
                                 firstName : "Valod",
                                 lastName : "Valodyan",
                                 login : "v.valodyan",
@@ -14,12 +14,11 @@ signUp{
                                 gender : "male",
                                 email : "v.valodyan@mail.com",
                                 birthDate : "12.12.1990"
-                        }
+		}
         }
 
         response{
-                if OK
-                {
+                if OK {
                         token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                         userId : "u1",
                         firstName : "Valod",
@@ -27,9 +26,7 @@ signUp{
                         gender : "male",
                         email : "v.valodyan@msil.com",
                         birthDate : "12.12.1990"
-                }
-                else
-                {
+                } else {
                         mailStatus : "inValid",
                         loginStatus : "inValid"
                 }
@@ -155,6 +152,7 @@ signOut{
                 uri - uri/account/signOut?clientId=u123
                 header - token
         }
+
         response{
                 if OK
                 {
@@ -211,7 +209,7 @@ updateUserInfo {
 	requset {
 		uri - uri/account/updateUserInfo/id
 		body - {
-		//	taken : "randtTaken"
+                        token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			firstName : "Valod",
 			lastname : "Valodyan"'
 			gender : "male",
@@ -238,6 +236,7 @@ updateUserInfo {
 getUserConversations {
         request {
         	uri - uri/user/getUserConversations/id
+                header - token
 	}
 
         response {
@@ -262,6 +261,7 @@ getUserConversation {
         request {
   		uri - uri/user/getUserConversations/id
         	body - {
+                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			id : "u12"
 		}
         }
@@ -284,6 +284,7 @@ getUserConversation {
 deleteUser {
         request {
         	uri - uri/user/deleteUser/id
+		header - token
         }
         
 	response {
@@ -295,6 +296,7 @@ addUserMessage {
         request {
         	uri - uri/user/addUserMessage/id
                 body - {
+                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			id : "u321",
                 	message : "Hi!!!"
 		}
@@ -309,6 +311,7 @@ updateUserMessage{
         request {
        		uri - uri/user/updateUserMessage/id
                 body - {
+                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			id : "u321",
                 	messageId : "m12",
                	 	newMessage : "Hello!"
@@ -325,6 +328,7 @@ removeUserConversation {
         	uri - uri/user/removeUserConversation/id
                 body - {
 			id : "u123"
+                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		}
         }
 
@@ -337,6 +341,7 @@ removeMessageFromUserConversation {
         request {
         	uri - uri/path/removeMessage/id
                 body - {
+                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			id : "u12",
                 	messageID : "m123",
                 	mode : "0/1"
@@ -351,6 +356,7 @@ removeMessageFromUserConversation {
         request {
         	uri - uri/path/removeMessage/id
                 body - {
+                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			id : "u12",
                 	messageID : "m22",
               		mode : "0/1"
@@ -361,37 +367,13 @@ removeMessageFromUserConversation {
         }
 }
 
-forgotPassword(1) {
-        request {
-        	uri - uri/path/forgotPassword/id
-                body - {
-			email : "valodikna@gmail.com"
-		}
-        }
-
-        response {
-		status : "0/1"
-        }
-}
-
-forgotPassword(2) {
-        request {
-	        uri - uri/path/forgotPassword/id
-                body - {
-			pinCode : "elchmoranas"
-        }
-
-        response {
-                status : "0/1"
-        }
-}
-
 ###########################################################################################################################################
 
 createGroup {
     request {
     	uri - uri/group/createGroup
     	body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		groupName : "Best",
     		adminID : "u123",
     		access : "private"
@@ -408,6 +390,7 @@ deleteGroup {
     request {
 	uri - uri/path/deleteGroup/uId
 	body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		groupID : "g123",
 	}
     }
@@ -421,6 +404,7 @@ getGroupInfo {
     request {
     	uri - uri/path/getGroupInfo/uId
 	body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		groupID : "g123"
 	}
     }
@@ -439,6 +423,7 @@ getGroupConversation {
     request {
     	uri - uri/path/getGroupConversation/uId
    	body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		groupID : "g15"
 	}
    }
@@ -466,6 +451,7 @@ updateGroupInfo {
     request {
 	    uri - uri/path/updateGroupInfo/uId
 	    body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		groupID : "g123",
      		name : "MafiaForever",
    		adminID : "u10",
@@ -488,9 +474,12 @@ updateGroupInfo {
 updateGroupMessage {
     request {
     	uri - uri/path/updateGroupMessage/gId
-        messageID : "m10",
-       	id : "u1",
-	message : "lav lav"
+        body - {
+		token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+        	messageID : "m10",
+       		id : "u1",
+		message : "lav lav"
+	}
     }
 
     response {
@@ -502,6 +491,7 @@ addGroupMessage {
     request {
 	uri - uri/path/addGroupMessage/gId
 	body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		id : "u12",
         	message : "vobshm"
 	}
@@ -516,6 +506,7 @@ addUserToGroup {
     request {
 	    uri - uri/path/addUserGroup/gId
 	    body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		id : "u1",
 		id : "u2"
 	    }
@@ -530,6 +521,7 @@ removeGroupConversation {
     request {
     	uri - uri/path/removeGroupConversation/gId
         body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		adminID : "u22"
 	}
     }
@@ -543,6 +535,7 @@ getGroupUsers {
     request {
     	uri - uri/path/getGroupUsers/gId
         body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		groupID : "12"
 	}
     }
@@ -560,6 +553,7 @@ removeFromGroup {
     request {
     	uri - uri/path/removeFromGroup/gId
     	body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		adminID : "u12",
     		id : "u23" // who will be removed
 	}
@@ -574,6 +568,7 @@ removeMessageFromGroupConversation {
         request {
         	uri - uri/path/removeMessage/id
                 body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			groupID : "u12",
                 	messageID : "m23",
                 	mode : "0/1"
