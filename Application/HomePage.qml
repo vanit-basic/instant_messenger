@@ -20,13 +20,12 @@ Page{
     initialItem:  Rectangle {
         id: root
         anchors.fill: parent
-        gradient:Gradient {
-            GradientStop {
-                position: 0;
-                color: "#476b6b" }
-            GradientStop {
-                position: 0.994;
-                color: "#e0ebeb" }
+        gradient: Gradient{
+            GradientStop { position: 0.0;color:"dimgrey"}
+            GradientStop { position: 0.25;color:"gray"}
+            GradientStop { position: 0.5;color:"darkgrey"}
+            GradientStop { position: 0.75;color:"silver"}
+            GradientStop{ position: 1.0;color:"lightgrey"}
         }
         Rectangle {
             id: upperPart

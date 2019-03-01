@@ -127,7 +127,7 @@ Page {
                             enabled: true
 
                             width: 300
-                            height: (column.height-8*column.spacing)/8
+                            height: (column.height-9*column.spacing)/9
                             color: "white"
                             placeholderText: "Name"
                             background: Rectangle{
@@ -364,7 +364,8 @@ Page {
                             RadioButton {
                                 id: radioButton
 
-
+                                indicator.height: 25
+                                    indicator.width: 25
                                 onClicked:      {
                                     bbbb.start()
                                 }
@@ -386,8 +387,8 @@ Page {
                                 onClicked:  {
                                     bbbb.start()
                                 }
-                                width: 36
-                                height: 40
+                                indicator.height: 25
+                                    indicator.width: 25
 
                                 Text {
                                     id: female
@@ -398,6 +399,33 @@ Page {
 
                                 }
                             }
+                        }
+                        TextField{
+                            id:login
+                            enabled: true
+
+                            width: 300
+                            height: username.height
+                            color: "white"
+                            placeholderText: "Login"
+                            background: Rectangle{
+                                color: "transparent"
+                            }
+                            Rectangle {
+                                id:log
+                                color: "white"
+                                height: 1
+                                width: parent.width
+                                anchors.bottom: parent.bottom
+                            }
+                            onEditingFinished:  { us.height = 1; us.color = "white"}
+                            onPressed:   {
+                                us.height = 2
+                                us.color = "darkgrey"
+                               kkkk.start()
+
+                            }
+
                         }
                         TextField{
                             id:user_password

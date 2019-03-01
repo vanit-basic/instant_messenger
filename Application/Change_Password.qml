@@ -16,7 +16,13 @@ Page {
         //visible: true
 //        width: Screen.width
 //        height: Screen.height
-        color: "light blue"
+        gradient: Gradient{
+            GradientStop { position: 0.0;color:"dimgrey"}
+            GradientStop { position: 0.25;color:"gray"}
+            GradientStop { position: 0.5;color:"darkgrey"}
+            GradientStop { position: 0.75;color:"silver"}
+            GradientStop{ position: 1.0;color:"lightgrey"}
+        }
 
         Rectangle{
             x: 0

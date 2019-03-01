@@ -7,9 +7,9 @@ import QtGraphicalEffects 1.12
 
 Page {
     id:wind
-//    visible: true
-//    width: Screen.width
-//    height: Screen.height
+    //    visible: true
+    //    width: Screen.width
+    //    height: Screen.height
 
     MouseArea {
         anchors.fill: parent
@@ -43,12 +43,7 @@ Page {
             to: -200
             duration: 200
         }
-        Rectangle{
-            x:0
-            y:0
-            width: parent.width
-            height: parent.height
-            color: "lightblue"
+
 
             Rectangle{
                 id: rec
@@ -56,6 +51,13 @@ Page {
                 y: 0
                 width: parent.width
                 height: parent.height
+                gradient: Gradient{
+                    GradientStop { position: 0.0;color:"dimgrey"}
+                    GradientStop { position: 0.25;color:"gray"}
+                    GradientStop { position: 0.5;color:"darkgrey"}
+                    GradientStop { position: 0.75;color:"silver"}
+                    GradientStop{ position: 1.0;color:"lightgrey"}
+                }
                 MouseArea{
                     x:0
                     y:0
@@ -71,46 +73,46 @@ Page {
                         visible: true
                         width: Screen.width
                         height: (Screen.height)/3
-                        color: "teal"
+                        color: "transparent"
 
                         Rectangle{
-                               x: 0
-                               id:small
-                               visible: true
-                               width: Screen.width
-                               height: (Screen.height)/12
-                               color: "transparent"
-                                  Button{
-                                       id:back
-                                       x: 0
-                                       y: 0
-                                       width:parent.height
-                                       height: parent.height
-                                       background: Rectangle{
-                                           color: "transparent"
-                                       }
+                            x: 0
+                            id:small
+                            visible: true
+                            width: Screen.width
+                            height: (Screen.height)/12
+                            color: "transparent"
+                            Button{
+                                id:back
+                                x: 0
+                                y: 0
+                                width:parent.height
+                                height: parent.height
+                                background: Rectangle{
+                                    color: "transparent"
+                                }
 
-                                       Text {
-                                           id: back_text
-                                           anchors.fill:parent
-                                           horizontalAlignment: Text.AlignHCenter
-                                           verticalAlignment: Text.AlignVCenter
-                                           text: qsTr("<")
-                                           font.pointSize: 30
-                                           color: "white"
-                                       }
-                                       onClicked: stack.pop()
-                                   }
-                                   Text {
-                                       id: f_pass
-                                       text: qsTr("Edit profile")
-                                       color: "white"
-                                       anchors.horizontalCenter: parent.horizontalCenter
-                                       anchors.verticalCenter: parent.verticalCenter
-                                      // anchors.bottom: roundButton.top
-                                       font.pointSize: 30
-                                   }
-                               }
+                                Text {
+                                    id: back_text
+                                    anchors.fill:parent
+                                    horizontalAlignment: Text.AlignHCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    text: qsTr("<")
+                                    font.pointSize: 30
+                                    color: "white"
+                                }
+                                onClicked: stack.pop()
+                            }
+                            Text {
+                                id: f_pass
+                                text: qsTr("Edit profile")
+                                color: "white"
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                anchors.verticalCenter: parent.verticalCenter
+                                // anchors.bottom: roundButton.top
+                                font.pointSize: 30
+                            }
+                        }
 
                         RoundButton {
                             id: roundButton
@@ -143,7 +145,7 @@ Page {
                             visible: true
                             width: Screen.width
                             height: (Screen.height - y)
-                            color: "light blue"
+                             color: "transparent"
                             Column {
                                 id: column
                                 x:rec2.x+50
@@ -245,4 +247,5 @@ Page {
             }
         }
     }
-}
+
+

@@ -18,16 +18,9 @@ Page{
         background: Rectangle{
             color:"grey"
         }
-        Rectangle{
-            border.color: "white"
-            height:1
-            width:parent.width
-            anchors.top: parent.top
-            anchors.topMargin: 45
-        }
         Column{
             anchors.fill: parent
-            spacing: 8
+            spacing: 10
             Rectangle{
                 width: parent.width
                 height: 46
@@ -84,6 +77,11 @@ Page{
                         color: "white"
                         font.pointSize: 15
                     }
+
+                    onClicked:{
+                        drawer.close()
+                        stack.push(Qt.resolvedUrl("Edit_Profile.qml"))
+                    }
                 }
             }
             Rectangle{
@@ -114,7 +112,12 @@ Page{
                         color: "white"
                         font.pointSize: 15
                     }
+                    onClicked: {
+                        drawer.close()
+                        stack.push(Qt.resolvedUrl("Change_Password.qml"))
+                    }
                 }
+
             }
             Rectangle{
                 width: parent.width
@@ -158,6 +161,10 @@ Page{
                         color: "transparent"
                         border.color: "black"
                     }
+                    onActivated: {
+                        combo.displayText = model.get(currentIndex).lang
+                    }
+                    Material.background: Material.transparent
                     contentItem: Text{
                         id: comboText
                         text: combo.displayText
@@ -266,20 +273,20 @@ Page{
                     checked: true
                     onCheckedChanged:{console.log("switch")}
                     indicator: Rectangle {
-                            width: 50
-                            height: parent.height - 10
-                            anchors.verticalCenter: parent.verticalCenter
-                            radius: 13
-                            color: control.checked ? "#17a81a" : "#ffffff"
+                        width: 50
+                        height: parent.height - 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        radius: 13
+                        color: control.checked ? "#17a81a" : "#ffffff"
 
-                            Rectangle {
-                                x: control.checked ? parent.width - width : 0
-                                width: height
-                                height: parent.height
-                                radius: 13
-                                color: control.down ? "#cccccc" : "#ffffff"
-                                border.color: control.checked ? (control.down ? "#17a81a" : "#21be2b") : "#999999"
-                            }
+                        Rectangle {
+                            x: control.checked ? parent.width - width : 0
+                            width: height
+                            height: parent.height
+                            radius: 13
+                            color: control.down ? "#cccccc" : "#ffffff"
+                            border.color: control.checked ? (control.down ? "#17a81a" : "#21be2b") : "#999999"
+                        }
                     }
                 }
             }
@@ -421,8 +428,6 @@ Page{
             GradientStop { position: 0.5;color:"darkgrey"}
             GradientStop { position: 0.75;color:"silver"}
             GradientStop{ position: 1.0;color:"lightgrey"}
-
-
         }
 
         Rectangle {
@@ -533,7 +538,6 @@ Page{
                     }
                 }
 
-
                 ListView{
                     id:information
                     clip: true
@@ -619,11 +623,9 @@ Page{
                 width: 61
                 height: 40
                 anchors.verticalCenter: parent.verticalCenter
-                //           text:qsTr("☰")
                 Text {
                     id: back
                     text: qsTr("<")
-                    // text: qsTr("☰")
                     anchors.verticalCenterOffset: -3
                     anchors.horizontalCenterOffset: 0
                     font.pointSize: 30
