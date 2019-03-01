@@ -7,29 +7,29 @@ signUp {
         request {
                 uri - uri/account/registration
                 body - {
-                                firstName : "Valod",
-                                lastName : "Valodyan",
-                                gender : "male",
-                                email : "v.valodyan@mail.com",
-                                birthDate : "12.12.1990",
-				login : "v.valodyan",
-                                password : "Valodik90"
+                                "firstName" : "Valod",
+                                "lastName" : "Valodyan",
+                                "gender" : "male",
+                                "email" : "v.valodyan@mail.com",
+                                "birthDate" : "12.12.1990",
+				"login" : "v.valodyan",
+                                "password" : "Valodik90"
 		}
         }
 
         response {
 //              if OK 
-                        token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-                        userId : "u1",
-                        firstName : "Valod",
-                        lastName : "Valodyan",
-                        gender : "male",
-                        email : "v.valodyan@mail.com",
-                        birthDate : "12.12.1990",
-			login : "v.valodyan"
+                        "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                        "userId" : "u1",
+                        "firstName" : "Valod",
+                        "lastName" : "Valodyan",
+                        "gender" : "male",
+                        "email" : "v.valodyan@mail.com",
+                        "birthDate" : "12.12.1990",
+			"login" : "v.valodyan"
 //		else 
-                        mailStatus : "inValid",
-                        loginStatus : "inValid"
+                        "mailStatus" : "inValid",
+                        "loginStatus" : "inValid"
         }
 }
 
@@ -37,29 +37,29 @@ signIn {
         request {
                 uri - uri/account/signIn
                 body -  {
-                                login : "v.valodyan",
-                                password : "Valodik90"
+                                "login" : "v.valodyan",
+                                "password" : "Valodik90"
                         }
         }
 
         response {
 //              if OK 
-                        token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-                        userId : "u1",
-                        firstName : "Valod",
-                        lastName : "Valodyan",
-                        gender : "male",
-                        email : "v.valodyan@msil.com",
-                        birthDate : "12.12.1990"
+                        "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                        "userId" : "u1",
+                        "firstName" : "Valod",
+                        "lastName" : "Valodyan",
+                        "gender" : "male",
+                        "email" : "v.valodyan@msil.com",
+                        "birthDate" : "12.12.1990"
 //              else 
 //                      if (login - in valid)
-                        	status : "Login or Password is Wrong!!!"
+                        	"status" : "Login or Password is Wrong!!!"
 //                      if (login - isvalid && count < max_attempt-1)
-                                status : "Login or Password is Wrong!!!"
+                                "status" : "Login or Password is Wrong!!!"
 //                      if (login - isvalid && count = max_attempt-1)
-                                status : "Attention!!! You have one attempt left!!!"
+                                "status" : "Attention!!! You have one attempt left!!!"
 //                      if (login - isvalid && count >= max_attempt)
-                                status : "Attempt failed!!!"
+                                "status" : "Attempt failed!!!"
                 }
         }
 }
@@ -68,15 +68,15 @@ forgotPassword {
         request {
                 uri - uri/account/forgotPassword
                 body -  {
-                                email : "v.valodyan@mail.com"
+                                "email" : "v.valodyan@mail.com"
                         }
                 }
 
         response {
 //              if OK
-			status : "you have a code message in mail. Please, input code"
+			"status" : "you have a code message in mail. Please, input code"
 //              else
-                        status : "invalid mail"
+                        "status" : "invalid mail"
         }
 }
 
@@ -84,16 +84,16 @@ checkingCode {
         request {
                 uri - uri/account/checkingCode
                 body - {
-                        code : 123456,
-                        mail : "v.valodyan@mail.com"
+                        "code" : 123456,
+                        "mail" : "v.valodyan@mail.com"
                 }
         }
         response {
 //              if OK
-                        token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-                        userId : "u1",
+                        "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                        "userId" : "u1",
 //              else
-                        status : "invalid code"
+                        "status" : "invalid code"
         }
 }
 
@@ -101,21 +101,21 @@ newPassword {
 	request {
 		uri - uri/account/newPassword
 		body - {
-			token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-			password : "valod1990"
+			"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"password" : "valod1990"
 		}
 	}
 	resonpse {
 //		if OK 
-			token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-                        userId : "u1",
-                        firstName : "Valod",
-                        lastName : "Valodyan",
-                        gender : "male",
-                        email : "v.valodyan@msil.com",
-                        birthDate : "12.12.1990"
+			"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                        "userId" : "u1",
+                        "firstName" : "Valod",
+                        "lastName" : "Valodyan",
+                        "gender" : "male",
+                        "email" : "v.valodyan@msil.com",
+                        "birthDate" : "12.12.1990"
 //		else 
-			status : "invalid password"
+			"status" : "invalid password"
 	}
 }
 
@@ -127,7 +127,7 @@ signOut {
 
         response{
 //              if OK
-			status : "OK"
+			"status" : "OK"
         }
 }
 
@@ -138,13 +138,13 @@ getUserInfo {
         }
         response {
 //              if OK
-                        firstName : "Valod",
-                        lastName : "Valodyan",
-			avatar : "base64_string",
-                        login : "v.valodyan",
-                        gender : "male",
-                        email : "v.valodyan@mail.com",
-                        birthDate : "12.12.1990"
+                        "firstName" : "Valod",
+                        "lastName" : "Valodyan",
+			"avatar" : "base64_string",
+                        "login" : "v.valodyan",
+                        "gender" : "male",
+                        "email" : "v.valodyan@mail.com",
+                        "birthDate" : "12.12.1990"
         }
 }
 
@@ -155,34 +155,34 @@ getUserShortInfo {
         }
         response {
 //              if OK
-                        firstName : "Heriqnaz",
-                        lastName : "Heriqyan",
-			avatar : "base64_string",
-                        gender : "female",
-                        email : "heriqnaz@mail.com",
-                        birthDate : "12.12.1995"
+                        "firstName" : "Heriqnaz",
+                        "lastName" : "Heriqyan",
+			"avatar" : "base64_string",
+			"gender" : "male",
+			"birthdate" : "12.12.1993" 
 //              else
-                        status : "invalidId"
+                        "status" : "invalidId"
 }
 
 updateUserInfo {
 	requset {
 		uri - uri/account/updateUserInfo?clientId=u123
 		body - {
-                        token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-			firstName : "Valod",
-			lastname : "Valodyan",
-			avatar : "base64_string",
+                        "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"firstName" : "Valod",
+			"lastname" : "Valodyan",
+			"avatar" : "base64_string",
+			"" : ""
 			
 		}
 
 	response {
 //              if OK
-                        firstName : "Valod",
-                        lastName : "Valodyan",
-			avatar : "base64_string",
+                        "firstName" : "Valod",
+                        "lastName" : "Valodyan",
+			"avatar" : "base64_string",
 //              else 
-                        status : ""
+                        "status" : ""
 	}
 }
 
@@ -193,7 +193,7 @@ deleteUser {
         }
 
         response {
-                status : "deleted"
+                "status" : "deleted"
         }
 }
 
@@ -201,16 +201,16 @@ createGroup {
     request {
         uri - uri/group/createGroup
         body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-                groupName : "Best",
-                adminID : "u123",
-                access : "private"
+                "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                "groupName" : "Best",
+                "adminID" : "u123",
+                "access" : "private"
         }
     }
 
     response {
-        status : "created",
-        groupID : "g212"
+        "status" : "created",
+        "groupID" : "g212"
     }
 }
 
@@ -218,14 +218,14 @@ deleteGroup {
     request {
         uri - uri/path/deleteGroup
         body - {
-		adminId : "u542",
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-                groupID : "g123"
+		"adminId" : "u542",
+                "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                "groupID" : "g123"
         }
     }
 
     response {
-        status : "deleted"
+        "status" : "deleted"
     }
 }
 
@@ -237,13 +237,13 @@ getGroupInfo {
 
         response {
 //              if OK 
-                        name : "ChkaMerNmany",
-                        adminID : "u10",
-                        usersquantity : "13",
-                        avatar : "base64_string",
-                        createDate : "13.12.2018"
+                        "name" : "ChkaMerNmany",
+                        "adminID" : "u10",
+                        "usersquantity" : "13",
+                        "avatar" : "base64_string",
+                        "createDate" : "13.12.2018"
 //              else 
-                        status : "this is a private group"
+                        "status" : "this is a private group"
         }
 
 }
@@ -252,19 +252,19 @@ updateGroupInfo {
     request {
             uri - uri/path/updateGroupInfo?adimId=u231
             body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-                groupID : "g123",
-                name : "MafiaForever",
-                adminID : "u10",
-                avatar : "base64_string",
+                "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                "groupID" : "g123",
+                "name" : "MafiaForever",
+                "adminID" : "u10",
+                "avatar" : "base64_string",
             }
     }
 
     response {
-	groupID : "g123",
-        name : "MafiaForever",
-        adminID : "u10",
-        avatar : "base64_string"
+	"groupID" : "g123",
+        "name" : "MafiaForever",
+        "adminID" : "u10",
+        "avatar" : "base64_string"
     }
 }
 
@@ -276,31 +276,34 @@ getGroupUsers {
 
     response {
 //	for public group
-        id : ["u1", "u12", "u18"]
+        "id" : ["u1", "u12", "u18"]
 //	for privat group
-	status : ""
+	"status" : ""
     }
 }
 
 removeFromGroup {
     request {
-        uri - uri/path/removeFromGroup?groupId=g60
+        uri - uri/path/removeFromGroup
         body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-                adminID : "u12",
-                id : "u23" // who will be removed
+		"groupId" : "g156",
+                "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                "adminID" : "u12",
+                "id" : "u23" // who will be removed
         }
     }
 
     response {
 //          if OK 
-                status : "removed"
+                "status" : "removed"
 //          else 
-                status : ""
+                "status" : ""
     }
 }
 
 //////////////////////////////////////////////
+Messaging Service
+
 getUserConversations {
         request {
         	uri - uri/user/getUserConversations?clientId=u123
@@ -308,230 +311,227 @@ getUserConversations {
 	}
 
         response {
-		if OK {
-       		 	id : "u12",
-        		firstName : "Valod",
-        		lastName : "Valodyan",
-        		lastMessage : "barev",
-			avatar : "base64_string",
-       
-			id : "u23",
-        		firstName : "Heriq",
-        		lastName : "Heriqyan",
-        		lastMessage : "hajox",
-			avatar : "base64_string"
-		} else {
-        		status : "Conversations not found"
+//		if OK
+		{ 
+       		 	"id" : "u12",
+        		"firstName" : "Valod",
+        		"lastName" : "Valodyan",
+        		"lastMessage" : "barev",
+			"avatar" : "base64_string"
 		}
+       		{
+			"id" : "u23",
+        		"firstName" : "Heriq",
+        		"lastName" : "Heriqyan",
+        		"lastMessage" : "hajox",
+			"avatar" : "base64_string"
+		}
+//		else 
+        		"status" : "Conversations not found"
 }
 
 getUserConversation {
         request {
-  		uri - uri/user/getUserConversations?clientId=u123&userId=u21
+  		uri - uri/user/getUserConversations
         	body - {
-                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"clientId" : "u123",
+			"uId" : "u21",
+                	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		}
         }
 
         response {
-		id : "u21",
-		messageID : "m12"
-		date : "19.12.2018",
-		message : "hazar barev"
-
-		id : "u123",
-       		messageID : "m110",
-		date : "18.01.2019",
-		message : "erkuhazar barev"'
-        }
-        	status : "conversation not found"
+//		if OK		
+		{
+			"id" : "u21",
+			"messageID" : "m12",
+			"date" : "19.12.2018",
+			"message" : "hazar barev"
+		}
+		{
+			"id" : "u123",
+			"messageID" : "m110",
+			"date" : "18.01.2019",
+			"message" : "erkuhazar barev"
+		}
+//		else
+        		"status" : "conversation not found"
 }
 
 addUserMessage {
         request {
-        	uri - uri/user/addUserMessage?clientId=u566
+        	uri - uri/user/addUserMessage
                 body - {
-                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-			id : "u321",
-                	message : "Hi!!!"
+			"uid" : "u21",
+                	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"id" : "u321",
+                	"message" : "Hi!!!"
 		}
-        }
 
         response {
-		status : "added"
+		"status" : "added"
         }
 }
 
 updateUserMessage{
         request {
-       		uri - uri/user/updateUserMessage?clinetId=u751
+       		uri - uri/user/updateUserMessage
                 body - {
-                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-			id : "u321",
-                	messageId : "m12",
-               	 	newMessage : "Hello!"
+			"clientId" : "u751",
+                	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"id" : "u321",
+                	"messageId" : "m12",
+               	 	"newMessage" : "Hello!"
 		}
 	}
 
         response {
-		if OK {
-			status : "updated"
-		}
-		else {
-			status : "this is not the last message"
-		}
+//		if OK 
+			"status" : "updated"
+//		else 
+			"status" : "this is not the last message"
         }
 }
 
 removeUserConversation {
         request {
-        	uri - uri/user/removeUserConversation/id
+        	uri - uri/user/removeUserConversation
                 body - {
-			id : "u123"
-                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"clientId" : "u22",
+			"id" : "u123",
+                	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f"
 		}
         }
 
         response {
-		status : "0/1"
+		"status" : "removed"
         }
 }
 
 removeMessageFromUserConversation {
         request {
-        	uri - uri/path/removeMessage/id
+        	uri - uri/path/removeMessage
                 body - {
-                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-			id : "u12",
-                	messageID : "m123",
-                	mode : "0/1"
+			"clientId" : "u21",
+                	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"id" : "u12",
+                	"messageID" : "m123",
+                	"mode" : "0/1"
         }
 
         response {
-		status : "0/1/2"
-        }
-}
-
-removeMessageFromUserConversation {
-        request {
-        	uri - uri/path/removeMessage/id
-                body - {
-                	token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-			id : "u12",
-                	messageID : "m22",
-              		mode : "0/1"
-		}
-        }
-        response {
-		status : "0/1/2"
+		"status" : "0/1/2"
         }
 }
 
 getGroupConversation {
-    request {
-    	uri - uri/path/getGroupConversation/uId
-   	body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		groupID : "g15"
+	request {
+		uri - uri/path/getGroupConversation
+			body - {
+				"uid" : "u123",
+				"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+				"groupID" : "g15"
+			}
 	}
-   }
-   
-    response {
-	messageID : "m12",
-        status : "0/1",
-        id : "u1",
-	date : "19.12.2018",
-	message : "Hazar barev",
 
-      	messageID : "m11",
-       	id : "u3",
-	date : "19.12.2018",
-	message : "vonc eq?",
+	response {
+		messageID : "m12",
+	 // 	status : "0/1",
+	 	id : "u1",
+	  	date : "19.12.2018",
+	  	message : "Hazar barev",
 
-      	messageID : "m12",
-       	id : "u1",
-	date : "19.12.2018",
-	message : "lav enq!",
-    }
+	  	messageID : "m11",
+	  	id : "u3",
+	  	date : "19.12.2018",
+	  	message : "vonc eq?",
+
+	  	messageID : "m12",
+	  	id : "u1",
+	  	date : "19.12.2018",
+	  	message : "lav enq!",
+	}
 }
 
 updateGroupMessage {
     request {
-    	uri - uri/path/updateGroupMessage/gId
+    	uri - uri/path/updateGroupMessage
         body - {
-		token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-        	messageID : "m10",
-       		id : "u1",
-		message : "lav lav"
+		"groupId" : "g52",
+		"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+        	"messageID" : "m10",
+       		"id" : "u1",
+		"message" : "lav lav"
 	}
     }
 
     response {
-        status : "0/1"
+        "status" : "0/1"
     }
 }
 
 addGroupMessage {
     request {
-	uri - uri/path/addGroupMessage/gId
+	uri - uri/path/addGroupMessage
 	body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		id : "u12",
-        	message : "vobshm"
+		"groupId" : "g54",
+                "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+		"id" : "u12",
+        	"message" : "vobshm"
 	}
     }
 
     response {
-    	status : "0"
+    	"status" : "0"
     }
 }
 
 addUserToGroup {
     request {
-	    uri - uri/path/addUserGroup/groupId=g54
+	    uri - uri/path/addUserGroup
 	    body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		uid : "u1",
-		id : "u2"
+		    "groupId" : "g254",
+                    "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+		    "adminId" : "u1",
+		    "id" : "u2"
 	    }
     }
 
     response {
-	    if OK {
-   		status : "added"
-	    }
-	    else {
-
-	    }
+//	    if OK 
+   		"status" : "added"
+//	    else 
    }
 }
 
 removeGroupConversation {
     request {
-    	uri - uri/path/removeGroupConversation/gId
+    	uri - uri/path/removeGroupConversation
         body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		adminID : "u22"
+		"groupId" : "g23",
+                "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+		"adminId" : "u22"
 	}
     }
 
     response {
-    	status : "0/1"
+    	"status" : "0/1"
     }
 }
 
 removeMessageFromGroupConversation {
         request {
-        	uri - uri/path/removeMessage/id
+        	uri - uri/path/removeMessage
                 body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-			groupID : "u12",
-                	messageID : "m23",
-                	mode : "0/1"
+			"uid" : "u15",
+                	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"groupID" : "u12",
+                	"messageID" : "m23",
+                	"mode" : "0/1"
 		}
         }
 
         response {
-		status : "0/1"
+		"status" : "0/1"
         }
 }

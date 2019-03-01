@@ -358,9 +358,9 @@ getUserConversations {
 		} {
 			id : "u23",
         		firstName : "Heriq",
-        		lastName : "Heriqyan",
-        		lastMessage : "hajox",
-			avatar : "base64_string"
+        		"lastName" : "Heriqyan",
+        		"lastMessage" : "hajox",
+			"avatar" : "base64_string"
 		}
 //		} else
 		{
