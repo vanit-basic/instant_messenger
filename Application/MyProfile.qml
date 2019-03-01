@@ -4,9 +4,13 @@ import QtQuick.Controls.Styles 1.4
 import QtQuick.Controls 2.3
 import QtGraphicalEffects 1.12
 import QtQuick.Layouts 1.3
-//import "qrc:/HomePage.qml" as HomeStack1
+import QtQuick.Controls.Material 2.1
+
 Page{
     id:wind
+    Popup{
+
+    }
     Drawer {
         id: drawer
         width:  wind.width-rectangle.x-tab_stat.width+50
@@ -87,8 +91,6 @@ Page{
                     width: 30
                 }
             }
-
-
             anchors.top: parent.top
             anchors.topMargin: 74
             background:Rectangle{
@@ -171,6 +173,88 @@ Page{
             background:Rectangle{
                 color: "transparent"
             }
+            ComboBox {
+                id: control
+                width: 80
+                height: 30
+                displayText: "ARM"
+                font.pointSize: 15
+                anchors.right: parent.right
+                anchors.rightMargin: 3
+                background: Rectangle {
+                    color: "silver"
+                }
+                onActivated: {
+                    img.source =   model.get(currentIndex).sources
+                    control.displayText = model.get(currentIndex).lang
+                }
+                Material.background: Material.transparent
+
+                model:ListModel {
+                    id: model
+                    ListElement {
+                        lang: "US"
+                        sources: "qrc:/us.png"
+                    }
+                    ListElement {
+                        lang: "UK"
+                        sources: "qrc:/uk.png"
+                    }
+                    ListElement {
+                        lang: "RU"
+                        sources: "qrc:/ru.png"
+                    }
+                    ListElement {
+                        lang: "ES"
+                        sources: "qrc:/es.png"
+                    }
+                    ListElement {
+                        lang: "ARM"
+                        sources: "qrc:/arm.png"
+                    }
+                }
+                delegate: ItemDelegate {
+                    width: control.width
+                    contentItem: Rectangle{
+                        color: "transparent"
+                        width: control.width
+                        height: control.height
+
+                        Text {
+                            text: lang
+                            width: 15
+                            color: "black"
+                            verticalAlignment: Text.AlignVCenter
+                            anchors.left: parent.left
+                        }
+                        Rectangle{
+                            color: "black"
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 27
+                            height: 17
+                            Image{
+                                width: 25
+                                height: 15
+                                anchors.centerIn: parent
+                                source: sources
+                            }
+                        }
+                    }
+                }
+
+                indicator: Text {
+                    height: control.height/2
+                    text: "v"
+                    verticalAlignment: Text.AlignVCenter
+                   font.pointSize: 14
+                   anchors.verticalCenter: parent.verticalCenter
+                   anchors.right: parent.right
+                   anchors.rightMargin: 5
+                }
+
+            }
+
         }
 
 

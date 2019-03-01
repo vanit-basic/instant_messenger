@@ -29,11 +29,11 @@ signals:
     void invalid_user();
 
     ////////////////////////////Sign_up
-    void invalid_name();
-    void invalid_surname();
-    void invalid_email();
-    void invalid_birth_date();
-    void invalid_password();
+//    void invalid_name();
+//    void invalid_surname();
+//    void invalid_email();
+////    void invalid_birth_date();
+//    void invalid_password();
 
     void connection_lost();
 
@@ -48,8 +48,10 @@ private:
     bool isvalid_name(QString);
     bool isvalid_surname(QString);
     bool isvalid_email(QString);
-    bool isvalid_birth_date(QString);
+//    bool isvalid_birth_date(QString);
     bool isvalid_password(QString);
+    ///////////////////////////////////////////forgot_password
+    bool isvalid_code(QString);
 };
 
 #endif // AUTHORIZATION_H
