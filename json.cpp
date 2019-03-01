@@ -3,7 +3,7 @@ ip=192.168.1.12
 
 Account Service
 
-signUp{
+signUp {
         request{
                 uri - uri/account/registration
                 body - {
@@ -34,7 +34,7 @@ signUp{
         }
 }
 
-signIn{
+signIn {
         request{
                 uri - uri/account/signIn
                 body -  {
@@ -67,7 +67,7 @@ signIn{
                         if (login - isvalid && count = max_attempt-1)
                         {
                                 "Attention!!! You have one attempt left!!!"
-  }
+  			}
                         if (login - isvalid && count >= max_attempt)
                         {
                                 "Attempt failed!!!"
@@ -76,15 +76,15 @@ signIn{
         }
 }
 
-forgotPassword{
-        request{
+forgotPassword {
+        request {
                 uri - uri/account/forgotPassword
                 body -  {
                                 email : "v.valodyan@mail.com"
                         }
                 }
 
-        response{
+        response {
                 if OK
                 {
                         "you have a code message in mail. Please, input code"
@@ -96,15 +96,15 @@ forgotPassword{
         }
 }
 
-checkingCode{
-        request{
+checkingCode {
+        request {
                 uri - uri/account/checkingCode
                 body - {
                         code : 123456,
                         mail : "v.valodyan@mail.com"
                 }
         }
-        response{
+        response {
                 if OK
                 {
                         token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
@@ -148,8 +148,8 @@ newPassword {
 	}
 }
 
-signOut{
-        request{
+signOut {
+        request {
                 uri - uri/account/signOut?clientId=u123
                 header - token
         }
@@ -159,19 +159,15 @@ signOut{
                 {
                         status = "OK"
                 }
-               /* else
-                {
-                        status = "?????"
-                }*/
         }
 }
 
-getUserInfo{
-        request{
+getUserInfo {
+        request {
                 uri - uri/account/getUserInfo?clientId=u123
                 header - token
         }
-        response{
+        response {
                 if OK
                 {
                         firstName : "Valod",
@@ -229,6 +225,122 @@ updateUserInfo {
 	}
 }
 
+deleteUser {
+        request {
+                uri - uri/user/deleteUser?clientId=u123
+                header - token
+        }
+
+        response {
+                status : "deleted"
+        }
+}
+
+createGroup {
+    request {
+        uri - uri/group/createGroup
+        body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                groupName : "Best",
+                adminID : "u123",
+                access : "private"
+        }
+    }
+
+    response {
+        status : "created",
+        groupID : "g212"
+    }
+}
+
+deleteGroup {
+    request {
+        uri - uri/path/deleteGroup?adminId=u542
+        body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                groupID : "g123",
+        }
+    }
+
+    response {
+        status : "deleted"
+    }
+}
+
+getGroupInfo {
+        request {
+                uri - uri/path/getGroupInfo?clientId=u325&groupId=u12
+                header - token
+        }
+
+        response {
+                if OK {
+                        name : "ChkaMerNmany",
+                        adminID : "u10",
+                        usersquantity : "13",
+                        avatar : "base64_string",
+                        createDate : "13.12.2018"
+                }
+                else {
+                        status : "this is a private group"
+                }
+        }
+}
+
+updateGroupInfo {
+    request {
+            uri - uri/path/updateGroupInfo?adimId=u231
+            body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                groupID : "g123",
+                name : "MafiaForever",
+                adminID : "u10",
+        //      usersquantity : "13",
+                avatar : "base64_string",
+            }
+    }
+
+    response {
+        status : "0",
+        name : "MafiaForever",
+        adminID : "u10",
+    //  usersquantity : "13",
+        avatar : "base64_string",
+    }
+}
+
+getGroupUsers {
+    request {
+        uri - uri/path/getGroupUsers?groupId=g51&clientId=u25
+        header - token
+    }
+
+    response {
+        id : ["u1", "u12", "u18"]
+    }
+}
+
+removeFromGroup {
+    request {
+        uri - uri/path/removeFromGroup?groupId=g60
+        body - {
+                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                adminID : "u12",
+                id : "u23" // who will be removed
+        }
+    }
+
+    response {
+            if OK {
+                status : "removed"
+            }
+            else {
+                status : ""
+            }
+    }
+}
+
+//////////////////////////////////////////////
 getUserConversations {
         request {
         	uri - uri/user/getUserConversations?clientId=u123
@@ -275,17 +387,6 @@ getUserConversation {
         	status : "conversation not found"
 }
 
-deleteUser {
-        request {
-        	uri - uri/user/deleteUser?clientId=u123
-		header - token
-        }
-        
-	response {
-                status : "deleted"
-        }
-}
-
 addUserMessage {
         request {
         	uri - uri/user/addUserMessage?clientId=u566
@@ -321,7 +422,7 @@ updateUserMessage{
 		}
         }
 }
-///////
+
 removeUserConversation {
         request {
         	uri - uri/user/removeUserConversation/id
@@ -366,59 +467,6 @@ removeMessageFromUserConversation {
         }
 }
 
-###########################################################################################################################################
-
-createGroup {
-    request {
-    	uri - uri/group/createGroup
-    	body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		groupName : "Best",
-    		adminID : "u123",
-    		access : "private"
-	}
-    }
-
-    response {
-        status : "created",
-        groupID : "g212"
-    }
-}
-
-deleteGroup {
-    request {
-	uri - uri/path/deleteGroup?adminId=u542
-	body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		groupID : "g123",
-	}
-    }
-
-    response {
-    	status : "deleted"
-    }
-}
-
-getGroupInfo {
-	request {
-		uri - uri/path/getGroupInfo?clientId=u325&groupId=u12
-		header - token
-	}
-
-	response {
-		if OK {
-			name : "ChkaMerNmany",
-			adminID : "u10",
-     			usersquantity : "13",
-			avatar : "base64_string",
-			createDate : "13.12.2018"
-		}
-		else {
-			status : "this is a private group"
-		}
-	}
-}
-///////
 getGroupConversation {
     request {
     	uri - uri/path/getGroupConversation/uId
@@ -446,29 +494,7 @@ getGroupConversation {
 	message : "lav enq!",
     }
 }
-///////
-updateGroupInfo {
-    request {
-	    uri - uri/path/updateGroupInfo?adimId=u231
-	    body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		groupID : "g123",
-     		name : "MafiaForever",
-   		adminID : "u10",
-   	//	usersquantity : "13",
-		avatar : "base64_string",
-	    }
-    }
 
-    response {
-	status : "0",
-    	name : "MafiaForever",
-    	adminID : "u10",
-    //	usersquantity : "13",
-	avatar : "base64_string",
-    }
-}
-///////
 updateGroupMessage {
     request {
     	uri - uri/path/updateGroupMessage/gId
@@ -531,37 +557,6 @@ removeGroupConversation {
 
     response {
     	status : "0/1"
-    }
-}
-
-getGroupUsers {
-    request {
-    	uri - uri/path/getGroupUsers?groupId=g51&clientId=u25
-        header - token 
-    }
-
-    response {
-     	id : ["u1", "u12", "u18"]
-    }
-}
-
-removeFromGroup {
-    request {
-    	uri - uri/path/removeFromGroup?groupId=g60
-    	body - {
-                token : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		adminID : "u12",
-    		id : "u23" // who will be removed
-	}
-    }
-
-    response {
-	    if OK {
-    		status : "removed"
-	    }
-	    else {
-		status : ""
-	    }
     }
 }
 
