@@ -36,5 +36,6 @@
         <file>Edit_Profile.qml</file>
         <file>Change_Password.qml</file>
         <file>taxtak.png</file>
+        <file>Search.qml</file>
     </qresource>
 </RCC>
