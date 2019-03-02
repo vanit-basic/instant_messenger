@@ -9,20 +9,20 @@ getAllStatusDescriptions {
 	}
 
 	response {
-		"INVALID_LOGIN_OR_PASSWORD" : "if (login - invalid || login - isvalid && attemptsCount < max_attempt-1)",
-		"ATTENTION_LAST_ATTEMPT" : "login - isvalid && attemptsCount = max_attempt-1",
-		"YOU_ARE_BLOCKED" : "login - isvalid && attemptsCount >= max_attempt",
+		"INVALID_LOGIN" : "Invalid login or passord. Try again or click Forgot password to reset it.",
+		"LOGIN_LAST_ATTEMPT" : "After enyering wrong passord you will block for 2 hours",
+		"USER_BLOCKED" : "Your account is blocked for 2 hours",
 		"INPUT_CODE_HERE" : "You have a code message in mail. Please, input code here",
 		"INVALID_FIELD_CHANGE" : "This field cannot be changed",
 		"INVAILD_ADMIN_ID" : "Only admin can delete group or update group info or delete member of the group",
-		"INVALID_GROUP_ID" : "The client is not a member of the group or this is a private group", 
+		"INVALID_GROUP_ID" : "The client is not a member of the group or this is a private group",
 		"INVALID_MEMBER_OF_GROUP" : "You are not a member of this group",
 		"NOT_LAST_MASSAGE" : "You can update only the last message. This is not the last message",
 		"USER_NOT_FOUND" : "User with such name not found",
 		"GROUP_NOT_FOUND" : "There is no group with this name or this group is private",
 		"INVALID_GROUP" : "There is no group with this name or this group is private or group is full",
 		"REQYEST_NOT_ACCEPTED" : "User does not accept your request",
-		"INTERNAL_ERROR" : "The group has denied your request" 
+		"INTERNAL_ERROR" : "Some thing went wrong." 
 	}
 }
 
@@ -43,7 +43,6 @@ signUp {
         }
 
         response {
-//              if OK 
                         "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                         "userId" : "u1",
                         "firstName" : "Valod",
@@ -53,7 +52,8 @@ signUp {
                         "email" : "v.valodyan@mail.com",
                         "birthDate" : "12.12.1990",
 			"login" : "v.valodyan"
-//		else 
+                        "status" : "OK",
+
                         "status" : "INVALID_EMAIL",
                         "status" : "INVALID_LOGIN"
         }
@@ -69,7 +69,6 @@ signIn {
         }
 
         response {
-//              if OK 
                         "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                         "userId" : "u1",
                         "firstName" : "Valod",
@@ -79,12 +78,11 @@ signIn {
                         "gender" : "male",
                         "email" : "v.valodyan@msil.com",
                         "birthDate" : "12.12.1990"
-//              else 
-                        	"status" : "INVALID_LOGIN_OR_PASSWORD"
-				//or
-                                "status" : "ATTENTION_LAST_ATTEMPT"
-				//or
-                                "status" : "YOU_ARE_BLOCKED"
+                        "status" : "OK"
+
+                        "status" : "INVALID_LOGIN"
+                        "status" : "LOGIN_LAST_ATTEMPT"
+                        "status" : "USER_BLOCKED"
                 }
         }
 }
@@ -98,9 +96,7 @@ forgotPassword {
                 }
 
         response {
-//              if OK
-			"status" : "INPUT_CODE_HERE" 
-//              else
+			"status" : "OK"
                         "status" : "INVALID_EMAIL"
         }
 }
@@ -114,10 +110,10 @@ checkingCode {
                 }
         }
         response {
-//              if OK
                         "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                         "userId" : "u1",
-//              else
+			"status" : "OK"
+
                         "status" : "INVALID_EMAIL"
         }
 }
@@ -132,7 +128,7 @@ newPassword {
 		}
 	}
 	resonpse {
-//		if OK 
+
 			"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                         "userId" : "u1",
                         "firstName" : "Valod",
@@ -142,7 +138,8 @@ newPassword {
                         "gender" : "male",
                         "email" : "v.valodyan@msil.com",
                         "birthDate" : "12.12.1990"
-//		else 
+			"status" : "OK"
+
 			"status" : "INVALID_PASSWORD"
 	}
 }
@@ -155,6 +152,8 @@ signOut {
 
         response{
 		"status" : "OK"
+
+		"status" : "INTERNAL_ERROR"
         }
 }
 
@@ -175,6 +174,7 @@ getUserInfo {
 		"groups" : ["g5", "g24", "g32"],
                 "email" : "v.valodyan@mail.com",
                 "birthDate" : "12.12.1990"
+		"status" : "OK"
         }
 }
 
@@ -184,7 +184,6 @@ getUserShortInfo {
                 header - token
         }
         response {
-//              if OK
                 	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 	             	"userID" : "u438" 
                         "firstName" : "Heriqnaz",
@@ -194,7 +193,8 @@ getUserShortInfo {
 			"gender" : "female",
 			"birthdate" : "12.12.1993",
 			"groups" : ["g5", "g24"] // only public groups
-//              else
+			"status" : "OK"
+
                         "status" : "INVALID_ID"
 }
 
@@ -210,13 +210,13 @@ updateUserInfo {
 		}
 
 	response {
-//              if OK
                 	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                         "firstName" : "Valod",
                         "lastName" : "Valodyan",
 			"avatar" : "base64_string",
 			"nickname" : "Valod"
-//              else 
+			"status" : "OK"
+
                         "status" : "INVALID_FIELD_CHANGE" 
 	}
 }
@@ -259,9 +259,7 @@ deleteGroup {
     }
 
     response {
-//	if OK	   
         	"status" : "OK"
-//	else 
 		"status" : "INVAILD_ADMIN_ID" 
     }
 }
@@ -273,7 +271,6 @@ getGroupInfo {
         }
 
         response {
-//              if OK 
                 	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			"groupName" : "ChkaMerNmany",
                         "adminID" : "u10",
@@ -281,8 +278,9 @@ getGroupInfo {
                         "avatar" : "base64_string",
 			"members" : ["u12", "u54", "u59", "u78"],
                         "createDate" : "13.12.2018"
-//              else  
-                        "status" : "INVALID_GROUP_ID"
+        		"status" : "OK"
+                        
+			"status" : "INVALID_GROUP_ID"
         }
 
 }
@@ -294,13 +292,13 @@ getGroupShortInfo {
         }
 
         response {
-//              if OK 
                 	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			"groupName" : "ChkaMerNmany",
                         "usersQuantity" : "4",
                         "avatar" : "base64_string",
 			"members" : ["u12", "u54", "u59", "u78"], // if this is a public group
-//              else 
+        		"status" : "OK"
+                        
                         "status" : "INVALID_GROUP_ID"
         }
 
@@ -323,7 +321,8 @@ updateGroupInfo {
         	"name" : "MafiaForever",
         	"adminID" : "u10",
         	"avatar" : "base64_string"
-//	else
+        	"status" : "OK"
+                        
 		"status" : "INVAILD_ADMIN_ID" 
     }
 }
@@ -340,9 +339,7 @@ removeFromGroup {
     }
 
     response {
-//          if OK 
                 "status" : "OK"
-//          else 
                 "status" : "INVALID_ADMIN_ID" 
     }
 }
@@ -355,7 +352,6 @@ getUserConversations {
 	}
 
         response {
-//		if OK
                 "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f"
 		{ 
        		 	"id" : "u12",
@@ -371,7 +367,7 @@ getUserConversations {
         		"lastMessage" : "hajox",
 			"avatar" : "base64_string"
 		}
-//		else 
+			"status" : "OK"
         		"status" : "CONVERSATIONS_NOT_FOUND"
 }
 
@@ -386,7 +382,6 @@ getUserConversation {
         }
 
         response {
-//		if OK		
                 "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		{
 			"id" : "u21",
@@ -400,7 +395,8 @@ getUserConversation {
 			"date" : "18.01.2019",
 			"message" : "erkuhazar barev"
 		}
-//		else
+			"status" : "OK"
+
         		"status" : "CONVERSATION_NOT_FOUND"
 }
 
@@ -411,7 +407,6 @@ getGroupConversation {
 	}
 
 	response {
-//	if OK
 		"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		{
 			"messageID" : "m12",
@@ -431,7 +426,8 @@ getGroupConversation {
 	  		"date" : "19.12.2018",
 	  		"message" : "lav enq!"
 		}
-//	else 
+		"status" : "OK"
+
 		"status" : "INVALID_MEMBER_OF_GROUP" 
 	}
 }
@@ -469,10 +465,9 @@ updateUserMessage{
 	}
 
         response {
-//		if OK 
                 	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-			"status" : "updated"
-//		else 
+			"status" : "OK"
+
 			"status" : "NOT_LAST_MASSAGE" 
         }
 }
@@ -627,10 +622,10 @@ userJoinGroup {
 	}
 
 	response {
-//	if Ok 
-		"status" : "OK" "Your request is sent"
-//	else
+		"status" : "OK"
 		"status" : "INVALID_GROUP" 
+		"status" : "ALREADY_IN_GROUP"
+		"status" : "INTERNAL_ERROR"
 	}
 }
 
@@ -641,9 +636,19 @@ groupAcceptUser {
 	}
 
 	response {
-//	if OK
-		"status" : "OK" "Your request is accepted"
-//	else 
+		"status" : "OK"
+		"status" : "INTERNAL_ERROR"
+	}
+} 
+
+groupRejectUser {
+	request {
+		uri - uri/path/groupRejectUser?groupId=g31&userId=u32
+		header - token
+	}
+
+	response {
+		"status" : "OK"
 		"status" : "INTERNAL_ERROR"
 	}
 } 
@@ -656,6 +661,8 @@ groupInviteUser {
 
 	response {
 		"status" : "OK" 
+		"status" : "ALREADY_IN_GROUP"
+		"status" : "INTERNAL_ERROR"
 	}
 }
 
@@ -666,10 +673,8 @@ userAcceptInvitation {
 	}
 
 	response {
-//	if OK 
 		"status" : "OK" 
-//	else
-		"status" : "REQYEST_NOT_ACCEPTED" 
+		"status" : "INTERNAL_ERROR"
 	}
 }
 
