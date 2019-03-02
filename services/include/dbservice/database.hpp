@@ -27,13 +27,13 @@ class database {
 
 		virtual bool updateUserInfo(std::string userInfo) = 0;
 		
-		virtual std::string getUserInfo(std::string userID) = 0;
+		virtual json::value getUserInfo(json::value) = 0;
 	
-		virtual std::string getUserShortInfo(std::string userID) = 0;
+		virtual json::value getUserShortInfo(json::value) = 0;
 
-		virtual std::string getUserConversations(std::string userID) = 0;
+		virtual json::value getUserConversations(json::value) = 0;
 		
-		virtual std::string getUsersConversation(std::string fromID, std::string toID) = 0;
+		virtual json::value getUsersConversation(json::value) = 0;
 		
 		virtual std::string addUserMessage(std::string from, std::string to, std::string message) = 0;
 

@@ -41,13 +41,13 @@ class MongoDB : public database {
 
 		bool updateUserInfo(std::string userInfo);
 
-		std::string getUserInfo(std::string userID);
+		json::value getUserInfo(json::value);
 
-		std::string getUserShortInfo(std::string userID);
+		json::value getUserShortInfo(json::value);
 
-		std::string getUserConversations(std::string userID);
+		json::value getUserConversations(json::value);
 
-		std::string getUsersConversation(std::string fromID, std::string toID);
+		json::value getUsersConversation(json::value);
 
 		std::string addUserMessage(std::string from, std::string to, std::string message);
 

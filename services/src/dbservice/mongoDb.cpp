@@ -196,26 +196,26 @@ json::value MongoDB::loginUser(json::value request) {
                                                         std::cout << bsoncxx::to_json(doc1) << std::endl;
                                                 } */
 
-                                              bsoncxx::document::element elementID = doc["id"];
-                                                std::string id = elementID.get_utf8().value.to_string();
+                                              bsoncxx::document::element element = doc["id"];
+                                                std::string id = element.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementfn = doc["firstname"];
-                                                std::string firstname = elementfn.get_utf8().value.to_string();
+                                                element = doc["firstname"];
+                                                std::string firstname = element.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementln = doc["lastname"];
-                                                std::string lastname = elementln.get_utf8().value.to_string();
+                                                element = doc["lastname"];
+                                                std::string lastname = element.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementbd = doc["birthdate"];
-                                                std::string birthdate = elementbd.get_utf8().value.to_string();
+                                                element = doc["birthdate"];
+                                                std::string birthdate = element.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementgn = doc["gender"];
-                                                std::string gender = elementgn.get_utf8().value.to_string();
+                                                element = doc["gender"];
+                                                std::string gender = element.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementml = doc["email"];
-                                                std::string mail = elementml.get_utf8().value.to_string();
+                                                element = doc["email"];
+                                                std::string mail = element.get_utf8().value.to_string();
 
-                                                bsoncxx::document::element elementlg = doc["login"];
-                                                std::string login = elementlg.get_utf8().value.to_string();
+                                                element = doc["login"];
+                                                std::string login = element.get_utf8().value.to_string();
 
 
                                                 response["id"] = json::value::string(id);
@@ -258,3 +258,117 @@ json::value MongoDB::loginUser(json::value request) {
 
                                 }
 }
+
+json::value MongoDB::getUserInfo(json::value request){
+	auto response = json::value::object();
+	auto c1 = poolMydb->acquire();
+	auto coll1 = (*c1)["infoDB"]["account"];
+	std::string id = request.at("cientId").as_string();
+
+	bsoncxx::stdx::optional<bsoncxx::document::value> result =
+		coll2.find_one(document{} << "id" << id << finalize);
+
+	if (result) {
+		bsoncxx::document::view doc{*result.view()};
+
+		bsoncxx::document::element element = doc["firstname"];
+		std::string firstname = element.get_utf8().value.to_string();
+
+		element = doc["lastname"];
+		std::string lastname = element.get_utf8().value.to_string();
+
+		element = doc["nickname"];
+		std::string nickname = element.get_utf8().value.to_string();
+
+		element = doc["birthdate"];
+		std::string birthdate = element.get_utf8().value.to_string();
+
+		element = doc["gender"];
+		std::string gender = element.get_utf8().value.to_string();
+
+		element = doc["email"];
+		std::string mail = element.get_utf8().value.to_string();
+
+		element = doc["login"];
+		std::string login = element.get_utf8().value.to_string();
+
+		response["firstname"] = json::value::string(firstname);
+		response["lastname"] = json::value::string(lastname);
+		response["nickname"] = json::value::string(nickname);
+		response["birthdate"] = json::value::string(birthdate);
+		response["gender"] = json::value::string(gender);
+		response["email"] = json::value::string(mail);
+		response["login"] = json::value::string(login);
+
+	} else {
+		response["infoStatus"] = json::value::string("unknownID");
+	}
+
+	return response;
+}
+
+json::value getUserShortInfo(json::value request){
+	auto response = json::value::object();
+        auto c1 = poolMydb->acquire();
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
+        std::string id = request.at("cientId").as_string();
+
+        bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll2.find_one(document{} << "id" << id << finalize);
+
+        if (result) {
+                bsoncxx::document::view doc{*result.view()};
+
+                bsoncxx::document::element element = doc["firstname"];
+                std::string firstname = element.get_utf8().value.to_string();
+
+                element = doc["lastname"];
+                std::string lastname = element.get_utf8().value.to_string();
+
+                element = doc["nickname"];
+                std::string nickname = element.get_utf8().value.to_string();
+
+                response["firstname"] = json::value::string(firstname);
+                response["lastname"] = json::value::string(lastname);
+                response["nickname"] = json::value::string(nickname);
+
+        } else {
+                response["infoStatus"] = json::value::string("unknownID");
+        }
+	
+	return response;
+}
+
+json::value userDelete(json::value request){
+	auto c1 = poolMydb->acquire();
+        auto c2 = poolDB->acquire();
+	auto c3 = poolMydb->acquire();
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
+        auto coll2 = (*c2)["passDB"]["signin"];
+	auto coll3 = (*c3)["infoDB"]["groupInfo"];
+        std::string id = request.at("clientId").as_string();
+
+	bsoncxx::stdx::optional<mongocxx::result::delete_result> result1 =
+		coll1.delete_one(document{} << "id" << id << finalize);
+	
+	bsoncxx::stdx::optional<mongocxx::result::delete_result> result2 =
+		coll2.delete_one(document{} << "id" << id << finalize);
+
+	bsoncxx::stdx::optional<mongocxx::result::update> result =
+/*		collection.update_many( document{} << "usersQuantity" << 
+			document{} << "$inc" << open_document <<
+			"i" << 100 << close_document << finalize);
+
+	bsoncxx::stdx::optional<mongocxx::result::delete_result> result3 =
+		coll3.delete_many(document{} << "id" << id << finalize);
+*/	
+	if (result) {
+                response["deteteStatus"] = json::value::string("userSuccesfullyDeleted");
+	} else  {
+		response["deteteStatus"] = json::value::string("unknownUser");
+	}
+
+	return response;
+}
+
+
