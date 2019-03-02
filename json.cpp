@@ -1,5 +1,6 @@
 API
-ip=192.168.1.12
+
+"http://host_auto_ip4:6505/v1/mafclub/api"
 
 Account Service
 
@@ -23,6 +24,7 @@ signUp {
                         "userId" : "u1",
                         "firstName" : "Valod",
                         "lastName" : "Valodyan",
+			"nickname" : "Valod",
                         "gender" : "male",
                         "email" : "v.valodyan@mail.com",
                         "birthDate" : "12.12.1990",
@@ -48,6 +50,8 @@ signIn {
                         "userId" : "u1",
                         "firstName" : "Valod",
                         "lastName" : "Valodyan",
+			"nickname" : "Valod", 
+			"avatar" : "base64_string",
                         "gender" : "male",
                         "email" : "v.valodyan@msil.com",
                         "birthDate" : "12.12.1990"
@@ -83,7 +87,7 @@ checkingCode {
                 uri - uri/account/checkingCode
                 body - {
                         "code" : 123456,
-                        "mail" : "v.valodyan@mail.com"
+                        "email" : "v.valodyan@mail.com"
                 }
         }
         response {
@@ -100,6 +104,7 @@ newPassword {
 		uri - uri/account/newPassword
 		body - {
 			"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"userId" : "u1",
 			"password" : "valod1990"
 		}
 	}
@@ -109,6 +114,8 @@ newPassword {
                         "userId" : "u1",
                         "firstName" : "Valod",
                         "lastName" : "Valodyan",
+			"nickname" : "Valod",
+			"avatar" : "base64_string",
                         "gender" : "male",
                         "email" : "v.valodyan@msil.com",
                         "birthDate" : "12.12.1990"
@@ -119,7 +126,7 @@ newPassword {
 
 signOut {
         request {
-                uri - uri/account/signOut?clientId=u123
+                uri - uri/account/signOut?userId=u123
                 header - token
         }
 
@@ -138,6 +145,7 @@ getUserInfo {
 		"userID" : "u123"
 		"firstName" : "Valod",
                 "lastName" : "Valodyan",
+		"nickname" : "Valod",
 		"avatar" : "base64_string",
                 "login" : "v.valodyan",
                 "gender" : "male",
@@ -157,8 +165,8 @@ getUserShortInfo {
 	             	"userID" : "u438" 
                         "firstName" : "Heriqnaz",
                         "lastName" : "Heriqyan",
-			"avatar" : "base64_string",
 			"nickname" : "Heriq",
+			"avatar" : "base64_string",
 			"gender" : "female",
 			"birthdate" : "12.12.1993" 
 //              else
@@ -167,13 +175,13 @@ getUserShortInfo {
 
 updateUserInfo {
 	requset {
-		uri - uri/account/updateUserInfo?clientId=u123
+		uri - uri/account/updateUserInfo?userId=u123
 		body - {
                         "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			"firstName" : "Valod",
 			"lastname" : "Valodyan",
 			"avatar" : "base64_string",
-			"nickname" : "Valod"
+			"nickname" : "Valod"  // can be changed only once
 		}
 
 	response {
@@ -190,7 +198,7 @@ updateUserInfo {
 
 deleteUser {
         request {
-                uri - uri/user/deleteUser?clientId=u123
+                uri - uri/user/deleteUser?userId=u123
                 header - token
         }
 
@@ -264,7 +272,6 @@ updateGroupInfo {
                 "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                 "groupID" : "g123",
                 "name" : "MafiaForever",
-                "adminID" : "u10",
                 "avatar" : "base64_string"
             }
     }
@@ -345,7 +352,7 @@ getUserConversations {
 
 getUserConversation {
         request {
-  		uri - uri/user/getUserConversations
+  		uri - uri/user/getUserConversation
         	body - {
                 	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			"userId" : "u123",
@@ -375,11 +382,11 @@ getUserConversation {
 getGroupConversation {
 	request {
 		uri - uri/path/getGroupConversation
-			body - {
-				"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-				"userId" : "u123",
-				"groupID" : "g15"
-			}
+		body - {
+			"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"userId" : "u123",
+			"groupID" : "g15"
+		}
 	}
 
 	response {
@@ -407,10 +414,12 @@ getGroupConversation {
 		"status" : "You are not a member of this group"		
 	}
 }
-//////////////////////////////////////////////
+
+*****************************************************************************
+
 Messaging Service
 
-addUserMessage {
+userSendMessage {
         request {
         	uri - uri/user/addUserMessage
                 body - {
@@ -449,20 +458,17 @@ updateUserMessage{
 
 removeUserConversation {
         request {
-        	uri - uri/user/removeUserConversation
-                body - {
-                	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f"
-			"userId" : "u22",
-			"uid" : "u123"
-		}
+        	uri - uri/user/removeUserConversation?userId=u52&uId=u23
+               	header - token
         }
 
         response {
+                "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		"status" : "removed"
         }
 }
 
-removeMessageFromUserConversation {
+removeUserMessage {
         request {
         	uri - uri/path/removeMessage
                 body - {
@@ -486,28 +492,29 @@ updateGroupMessage {
     request {
     	uri - uri/path/updateGroupMessage
         body - {
-		"groupId" : "g52",
 		"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+		"groupId" : "g52",
         	"messageID" : "m10",
        		"id" : "u1",
-		"message" : "lav lav"
+		"newMessage" : "lav lav"
 	}
     }
 
     response {
 //	if OK
+		"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		"status" : "updated"
 //	else
 		"status" : "this is not the last message"
     }
 }
 
-addGroupMessage {
+sendGroupMessage {
     request {
 	uri - uri/path/addGroupMessage
 	body - {
-		"groupId" : "g54",
                 "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+		"groupId" : "g54",
 		"id" : "u12",
         	"message" : "vobshm"
 	}
@@ -518,43 +525,19 @@ addGroupMessage {
     }
 }
 
-addUserToGroup {
-    request {
-	    uri - uri/path/addUserGroup
-	    body - {
-		    "groupId" : "g254",
-                    "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		    "userId" : "u1",
-		    "uId" : "u2"
-	    }
-    }
-
-    response {
-//	    if OK 
-   		"status" : "added"
-//	    else 
-   }
-}
-
 removeGroupConversation {
     request {
-    	uri - uri/path/removeGroupConversation
-        body - {
-		"groupId" : "g23",
-                "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		"adminId" : "u22"
-	}
+    	uri - uri/path/removeGroupConversation?adminId=u256&groupId=g32
+        header - token
     }
 
     response {
-//	if OK
-    		"status" : "removed"
-//	else
-		"status" : ""
+	    "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+	    "status" : "removed"
     }
 }
 
-removeMessageFromGroupConversation {
+removeGroupMessage {
         request {
         	uri - uri/path/removeMessage
                 body - {
@@ -567,9 +550,112 @@ removeMessageFromGroupConversation {
         }
 
         response {
-//		if OK
-			"status" : "removed"
-//		else
-			"status" : ""
+		"status" : "removed"
         }
 }
+
+*************************************************************************
+
+Search Service
+
+searchUser {
+	request {
+		uri - uri/path/searchUser?userId=u21&firstname=Valod&lastname=Valodyan
+		header - token
+	}
+
+	response {
+//		if OK
+			"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"id" : "u195",
+			"firstname" : "Valod",
+			"lastname" : "Valodyan",
+			"nickname" : "Valod",
+			"avatar" : "base64_string",
+			"gender" : "male",
+                	"birthdate" : "12.12.1990"
+//		else
+			"status" : "User with such name not found"
+	}
+}
+
+searchGroup {
+	request {
+		uri - uri/path/sarchGroup/userId=u249&groupName=Best
+		header - token
+	}
+
+	response {
+//		if OK
+			"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+                	"groupName" : "Best",
+                	"adminID" : "u10",
+                	"usersQuantity" : "13",
+                	"avatar" : "base64_string",
+                	"createDate" : "13.12.2018"
+//		else 
+			"status" : "Group with such name not found"
+	}
+}
+
+***************************************************************************
+
+Notification Service
+
+userJoinGroup {
+	request {
+		uri - uri/path/userJoinGroup?userId=u32&groupId=g31
+		header - token
+	}
+
+	response {
+//	if Ok 
+		"status" : "Your request is sent"
+//	else
+		"status" : "Group not found" || "Group is full"		
+	}
+}
+
+groupAcceptUser {
+	request {
+		uri - uri/path/groupAcceptUser?groupId=g31&userId=u32
+		header - token
+	}
+
+	response {
+//	if OK
+		"status" : "Your request is accepted"
+//	else 
+		"status" : "Internal error"
+	}
+} 
+
+groupInviteUser {
+	request {
+		uri - uri/path/groupInviteUser?groupId=g365&userId=u751
+		header - token
+	}
+
+	response {
+		"status" : "Your request is sent"
+	}
+}
+
+userAcceptInvitation {
+	request {
+		uri - uri/path/userAcceptInvitation?userId=u751&groupId=g365
+		header - token
+	}
+
+	response {
+//	if OK 
+		"status" : "user accepts your request"
+//	else
+		"status" : "user does not accept your request"
+	}
+}
+
+*******************************************************************************
+
+Gaming Service
+
