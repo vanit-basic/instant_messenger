@@ -72,6 +72,7 @@ if (!(path.empty())) {
 }
 
 void DbService::handlePost(http_request message) {
+	std::cout<<"message  "<<message.to_string()<<std::endl;
 	auto path = requestPath(message);
 
 	message.extract_json()
@@ -89,7 +90,8 @@ void DbService::handlePost(http_request message) {
 							message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 						}
 				} else if (path[0] == "insert") {
-						if (path[1] == "userRegistration") {
+						if (path[1] == "registration") {
+							std::cout<<"path registration"<<std::endl;
 							json::value response = m_db->registerUser(request);
 							message.reply(status_codes::OK, response);
 						}else {

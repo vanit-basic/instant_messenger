@@ -92,10 +92,10 @@ MongoDB::MongoDB(std::string path) {
 
 MongoDB::~MongoDB() {
 	delete [] this->poolMydb;
-	delete [] this->pooldb;
+	delete [] this->poolDB;
 }
 
-json::value MongoDB::mail&login(json::value request) {
+json::value MongoDB::mail_login(json::value request) {
 	auto c1 = poolMydb->acquire();
 	auto coll1 = (*c1)["infoDB"]["account"];
 	bsoncxx::stdx::optional<bsoncxx::document::value> mailResult =
@@ -122,6 +122,7 @@ json::value MongoDB::mail&login(json::value request) {
 }
 
 json::value MongoDB::registerUser(json::value request) {
+	std::cout<<"registerUser function"<<std::endl;
 	auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
         auto coll1 = (*c1)["infoDB"]["account"];
@@ -182,7 +183,7 @@ json::value MongoDB::loginUser(json::value request) {
                                         if (result) {
                                                 bsoncxx::stdx::optional<bsoncxx::document::value> infoResult =
                                                         coll2.find_one(document{} << "login" << request.at("login").as_string()
-                                                                bsoncxx::document::view doc{*result.view()};
+                                                                bsoncxx::document::view doc{*result.view()});
                                                         //auto id = doc_view["id"];
                                                          //auto cursor = db["restaurants"].find({});
                                   /*              auto infoResult = coll1.find(document{} << "login" << login << finalize);

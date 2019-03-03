@@ -1,5 +1,5 @@
 {
-		"account":"http://host_auto_ip4:6502/v1/ivmero/api",
+		"account":"http://host_auto_ip4:6502/v1/mafclub/api",
 
 		"messaging":"http://host_auto_ip4:6503/v1/mafclub/api",
 

@@ -37,7 +37,7 @@ class MongoDB : public database {
 		json::value mail_login(json::value);
 		json::value registerUser(json::value);
 
-		std::string loginUser(std::string login, std::string password);
+		json::value loginUser(json::value);
 
 		bool updateUserInfo(std::string userInfo);
 
@@ -85,8 +85,8 @@ class MongoDB : public database {
 
 		bool updateGroupMessage(std::string groupId, std::string messBody);
 
-		MongoDB() {}
-		~MongoDB() {}
+		MongoDB(std::string);
+		~MongoDB();
 
 	private:
 		mongocxx::pool* poolMydb;
