@@ -134,7 +134,7 @@ Page {
                 width: 180
                 text: "Save changes"
                 enabled: (currentp.text === "" || newp.text === "" || confirmp.text === "" )?false:true
-                onClicked: stack.pop()
+                onClicked: stack00.pop()
             }
         }
     }

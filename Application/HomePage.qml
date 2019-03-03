@@ -19,7 +19,7 @@ Page{
     }
     initialItem:  Rectangle {
         id: root
-        anchors.fill: parent
+        //anchors.fill: parent
         gradient: Gradient{
             GradientStop { position: 0.0;color:"dimgrey"}
             GradientStop { position: 0.25;color:"gray"}

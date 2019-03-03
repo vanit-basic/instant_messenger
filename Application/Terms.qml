@@ -56,7 +56,7 @@ Page {
             background: Rectangle{
                 color:"transparent"
             }
-            onClicked: stack.pop()
+            onClicked: stack00.pop()
         }
 
     }

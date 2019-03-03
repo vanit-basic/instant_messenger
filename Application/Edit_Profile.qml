@@ -250,7 +250,7 @@ Page {
                             spacing: 5
                             enabled: (edit_name.text === "" || edit_surname.text === "" || edit_nickname.text === "" )?false:true
                             onPressed: {aaaa.start()}
-                            onClicked: stack.pop()
+                            onClicked: stack00.pop()
                         }
                     }
                 }

@@ -349,8 +349,8 @@ Page{
                         font.pointSize: 15
                     }
                     onClicked:{
-                       // drawer.close()
-                        stack.push(Qt.resolvedUrl("Terms.qml"))
+                        drawer.close()
+                        stack00.push(Qt.resolvedUrl("Terms.qml"))
                     }
                 }
             }
@@ -383,8 +383,8 @@ Page{
                         font.pointSize: 15
                     }
                     onClicked:{
-                       // drawer.close()
-                        stack.push(Qt.resolvedUrl("About_us.qml"))
+                        drawer.close()
+                        stack00.push(Qt.resolvedUrl("About_us.qml"))
                     }
                 }
             }
