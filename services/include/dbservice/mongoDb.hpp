@@ -53,7 +53,7 @@ class MongoDB : public database {
 
 		bool updateUserMessage(std::string from, std::string to, std::string messageInfo);
 
-		bool deleteUser(std::string userId);
+		json::value deleteUser(json::value);
 
 		bool removeUserConversation(std::string fromUserId, std::string toUserId);
 

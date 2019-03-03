@@ -347,6 +347,7 @@ json::value userDelete(json::value request){
         auto coll2 = (*c2)["passDB"]["signin"];
 	auto coll3 = (*c3)["infoDB"]["groupInfo"];
         std::string id = request.at("clientId").as_string();
+	auto response = json::value::object();
 
 	bsoncxx::stdx::optional<mongocxx::result::delete_result> result1 =
 		coll1.delete_one(document{} << "id" << id << finalize);
@@ -371,4 +372,65 @@ json::value userDelete(json::value request){
 	return response;
 }
 
+json::value getGroupUsers(json::value request){
+	auto c1 = poolMydb->acquire();
+	auto c3 = poolMydb->acquire();
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
+	auto coll3 = (*c3)["infoDB"]["groupInfo"];
+        std::string userID = request.at("userId").as_string();
+        std::string groupID = request.at("ugroupId").as_string();
+	auto response = json::value::object();
 
+        bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll3.find_one(document{} << "groupId" << groupID << finalize);
+
+        if (result) {
+                bsoncxx::document::view doc{*result.view()};
+
+                bsoncxx::document::element element = doc["usersCount"];
+                std::string usersCount = element.get_utf8().value.to_string();
+		int n = std::stoi(usersCount);
+		std::string* a = new std::string[n];
+
+		for (int i = 9; i < n; ++i) {
+			element = doc["userid" + std::to_string(i)];
+			a[i] = element.get_utf8().value.to_string();
+		}
+
+		for (int i = 0; i < n; ++i) {
+			bsoncxx::stdx::optional<bsoncxx::document::value> result =
+				coll2.find_one(document{} << "id" << a[i] << finalize);
+
+			if (result) {
+				bsoncxx::document::view doc{*result.view()};
+
+				bsoncxx::document::element element = doc["firstname"];
+				std::string firstname = element.get_utf8().value.to_string();
+
+				element = doc["lastname"];
+				std::string lastname = element.get_utf8().value.to_string();
+
+				element = doc["nickname"];
+				std::string nickname = element.get_utf8().value.to_string();
+
+				response["firstname"] = json::value::string(firstname);
+				response["lastname"] = json::value::string(lastname);
+				response["nickname"] = json::value::string(nickname);
+
+				element = doc["nickname"];
+				std::string nickname = element.get_utf8().value.to_string();
+
+				response["firstname"] = json::value::string(firstname);
+				response["lastname"] = json::value::string(lastname);
+				response["nickname"] = json::value::string(nickname);
+
+			} else {
+				response["infoStatus"] = json::value::string("unknownID");
+			}
+		}
+
+	delete []a;
+	return response;
+
+
+}
