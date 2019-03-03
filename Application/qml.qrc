@@ -43,5 +43,7 @@
         <file>us.png</file>
         <file>about.png</file>
         <file>mainnn.qml</file>
+        <file>About_us.qml</file>
+        <file>Terms.qml</file>
     </qresource>
 </RCC>
