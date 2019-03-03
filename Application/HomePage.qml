@@ -7,7 +7,7 @@ import QtQuick.Layouts 1.3
 Page{
     StackView{
     anchors.fill: parent
-    id:homeStack
+    id:stack
     //focus: true
     Keys.onPressed:  {
         if (event.key === Qt.Key_Back) {

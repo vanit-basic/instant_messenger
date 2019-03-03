@@ -21,6 +21,6 @@ ApplicationWindow {
         focus: true
         anchors.fill: parent
         id:stack
-        initialItem: Qt.resolvedUrl("Sign_in.qml")
+        initialItem: Qt.resolvedUrl("Home.qml")
     }
 }

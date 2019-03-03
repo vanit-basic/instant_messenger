@@ -42,5 +42,6 @@
         <file>ru.png</file>
         <file>us.png</file>
         <file>about.png</file>
+        <file>mainnn.qml</file>
     </qresource>
 </RCC>

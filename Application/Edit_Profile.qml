@@ -7,9 +7,9 @@ import QtGraphicalEffects 1.12
 
 Page {
     id:wind
-    //    visible: true
-    //    width: Screen.width
-    //    height: Screen.height
+//        height: Screen.height
+//        width: Screen.width
+
 
     MouseArea {
         anchors.fill: parent
@@ -43,7 +43,17 @@ Page {
             to: -200
             duration: 200
         }
-
+        Rectangle{
+            id:root
+            height: parent.height
+            width: parent.width
+            gradient: Gradient{
+                GradientStop { position: 0.0;color:"dimgrey"}
+                GradientStop { position: 0.25;color:"gray"}
+                GradientStop { position: 0.5;color:"darkgrey"}
+                GradientStop { position: 0.75;color:"silver"}
+                GradientStop{ position: 1.0;color:"lightgrey"}
+            }
 
             Rectangle{
                 id: rec
@@ -51,13 +61,8 @@ Page {
                 y: 0
                 width: parent.width
                 height: parent.height
-                gradient: Gradient{
-                    GradientStop { position: 0.0;color:"dimgrey"}
-                    GradientStop { position: 0.25;color:"gray"}
-                    GradientStop { position: 0.5;color:"darkgrey"}
-                    GradientStop { position: 0.75;color:"silver"}
-                    GradientStop{ position: 1.0;color:"lightgrey"}
-                }
+                color: "transparent"
+
                 MouseArea{
                     x:0
                     y:0
@@ -138,114 +143,127 @@ Page {
                             }
                             font.pointSize: 11
                         }
+                    }
 
-                        Rectangle{
-                            id:rec2
-                            y:rec1.height
-                            visible: true
-                            width: Screen.width
-                            height: (Screen.height - y)
-                             color: "transparent"
-                            Column {
-                                id: column
-                                x:rec2.x+50
-                                y:50
-                                width: rec2.width-100
-                                height: rec2.height-350
-                                spacing: 20
-                                TextField{
-                                    id:edit_name
-                                    x:0
-                                    y:0
-                                    width: parent.width
-                                    height: 50
-                                    color: "white"
-                                    text: qsTr("Name")
-                                    font.pointSize: 11
-                                    background: Rectangle{
-                                        color: "transparent"
-                                    }
-                                    Rectangle {
-                                        id:name_rect
-                                        color: "white"
-                                        height: 1
-                                        width: parent.width
-                                        anchors.bottom: parent.bottom
-                                    }
-                                    onEditingFinished:  { name_rect.height = 1; name_rect.color = "white"}
-                                    onPressed:   { name_rect.height = 2 ; name_rect.color = "teal"; bbbb.start()}
-                                }
-
-                                TextField{
-                                    id:edit_surname
-                                    width: parent.width
-                                    height: 50
-                                    color: "white"
-                                    text: qsTr("Surname")
-                                    font.pointSize: 11
-                                    background: Rectangle{
-                                        color: "transparent"
-                                    }
-                                    Rectangle {
-                                        id:surname_rect
-                                        color: "white"
-                                        height: 1
-                                        width: parent.width
-                                        anchors.bottom: parent.bottom
-                                    }
-                                    onEditingFinished:  { surname_rect.height = 1; surname_rect.color = "white"}
-                                    onPressed:   { surname_rect.height = 2 ; surname_rect.color = "teal";dddd.start()}
-                                }
-
-                                TextField{
-                                    id:edit_nickname
-                                    width: parent.width
-                                    height: 50
-                                    color: "white"
-                                    text: qsTr("Nickname")
-                                    font.pointSize: 11
-                                    background: Rectangle{
-                                        color: "transparent"
-                                    }
-                                    Rectangle {
-                                        id:nick_rect
-                                        color: "white"
-                                        height: 1
-                                        width: parent.width
-                                        anchors.bottom: parent.bottom
-                                    }
-                                    onEditingFinished:  { nick_rect.height = 1; nick_rect.color = "white"}
-                                    onPressed:   { nick_rect.height = 2 ; nick_rect.color = "teal";ffff.start()}
-                                }
-                            }
-
-                            Button{
-                                id:save_changes
+                    Rectangle{
+                        id:rec2
+                        y:rec1.height
+                        visible: true
+                        width: Screen.width
+                        height: (Screen.height - y)
+                        color: "transparent"
+                        Column {
+                            id: column
+                            x:rec2.x+50
+                            y:50
+                            width: rec2.width-100
+                            height: rec2.height-350
+                            spacing: 20
+                            TextField{
+                                id:edit_name
+                                x:0
+                                y:0
+                                width: parent.width
+                                height: 50
+                                color: "white"
+                                text: qsTr("Name")
+                                font.pointSize: 11
                                 background: Rectangle{
-                                    radius: 30
-                                    color: "teal"
-                                    Text {
-                                        text: qsTr("Save changes")
-                                        color: "white"
-                                        anchors.centerIn: parent
-                                        font.pointSize: 11
-                                    }
+                                    color: "transparent"
                                 }
-                                opacity: enabled ? 1: 0.5
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.bottom: rec2.bottom
-                                anchors.bottomMargin: 70
-                                width: 130
-                                height: 30
-                                enabled: (edit_name.text === "" || edit_surname.text === "" || edit_nickname.text === "" )?false:true
-                                onPressed: {aaaa.start()}
-                                onClicked: stack.pop()
+                                Rectangle {
+                                    id:name_rect
+                                    color: "white"
+                                    height: 1
+                                    width: parent.width
+                                    anchors.bottom: parent.bottom
+                                }
+                                onEditingFinished:  { name_rect.height = 1; name_rect.color = "white"}
+                                onPressed:   { name_rect.height = 2 ; name_rect.color = "teal"; bbbb.start()}
                             }
+
+                            TextField{
+                                id:edit_surname
+                                width: parent.width
+                                height: 50
+                                color: "white"
+                                text: qsTr("Surname")
+                                font.pointSize: 11
+                                background: Rectangle{
+                                    color: "transparent"
+                                }
+                                Rectangle {
+                                    id:surname_rect
+                                    color: "white"
+                                    height: 1
+                                    width: parent.width
+                                    anchors.bottom: parent.bottom
+                                }
+                                onEditingFinished:  { surname_rect.height = 1; surname_rect.color = "white"}
+                                onPressed:   { surname_rect.height = 2 ; surname_rect.color = "teal";dddd.start()}
+                            }
+
+                            TextField{
+                                id:edit_nickname
+                                width: parent.width
+                                height: 50
+                                color: "white"
+                                text: qsTr("Nickname")
+                                font.pointSize: 11
+                                background: Rectangle{
+                                    color: "transparent"
+                                }
+                                Rectangle {
+                                    id:nick_rect
+                                    color: "white"
+                                    height: 1
+                                    width: parent.width
+                                    anchors.bottom: parent.bottom
+                                }
+                                onEditingFinished:  { nick_rect.height = 1; nick_rect.color = "white"}
+                                onPressed:   { nick_rect.height = 2 ; nick_rect.color = "teal";ffff.start()}
+                            }
+                        }
+
+                        Button{
+                            id:save_changes
+                            background: Rectangle{
+                                radius: 30
+                                color: "teal"
+                                Text {
+                                    text: qsTr("Save changes")
+                                    color: "white"
+                                    anchors.centerIn: parent
+                                    font.pointSize: 11
+                                }
+                            }
+                            opacity: enabled ? 1: 0.5
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top:column.bottom
+                            anchors.topMargin: 100
+                            width: 130
+                            height: 30
+                            font.pointSize: 10
+                            font.family: "Courier"
+                            font.capitalization: Font.Capitalize
+                            spacing: 5
+                            enabled: (edit_name.text === "" || edit_surname.text === "" || edit_nickname.text === "" )?false:true
+                            onPressed: {aaaa.start()}
+                            onClicked: stack.pop()
                         }
                     }
                 }
             }
         }
     }
+}
 
 
+
+
+
+
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+ ##^##*/
