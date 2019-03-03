@@ -12,7 +12,8 @@ getAllStatusDescriptions {
 		"INVALID_LOGIN" : "Invalid login or passord. Try again or click Forgot password to reset it.",
 		"LOGIN_LAST_ATTEMPT" : "After enyering wrong passord you will block for 2 hours",
 		"USER_BLOCKED" : "Your account is blocked for 2 hours",
-		"INPUT_CODE_HERE" : "You have a code message in mail. Please, input code here",
+	//	"INPUT_CODE_HERE" : "You have a code message in mail. Please, input code here",
+	//	"INVALID_CODE" : "The code you entered is incorrect",
 		"INVALID_FIELD_CHANGE" : "This field cannot be changed",
 		"INVAILD_ADMIN_ID" : "Only admin can delete group or update group info or delete member of the group",
 		"INVALID_GROUP_ID" : "The client is not a member of the group or this is a private group",
@@ -21,8 +22,7 @@ getAllStatusDescriptions {
 		"USER_NOT_FOUND" : "User with such name not found",
 		"GROUP_NOT_FOUND" : "There is no group with this name or this group is private",
 		"INVALID_GROUP" : "There is no group with this name or this group is private or group is full",
-		"REQYEST_NOT_ACCEPTED" : "User does not accept your request",
-		"INTERNAL_ERROR" : "Some thing went wrong." 
+		"INTERNAL_ERROR" : "Something went wrong." 
 	}
 }
 
@@ -90,13 +90,14 @@ signIn {
 forgotPassword {
         request {
                 uri - uri/account/forgotPassword
-                body -  {
-                                "email" : "v.valodyan@mail.com"
-                        }
+                body - {
+                        "email" : "v.valodyan@mail.com"
+                       }
                 }
 
         response {
-			"status" : "OK"
+		//	"status" : "OK"
+
                         "status" : "INVALID_EMAIL"
         }
 }
@@ -114,7 +115,7 @@ checkingCode {
                         "userId" : "u1",
 			"status" : "OK"
 
-                        "status" : "INVALID_EMAIL"
+               //       "status" : "INVALID_CODE"
         }
 }
 
@@ -234,8 +235,8 @@ deleteUser {
 
 createGroup {
     request {
-        uri - uri/group/createGroup
-	header - token
+        	uri - uri/group/createGroup
+		header - token
         body - {
                 "groupName" : "Best",
                 "adminID" : "u123",
@@ -244,18 +245,19 @@ createGroup {
     }
 
     response {
-        "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-        "groupID" : "g212",
-        "groupName" : "Best",
-        "adminID" : "u123",
-        "access" : "private"
+        	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+        	"groupID" : "g212",
+        	"groupName" : "Best",
+        	"adminID" : "u123",
+        	"access" : "private",
+		"status" : "OK"
     }
 }
 
 deleteGroup {
     request {
-        uri - uri/path/deleteGroup?adminId=u542&groupId=g123
-	header - token
+        	uri - uri/path/deleteGroup?adminId=u542&groupId=g123
+		header - token
     }
 
     response {
@@ -305,17 +307,16 @@ getGroupShortInfo {
 }
 updateGroupInfo {
     request {
-            uri - uri/path/updateGroupInfo?adimId=u231
-	    header - token
-            body - {
-                "groupID" : "g123",
-                "name" : "MafiaForever",
-                "avatar" : "base64_string"
-            }
+            	uri - uri/path/updateGroupInfo?adimId=u231
+	    	header - token
+            	body - {
+                	"groupID" : "g123",
+                	"name" : "MafiaForever",
+                	"avatar" : "base64_string"
+            	}
     }
 
     response {
-//	if OK	    
                 "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		"groupID" : "g123",
         	"name" : "MafiaForever",
@@ -368,6 +369,7 @@ getUserConversations {
 			"avatar" : "base64_string"
 		}
 			"status" : "OK"
+
         		"status" : "CONVERSATIONS_NOT_FOUND"
 }
 
@@ -496,28 +498,27 @@ removeUserMessage {
         }
 
         response {
-                "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
-		"status" : "OK"
+                	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"status" : "OK"
         }
 }
 
 updateGroupMessage {
     request {
-    	uri - uri/path/updateGroupMessage
-	header - token
-        body - {
-		"groupId" : "g52",
-        	"messageID" : "m10",
-       		"id" : "u1",
-		"newMessage" : "lav lav"
+    	    uri - uri/path/updateGroupMessage
+	    header - token
+            body - {
+		   "groupId" : "g52",
+        	   "messageID" : "m10",
+       		   "id" : "u1",
+		   "newMessage" : "lav lav"
 	}
     }
 
     response {
-//	if OK
 		"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		"status" : "OK"
-//	else
+
 		"status" : "NOT_LAST_MESSAGE" 
     }
 }
@@ -534,7 +535,7 @@ sendGroupMessage {
     }
 
     response {
-    	"status" : "OK"
+    		"status" : "OK"
     }
 }
 
@@ -578,7 +579,6 @@ searchUser {
 	}
 
 	response {
-//		if OK
 			"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			"id" : "u195",
 			"firstname" : "Valod",
@@ -586,8 +586,9 @@ searchUser {
 			"nickname" : "Valod",
 			"avatar" : "base64_string",
 			"gender" : "male",
-                	"birthdate" : "12.12.1990"
-//		else
+                	"birthdate" : "12.12.1990",
+			"status" : "OK"
+			
 			"status" : "USER_NOT_FOUND" 
 	}
 }
@@ -599,14 +600,14 @@ searchGroup {
 	}
 
 	response {
-//		if OK
 			"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
                 	"groupName" : "Best",
                 	"adminID" : "u10",
                 	"usersQuantity" : "13",
                 	"avatar" : "base64_string",
-                	"createDate" : "13.12.2018"
-//		else 
+                	"createDate" : "13.12.2018",
+			"status" : "OK"
+			
 			"status" : "GROUP_NOT_FOUND"
 	}
 }
@@ -622,10 +623,10 @@ userJoinGroup {
 	}
 
 	response {
-		"status" : "OK"
 		"status" : "INVALID_GROUP" 
 		"status" : "ALREADY_IN_GROUP"
 		"status" : "INTERNAL_ERROR"
+		"status" : "OK"
 	}
 }
 
@@ -637,6 +638,7 @@ groupAcceptUser {
 
 	response {
 		"status" : "OK"
+
 		"status" : "INTERNAL_ERROR"
 	}
 } 
@@ -649,6 +651,7 @@ groupRejectUser {
 
 	response {
 		"status" : "OK"
+
 		"status" : "INTERNAL_ERROR"
 	}
 } 
@@ -674,6 +677,7 @@ userAcceptInvitation {
 
 	response {
 		"status" : "OK" 
+
 		"status" : "INTERNAL_ERROR"
 	}
 }
