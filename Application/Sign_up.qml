@@ -21,6 +21,7 @@ Page {
 
         PropertyAnimation{
             id:bbbb
+            objectName: anim1
             property: "y"
             target: go_top
             //from: 0

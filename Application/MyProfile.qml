@@ -80,7 +80,7 @@ Page{
 
                     onClicked:{
                         drawer.close()
-                        stack.push(Qt.resolvedUrl("Edit_Profile.qml"))
+                        stack00.push(Qt.resolvedUrl("Edit_Profile.qml"))
                     }
                 }
             }
@@ -114,7 +114,7 @@ Page{
                     }
                     onClicked: {
                         drawer.close()
-                        stack.push(Qt.resolvedUrl("Change_Password.qml"))
+                        stack00.push(Qt.resolvedUrl("Change_Password.qml"))
                     }
                 }
 
@@ -635,7 +635,7 @@ Page{
                 background: Rectangle{
                     color:"transparent"
                 }
-                onClicked: stack.pop()
+                onClicked: stack00.pop()
             }
             Button{
                 id:nextbut

@@ -99,7 +99,7 @@ SwipeDelegate{
         anchors.left: parent.left
         width: parent.width/2
         onReleased: {
-            stack.push(Qt.resolvedUrl("Conversation.qml"))
+            stack55.push(Qt.resolvedUrl("Conversation.qml"))
             //stack.clear()
         }
        // onPressAndHold:pane.visible = true

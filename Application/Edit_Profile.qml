@@ -7,8 +7,8 @@ import QtGraphicalEffects 1.12
 
 Page {
     id:wind
-//        height: Screen.height
-//        width: Screen.width
+        height: Screen.height
+        width: Screen.width
 
 
     MouseArea {
@@ -106,7 +106,7 @@ Page {
                                     font.pointSize: 30
                                     color: "white"
                                 }
-                                onClicked: stack.pop()
+                                onClicked: stack00.pop()
                             }
                             Text {
                                 id: f_pass
@@ -243,6 +243,7 @@ Page {
                             anchors.topMargin: 100
                             width: 130
                             height: 30
+                            font.weight: Font.Light
                             font.pointSize: 10
                             font.family: "Courier"
                             font.capitalization: Font.Capitalize
@@ -263,7 +264,4 @@ Page {
 
 
 
-/*##^## Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
- ##^##*/
+

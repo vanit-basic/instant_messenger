@@ -50,7 +50,7 @@ Page {
                         font.pointSize: 30
                         color: "white"
                     }
-                    onClicked:stack.pop()
+                    onClicked:stack00.pop()
                 }
                 Text {
                     id: f_pass

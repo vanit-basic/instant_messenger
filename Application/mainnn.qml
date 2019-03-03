@@ -10,17 +10,20 @@ ApplicationWindow {
     title: qsTr("MafClub")
 
     StackView{
+
         Keys.onPressed:  {
+
             if (event.key === Qt.Key_Back) {
                 event.accepted = true;
-                if (stack.depth >= 1) {
-                    stack.pop();
+
+                if (stack55.depth >= 1) {
+                    stack55.pop();
                 } else { Qt.quit(); }
             }
         }
         focus: true
         anchors.fill: parent
-        id:stack
+        id:stack55
         initialItem: Qt.resolvedUrl("Home.qml")
     }
 }

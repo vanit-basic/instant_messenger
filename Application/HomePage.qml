@@ -7,15 +7,15 @@ import QtQuick.Layouts 1.3
 Page{
     StackView{
     anchors.fill: parent
-    id:stack
+    id:stack00
     //focus: true
     Keys.onPressed:  {
         if (event.key === Qt.Key_Back) {
             event.accepted = true;
-            if (stack.depth > 1) {
-                stack.pop()
+            if (stack00.depth > 1) {
+                stack00.pop()
             }
-        }
+                 }
     }
     initialItem:  Rectangle {
         id: root
@@ -53,7 +53,7 @@ Page{
                 height: 50
                 text: "+"
                 onClicked: /*homeStack.push(Qt.resolvedUrl("MyProfile.qml"))*/
-                            stack.push(Qt.resolvedUrl("MyProfile.qml"))
+                            stack00.push(Qt.resolvedUrl("MyProfile.qml"))
             }
 
             ProgressBar {
@@ -188,3 +188,8 @@ Page{
     }
 }
 }
+
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+ ##^##*/

@@ -10,12 +10,14 @@ ApplicationWindow {
     title: qsTr("MafClub")
 
     StackView{
+
         Keys.onPressed:  {
             if (event.key === Qt.Key_Back) {
-                event.accepted = true;
-                if (stack.depth >= 1) {
-                    stack.pop();
-                } else { Qt.quit(); }
+                event.accepted = true
+                if (stack.depth > 1) {
+                    stack.pop()
+
+                } else { Qt.quit()}
             }
         }
         focus: true
