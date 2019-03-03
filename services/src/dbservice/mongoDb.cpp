@@ -167,7 +167,7 @@ json::value MongoDB::registerUser(json::value request) {
 }
 
 json::value MongoDB::loginUser(json::value request) {
-	auto c1 = poolMydb->acquire();
+/*	auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
         auto coll1 = (*c1)["infoDB"]["account"];
         auto coll2 = (*c2)["passDB"]["signin"];
@@ -187,7 +187,7 @@ json::value MongoDB::loginUser(json::value request) {
                                                                 bsoncxx::document::view docInfo = infoResult->view();
                                                         //auto id = doc_view["id"];
                                                          //auto cursor = db["restaurants"].find({});
-                                  /*              auto infoResult = coll1.find(document{} << "login" << login << finalize);
+                                                auto infoResult = coll1.find(document{} << "login" << login << finalize);
                                                 auto builder = bsoncxx::builder::stream::document{};
                                                 auto doc = document{};
                                                 //bsoncxx::document::value doc_value;
@@ -196,7 +196,7 @@ json::value MongoDB::loginUser(json::value request) {
                                                 doc = builder << bsoncxx::to_json(doc1);
                                                         //<< bsoncxx::builder::stream::finalize;
                                                         std::cout << bsoncxx::to_json(doc1) << std::endl;
-                                                } */
+                                                } 
 
                                               bsoncxx::document::element element = doc["id"];
                                                 std::string id = element.get_utf8().value.to_string();
@@ -258,7 +258,7 @@ json::value MongoDB::loginUser(json::value request) {
 
                                         }
 
-                                }
+                                }*/
 }
 
 json::value MongoDB::getUserInfo(json::value request){

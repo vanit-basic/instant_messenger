@@ -11,6 +11,11 @@
 
 #include <account/account.hpp>
 
+void Account::initRestOpHandlers() {
+    _listener.support(methods::GET, std::bind(&Account::handleGet, this, std::placeholders::_1));
+    _listener.support(methods::POST, std::bind(&Account::handlePost, this, std::placeholders::_1));
+}
+
 static int max_attempt = 5;
 bool Account::createClients(std::string path)
 {
@@ -111,10 +116,6 @@ bool Account::checkServices()
 }
 
 
-void Account::initRestOpHandlers() {
-    _listener.support(methods::GET, std::bind(&Account::handleGet, this, std::placeholders::_1));
-    _listener.support(methods::POST, std::bind(&Account::handlePost, this, std::placeholders::_1));
-}
 
 std::string setToken(){
 	
