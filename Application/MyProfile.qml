@@ -79,7 +79,7 @@ Page{
                     }
 
                     onClicked:{
-                        drawer.close()
+                        drawer.visible = false
                         stack.push(Qt.resolvedUrl("Edit_Profile.qml"))
                     }
                 }
@@ -113,7 +113,7 @@ Page{
                         font.pointSize: 15
                     }
                     onClicked: {
-                        drawer.close()
+                         drawer.visible = false
                         stack.push(Qt.resolvedUrl("Change_Password.qml"))
                     }
                 }
@@ -218,20 +218,16 @@ Page{
                                 anchors.leftMargin: 4
                                 anchors.verticalCenter: parent.verticalCenter
                             }
-                            Rectangle{
-                                color: "black"
+
+                            Image{
+                                width: 25
+                                height: 15
                                 anchors.right: parent.right
                                 anchors.rightMargin: 4
                                 anchors.verticalCenter: parent.verticalCenter
-                                width: 27
-                                height: 17
-                                Image{
-                                    width: 25
-                                    height: 15
-                                    anchors.right: parent.right
-                                    source: sources
-                                }
+                                source: sources
                             }
+
                         }
                     }
                 }
@@ -318,6 +314,10 @@ Page{
                         color: "white"
                         font.pointSize: 15
                     }
+                    onClicked:{
+                        drawer.close()
+                        // stack.push(Qt.resolvedUrl("Edit_Profile.qml"))
+                    }
                 }
             }
             Rectangle{
@@ -347,6 +347,10 @@ Page{
                         verticalAlignment: Text.AlignVCenter
                         color: "white"
                         font.pointSize: 15
+                    }
+                    onClicked:{
+                       // drawer.close()
+                        stack.push(Qt.resolvedUrl("Terms.qml"))
                     }
                 }
             }
@@ -378,6 +382,10 @@ Page{
                         color: "white"
                         font.pointSize: 15
                     }
+                    onClicked:{
+                       // drawer.close()
+                        stack.push(Qt.resolvedUrl("About_us.qml"))
+                    }
                 }
             }
             Rectangle{
@@ -407,6 +415,11 @@ Page{
                         verticalAlignment: Text.AlignVCenter
                         color: "white"
                         font.pointSize: 15
+                    }
+                    onClicked:{
+                       // drawer.close()
+                        stack.clear()
+                        //stack.push(Qt.resolvedUrl("Sign_in.qml"))
                     }
                 }
             }
