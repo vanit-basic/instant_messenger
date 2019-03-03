@@ -12,7 +12,7 @@ int main (int argc, char** argv) {
 	else{
 		InterruptHandler::hookSIGINT();
 		std::string path = std::string(argv[1]);
-		database* m;
+		database* m = new MongoDB(path);
 		std::cout<<"database\n";
 		DbService db(path, m);
 		std::cout<<"dbservice\n";

@@ -32,11 +32,30 @@ using namespace web::http;
 using namespace web::http::client;
 using namespace concurrency::streams;
 
+bool MongoDB::setToken(json::value)
+{
+	std::cout<<"setToken"<<std::endl;
+}
+bool MongoDB::checkToken(std::string id, std::string token)
+{
+	std::cout<<"checkToken"<<std::endl;
+}
+bool MongoDB::deleteToken(json::value)
+{
+	std::cout<<"deleteToken"<<std::endl;
+}
+
+
 std::string generateID(mongocxx::collection collection) {
+	std::cout<<__LINE__<<std::endl;
         std::string id;
+	std::cout<<__LINE__<<std::endl;
         bsoncxx::builder::stream::document document{};
+	std::cout<<__LINE__<<std::endl;
         auto lastId = collection.find_one({});
+	std::cout<<__LINE__<<std::endl;
         if(!lastId) {
+	std::cout<<__LINE__<<std::endl;
                 auto doc = bsoncxx::builder::stream::document{};
                 bsoncxx::document::value doc_value = doc
                         << "lastId" << 1
@@ -45,6 +64,7 @@ std::string generateID(mongocxx::collection collection) {
                 id = "u1";
         }
         else {
+	std::cout<<__LINE__<<std::endl;
                 bsoncxx::document::view view = lastId.value().view();
                 bsoncxx::document::element element = view["lastId"];
                 if(element.type() != bsoncxx::type::k_utf8) {
@@ -56,6 +76,7 @@ std::string generateID(mongocxx::collection collection) {
                                         << close_document << bsoncxx::builder::stream::finalize);
                 }
         }
+	std::cout<<__LINE__<<std::endl;
         return id;
 }
 
@@ -127,9 +148,17 @@ json::value MongoDB::registerUser(json::value request) {
         auto c2 = poolDB->acquire();
         auto coll1 = (*c1)["infoDB"]["account"];
         auto coll2 = (*c2)["passDB"]["signin"];
+	
+	std::cout<<__LINE__<<std::endl;
+	
 	std::string id = generateID(coll2);
+	
+	std::cout<<__LINE__<<std::endl;
+	
 	std::string password = request.at("password").as_string();
-
+	
+	std::cout<<__LINE__<<std::endl;
+	
 	std::string joinDate = date();
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value = builder
@@ -144,6 +173,8 @@ json::value MongoDB::registerUser(json::value request) {
 		<< bsoncxx::builder::stream::finalize;
 	auto result = coll1.insert_one(std::move(doc_value));
 
+	std::cout<<__LINE__<<std::endl;
+	
 	auto response = json::value::object();
 	response["status"] = json::value::string("successfullyRegistered");
 	response["id"] = json::value::string(id);
@@ -154,6 +185,8 @@ json::value MongoDB::registerUser(json::value request) {
 	response["email"] = json::value::string(request.at("email").as_string());
 	response["login"] = json::value::string(request.at("login").as_string());
 
+	std::cout<<__LINE__<<std::endl;
+	
 	builder = bsoncxx::builder::stream::document{};
 	doc_value = builder
 		<< request.at("login").as_string() << bsoncxx::builder::stream::open_document
@@ -163,6 +196,9 @@ json::value MongoDB::registerUser(json::value request) {
 		<< close_document
 		<< bsoncxx::builder::stream::finalize;
 	result = coll2.insert_one(std::move(doc_value));
+	
+	std::cout<<__LINE__<<std::endl;
+
 	return response;
 }
 

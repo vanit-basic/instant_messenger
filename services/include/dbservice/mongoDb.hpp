@@ -34,6 +34,9 @@ using namespace concurrency::streams;
 
 class MongoDB : public database {
 	public:
+		bool setToken(json::value);
+		bool checkToken(std::string id, std::string token);
+		bool deleteToken(json::value);
 		json::value mail_login(json::value);
 		json::value registerUser(json::value);
 
