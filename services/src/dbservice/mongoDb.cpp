@@ -182,8 +182,9 @@ json::value MongoDB::loginUser(json::value request) {
 
                                         if (result) {
                                                 bsoncxx::stdx::optional<bsoncxx::document::value> infoResult =
-                                                        coll2.find_one(document{} << "login" << request.at("login").as_string()
-                                                                bsoncxx::document::view doc{*result.view()});
+                                                        coll2.find_one(document{} << "login" << request.at("login").as_string()<< finalize);
+                                                                bsoncxx::document::view doc = result->view();
+                                                                bsoncxx::document::view docInfo = infoResult->view();
                                                         //auto id = doc_view["id"];
                                                          //auto cursor = db["restaurants"].find({});
                                   /*              auto infoResult = coll1.find(document{} << "login" << login << finalize);
@@ -228,20 +229,20 @@ json::value MongoDB::loginUser(json::value request) {
                                                 response["login"] = json::value::string(login);
 
 
-                                                response["id"] = infoResult["id"];
+                                                response["id"] = docInfo["id"];
 
-                                                message.reply(status_codes::OK, response);
+                                              //  message.reply(status_codes::OK, response);
 
                                         } else {
                                                 bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
                                                 coll2.find_one(document{} << "login" << request.at("login").as_string() << finalize);
-                                                if (loginResult) {
+                                                if (loginPassResult) {
                                                         response["passResult"] = json::value::string("wrongPass");
                                                         std::string loginDate = date();
 
                                                 bsoncxx::stdx::optional<bsoncxx::document::value> info =
-                                                        coll1.find_one(document{} << "login" << login
-                                                                bsoncxx::document::view doc_view{*info.view()};
+                                                        coll1.find_one(document{} << "login" << login << finalize);
+                                                                bsoncxx::document::view doc_view = info->view();
                                                 coll1.update_one(document{} << "login" << login << finalize,
                                                                 document{} << "$set" << open_document <<
                                                                 document{} << "$inc" << open_document <<
