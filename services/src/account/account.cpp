@@ -156,6 +156,42 @@ http_response getGroupUsers(std::string userId, std::string groupId, http_client
 			});
 }
 
+http_response getGroupShortInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
+	uri_builder gSInfo("/getGroupShortInfo/" + groupId + "/");
+	DataBaseClient->request(methods::GET, gSInfo.to_string()).
+	then([=](http_response groupShortInfo)
+	{
+		groupInfo.extract_json().
+		then([=](json::value groupShortInf)
+		{
+			if(groupShortInf.at("access").as_string() == "private")
+			{
+				auto groupUsers = getGroupUsers(userId, groupId, DataBaseClient);
+				groupUsers.extract_json().
+				then([=](json::value groupUsersResp)
+				{
+					if(!(groupUsersResp.at(userId).is_null()))
+					{
+						return groupInfo;
+					}
+					else
+					{
+						http_response resp;
+						json::value groupShortInfoResp;
+						groupShortInfoResp["status"] = json::value::string("Not Found");
+						resp.set_body(groupInfoResp);
+						return resp;
+					}
+				});
+			}
+			else
+			{
+				return groupInfo;
+			}
+		});
+	});
+}
+
 http_response getGroupInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
 	uri_builder gInfo("/getGroupInfo/" + groupId + "/");
 	DataBaseClient->request(methods::GET, gInfo.to_string()).
@@ -164,7 +200,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 		groupInfo.extract_json().
 		then([=](json::value groupInf)
 		{
-			if(groupInf.at("acces").as_string() == "private")
+			if(groupInf.at("access").as_string() == "private")
 			{
 				auto groupUsers = getGroupUsers(userId, groupId, DataBaseClient);
 				groupUsers.extract_json().
@@ -228,7 +264,8 @@ void Account::handleGet(http_request message) {
 	}
 
 	auto path_first_request = requestPath(message);
-	if (!(path_first_request.empty())) {
+	if (!(path_first_request.empty())) 
+	{
 		if (path_first_request[0] == "ServiceTest")
 		{
 			message.reply(status_codes::OK, "Account_Start");
@@ -237,7 +274,6 @@ void Account::handleGet(http_request message) {
 		{
 			std::string userId = "";
 			userId = i.find("clientId")->second;
-			std::cout << "userId = " << userId << std::endl;
 			if(!(userId == ""))
 			{
 				auto userInfo = getUserInfo(userId, this -> DataBaseClient);
@@ -254,7 +290,6 @@ void Account::handleGet(http_request message) {
 			{
 				std::string userId = "";
 				userId = i.find("clientId")->second;
-				std::cout << "userId = " << userId << std::endl;
 				if(!(userId == ""))
 				{
 					auto userShortInfo = getUserShortInfo(userId, this -> DataBaseClient);
@@ -273,8 +308,6 @@ void Account::handleGet(http_request message) {
 					std::string groupId = "";
 					userId = i.find("clientId")->second;
 					groupId = i.find("groupId")->second;
-					std::cout << "userId = " << userId << std::endl;
-					std::cout << "groupId = " << groupId << std::endl;
 					if(!(userId == ""))
 					{
 						if(!(groupId == ""))
@@ -294,26 +327,15 @@ void Account::handleGet(http_request message) {
 				}
 				else
 				{
-					if(path_first_request[1] == "getGroupUsers")
-					{
+					if (path_first_request[1] == "userDelete")
+					{	
 						std::string userId = "";
-						std::string groupId = "";
 						userId = i.find("clientId")->second;
-						groupId = i.find("groupId")->second;
-						std::cout << "userId = " << userId << std::endl;
-						std::cout << "groupId = " << groupId << std::endl;
 						if(!(userId == ""))
 						{
-							if(!(groupId == ""))
-							{
-								auto groupUsers = getGroupUsers(userId, groupId, this -> DataBaseClient);
-								message.reply(groupUsers);
+							auto resp = userDelete(userId, this->DataBaseClient);
+							message.reply(resp);
 							}
-							else
-							{
-								message.reply(status_codes::NotFound);
-							}
-						}
 						else
 						{
 							message.reply(status_codes::NotFound);
@@ -321,14 +343,13 @@ void Account::handleGet(http_request message) {
 					}
 					else
 					{
-						if (path_first_request[1] == "userDelete")
-						{	
+						if(path_first_request[1] == "signOut")
+						{
 							std::string userId = "";
 							userId = i.find("clientId")->second;
-							std::cout << "userId = " << userId << std::endl;
 							if(!(userId == ""))
 							{
-								auto resp = userDelete(userId, this->DataBaseClient);
+								auto resp = signOut(userId, this->TokenDBClient);
 								message.reply(resp);
 							}
 							else
@@ -338,15 +359,23 @@ void Account::handleGet(http_request message) {
 						}
 						else
 						{
-							if(path_first_request[1] == "signOut")
+							if(path_first_request[1] == "getGroupShortInfo")
 							{
 								std::string userId = "";
+								std::string groupId = "";
 								userId = i.find("clientId")->second;
-								std::cout << "userId = " << userId << std::endl;
+								groupId = i.find("groupId")->second;
 								if(!(userId == ""))
 								{
-									auto resp = signOut(userId, this->TokenDBClient);
-									message.reply(resp);
+									if(!(groupId == ""))
+									{
+										auto groupShortInfo = getGroupShortInfo(userId,groupId, this->DataBaseClient);
+										message.reply(groupShortInfo);
+									}
+									else
+									{
+										message.reply(status_codes::NotFound);
+									}
 								}
 								else
 								{
