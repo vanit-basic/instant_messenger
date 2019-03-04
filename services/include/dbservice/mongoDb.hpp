@@ -39,11 +39,8 @@ class MongoDB : public database {
 		bool deleteToken(json::value);
 		json::value mail_login(json::value);
 		json::value registerUser(json::value);
-
+		json::value updateUserInfo(json::value request);
 		json::value loginUser(json::value);
-
-		bool updateUserInfo(std::string userInfo) {}
-
 		json::value getUserInfo(json::value);
 
 		json::value getUserShortInfo(json::value);
@@ -65,7 +62,9 @@ class MongoDB : public database {
 
 		std::string createGroup(std::string groupInfo) {}
 
-		bool deleteGroup(std::string groupID) {}
+		json::value getGroupShortInfo(json::value request);
+
+		json::value deleteGroup(json::value);
 
 		bool addUserToGroup(std::string groupID, std::string userID) {}
 
