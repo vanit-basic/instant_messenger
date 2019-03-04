@@ -39,51 +39,52 @@ class MongoDB : public database {
 
 		json::value loginUser(json::value);
 
-		bool updateUserInfo(std::string userInfo);
+		bool updateUserInfo(std::string userInfo) {}
 
 		json::value getUserInfo(json::value);
 
 		json::value getUserShortInfo(json::value);
 
-		json::value getUserConversations(json::value);
+		json::value getUserConversations(json::value) {}
 
-		json::value getUsersConversation(json::value);
+		json::value getUsersConversation(json::value) {}
 
-		std::string addUserMessage(std::string from, std::string to, std::string message);
+		std::string addUserMessage(std::string from, std::string to, std::string message) {}
 
-		bool updateUserMessage(std::string from, std::string to, std::string messageInfo);
+		bool updateUserMessage(std::string from, std::string to, std::string messageInfo) {}
 
 		json::value deleteUser(json::value);
 
-		bool removeUserConversation(std::string fromUserId, std::string toUserId);
+
+		bool removeUserConversation(std::string fromUserId, std::string toUserId) {}
 
 		//group related queries
 
-		std::string createGroup(std::string groupInfo);
+		std::string createGroup(std::string groupInfo) {}
 
-		bool deleteGroup(std::string groupID);
+		bool deleteGroup(std::string groupID) {}
 
-		bool addUserToGroup(std::string groupID, std::string userID);
+		bool addUserToGroup(std::string groupID, std::string userID) {}
 
-		bool removeFromGroup(std::string groupID, std::string userID);
+		bool removeFromGroup(std::string groupID, std::string userID) {}
 
-		bool removeMessage(std::string messageInfo);
+		bool removeMessage(std::string messageInfo) {}
 
-		bool removeGroupConversation(std::string groupInfo);
+		bool removeGroupConversation(std::string groupInfo) {}
 
-		bool removeMessageFromGroupConversation(std::string groupInfo);
+		bool removeMessageFromGroupConversation(std::string groupInfo) {}
 
-		std::string getGroupInfo(std::string groupID);
+		std::string getGroupInfo(std::string groupID) {}
 
-		std::string getGroupConversation(std::string userID, std::string groupID);
+		std::string getGroupConversation(std::string userID, std::string groupID) {}
 
-		bool updateGroupInfo(std::string groupInfo);
+		bool updateGroupInfo(std::string groupInfo) {}
 
-		std::string addGroupMessage(std::string groupId, std::string userId, std::string message);
+		std::string addGroupMessage(std::string groupId, std::string userId, std::string message) {}
 
-		std::string getGroupUsers(std::string groupId);
+		json::value getGroupUsers(json::value) {}
 
-		bool updateGroupMessage(std::string groupId, std::string messBody);
+		bool updateGroupMessage(std::string groupId, std::string messBody) {}
 
 		MongoDB(std::string);
 		~MongoDB();
@@ -92,7 +93,6 @@ class MongoDB : public database {
 		mongocxx::pool* poolMydb;
                 mongocxx::pool* poolDB;
                 bool createPool(std::string);
-
 };
 
 #endif

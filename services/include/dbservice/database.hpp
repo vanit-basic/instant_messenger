@@ -21,6 +21,7 @@ class database {
 	public:
 		//user related queries
 		virtual json::value mail_login(json::value) = 0;
+
 		virtual json::value registerUser(json::value) = 0;
 		
 		virtual json::value loginUser(json::value) = 0;
@@ -39,7 +40,7 @@ class database {
 
 		virtual bool updateUserMessage(std::string from, std::string to, std::string messageInfo) = 0;
 
-		virtual bool deleteUser(std::string userId) = 0;
+		virtual json::value deleteUser(json::value) = 0;
 
 		virtual bool removeUserConversation(std::string fromUserId, std::string toUserId) = 0;
 
@@ -67,7 +68,7 @@ class database {
 
 		virtual std::string addGroupMessage(std::string groupId, std::string userId, std::string message) = 0;
 
-		virtual std::string getGroupUsers(std::string groupId) = 0;
+		virtual json::value getGroupUsers(json::value) = 0;
 		
 		virtual bool updateGroupMessage(std::string groupId, std::string messBody) = 0;
 	
