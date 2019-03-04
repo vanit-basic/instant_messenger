@@ -54,11 +54,11 @@ int main()
 	uri_builder deleteUser(U("/account/deleteUser"));
 
 	json::value regReq;
-	regReq["firstName"] = json::value::string("Valod");
-	regReq["lastName"] = json::value::string("Valodyan");
+	regReq["firstname"] = json::value::string("Valod");
+	regReq["lastname"] = json::value::string("Valodyan");
 	regReq["gender"] = json::value::string("male");
 	regReq["email"] = json::value::string("v.valodyan@mail.ru");
-	regReq["birthDate"] = json::value::string("12.12.1990");
+	regReq["birthdate"] = json::value::string("12.12.1990");
 	regReq["login"] = json::value::string("v.valodyan");
 	regReq["password"] = json::value::string("Valodik90");
 
@@ -66,13 +66,17 @@ int main()
 	signInReq["login"] = json::value::string("v.valodyan");
 	signInReq["password"] = json::value::string("Valodik90");
 	
-	
+	std::cout<<regReq.at("firstname").as_string()<<std::endl;
 	int count = 0;
 	do{
 		try {
 			++count;
 			pplx::task<web::http::http_response> requestTask = client.request(methods::POST, registr.to_string(), regReq);
-			requestTask.then([](http_response resp){std::cout<<resp.to_string()<<std::endl;});
+			requestTask.then([](http_response resp){
+					resp.extract_json().then([=](json::value jso){
+							std::cout<<jso.to_string();
+							});
+					std::cout<<resp.to_string()<<std::endl;});
 			requestTask.wait();
 
 		} catch (http_exception e) {

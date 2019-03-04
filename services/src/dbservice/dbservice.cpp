@@ -73,10 +73,12 @@ if (!(path.empty())) {
 
 void DbService::handlePost(http_request message) {
 	std::cout<<"message  "<<message.to_string()<<std::endl;
-	auto path = requestPath(message);
+
 
 	message.extract_json()
-		.then([message, path, this](json::value request) {
+		.then([message, this](json::value request) {
+				std::cout<<request.at("firstname").as_string();
+			auto path = requestPath(message);
 			if (!path.empty()) {
 				if (path[0] == "check") {
 					if (path[1] == "mail&login") {
