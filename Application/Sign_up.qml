@@ -21,7 +21,7 @@ Page {
 
         PropertyAnimation{
             id:bbbb
-            objectName: anim1
+            //objectName: anim1
             property: "y"
             target: go_top
             //from: 0
@@ -116,7 +116,7 @@ Page {
                         id: column
                         y:register.height+20
 
-                        width: 300
+                        width: Screen.width-100
                         height: Screen.height -2*column.y
                         parent: go_top
                         spacing: 20
@@ -127,8 +127,8 @@ Page {
                             id:username
                             enabled: true
 
-                            width: 300
-                            height: (column.height-9*column.spacing)/9
+                            width: parent.width
+                            height: (column.height-10*column.spacing)/10
                             color: "white"
                             placeholderText: "Name"
                             background: Rectangle{
@@ -154,7 +154,7 @@ Page {
                         TextField{
                             id:surname
 
-                            width: 300
+                            width: parent.width
                             height: username.height
                             color: "white"
                             placeholderText: "Surname"
@@ -178,7 +178,7 @@ Page {
                         TextField{
                             id:email
                             height: username.height
-                            width: 300
+                            width: parent.width
                             color: "white"
                             placeholderText: "Email"
                             background: Rectangle{
@@ -359,7 +359,7 @@ Page {
                         Row {
                             id: row1
 
-                            width: 300
+                            width: parent.width
                             height: username.height
                             spacing: 50
                             RadioButton {
@@ -405,7 +405,7 @@ Page {
                             id:login
                             enabled: true
 
-                            width: 300
+                            width: parent.width
                             height: username.height
                             color: "white"
                             placeholderText: "Login"
@@ -431,7 +431,7 @@ Page {
                         TextField{
                             id:user_password
                             height: username.height
-                            width: 300
+                            width: parent.width
                             color: "white"
                             placeholderText: "Password"
                             background: Rectangle{
@@ -452,7 +452,7 @@ Page {
                         TextField{
                             id:repeat_pass
                             height: username.height
-                            width: 300
+                            width: parent.width
                             color: "white"
                             placeholderText: "Repeat password"
                             background: Rectangle{
@@ -469,6 +469,47 @@ Page {
                             onEditingFinished:  { repass.height = 1; repass.color = "white"}
                             onPressed:   { repass.height = 2 ; repass.color = "green";ssss.start()}
                             echoMode: TextInput.Password
+                        }
+                        Row{
+                            id: row2
+
+                            width: parent.width
+                            height: username.height
+                            //spacing: 2
+                        CheckBox{
+                        id:agree
+                        indicator.height: 25
+                            indicator.width: 25
+                        anchors.verticalCenter: parent.verticalCenter
+                        }
+                        Text {
+
+                            //x:agree.x+agree.width+10
+                            id: read_agree
+                            text: qsTr("I agree to the ")
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: "white"
+                            //font.pointSize: 8
+                        }
+                        Button{
+                        id:terms_and_conditions
+                        width: terms1.width
+                        //x:read_agree.x+read_agree.width+50
+                        height: agree.height
+                        anchors.verticalCenter: parent.verticalCenter
+                        background: Rectangle{
+                        color: "transparent"
+                        }
+                        Text {
+                            id: terms1
+                            text: qsTr("Terms")
+                            font.underline: true
+                            color: "blue"
+                            anchors.verticalCenter: parent.verticalCenter
+                            //font.pointSize: 8
+                        }
+                        onPressed: stack.push(Qt.resolvedUrl("Terms1.qml"))
+                        }
                         }
                         Button{
 

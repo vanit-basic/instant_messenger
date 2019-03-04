@@ -7,7 +7,7 @@ import QtGraphicalEffects 1.12
 
 Page {
     id:wind
-//        height: Screen.height
+//    height: Screen.height
 //        width: Screen.width
 function backPressed(){ bbbb.start()}
 
@@ -26,21 +26,21 @@ function backPressed(){ bbbb.start()}
             id:bbbb
             property: "y"
             target: rec
-            to: -roundButton.y
+            to: 0
             duration: 200
         }
         PropertyAnimation{
             id:dddd
             property: "y"
             target: rec
-            to: -160
+            to: -roundButton.y
             duration: 200
         }
         PropertyAnimation{
             id:ffff
             property: "y"
             target: rec
-            to: -200
+            to: -roundButton.y-save_changes.height
             duration: 200
         }
         Rectangle{
@@ -77,7 +77,7 @@ function backPressed(){ bbbb.start()}
                         id: rec1
                         visible: true
                         width: Screen.width
-                        height: (Screen.height)/3
+                        height: (Screen.height)/4
                         color: "transparent"
 
                         Rectangle{
@@ -121,10 +121,12 @@ function backPressed(){ bbbb.start()}
 
                         RoundButton {
                             id: roundButton
-                            width: 90
-                            height: 90
-                            anchors.verticalCenter: parent.verticalCenter
+                            width: 70
+                            height: 70
+//                            anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top: small.bottom
+                            anchors.topMargin: 10
                             text: "+"
                         }
 
@@ -147,24 +149,27 @@ function backPressed(){ bbbb.start()}
 
                     Rectangle{
                         id:rec2
-                        y:rec1.height
+                        x:0
+
                         visible: true
                         width: Screen.width
-                        height: (Screen.height - y)
+                        height: (parent.height - rec1.height)
+                        anchors.bottom: parent.bottom
+
                         color: "transparent"
                         Column {
                             id: column
-                            x:rec2.x+50
-                            y:50
-                            width: rec2.width-100
-                            height: rec2.height-350
-                            spacing: 20
+
+                            width: parent.width
+                            height: parent.height/2
+                            anchors.top: parent.top
+
+                            spacing: height/6
                             TextField{
                                 id:edit_name
-                                x:0
-                                y:0
+
                                 width: parent.width
-                                height: 50
+                                height: parent.height/6
                                 color: "white"
                                 text: qsTr("Name")
                                 font.pointSize: 11
@@ -185,7 +190,7 @@ function backPressed(){ bbbb.start()}
                             TextField{
                                 id:edit_surname
                                 width: parent.width
-                                height: 50
+                               height: parent.height/6
                                 color: "white"
                                 text: qsTr("Surname")
                                 font.pointSize: 11
@@ -206,7 +211,7 @@ function backPressed(){ bbbb.start()}
                             TextField{
                                 id:edit_nickname
                                 width: parent.width
-                                height: 50
+                                height: parent.height/6
                                 color: "white"
                                 text: qsTr("Nickname")
                                 font.pointSize: 11
@@ -224,7 +229,11 @@ function backPressed(){ bbbb.start()}
                                 onPressed:   { nick_rect.height = 2 ; nick_rect.color = "teal";ffff.start()}
                             }
                         }
-
+Rectangle{
+    width: parent.width
+    height: parent.height-column.height-44
+    anchors.top: column.bottom
+    color: "transparent"
                         Button{
                             id:save_changes
                             background: Rectangle{
@@ -238,9 +247,12 @@ function backPressed(){ bbbb.start()}
                                 }
                             }
                             opacity: enabled ? 1: 0.5
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.top:column.bottom
-                            anchors.topMargin: 100
+                            //anchors.horizontalCenter: parent.horizontalCenter
+//                            anchors.top:column.bottom
+//                            anchors.topMargin: 50
+                            //anchors.top: parent.top
+                            //anchors.topMargin: 15
+                            anchors.centerIn: parent
                             width: 130
                             height: 30
                             font.weight: Font.Light
@@ -252,6 +264,7 @@ function backPressed(){ bbbb.start()}
                             onPressed: {aaaa.start()}
                             onClicked: stack00.pop()
                         }
+}
                     }
                 }
             }
@@ -265,3 +278,8 @@ function backPressed(){ bbbb.start()}
 
 
 
+
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+ ##^##*/

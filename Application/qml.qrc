@@ -46,5 +46,6 @@
         <file>About_us.qml</file>
         <file>Terms.qml</file>
         <file>indicator.png</file>
+        <file>Terms1.qml</file>
     </qresource>
 </RCC>
