@@ -45,5 +45,6 @@
         <file>mainnn.qml</file>
         <file>About_us.qml</file>
         <file>Terms.qml</file>
+        <file>Terms1.qml</file>
     </qresource>
 </RCC>
