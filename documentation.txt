@@ -12,8 +12,7 @@ getAllStatusDescriptions {
 		"INVALID_LOGIN" : "Invalid login or passord. Try again or click Forgot password to reset it.",
 		"LOGIN_LAST_ATTEMPT" : "After enyering wrong passord you will block for 2 hours",
 		"USER_BLOCKED" : "Your account is blocked for 2 hours",
-	//	"INPUT_CODE_HERE" : "You have a code message in mail. Please, input code here",
-	//	"INVALID_CODE" : "The code you entered is incorrect",
+		"INVALID_CODE" : "The code you entered is incorrect",
 		"INVALID_FIELD_CHANGE" : "This field cannot be changed",
 		"INVAILD_ADMIN_ID" : "Only admin can delete group or update group info or delete member of the group",
 		"INVALID_GROUP_ID" : "The client is not a member of the group or this is a private group",
@@ -51,8 +50,9 @@ signUp {
                         "gender" : "male",
                         "email" : "v.valodyan@mail.com",
                         "birthDate" : "12.12.1990",
-			"login" : "v.valodyan"
-                        "status" : "OK",
+			"login" : "v.valodyan",
+			"level" : 0,
+                        "status" : "OK"
 
                         "status" : "INVALID_EMAIL",
                         "status" : "INVALID_LOGIN"
@@ -77,7 +77,8 @@ signIn {
 			"avatar" : "base64_string",
                         "gender" : "male",
                         "email" : "v.valodyan@msil.com",
-                        "birthDate" : "12.12.1990"
+                        "birthDate" : "12.12.1990",
+			"level" : 1,
                         "status" : "OK"
 
                         "status" : "INVALID_LOGIN"
@@ -96,7 +97,7 @@ forgotPassword {
                 }
 
         response {
-		//	"status" : "OK"
+			"status" : "OK"
 
                         "status" : "INVALID_EMAIL"
         }
@@ -115,7 +116,7 @@ checkingCode {
                         "userId" : "u1",
 			"status" : "OK"
 
-               //       "status" : "INVALID_CODE"
+                        "status" : "INVALID_CODE"
         }
 }
 
@@ -174,7 +175,8 @@ getUserInfo {
                 "gender" : "male",
 		"groups" : ["g5", "g24", "g32"],
                 "email" : "v.valodyan@mail.com",
-                "birthDate" : "12.12.1990"
+                "birthDate" : "12.12.1990",
+		"level" : 2,
 		"status" : "OK"
         }
 }
@@ -193,7 +195,8 @@ getUserShortInfo {
 			"avatar" : "base64_string",
 			"gender" : "female",
 			"birthdate" : "12.12.1993",
-			"groups" : ["g5", "g24"] // only public groups
+			"groups" : ["g5", "g24"], // only public groups
+			"level" : 2,
 			"status" : "OK"
 
                         "status" : "INVALID_ID"
@@ -235,7 +238,7 @@ deleteUser {
 
 createGroup {
     request {
-        	uri - uri/group/createGroup
+        	uri - uri/account/createGroup
 		header - token
         body - {
                 "groupName" : "Best",
@@ -256,7 +259,7 @@ createGroup {
 
 deleteGroup {
     request {
-        	uri - uri/path/deleteGroup?adminId=u542&groupId=g123
+        	uri - uri/account/deleteGroup?adminId=u542&groupId=g123
 		header - token
     }
 
@@ -268,7 +271,7 @@ deleteGroup {
 
 getGroupInfo {
         request {
-                uri - uri/path/getGroupInfo?userId=u325&groupId=u12
+                uri - uri/account/getGroupInfo?userId=u325&groupId=u12
                 header - token
         }
 
@@ -289,7 +292,7 @@ getGroupInfo {
 
 getGroupShortInfo {
         request {
-                uri - uri/path/getGroupInfo?userId=u325&groupId=u12
+                uri - uri/account/getGroupInfo?userId=u325&groupId=u12
                 header - token
         }
 
@@ -298,7 +301,6 @@ getGroupShortInfo {
 			"groupName" : "ChkaMerNmany",
                         "usersQuantity" : "4",
                         "avatar" : "base64_string",
-			"members" : ["u12", "u54", "u59", "u78"], // if this is a public group
         		"status" : "OK"
                         
                         "status" : "INVALID_GROUP_ID"
@@ -307,7 +309,7 @@ getGroupShortInfo {
 }
 updateGroupInfo {
     request {
-            	uri - uri/path/updateGroupInfo?adimId=u231
+            	uri - uri/account/updateGroupInfo?adimId=u231
 	    	header - token
             	body - {
                 	"groupID" : "g123",
@@ -375,7 +377,7 @@ getUserConversations {
 
 getUserConversation {
         request {
-  		uri - uri/user/getUserConversation
+  		uri - uri/account/getUserConversation
 		header - token
         	body - {
 			"userId" : "u123",
@@ -404,7 +406,7 @@ getUserConversation {
 
 getGroupConversation {
 	request {
-		uri - uri/path/getGroupConversation?userId=u123&groupId=g15
+		uri - uri/account/getGroupConversation?userId=u123&groupId=g15
 		header - token
 	}
 
@@ -440,7 +442,7 @@ Messaging Service
 
 userSendMessage {
         request {
-        	uri - uri/user/addUserMessage
+        	uri - uri/messaging/addUserMessage
 		header - token
                 body - {
 			"userid" : "u21",
@@ -456,7 +458,7 @@ userSendMessage {
 
 updateUserMessage{
         request {
-       		uri - uri/user/updateUserMessage
+       		uri - uri/messaging/updateUserMessage
 		header - token
                 body - {
 			"userId" : "u751",
