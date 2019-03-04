@@ -255,6 +255,8 @@ json::value MongoDB::loginUser(json::value request) {
 		}
 
 	}
+
+	return response;
 }
 
 json::value MongoDB::getUserInfo(json::value request){
