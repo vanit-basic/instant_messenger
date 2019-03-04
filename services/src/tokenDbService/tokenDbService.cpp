@@ -4,8 +4,8 @@
 #include <tokenDbService/tokenDbService.hpp>
 
 void tokenDbService::initRestOpHandlers() {
-    _listener.support(methods::GET, std::bind(&Account::handleGet, this, std::placeholders::_1));
-    _listener.support(methods::POST, std::bind(&Account::handlePost, this, std::placeholders::_1));
+    _listener.support(methods::GET, std::bind(&tokenDbService::handleGet, this, std::placeholders::_1));
+    _listener.support(methods::POST, std::bind(&tokenDbService::handlePost, this, std::placeholders::_1));
 }
 
 bool tokenDbService::getUri(std::string path) {
@@ -62,4 +62,55 @@ void tokenDbService::handleGet(http_request message)
 }
 void tokenDbService::handlePost(http_request message)
 {
+	std::cout<<"message  " <<message.to_string()<<std::endl;
+	message.extract_json().then([message, this](json::value info){
+		auto path = requestPath(message);
+		json::value response;
+		if(path[0] == "setToken")
+		{
+			if((this->db)->setToken(info))
+			{
+				response["status"] = json::value::string("OK");
+			}
+			else
+			{
+				response["status"] = json::value::string("notFound");
+			}
+		}
+		else
+		{
+			if(path[0] == "deleteToken")
+			{
+				if((this->db)->deleteToken(info))
+				{
+					response["status"] = json::value::string("OK");
+				}
+				else
+				{
+					response["status"] = json::value::string("notFound");
+				}
+			}
+			else
+			{
+				if(path[0] == "checkToken")
+				{
+					std::string id = info.at("userId").as_string();
+					std::string token = info.at("token").as_string();
+					if((this->db)->checkToken(id, token))
+					{
+						response["status"] = json::value::string("OK");
+					}
+					else
+					{
+						response["status"] = json::value::string("notFound");
+					}
+				}
+				else
+				{
+					response["status"] = json::value::string("invalidRequest");
+				}
+			}
+		}
+		message.reply(status_codes::OK, response);
+			});
 }

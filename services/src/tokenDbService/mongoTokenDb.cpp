@@ -31,12 +31,12 @@ MongoTokenDb::MongoTokenDb(std::string path)
         createPool(path);
 }
 
-MongoTokenDb::~MongoTokenDb
+MongoTokenDb:: ~MongoTokenDb()
 {
 	delete[] this->clientPool;
 }
 
-bool MongoTokenDb::setToken(json::value)
+bool MongoTokenDb::setToken(json::value info)
 {
 	bool status = false;
 	std::string id;
@@ -46,11 +46,11 @@ bool MongoTokenDb::setToken(json::value)
 		id = info.at("userId").as_string();
 		token = info.at("token").as_string();
 		auto client = clientPool->acquire();
-		mongocxx::database db = client["tokenDb"];
+		mongocxx::database db = (*client)["tokenDb"];
 		mongocxx::collection coll = db["token"];
 		auto builder = bsoncxx::builder::stream::document{};
 		bsoncxx::document::value doc_value = builder << id << token << finalize;
-		coll.insert_one(doc_value);
+		auto res = coll.insert_one(std::move(doc_value));
 		status = true;
 	}
 	catch(...)
@@ -66,7 +66,7 @@ bool MongoTokenDb::checkToken(std::string id, std::string token)
 	try
 	{
 		auto client = clientPool->acquire();
-		mongocxx::database db = client["tokenDb"];
+		mongocxx::database db = (*client)["tokenDb"];
 		mongocxx::collection coll = db["token"];
 		bsoncxx::stdx::optional<bsoncxx::document::value> result = coll.find_one(document{} << id << token << finalize);
 		if (result)
@@ -91,9 +91,9 @@ bool MongoTokenDb::deleteToken(json::value info)
 		id = info.at("id").as_string();
 		token = info.at("token").as_string();
 		auto client = clientPool->acquire();
-		mongocxx::database db = client["tokenDb"];
+		mongocxx::database db = (*client)["tokenDb"];
 		mongocxx::collection coll = db["token"];
-		collection.delete_one(document{} << id << token << finalize);
+		coll.delete_one(document{} << id << token << finalize);
 		status = true;
 	}
 	catch(...)
