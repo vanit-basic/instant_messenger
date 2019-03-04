@@ -174,15 +174,13 @@ Page{
                         anchors.left: parent.left
                     }
 
-                    indicator: Text{
-                        text: "v"
-                        font.pointSize: combo.font.pointSize
-                        verticalAlignment: Text.AlignVCenter
-                        color: "black"
+                    indicator: Image{
                         anchors.right: parent.right
-                        anchors.rightMargin: 15
+                        anchors.rightMargin: 10
                         anchors.verticalCenter: parent.verticalCenter
-
+                        source: "qrc:/indicator.png"
+                        width: 15
+                        height: 10
                     }
                     model:ListModel {
                         id: model

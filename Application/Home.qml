@@ -15,7 +15,7 @@ Page {
         onCurrentIndexChanged: swipe.currentIndex = currentIndex
         background: Rectangle{
             anchors.fill: parent
-            color: tab.currentIndex ===1?"transparent":"transparent"
+            color: tab.currentIndex ===1?"lightgray":"white"
         }
 
         TabButton{

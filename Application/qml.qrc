@@ -45,5 +45,6 @@
         <file>mainnn.qml</file>
         <file>About_us.qml</file>
         <file>Terms.qml</file>
+        <file>indicator.png</file>
     </qresource>
 </RCC>
