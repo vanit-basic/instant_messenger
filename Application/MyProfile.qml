@@ -8,398 +8,427 @@ import QtQuick.Controls.Material 2.1
 
 Page{
     id:wind
-    Popup{
 
-    }
     Drawer {
         id: drawer
         width:  wind.width-rectangle.x-tab_stat.width+50
-        height: wind.height//-tool_bar_form.height
+        height: Screen.height//-tool_bar_form.height
         dragMargin: -1
-
-        Rectangle{
-        }
         edge: Qt.RightEdge
         background: Rectangle{
             color:"grey"
         }
-        Rectangle{
-            border.color: "white"
-            height:1
-            width:parent.width
-            anchors.top: parent.top
-            anchors.topMargin: 70
-        }
-
-        Label{
-            id:drawer_lab
-            height: 72
-            width : drawer.width
-            Label{
-                id:setlab
-                width: drawer.width/15
-                anchors.right: drawer_lab.right
-                anchors.rightMargin: drawer_lab.width/1.5
-                anchors.top: drawer_lab.top
-                anchors.topMargin: drawer_lab.height/4
-                height:drawer_lab.height/3
-
+        Column{
+            anchors.fill: parent
+            spacing: 10
+            Rectangle{
+                width: parent.width
+                height: 46
+                color: "transparent"
                 Image {
-                    id:settings
+                    id:settingsImg
                     source: "qrc:/settings.png"
-                    width:40
-                    height: 40
+                    width:35
+                    height: 35
+                    anchors.right: settingsText.left
+                    anchors.rightMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
                 }
-
-
-            }
-            Label{
                 Text{
+                    id: settingsText
                     text: "Settings"
+                    verticalAlignment: Text.AlignVCenter
                     font.pointSize: 18
                     color:"lightgrey"
+                    anchors.centerIn: parent
                 }
-                anchors.top: parent.top
-                anchors.topMargin: 22
-                anchors.left: parent.left
-                anchors.leftMargin: (drawer.width)/2
-            }
-        }
-
-        Button {
-            id: editprofile
-            width:(drawer.width)/2
-            Text{
-                text: " Edit profile"
-                color: "white"
-                font.pointSize: 15
-                anchors.left: parent.left
-                anchors.leftMargin: 35
-            }
-
-            Button{
-                id:editbut
-                width: parent.width/12
-                height:parent.height*2
-                background: Rectangle{
-                    color:"transparent"
+                Rectangle{
+                    border.color: "white"
+                    height:1
+                    width:parent.width
+                    anchors.bottom: parent.bottom
                 }
+            }
+            Rectangle{
+                width: parent.width
+                height: 30
+                color: "transparent"
                 Image {
                     id: editphoto
                     source: "qrc:/editprofile.png"
                     height: 30
                     width: 30
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
                 }
-            }
-            anchors.top: parent.top
-            anchors.topMargin: 74
-            background:Rectangle{
-                color: "transparent"
-            }
-            onClicked:{
-                  drawer.close()
-              stack.push(Qt.resolvedUrl("Edit_Profile.qml"))
-            }
-        }
-        Button {
-            id: change_pass
-            width:(drawer.width)/2
-            Text{
-                text: " Change Password"
-                color: "white"
-                font.pointSize: 15
-                anchors.left: parent.left
-                anchors.leftMargin: 35
-            }
+                Button{
+                    width: edit_profile.width
+                    height: edit_profile.height
+                    anchors.left: editphoto.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: parent.verticalCenter
+                    background:Rectangle{
+                        color: "gray"
+                    }
+                    Text{
+                        id:edit_profile
+                        text: "Edit profile"
+                        verticalAlignment: Text.AlignVCenter
+                        color: "white"
+                        font.pointSize: 15
+                    }
 
-            Button{
-                id:passbut
-                width: parent.width/12
-                height:parent.height*2
-                background: Rectangle{
-                    color:"transparent"
+                    onClicked:{
+                        drawer.close()
+                        stack00.push(Qt.resolvedUrl("Edit_Profile.qml"))
+                    }
                 }
+            }
+            Rectangle{
+                width: parent.width
+                height: 30
+                color: "transparent"
                 Image {
                     id: passphoto
                     source: "qrc:/password.png"
                     height: 30
                     width: 30
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
                 }
+                Button{
+                    width: password.width
+                    height: password.height
+                    anchors.left: passphoto.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: parent.verticalCenter
+                    background:Rectangle{
+                        color: "gray"
+                    }
+                    Text{
+                        id:password
+                        text: "Change Password"
+                        verticalAlignment: Text.AlignVCenter
+                        color: "white"
+                        font.pointSize: 15
+                    }
+                    onClicked: {
+                        drawer.close()
+                        stack00.push(Qt.resolvedUrl("Change_Password.qml"))
+                    }
+                }
+
             }
-
-
-            anchors.top: parent.top
-            anchors.topMargin: 114
-            background:Rectangle{
+            Rectangle{
+                width: parent.width
+                height: 30
                 color: "transparent"
-            }
-            onClicked: {
-                drawer.close()
-              // homepage.homeStack.push(Qt.resolvedUrl("Change_Password.qml"))
-               stack.push(Qt.resolvedUrl("Change_Password.qml"))
-            }
-        }
-
-
-        Button {
-            id: change_lang
-            width:(drawer.width)/2
-            Text{
-                text: " Change Language"
-                color: "white"
-                font.pointSize: 15
-                anchors.left: parent.left
-                anchors.leftMargin: 35
-            }
-
-            Button{
-                id:langbut
-                width: parent.width/12
-                height:parent.height*2
-                background: Rectangle{
-                    color:"transparent"
-                }
                 Image {
                     id: langphoto
                     source: "qrc:/language.png"
                     height: 30
                     width: 30
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
                 }
-            }
-
-
-            anchors.top: parent.top
-            anchors.topMargin: 154
-            background:Rectangle{
-                color: "transparent"
-            }
-            ComboBox {
-                id: control
-                width: 80
-                height: 30
-                displayText: "ARM"
-                font.pointSize: 15
-                anchors.right: parent.right
-                anchors.rightMargin: 3
-                background: Rectangle {
-                    color: "silver"
-                }
-                onActivated: {
-                    img.source =   model.get(currentIndex).sources
-                    control.displayText = model.get(currentIndex).lang
-                }
-                Material.background: Material.transparent
-
-                model:ListModel {
-                    id: model
-                    ListElement {
-                        lang: "US"
-                        sources: "qrc:/us.png"
+                Button{
+                    width: language.width
+                    height: language.height
+                    anchors.left: langphoto.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: parent.verticalCenter
+                    background:Rectangle{
+                        color: "gray"
                     }
-                    ListElement {
-                        lang: "UK"
-                        sources: "qrc:/uk.png"
-                    }
-                    ListElement {
-                        lang: "RU"
-                        sources: "qrc:/ru.png"
-                    }
-                    ListElement {
-                        lang: "ES"
-                        sources: "qrc:/es.png"
-                    }
-                    ListElement {
-                        lang: "ARM"
-                        sources: "qrc:/arm.png"
+                    Text{
+                        id:language
+                        text: "Language"
+                        verticalAlignment: Text.AlignVCenter
+                        color: "white"
+                        font.pointSize: 15
                     }
                 }
-                delegate: ItemDelegate {
-                    width: control.width
-                    contentItem: Rectangle{
+                ComboBox{
+                    id: combo
+                    width: 80
+                    height: language.height +6
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.rightMargin: 5
+                    displayText: "ARM"
+                    font.pointSize: 15
+                    background: Rectangle{
                         color: "transparent"
-                        width: control.width
-                        height: control.height
+                        border.color: "black"
+                    }
+                    onActivated: {
+                        combo.displayText = model.get(currentIndex).lang
+                    }
+                    Material.background: Material.transparent
+                    contentItem: Text{
+                        id: comboText
+                        text: combo.displayText
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        anchors.leftMargin: 5
+                        anchors.left: parent.left
+                    }
 
-                        Text {
-                            text: lang
-                            width: 15
-                            color: "black"
-                            verticalAlignment: Text.AlignVCenter
-                            anchors.left: parent.left
+                    indicator: Text{
+                        text: "v"
+                        font.pointSize: combo.font.pointSize
+                        verticalAlignment: Text.AlignVCenter
+                        color: "black"
+                        anchors.right: parent.right
+                        anchors.rightMargin: 15
+                        anchors.verticalCenter: parent.verticalCenter
+
+                    }
+                    model:ListModel {
+                        id: model
+
+                        ListElement {
+                            lang: "US"
+                            sources: "qrc:/us.png"
                         }
-                        Rectangle{
-                            color: "black"
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: 27
-                            height: 17
+                        ListElement {
+                            lang: "RU"
+                            sources: "qrc:/ru.png"
+                        }
+                        ListElement {
+                            lang: "ES"
+                            sources: "qrc:/es.png"
+                        }
+                        ListElement {
+                            lang: "ARM"
+                            sources: "qrc:/arm.png"
+                        }
+                    }
+                    delegate: ItemDelegate {
+                        width: combo.width
+                        contentItem: Rectangle{
+                            color: "lightgray"
+                            anchors.fill: parent
+                            Text {
+                                text: lang
+                                font.pointSize: 15
+                                color: "black"
+                                verticalAlignment: Text.AlignVCenter
+                                anchors.left: parent.left
+                                anchors.leftMargin: 4
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+
                             Image{
                                 width: 25
                                 height: 15
-                                anchors.centerIn: parent
+                                anchors.right: parent.right
+                                anchors.rightMargin: 4
+                                anchors.verticalCenter: parent.verticalCenter
                                 source: sources
                             }
+
                         }
                     }
                 }
-
-                indicator: Text {
-                    height: control.height/2
-                    text: "v"
-                    verticalAlignment: Text.AlignVCenter
-                   font.pointSize: 14
-                   anchors.verticalCenter: parent.verticalCenter
-                   anchors.right: parent.right
-                   anchors.rightMargin: 5
-                }
-
             }
-
-        }
-
-
-        Button {
-            id: turn_on
-            width:(drawer.width)/2
-            Text{
-                text: " Turn On/Off Sound"
-                color: "white"
-                font.pointSize: 15
-                anchors.left: parent.left
-                anchors.leftMargin: 35
-            }
-
-            Button{
-                id:turnbut
-                width: parent.width/12
-                height:parent.height*2
-                background: Rectangle{
-                    color:"transparent"
-                }
+            Rectangle{
+                width: parent.width
+                height: 30
+                color: "transparent"
                 Image {
-                    id: turnphoto
+                    id: soundhoto
                     source: "qrc:/volume.png"
                     height: 30
                     width: 30
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
+                }
+                Button{
+                    width: sound.width
+                    height: sound.height
+                    anchors.left: soundhoto.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: parent.verticalCenter
+                    background:Rectangle{
+                        color: "gray"
+                    }
+                    Text{
+                        id:sound
+                        text: "Sound"
+                        verticalAlignment: Text.AlignVCenter
+                        color: "white"
+                        font.pointSize: 15
+                    }
+                }
+                Switch{
+                    id: control
+                    anchors.right: parent.right
+                    anchors.rightMargin: 3
+                    anchors.verticalCenter: parent.verticalCenter
+                    checked: true
+                    onCheckedChanged:{console.log("switch")}
+                    indicator: Rectangle {
+                        width: 50
+                        height: parent.height - 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        radius: 13
+                        color: control.checked ? "#17a81a" : "#ffffff"
+
+                        Rectangle {
+                            x: control.checked ? parent.width - width : 0
+                            width: height
+                            height: parent.height
+                            radius: 13
+                            color: control.down ? "#cccccc" : "#ffffff"
+                            border.color: control.checked ? (control.down ? "#17a81a" : "#21be2b") : "#999999"
+                        }
+                    }
                 }
             }
-
-
-            anchors.top: parent.top
-            anchors.topMargin: 194
-            background:Rectangle{
+            Rectangle{
+                width: parent.width
+                height: 30
                 color: "transparent"
-            }
-        }
-
-        Button {
-            id: help
-            //onClicked: menu.open()
-            width:(drawer.width)/2
-            Text{
-                text: " Help Center"
-                color: "white"
-                font.pointSize: 15
-                anchors.left: parent.left
-                anchors.leftMargin: 35
-            }
-
-            Button{
-                id:helpbut
-                width: parent.width/12
-                height:parent.height*2
-                background: Rectangle{
-                    color:"transparent"
-                }
                 Image {
-                    id: helphoto
+                    id: helpphoto
                     source: "qrc:/support.png"
                     height: 30
                     width: 30
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
+                }
+                Button{
+                    width: help.width
+                    height: help.height
+                    anchors.left: helpphoto.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: parent.verticalCenter
+                    background:Rectangle{
+                        color: "gray"
+                    }
+                    Text{
+                        id:help
+                        text: "Help Center"
+                        verticalAlignment: Text.AlignVCenter
+                        color: "white"
+                        font.pointSize: 15
+                    }
+                    onClicked:{
+                        drawer.close()
+                        // stack.push(Qt.resolvedUrl("Edit_Profile.qml"))
+                    }
                 }
             }
-
-
-            anchors.top: parent.top
-            anchors.topMargin: 234
-            background:Rectangle{
+            Rectangle{
+                width: parent.width
+                height: 30
                 color: "transparent"
-            }
-        }
-
-        Button {
-            id: terms
-            width:(drawer.width)/2
-            Text{
-                text: " Terms and conditions"
-                color: "white"
-                font.pointSize: 15
-                anchors.left: parent.left
-                anchors.leftMargin: 35
-            }
-
-            Button{
-                id:termbut
-                width: parent.width/12
-                height:parent.height*2
-                background: Rectangle{
-                    color:"transparent"
-                }
                 Image {
-                    id: termphoto
+                    id: termsphoto
                     source: "qrc:/terms.png"
                     height: 30
                     width: 30
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
+                }
+                Button{
+                    width: terms.width
+                    height: terms.height
+                    anchors.left: termsphoto.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: parent.verticalCenter
+                    background:Rectangle{
+                        color: "gray"
+                    }
+                    Text{
+                        id:terms
+                        text: "Terms and Conditions"
+                        verticalAlignment: Text.AlignVCenter
+                        color: "white"
+                        font.pointSize: 15
+                    }
+                    onClicked:{
+                        drawer.close()
+                        stack00.push(Qt.resolvedUrl("Terms.qml"))
+                    }
                 }
             }
-
-
-            anchors.top: parent.top
-            anchors.topMargin: 274
-            background:Rectangle{
+            Rectangle{
+                width: parent.width
+                height: 30
                 color: "transparent"
-            }
-        }
-
-        Button {
-            id: sign_out
-            width:(drawer.width)/2
-            Text{
-                text: " Sign Out"
-                color: "white"
-                font.pointSize: 15
-                anchors.left: parent.left
-                anchors.leftMargin: 35
-            }
-
-            Button{
-                id:outbut
-                width: parent.width/12
-                height:parent.height*2
-                background: Rectangle{
-                    color:"transparent"
-                }
                 Image {
-                    id: outphoto
+                    id: aboutphoto
+                    source: "qrc:/about.png"
+                    height: 30
+                    width: 30
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
+                }
+                Button{
+                    width: about.width
+                    height: about.height
+                    anchors.left: aboutphoto.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: parent.verticalCenter
+                    background:Rectangle{
+                        color: "gray"
+                    }
+                    Text{
+                        id:about
+                        text: "About us"
+                        verticalAlignment: Text.AlignVCenter
+                        color: "white"
+                        font.pointSize: 15
+                    }
+                    onClicked:{
+                        drawer.close()
+                        stack00.push(Qt.resolvedUrl("About_us.qml"))
+                    }
+                }
+            }
+            Rectangle{
+                width: parent.width
+                height: 30
+                color: "transparent"
+                Image {
+                    id: signoutphoto
                     source: "qrc:/signout.png"
                     height: 30
                     width: 30
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
+                }
+                Button{
+                    width: signout.width
+                    height: signout.height
+                    anchors.left: signoutphoto.right
+                    anchors.leftMargin: 5
+                    anchors.verticalCenter: parent.verticalCenter
+                    background:Rectangle{
+                        color: "gray"
+                    }
+                    Text{
+                        id:signout
+                        text: "Sign Out"
+                        verticalAlignment: Text.AlignVCenter
+                        color: "white"
+                        font.pointSize: 15
+                    }
+                    onClicked:{
+                       // drawer.close()
+                        stack.clear()
+                        //stack.push(Qt.resolvedUrl("Sign_in.qml"))
+                    }
                 }
             }
-            anchors.top: parent.top
-            anchors.topMargin: 314
-            background:Rectangle{
-                color: "transparent"
-            }
         }
+
+
     }
 
     Rectangle{
-//        ToolBarQml {
-//            id:tool_bar_form
-//            width: parent.width
-//            anchors.bottom: parent.bottom
-//        }
         id:back_color
         x: 0
         y: 0
@@ -412,8 +441,6 @@ Page{
             GradientStop { position: 0.5;color:"darkgrey"}
             GradientStop { position: 0.75;color:"silver"}
             GradientStop{ position: 1.0;color:"lightgrey"}
-
-
         }
 
         Rectangle {
@@ -524,7 +551,6 @@ Page{
                     }
                 }
 
-
                 ListView{
                     id:information
                     clip: true
@@ -610,11 +636,9 @@ Page{
                 width: 61
                 height: 40
                 anchors.verticalCenter: parent.verticalCenter
-                //           text:qsTr("☰")
                 Text {
                     id: back
                     text: qsTr("<")
-                    // text: qsTr("☰")
                     anchors.verticalCenterOffset: -3
                     anchors.horizontalCenterOffset: 0
                     font.pointSize: 30
@@ -624,7 +648,7 @@ Page{
                 background: Rectangle{
                     color:"transparent"
                 }
-                onClicked: stack.pop()
+                onClicked: stack00.pop()
             }
             Button{
                 id:nextbut

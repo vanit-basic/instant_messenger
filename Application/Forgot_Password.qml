@@ -6,222 +6,236 @@ import QtGraphicalEffects 1.12
 
 Page {
     id:wind
-//    visible: true
-//    width: Screen.width
-//    height: Screen.height
-    MouseArea{
-        anchors.fill:parent
-        onPressed:{Qt.inputMethod.hide()}
+    //    visible: true
+    //    width: Screen.width
+    //    height: Screen.height
     Rectangle{
-        x:0
-        id: rec1
-        visible: true
         width: Screen.width
-        height: (Screen.height)/12
-        color: "#325f5f"
-           Button{
-                id:back
-                x: 0
-                y:0
-                width:parent.height
-                height: parent.height
-                background: Rectangle{
-                    color: "transparent"
-                }
-                onPressed: stack.pop()
-                Text {
-                    id: back_text
-                    anchors.fill:parent
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    text: qsTr("<")
-                    font.pointSize: 30
-                    color: "white"
-                }
-            }
-            Text {
-                id: f_pass
-                text: qsTr("Reset Password")
-                color: "#000000"
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                font.pointSize: 30
-            }
+        height: Screen.height
+        gradient: Gradient{
+            GradientStop { position: 0.0;color:"dimgrey"}
+            GradientStop { position: 0.25;color:"gray"}
+            GradientStop { position: 0.5;color:"darkgrey"}
+            GradientStop { position: 0.75;color:"silver"}
+            GradientStop{ position: 1.0;color:"lightgrey"}
         }
-        Rectangle{
-            id:rec2
-            y:rec1.height
-            visible: true
-            width: Screen.width
-            height: Screen.height-rec1.height
-            color: "#669999"
-            anchors.top: rec1.bottom
-            TextField{
-                id:email
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-                anchors.topMargin: 40
-                width: parent.width
-                height: 50
-                color: "white"
-                background: Rectangle{
-                    color: "transparent"
-                }
-                placeholderText: "Email"
-                Rectangle {
-                    id:email_rect
-                    color: "white"
-                    height: 1
-                    width: parent.width
-                    anchors.bottom: parent.bottom
-                }
-                onEditingFinished:  {email_rect.height = 1; email_rect.color = "white"}
-                onPressed:   { email_rect.height = 2 ; email_rect.color = "#325f5f"}
-            }
-            Button{
-                id:reset
-                height: 30
-                width: 120
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: email.bottom
-                anchors.topMargin: 15
-                background: Rectangle{
-                    radius: 30
-                    color: "teal"
-                }
-                text: "Reset"
-                enabled: (email.text ==="")?false:true
-                onPressed: {
-                    code.visible = true
-                    ok.visible = true
-                    reset.visible = false
-                    email.visible = false
-                }
 
-            }
-            TextField{
-                id:code
-                visible: false
-                height:50
-                width: 150
-                anchors.top: reset.bottom
-                color: "white"
-                anchors.horizontalCenter: parent.horizontalCenter
-                horizontalAlignment: Text.AlignLeft
-                placeholderText: "Code"
-                background: Rectangle{
-                    color: "white"
-                    height: 1
-                    width: parent.width
-                    anchors.bottom: parent.bottom
+
+        MouseArea{
+            anchors.fill:parent
+            onPressed:{Qt.inputMethod.hide()}
+            Rectangle{
+                x:0
+                id: rec1
+                visible: true
+                width: Screen.width
+                height: (Screen.height)/12
+                color: "transparent"
+                Button{
+                    id:back
+                    x: 0
+                    y:0
+                    width:parent.height
+                    height: parent.height
+                    background: Rectangle{
+                        color: "transparent"
+                    }
+                    onPressed: stack.pop()
+                    Text {
+                        id: back_text
+                        anchors.fill:parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        text: qsTr("<")
+                        font.pointSize: 30
+                        color: "white"
+                    }
                 }
-                Rectangle {
-                    id:code_rect
-                    color: "white"
-                    height: 1
-                    width: parent.width
-                    anchors.bottom: parent.bottom
-                }
-                onEditingFinished:  {code_rect.height = 1; code_rect.color = "white"}
-                onPressed:   { code_rect.height = 2 ; code_rect.color = "#325f5f"}
-            }
-            Button{
-                id:ok
-                visible: false
-                height: 30
-                width: 120
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: code.bottom
-                anchors.topMargin:15
-                background: Rectangle{
-                    radius: 30
-                    color: "teal"
-                }
-                text: "ok"
-                enabled: (code.text ==="")?false:true
-                onPressed: {
-                    code.visible = false
-                    ok.visible = false
-                    rec3.visible =true
+                Text {
+                    id: f_pass
+                    text: qsTr("Reset Password")
+                    color: "#000000"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.pointSize: 30
                 }
             }
             Rectangle{
-                id:rec3
-                x:0
-                visible: false
+                id:rec2
+                y:rec1.height
+                visible: true
                 width: Screen.width
-                height: Screen.height/2
-                color: "#669999"
-                anchors.top: parent.top
-                anchors.topMargin: parent.height/12
-
-                MouseArea{
-                    id:mouse1
-                    anchors.fill: parent
-                    onPressed:{Qt.inputMethod.hide()}
-
-                    TextField{
-                        id:newp
-                        width: parent.width
-                        height: 50
+                height: Screen.height-rec1.height
+                color: "transparent"
+                anchors.top: rec1.bottom
+                TextField{
+                    id:email
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
+                    anchors.topMargin: 40
+                    width: parent.width
+                    height: 50
+                    color: "white"
+                    background: Rectangle{
+                        color: "transparent"
+                    }
+                    placeholderText: "Email"
+                    Rectangle {
+                        id:email_rect
                         color: "white"
-                        anchors.top: parent.top
-                        anchors.topMargin: 50
-                        placeholderText: "New Password"
-                        background: Rectangle{
-                            color: "transparent"
-                        }
-
-                        Rectangle {
-                            id:new_rect
-                            color: "white"
-                            height: 1
-                            width: parent.width
-                            anchors.bottom: parent.bottom
-                        }
-                        onEditingFinished:  {new_rect.height = 1; new_rect.color = "white"}
-                        onPressed:   {new_rect.height = 2 ; new_rect.color = "#325f5f"}
+                        height: 1
+                        width: parent.width
+                        anchors.bottom: parent.bottom
+                    }
+                    onEditingFinished:  {email_rect.height = 1; email_rect.color = "white"}
+                    onPressed:   { email_rect.height = 2 ; email_rect.color = "#325f5f"}
+                }
+                Button{
+                    id:reset
+                    height: 30
+                    width: 120
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: email.bottom
+                    anchors.topMargin: 15
+                    background: Rectangle{
+                        radius: 30
+                        color: "teal"
+                    }
+                    text: "Reset"
+                    enabled: (email.text ==="")?false:true
+                    onPressed: {
+                        code.visible = true
+                        ok.visible = true
+                        reset.visible = false
+                        email.visible = false
                     }
 
-                    TextField{
-                        id:repeatp
-                        width: parent.width
-                        height: 50
+                }
+                TextField{
+                    id:code
+                    visible: false
+                    height:50
+                    width: 150
+                    anchors.top: reset.bottom
+                    color: "white"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    horizontalAlignment: Text.AlignLeft
+                    placeholderText: "Code"
+                    background: Rectangle{
                         color: "white"
-                        anchors.top: newp.bottom
-                        anchors.topMargin: 50
-                        background: Rectangle{
-                            color: "transparent"
-                        }
-                        placeholderText: "Repeat Password"
-
-                        Rectangle {
-                            id:repeat_rect
-                            color: "white"
-                            height: 1
-                            width: parent.width
-                            anchors.bottom: parent.bottom
-                        }
-                        onEditingFinished:  {repeat_rect.height = 1; repeat_rect.color = "white"}
-                        onPressed:   {repeat_rect.height = 2 ; repeat_rect.color = "#325f5f"}
+                        height: 1
+                        width: parent.width
+                        anchors.bottom: parent.bottom
                     }
+                    Rectangle {
+                        id:code_rect
+                        color: "white"
+                        height: 1
+                        width: parent.width
+                        anchors.bottom: parent.bottom
+                    }
+                    onEditingFinished:  {code_rect.height = 1; code_rect.color = "white"}
+                    onPressed:   { code_rect.height = 2 ; code_rect.color = "#325f5f"}
+                }
+                Button{
+                    id:ok
+                    visible: false
+                    height: 30
+                    width: 120
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: code.bottom
+                    anchors.topMargin:15
+                    background: Rectangle{
+                        radius: 30
+                        color: "teal"
+                    }
+                    text: "ok"
+                    enabled: (code.text ==="")?false:true
+                    onPressed: {
+                        code.visible = false
+                        ok.visible = false
+                        rec3.visible =true
+                    }
+                }
+                Rectangle{
+                    id:rec3
+                    x:0
+                    visible: false
+                    width: Screen.width
+                    height: Screen.height/2
+                    color: "transparent"
+                    anchors.top: parent.top
+                    anchors.topMargin: parent.height/12
 
-                    Button{
-                        id:submit
-                        height: 30
-                        width: 120
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.top: repeatp.bottom
-                        anchors.topMargin:30
-                        background: Rectangle{
-                            radius: 30
-                            color: "teal"
+                    MouseArea{
+                        id:mouse1
+                        anchors.fill: parent
+                        onPressed:{Qt.inputMethod.hide()}
+
+                        TextField{
+                            id:newp
+                            width: parent.width
+                            height: 50
+                            color: "white"
+                            anchors.top: parent.top
+                            anchors.topMargin: 50
+                            placeholderText: "New Password"
+                            background: Rectangle{
+                                color: "transparent"
+                            }
+
+                            Rectangle {
+                                id:new_rect
+                                color: "white"
+                                height: 1
+                                width: parent.width
+                                anchors.bottom: parent.bottom
+                            }
+                            onEditingFinished:  {new_rect.height = 1; new_rect.color = "white"}
+                            onPressed:   {new_rect.height = 2 ; new_rect.color = "#325f5f"}
                         }
-                        text: "submit"
-                        enabled: (newp.text ==="" || repeatp.text ==="")?false:true
+
+                        TextField{
+                            id:repeatp
+                            width: parent.width
+                            height: 50
+                            color: "white"
+                            anchors.top: newp.bottom
+                            anchors.topMargin: 50
+                            background: Rectangle{
+                                color: "transparent"
+                            }
+                            placeholderText: "Repeat Password"
+
+                            Rectangle {
+                                id:repeat_rect
+                                color: "white"
+                                height: 1
+                                width: parent.width
+                                anchors.bottom: parent.bottom
+                            }
+                            onEditingFinished:  {repeat_rect.height = 1; repeat_rect.color = "white"}
+                            onPressed:   {repeat_rect.height = 2 ; repeat_rect.color = "#325f5f"}
+                        }
+
+                        Button{
+                            id:submit
+                            height: 30
+                            width: 120
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top: repeatp.bottom
+                            anchors.topMargin:30
+                            background: Rectangle{
+                                radius: 30
+                                color: "teal"
+                            }
+                            text: "submit"
+                            enabled: (newp.text ==="" || repeatp.text ==="")?false:true
+                        }
                     }
                 }
             }
         }
     }
 }
+

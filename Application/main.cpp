@@ -1,18 +1,20 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQmlComponent>
-int main(int argc, char *argv[])
+
+int main(int argc, char *argv[] )
 {
+bool a = true;
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+    if(a==true){
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    QQmlEngine engineForPic;
-        QQmlComponent componet(&engineForPic,
-                QUrl(QStringLiteral("qrc:/HomePage.qml")));
-       // QObject *object = componet.create();
+    }
+    else {
+          engine.load(QUrl(QStringLiteral("qrc:/mainnn.qml")));
+    }
     if (engine.rootObjects().isEmpty())
         return -1;
 

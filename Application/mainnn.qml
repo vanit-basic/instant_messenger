@@ -12,17 +12,19 @@ ApplicationWindow {
     StackView{
 
         Keys.onPressed:  {
+
             if (event.key === Qt.Key_Back) {
                 event.accepted = true
-                if (stack.depth > 1) {
-                    stack.pop()
-
-                } else { Qt.quit()}
+                var topStack = stack55.top()
+                if (stack55.depth > 1) {
+                    if(topStack instanceof Edit_Profile === true){console.log("aaaaaaaaaaaaaaa")}
+                    stack55.pop()
+                } else { Qt.quit() }
             }
         }
         focus: true
         anchors.fill: parent
-        id:stack
-        initialItem: Qt.resolvedUrl("Sign_in.qml")
+        id:stack55
+        initialItem: Qt.resolvedUrl("Home.qml")
     }
 }

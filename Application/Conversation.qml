@@ -20,7 +20,7 @@ Page{
         ToolButton{
             text: "<"
             onClicked: {
-                onClicked: stack.pop()
+                onClicked: stack55.pop()
             }
         }
     }

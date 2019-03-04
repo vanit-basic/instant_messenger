@@ -37,5 +37,13 @@
         <file>Change_Password.qml</file>
         <file>taxtak.png</file>
         <file>Search.qml</file>
+        <file>arm.png</file>
+        <file>es.png</file>
+        <file>ru.png</file>
+        <file>us.png</file>
+        <file>about.png</file>
+        <file>mainnn.qml</file>
+        <file>About_us.qml</file>
+        <file>Terms.qml</file>
     </qresource>
 </RCC>
