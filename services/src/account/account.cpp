@@ -500,6 +500,7 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 	});
 	});
 }
+
 http_response groupRemoveUser (http_request message, http_client* DataBaseClient)
 { 
 	message.extract_json().
