@@ -12,7 +12,7 @@ getAllStatusDescriptions {
 		"INVALID_LOGIN" : "Invalid login or passord. Try again or click Forgot password to reset it.",
 		"LOGIN_LAST_ATTEMPT" : "After enyering wrong passord you will block for 2 hours",
 		"USER_BLOCKED" : "Your account is blocked for 2 hours",
-		"INVALID_CODE" : "The code you entered is incorrect",
+       		"INVALID_CODE" : "The code you entered is incorrect",
 		"INVALID_FIELD_CHANGE" : "This field cannot be changed",
 		"INVAILD_ADMIN_ID" : "Only admin can delete group or update group info or delete member of the group",
 		"INVALID_GROUP_ID" : "The client is not a member of the group or this is a private group",
@@ -116,7 +116,9 @@ checkingCode {
                         "userId" : "u1",
 			"status" : "OK"
 
-                        "status" : "INVALID_CODE"
+                        "status" : "INVALID_EMAIL",
+			"status" : "INVALID_CODE",
+			"status" : "INTERNAL_ERROR"
         }
 }
 
@@ -126,7 +128,7 @@ newPassword {
 		header - token
 		body - {
 			"userId" : "u1",
-			"password" : "valod1990"
+			"newPassword" : "valod1990"
 		}
 	}
 	resonpse {
@@ -139,10 +141,11 @@ newPassword {
 			"avatar" : "base64_string",
                         "gender" : "male",
                         "email" : "v.valodyan@msil.com",
-                        "birthDate" : "12.12.1990"
+                        "birthDate" : "12.12.1990",
+			"level" : 2,
 			"status" : "OK"
 
-			"status" : "INVALID_PASSWORD"
+			"status" : "INVALID_NEW_PASSWORD"
 	}
 }
 
@@ -203,7 +206,7 @@ getUserShortInfo {
 }
 
 updateUserInfo {
-	requset {
+	request {
 		uri - uri/account/updateUserInfo?userId=u123
 		header - token
 		body - {
@@ -222,6 +225,26 @@ updateUserInfo {
 			"status" : "OK"
 
                         "status" : "INVALID_FIELD_CHANGE" 
+	}
+}
+
+changePassword {
+	request {
+		uri - uri/account/changePassword
+		header - token
+		body - {
+			"id" : "u23",
+			"password" : "valod1990",
+			"newPassword" : "valodik1990"
+		}
+	}
+
+	response {
+                	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
+			"status" : "OK"
+
+			"status" : "INVALID_PASSWORD",
+			"status" : "INVALID_NEW_PASSWORD",
 	}
 }
 
@@ -282,7 +305,7 @@ getGroupInfo {
                         "usersQuantity" : "13",
                         "avatar" : "base64_string",
 			"members" : ["u12", "u54", "u59", "u78"],
-                        "createDate" : "13.12.2018"
+                        "createDate" : "13.12.2018",
         		"status" : "OK"
                         
 			"status" : "INVALID_GROUP_ID"
@@ -307,12 +330,14 @@ getGroupShortInfo {
         }
 
 }
+
 updateGroupInfo {
     request {
-            	uri - uri/account/updateGroupInfo?adimId=u231
+            	uri - uri/account/updateGroupInfo
 	    	header - token
             	body - {
                 	"groupID" : "g123",
+			"adminId" : "u231",
                 	"name" : "MafiaForever",
                 	"avatar" : "base64_string"
             	}
@@ -322,7 +347,7 @@ updateGroupInfo {
                 "token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 		"groupID" : "g123",
         	"name" : "MafiaForever",
-        	"adminID" : "u10",
+        	"adminID" : "u231",
         	"avatar" : "base64_string"
         	"status" : "OK"
                         
@@ -332,7 +357,7 @@ updateGroupInfo {
 
 removeFromGroup {
     request {
-        uri - uri/path/removeFromGroup
+        uri - uri/account/removeFromGroup
 	header - token
         body - {
 		"groupId" : "g156",
@@ -380,8 +405,8 @@ getUserConversation {
   		uri - uri/account/getUserConversation
 		header - token
         	body - {
-			"userId" : "u123",
-			"uId" : "u21"
+			"clientId" : "u123",
+			"userId" : "u21"
 		}
         }
 
@@ -445,8 +470,8 @@ userSendMessage {
         	uri - uri/messaging/addUserMessage
 		header - token
                 body - {
-			"userid" : "u21",
-			"uid" : "u321",
+			"clientid" : "u21",
+			"userid" : "u321",
                 	"message" : "Hi!!!"
 		}
 
@@ -461,8 +486,8 @@ updateUserMessage{
        		uri - uri/messaging/updateUserMessage
 		header - token
                 body - {
-			"userId" : "u751",
-			"uid" : "u321",
+			"clientId" : "u751",
+			"userid" : "u321",
                 	"messageId" : "m12",
                	 	"newMessage" : "Hello!"
 		}
@@ -478,7 +503,7 @@ updateUserMessage{
 
 removeUserConversation {
         request {
-        	uri - uri/user/removeUserConversation?userId=u52&uId=u23
+        	uri - uri/messaging/removeUserConversation?clientId=u52&userId=u23
                	header - token
         }
 
@@ -490,11 +515,11 @@ removeUserConversation {
 
 removeUserMessage {
         request {
-        	uri - uri/path/removeMessage
+        	uri - uri/messaging/removeMessage
 		header - token
                 body - {
-			"userId" : "u21",
-			"uid" : "u12",
+			"clientId" : "u21",
+			"userid" : "u12",
                 	"messageID" : "m123",
                 	"mode" : 0   // if ("mod" : 0) {delete the message} else if ("mod" : 1) {delete the message everywhere}
         }
@@ -507,7 +532,7 @@ removeUserMessage {
 
 updateGroupMessage {
     request {
-    	    uri - uri/path/updateGroupMessage
+    	    uri - uri/messaging/updateGroupMessage
 	    header - token
             body - {
 		   "groupId" : "g52",
@@ -527,7 +552,7 @@ updateGroupMessage {
 
 sendGroupMessage {
     request {
-	uri - uri/path/addGroupMessage
+	uri - uri/messaging/addGroupMessage
 	header - token
 	body - {
 		"groupId" : "g54",
@@ -543,7 +568,7 @@ sendGroupMessage {
 
 removeGroupConversation {
     request {
-    	uri - uri/path/removeGroupConversation?adminId=u256&groupId=g32
+    	uri - uri/messaging/removeGroupConversation?adminId=u256&groupId=g32
         header - token
     }
 
@@ -555,7 +580,7 @@ removeGroupConversation {
 
 removeGroupMessage {
         request {
-        	uri - uri/path/removeMessage
+        	uri - uri/messaging/removeMessage
 		header - token
                 body - {
 			"userId" : "u15",
@@ -576,7 +601,7 @@ Search Service
 
 searchUser {
 	request {
-		uri - uri/path/searchUser?userId=u21&firstname=Valod&lastname=Valodyan
+		uri - uri/search/searchUser?userId=u21&firstname=Valod&lastname=Valodyan
 		header - token
 	}
 
@@ -589,6 +614,7 @@ searchUser {
 			"avatar" : "base64_string",
 			"gender" : "male",
                 	"birthdate" : "12.12.1990",
+			"level" : 1,
 			"status" : "OK"
 			
 			"status" : "USER_NOT_FOUND" 
@@ -597,7 +623,7 @@ searchUser {
 
 searchGroup {
 	request {
-		uri - uri/path/sarchGroup/userId=u249&groupName=Best
+		uri - uri/search/sarchGroup/userId=u249&groupName=Best
 		header - token
 	}
 
@@ -620,7 +646,7 @@ Notification Service
 
 userJoinGroup {
 	request {
-		uri - uri/path/userJoinGroup?userId=u32&groupId=g31
+		uri - uri/notification/userJoinGroup?userId=u32&groupId=g31
 		header - token
 	}
 
@@ -634,7 +660,7 @@ userJoinGroup {
 
 groupAcceptUser {
 	request {
-		uri - uri/path/groupAcceptUser?groupId=g31&userId=u32
+		uri - uri/notification/groupAcceptUser?groupId=g31&userId=u32
 		header - token
 	}
 
@@ -647,7 +673,7 @@ groupAcceptUser {
 
 groupRejectUser {
 	request {
-		uri - uri/path/groupRejectUser?groupId=g31&userId=u32
+		uri - uri/notification/groupRejectUser?groupId=g31&userId=u32
 		header - token
 	}
 
@@ -660,7 +686,7 @@ groupRejectUser {
 
 groupInviteUser {
 	request {
-		uri - uri/path/groupInviteUser?groupId=g365&userId=u751&clientId=u21
+		uri - uri/notification/groupInviteUser?groupId=g365&clientId=u751&userId=u21
 		header - token
 	}
 
@@ -673,7 +699,7 @@ groupInviteUser {
 
 userAcceptInvitation {
 	request {
-		uri - uri/path/userAcceptInvitation?userId=u751&clientId=u21&groupId=g365
+		uri - uri/notification/userAcceptInvitation?clientId=u751&userId=u21&groupId=g365
 		header - token
 	}
 
