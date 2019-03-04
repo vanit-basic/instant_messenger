@@ -76,6 +76,7 @@ signIn {
                         "lastName" : "Valodyan",
 			"nickname" : "Valod", 
 			"avatar" : "base64_string",
+			"groups" : ["g21", "g53", "g70"],
                         "gender" : "male",
                         "email" : "v.valodyan@msil.com",
                         "birthDate" : "12.12.1990",
@@ -251,7 +252,7 @@ changePassword {
 
 userDelete {
         request {
-                uri - uri/user/deleteUser?userId=u123
+                uri - uri/account/deleteUser?userId=u123
                 header - token
         }
 
@@ -376,7 +377,7 @@ groupRemoveUser {
 
 getUserConversations {
         request {
-        	uri - uri/user/getUserConversations?userId=u123
+        	uri - uri/account/getUserConversations?userId=u123
                 header - token
 	}
 
@@ -628,7 +629,7 @@ searchUser {
 
 searchGroup {
 	request {
-		uri - uri/search/sarchGroup/userId=u249&groupName=Best
+		uri - uri/search/sarchGroup?userId=u249&groupName=Best
 		header - token
 	}
 
