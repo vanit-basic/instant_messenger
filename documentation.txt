@@ -18,6 +18,7 @@ getAllStatusDescriptions {
 		"INVALID_GROUP_ID" : "The client is not a member of the group or this is a private group",
 		"INVALID_MEMBER_OF_GROUP" : "You are not a member of this group",
 		"NOT_LAST_MASSAGE" : "You can update only the last message. This is not the last message",
+		"INVALID_MESSAGE_DELETE_REQUEST" : "USER WANTS TO DELETE EVERYWHERE ONE MESSAGE, WHICH HE DID NOT WRITE",
 		"USER_NOT_FOUND" : "User with such name not found",
 		"GROUP_NOT_FOUND" : "There is no group with this name or this group is private",
 		"INVALID_GROUP" : "There is no group with this name or this group is private or group is full",
@@ -205,7 +206,7 @@ getUserShortInfo {
                         "status" : "INVALID_ID"
 }
 
-updateUserInfo {
+userUpdateInfo {
 	request {
 		uri - uri/account/updateUserInfo?userId=u123
 		header - token
@@ -248,7 +249,7 @@ changePassword {
 	}
 }
 
-deleteUser {
+userDelete {
         request {
                 uri - uri/user/deleteUser?userId=u123
                 header - token
@@ -259,7 +260,7 @@ deleteUser {
         }
 }
 
-createGroup {
+groupCreate {
     request {
         	uri - uri/account/createGroup
 		header - token
@@ -280,7 +281,7 @@ createGroup {
     }
 }
 
-deleteGroup {
+groupDelete {
     request {
         	uri - uri/account/deleteGroup?adminId=u542&groupId=g123
 		header - token
@@ -331,7 +332,7 @@ getGroupShortInfo {
 
 }
 
-updateGroupInfo {
+groupUpdateInfo {
     request {
             	uri - uri/account/updateGroupInfo
 	    	header - token
@@ -355,7 +356,7 @@ updateGroupInfo {
     }
 }
 
-removeFromGroup {
+groupRemoveUser {
     request {
         uri - uri/account/removeFromGroup
 	header - token
@@ -481,7 +482,7 @@ userSendMessage {
         }
 }
 
-updateUserMessage{
+userUpdateMessage{
         request {
        		uri - uri/messaging/updateUserMessage
 		header - token
@@ -501,7 +502,7 @@ updateUserMessage{
         }
 }
 
-removeUserConversation {
+userRemoveConversation {
         request {
         	uri - uri/messaging/removeUserConversation?clientId=u52&userId=u23
                	header - token
@@ -513,7 +514,7 @@ removeUserConversation {
         }
 }
 
-removeUserMessage {
+userRemoveMessage {
         request {
         	uri - uri/messaging/removeMessage
 		header - token
@@ -527,10 +528,12 @@ removeUserMessage {
         response {
                 	"token" : "adhd4fv4sdg5343vbxf4h5nbx15bdx6f",
 			"status" : "OK"
+
+			"status" : "INVALID_MESSAGE_DELETE_REQUEST"
         }
 }
 
-updateGroupMessage {
+groupUpdateMessage {
     request {
     	    uri - uri/messaging/updateGroupMessage
 	    header - token
@@ -550,7 +553,7 @@ updateGroupMessage {
     }
 }
 
-sendGroupMessage {
+groupSendMessage {
     request {
 	uri - uri/messaging/addGroupMessage
 	header - token
@@ -566,7 +569,7 @@ sendGroupMessage {
     }
 }
 
-removeGroupConversation {
+groupRemoveConversation {
     request {
     	uri - uri/messaging/removeGroupConversation?adminId=u256&groupId=g32
         header - token
@@ -578,7 +581,7 @@ removeGroupConversation {
     }
 }
 
-removeGroupMessage {
+groupRemoveMessage {
         request {
         	uri - uri/messaging/removeMessage
 		header - token
@@ -592,6 +595,8 @@ removeGroupMessage {
 
         response {
 		"status" : "OK"
+
+		"status" : "INVALID_MESSAGE_DELETE_REQUEST"
         }
 }
 
