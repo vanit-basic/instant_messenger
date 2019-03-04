@@ -47,7 +47,7 @@ bool MongoDB::deleteToken(json::value)
 
 
 std::string generateID(mongocxx::collection collection) {
-	std::cout<<__LINE__<<std::endl;
+	std::cout<<"generateId function"<<std::endl;
         std::string id;
 	std::cout<<__LINE__<<std::endl;
         bsoncxx::builder::stream::document document{};
@@ -93,8 +93,8 @@ bool MongoDB::createPool(std::string path) {
         if (configFile.is_open()) {
                 configFile >> config;
                 configFile.close();
-                this->poolMydb = new mongocxx::pool ({config.at("infoDB").as_string()});
-                this->poolDB = new mongocxx::pool ({config.at("tokenDB").as_string()});
+                this->poolMydb = new mongocxx::pool (mongocxx::uri{config.at("infoDB").as_string()});
+                this->poolDB = new mongocxx::pool (mongocxx::uri{config.at("infoDB").as_string()});
                 return true;
         } else {
                 std::cerr << "ConfigFile is not exist!!!" << std::endl;
@@ -150,52 +150,67 @@ json::value MongoDB::registerUser(json::value request) {
         auto coll2 = (*c2)["passDB"]["signin"];
 	
 	std::cout<<__LINE__<<std::endl;
+	std::cout<<request.at(utility::string_t("firstname")).as_string()<<std::endl;
+	std::cout<<__LINE__<<std::endl;
+	std::string firstname =  request.at(utility::string_t("firstname")).as_string();
+	std::cout<<__LINE__<<std::endl;
+        std::string lastname = request.at("lastname").as_string();
+        std::string email =  request.at("email").as_string();
+        std::string login = request.at("login").as_string();
+        std::string birthdate =  request.at("birthdate").as_string();
+        std::string gender =  request.at("gender").as_string();
+        std::string password = request.at("password").as_string();
+	
+	std::cout<<__LINE__<<std::endl;
 	
 	std::string id = generateID(coll2);
 	
 	std::cout<<__LINE__<<std::endl;
 	
-	std::string password = request.at("password").as_string();
+	std::string joinDate = date();
 	
 	std::cout<<__LINE__<<std::endl;
 	
-	std::string joinDate = date();
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value = builder
 		<< "id" << id
-		<< "firstname" << request.at("firstname").as_string()
-		<< "lastname" << request.at("lastname").as_string()
-		<< "email" << request.at("email").as_string()
-		<< "login" << request.at("login").as_string()
-		<< "birthdate" << request.at("birthdate").as_string()
-		<< "gender" << request.at("gender").as_string()
+		<< "firstname" << firstname
+		<< "lastname" << lastname
+		<< "email" << email
+		<< "login" << login
+		<< "birthdate" << birthdate
+		<< "gender" << gender
 		<< "joinDate" << joinDate
 		<< bsoncxx::builder::stream::finalize;
+	
+	std::cout<<__LINE__<<std::endl;
+	
 	auto result = coll1.insert_one(std::move(doc_value));
 
 	std::cout<<__LINE__<<std::endl;
 	
-	auto response = json::value::object();
+	json::value response;
 	response["status"] = json::value::string("successfullyRegistered");
 	response["id"] = json::value::string(id);
-	response["firstname"] = json::value::string(request.at("firstname").as_string());
-	response["lastname"] = json::value::string(request.at("lastname").as_string());
-	response["birthdate"] = json::value::string(request.at("birthdate").as_string());
-	response["gender"] = json::value::string(request.at("gender").as_string());
-	response["email"] = json::value::string(request.at("email").as_string());
-	response["login"] = json::value::string(request.at("login").as_string());
+	response["firstname"] = json::value::string(firstname);
+	response["lastname"] = json::value::string(lastname);
+	response["birthdate"] = json::value::string(birthdate);
+	response["gender"] = json::value::string(gender);
+	response["email"] = json::value::string(email);
+	response["login"] = json::value::string(login);
 
 	std::cout<<__LINE__<<std::endl;
 	
-	builder = bsoncxx::builder::stream::document{};
-	doc_value = builder
-		<< request.at("login").as_string() << bsoncxx::builder::stream::open_document
-		<< "password" << request.at("password").as_string()
+	auto builder1 = bsoncxx::builder::stream::document{};
+	bsoncxx::document::value doc_value2 = builder1
+		<< "login" << login
+		<< "password" << password
 		<< "id" << id
 		<< "visitCount" << 0
-		<< close_document
 		<< bsoncxx::builder::stream::finalize;
-	result = coll2.insert_one(std::move(doc_value));
+	std::cout<<__LINE__<<std::endl;
+	
+	result = coll2.insert_one(std::move(doc_value2));
 	
 	std::cout<<__LINE__<<std::endl;
 
@@ -209,7 +224,7 @@ json::value MongoDB::loginUser(json::value request) {
         auto coll2 = (*c2)["passDB"]["signin"];
 	std::string login = request.at("login").as_string();
 	std::string password = request.at("password").as_string();
-	auto response = json::value::object();
+	json::value response;
 
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
 		coll2.find_one(document{} << "login" << login
