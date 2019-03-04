@@ -12,7 +12,7 @@ Page{
     Drawer {
         id: drawer
         width:  wind.width-rectangle.x-tab_stat.width+50
-        height: wind.height//-tool_bar_form.height
+        height: Screen.height//-tool_bar_form.height
         dragMargin: -1
         edge: Qt.RightEdge
         background: Rectangle{

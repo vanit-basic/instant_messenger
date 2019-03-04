@@ -73,6 +73,7 @@ Page{
 
                 }
             }
+
             StackLayout{
                 anchors.fill: rect
                 currentIndex: tabbar.currentIndex

@@ -14,11 +14,12 @@ ApplicationWindow {
         Keys.onPressed:  {
 
             if (event.key === Qt.Key_Back) {
-                event.accepted = true;
-
-                if (stack55.depth >= 1) {
-                    stack55.pop();
-                } else { Qt.quit(); }
+                event.accepted = true
+                var topStack = stack55.top()
+                if (stack55.depth > 1) {
+                    if(topStack instanceof Edit_Profile === true){console.log("aaaaaaaaaaaaaaa")}
+                    stack55.pop()
+                } else { Qt.quit() }
             }
         }
         focus: true

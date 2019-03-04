@@ -7,13 +7,13 @@ import QtGraphicalEffects 1.12
 
 Page {
     id:wind
-        height: Screen.height
-        width: Screen.width
-
+//        height: Screen.height
+//        width: Screen.width
+function backPressed(){ bbbb.start()}
 
     MouseArea {
         anchors.fill: parent
-        onPressed: {Qt.inputMethod.hide()}
+        onClicked:  {Qt.inputMethod.hide()}
 
         PropertyAnimation{
             id:aaaa
@@ -247,7 +247,7 @@ Page {
                             font.pointSize: 10
                             font.family: "Courier"
                             font.capitalization: Font.Capitalize
-                            spacing: 5
+                            //spacing: 5
                             enabled: (edit_name.text === "" || edit_surname.text === "" || edit_nickname.text === "" )?false:true
                             onPressed: {aaaa.start()}
                             onClicked: stack00.pop()
