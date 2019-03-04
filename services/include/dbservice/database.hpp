@@ -32,7 +32,6 @@ class database {
 		
 		virtual json::value loginUser(json::value) = 0;
 
-		virtual bool updateUserInfo(std::string userInfo) = 0;
 		
 		virtual json::value getUserInfo(json::value) = 0;
 	
@@ -50,11 +49,15 @@ class database {
 
 		virtual bool removeUserConversation(std::string fromUserId, std::string toUserId) = 0;
 
+		virtual json::value updateUserInfo(json::value request) = 0;
+	
 		//group related queries
+	
+		virtual json::value getGroupShortInfo(json::value request) = 0;
 		
 		virtual std::string createGroup(std::string groupInfo) = 0;
 
-                virtual bool deleteGroup(std::string groupID) = 0;
+                virtual json::value deleteGroup(json::value) = 0;
 
 		virtual bool addUserToGroup(std::string groupID, std::string userID) = 0;
 

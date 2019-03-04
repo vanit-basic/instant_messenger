@@ -375,7 +375,7 @@ json::value MongoDB::getUserShortInfo(json::value request){
 	return response;
 }
 
-json::value MongoDB::deleteUser(json::value request){
+/*json::value MongoDB::deleteUser(json::value request){
 	auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
 	auto c3 = poolMydb->acquire();
@@ -391,14 +391,14 @@ json::value MongoDB::deleteUser(json::value request){
 	bsoncxx::stdx::optional<mongocxx::result::delete_result> result2 =
 		coll2.delete_one(document{} << "id" << id << finalize);
 
-/*	bsoncxx::stdx::optional<mongocxx::result::update> result =
-		coll3.update_many( document{} << "usersQuantity" << 
+	bsoncxx::stdx::optional<mongocxx::result::update> result =
+		coll2.update_many( document{} << "usersQuantity" << 
 			document{} << "$inc" << open_document <<
 			"i" << 100 << close_document << finalize);
 
 	bsoncxx::stdx::optional<mongocxx::result::delete_result> result3 =
 		coll3.delete_many(document{} << "id" << id << finalize);
-*/	
+	
 	if (result1 && result2) {
                 response["deteteStatus"] = json::value::string("userSuccesfullyDeleted");
 	} else  {
@@ -407,7 +407,7 @@ json::value MongoDB::deleteUser(json::value request){
 
 	return response;
 }
-/*
+
 json::value MongoDB::getGroupUsers(json::value request){
 	auto c1 = poolMydb->acquire();
 	auto c3 = poolMydb->acquire();
@@ -467,3 +467,116 @@ json::value MongoDB::getGroupUsers(json::value request){
 
 }
 */
+
+json::value MongoDB::getGroupShortInfo(json::value request) {
+	auto c3 = poolMydb->acquire();
+	auto coll3 = (*c3)["infoDB"]["groupInfo"];
+	std::string groupID = request.at("groupId").as_string();
+        auto response = json::value::object();
+	bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll3.find_one(document{} << "groupId" << groupID << finalize);
+
+        if (result) {
+		bsoncxx::document::view doc = result->view();
+
+                bsoncxx::document::element element = doc["groupName"];
+                std::string groupName = element.get_utf8().value.to_string();
+
+                element = doc["usersQuantity"];
+                std::string count = element.get_utf8().value.to_string();
+
+                response["groupName"] = json::value::string(groupName);
+                response["usersQuantity"] = json::value::string(count);
+                response["status"] = json::value::string("OK");
+
+        } else {
+                response["infoStatus"] = json::value::string("INVALID_GROUP_ID");
+        }
+	
+	return response;
+}
+json::value MongoDB::updateUserInfo(json::value request) {
+	auto response = json::value::object();
+        auto c1 = poolMydb->acquire();
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
+        std::string id = request.at("id").as_string();
+	std::string newNickname = request.at("nickname").as_string();
+	std::string newFirstname = request.at("firstname").as_string();
+	std::string newLastname = request.at("lastname").as_string();
+        
+	bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll1.find_one(document{} << "id" << id << finalize);
+
+        if (result) {
+		bsoncxx::document::view doc = result->view();
+
+                bsoncxx::document::element element = doc["firstname"];
+                std::string firstname = element.get_utf8().value.to_string();
+
+		if (firstname.compare(newFirstname) == 0 && newFirstname.compare("") != 0) {
+			coll1.update_one(document{} << "id" << id << finalize,
+                      		document{} << "$set" << open_document <<
+                      		"firstname" << newFirstname << close_document << finalize);	
+		}
+
+                element = doc["lastname"];
+                std::string lastname = element.get_utf8().value.to_string();
+
+		if (lastname.compare(newLastname) == 0 && newLastname.compare("") != 0) {
+			coll1.update_one(document{} << "id" << id << finalize,
+                      		document{} << "$set" << open_document <<
+                      		"lastname" << newLastname << close_document << finalize);
+		}
+
+                element = doc["nickname"];
+                std::string nickname = element.get_utf8().value.to_string();
+		
+		if (nickname.compare(newNickname) == 0 && newNickname.compare("") != 0) {
+			coll1.update_one(document{} << "id" << id << finalize,
+                      		document{} << "$set" << open_document <<
+                      		"firstname" << newNickname << close_document << finalize);
+		}
+
+		json::value req;
+		req["id"] = json::value::string(id);		
+                response = getUserInfo(req);
+                response["status"] = json::value::string("OK");
+
+        } else {
+                response["status"] = json::value::string("unknownID");
+        }
+
+	return response;
+}
+
+json::value MongoDB::deleteGroup(json::value request) {
+	auto response = json::value::object();
+        auto c3 = poolMydb->acquire();
+        auto coll3 = (*c3)["infoDB"]["groupInfo"];
+	std::string groupId = request.at("groupId").as_string();
+        std::string admin = request.at("adminId").as_string();
+
+	// jnjel userneri infoic group id-n
+
+	bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll3.find_one(document{} << "groupId" << groupId << finalize);
+	
+	if (result) {
+                bsoncxx::document::view doc = result->view();
+
+                bsoncxx::document::element element = doc["adminId"];
+                std::string adminId = element.get_utf8().value.to_string();
+
+		if (admin.compare(adminId) == 0) {
+			coll3.delete_one(document{} << "groupId" << groupId << finalize);
+			response["status"] = json::value::string("OK");
+		} else {
+			response["status"] = json::value::string("INVAILD_ADMIN_ID");
+		}
+
+	} else {
+		response["status"] = json::value::string("INVAILD_ADMIN_ID");
+	}
+
+	return response;
+} 

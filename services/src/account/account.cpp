@@ -164,7 +164,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 		groupInfo.extract_json().
 		then([=](json::value groupInf)
 		{
-			if(groupInf.at("acces").as_string() == "private")
+			if(groupInf.at("mode").as_string() == "private")
 			{
 				auto groupUsers = getGroupUsers(userId, groupId, DataBaseClient);
 				groupUsers.extract_json().
