@@ -52,8 +52,8 @@ std::string generateID(mongocxx::collection collection) {
 	std::cout<<"generateId function"<<std::endl;
         std::string id;
         auto lastId = collection.find_one(document{} << "lastId" << open_document << "$gte" << 0 << close_document << finalize);
-	std::cout << bsoncxx::to_json(*lastId) << std::endl;
         if(!lastId) {
+	std::cout<<"if(!lastId)"<<std::endl;
                 auto doc = bsoncxx::builder::stream::document{};
                 bsoncxx::document::value doc_value = doc
                         << "lastId" << 1
@@ -62,9 +62,12 @@ std::string generateID(mongocxx::collection collection) {
                 id = "u1";
         }
         else {
+	std::cout<<"else"<<std::endl;
                 bsoncxx::document::view view = lastId.value().view();
                 bsoncxx::document::element element = view["lastId"];
                 if(element.type() != bsoncxx::type::k_utf8) {
+	std::cout<<"if(element.type)"<<std::endl;
+                bsoncxx::document::view view = lastId.value().view();
                         int n = element.get_int32().value;
                         id = "u" + std::to_string(n);
                         collection.update_one(bsoncxx::builder::stream::document{} << "lastId" << n << finalize,
@@ -144,26 +147,27 @@ json::value MongoDB::registerUser(json::value request) {
         auto coll1 = (*c1)["infoDB"]["account"];
         auto coll2 = (*c2)["passDB"]["signin"];
 	
-	std::cout<<request.at(utility::string_t("firstname")).as_string()<<std::endl;
-	std::string firstname =  request.at(utility::string_t("firstname")).as_string();
-        std::string lastname = request.at("lastname").as_string();
+	std::cout<<request.at(utility::string_t("firstName")).as_string()<<std::endl;
+	std::string firstName =  request.at(utility::string_t("firstName")).as_string();
+        std::string lastName = request.at("lastName").as_string();
         std::string email =  request.at("email").as_string();
         std::string login = request.at("login").as_string();
-        std::string birthdate =  request.at("birthdate").as_string();
+        std::string birthDate =  request.at("birthDate").as_string();
         std::string gender =  request.at("gender").as_string();
         std::string password = request.at("password").as_string();
-	
+	std::cout<<"login  "<<login<<std::endl;
 	std::string id = generateID(coll2);
+	std::cout<<__LINE__<<std::endl;
 	std::string joinDate = date();
 	
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value = builder
 		<< "id" << id
-		<< "firstname" << firstname
-		<< "lastname" << lastname
+		<< "firstName" << firstName
+		<< "lastName" << lastName
 		<< "email" << email
 		<< "login" << login
-		<< "birthdate" << birthdate
+		<< "birthDate" << birthDate
 		<< "gender" << gender
 		<< "joinDate" << joinDate
 		<< bsoncxx::builder::stream::finalize;
@@ -173,12 +177,13 @@ json::value MongoDB::registerUser(json::value request) {
 	json::value response;
 	response["status"] = json::value::string("successfullyRegistered");
 	response["id"] = json::value::string(id);
-	response["firstname"] = json::value::string(firstname);
-	response["lastname"] = json::value::string(lastname);
-	response["birthdate"] = json::value::string(birthdate);
+	response["firstName"] = json::value::string(firstName);
+	response["lastName"] = json::value::string(lastName);
+	response["birthDate"] = json::value::string(birthDate);
 	response["gender"] = json::value::string(gender);
 	response["email"] = json::value::string(email);
 	response["login"] = json::value::string(login);
+	std::cout<< "login2  "<<login<<std::endl;
 
 	auto builder1 = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value2 = builder1
@@ -212,14 +217,14 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		bsoncxx::document::element element = doc["id"];
 		std::string id = element.get_utf8().value.to_string();
 
-		element = doc["firstname"];
-		std::string firstname = element.get_utf8().value.to_string();
+		element = doc["firstName"];
+		std::string firstName = element.get_utf8().value.to_string();
 
-		element = doc["lastname"];
-		std::string lastname = element.get_utf8().value.to_string();
+		element = doc["lastName"];
+		std::string lastName = element.get_utf8().value.to_string();
 
-		element = doc["birthdate"];
-		std::string birthdate = element.get_utf8().value.to_string();
+		element = doc["birthDate"];
+		std::string birthDate = element.get_utf8().value.to_string();
 
 		element = doc["gender"];
 		std::string gender = element.get_utf8().value.to_string();
@@ -232,9 +237,9 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 
 
 		response["id"] = json::value::string(id);
-		response["firstname"] = json::value::string(firstname);
-		response["lastname"] = json::value::string(lastname);
-		response["birthdate"] = json::value::string(birthdate);
+		response["firstName"] = json::value::string(firstName);
+		response["lastName"] = json::value::string(lastName);
+		response["birthDate"] = json::value::string(birthDate);
 		response["gender"] = json::value::string(gender);
 		response["email"] = json::value::string(mail);
 		response["login"] = json::value::string(login);
@@ -278,17 +283,17 @@ json::value MongoDB::getUserInfo(std::string id) {
 	if (result) {
 		bsoncxx::document::view doc = result->view();
 
-		bsoncxx::document::element element = doc["firstname"];
-		std::string firstname = element.get_utf8().value.to_string();
+		bsoncxx::document::element element = doc["firstName"];
+		std::string firstName = element.get_utf8().value.to_string();
 
-		element = doc["lastname"];
-		std::string lastname = element.get_utf8().value.to_string();
+		element = doc["lastName"];
+		std::string lastName = element.get_utf8().value.to_string();
 
 		element = doc["nickname"];
 		std::string nickname = element.get_utf8().value.to_string();
 
-		element = doc["birthdate"];
-		std::string birthdate = element.get_utf8().value.to_string();
+		element = doc["birthDate"];
+		std::string birthDate = element.get_utf8().value.to_string();
 
 		element = doc["gender"];
 		std::string gender = element.get_utf8().value.to_string();
@@ -299,10 +304,10 @@ json::value MongoDB::getUserInfo(std::string id) {
 		element = doc["login"];
 		std::string login = element.get_utf8().value.to_string();
 
-		response["firstname"] = json::value::string(firstname);
-		response["lastname"] = json::value::string(lastname);
+		response["firstName"] = json::value::string(firstName);
+		response["lastName"] = json::value::string(lastName);
 		response["nickname"] = json::value::string(nickname);
-		response["birthdate"] = json::value::string(birthdate);
+		response["birthDate"] = json::value::string(birthDate);
 		response["gender"] = json::value::string(gender);
 		response["email"] = json::value::string(mail);
 		response["login"] = json::value::string(login);
@@ -325,17 +330,17 @@ json::value MongoDB::getUserShortInfo(std::string id) {
         if (result) {
 		bsoncxx::document::view doc = result->view();
 
-                bsoncxx::document::element element = doc["firstname"];
-                std::string firstname = element.get_utf8().value.to_string();
+                bsoncxx::document::element element = doc["firstName"];
+                std::string firstName = element.get_utf8().value.to_string();
 
-                element = doc["lastname"];
-                std::string lastname = element.get_utf8().value.to_string();
+                element = doc["lastName"];
+                std::string lastName = element.get_utf8().value.to_string();
 
                 element = doc["nickname"];
                 std::string nickname = element.get_utf8().value.to_string();
 
-                response["firstname"] = json::value::string(firstname);
-                response["lastname"] = json::value::string(lastname);
+                response["firstName"] = json::value::string(firstName);
+                response["lastName"] = json::value::string(lastName);
                 response["nickname"] = json::value::string(nickname);
 
         } else {
@@ -378,8 +383,8 @@ json::value MongoDB::updateUserInfo(json::value user) {
         auto coll1 = (*c1)["infoDB"]["userInfo"];
         std::string id = user.at("id").as_string();
 	std::string newNickname = user.at("nickname").as_string();
-	std::string newFirstname = user.at("firstname").as_string();
-	std::string newLastname = user.at("lastname").as_string();
+	std::string newFirstname = user.at("firstName").as_string();
+	std::string newLastname = user.at("lastName").as_string();
         
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll1.find_one(document{} << "id" << id << finalize);
@@ -387,22 +392,22 @@ json::value MongoDB::updateUserInfo(json::value user) {
         if (result) {
 		bsoncxx::document::view doc = result->view();
 
-                bsoncxx::document::element element = doc["firstname"];
-                std::string firstname = element.get_utf8().value.to_string();
+                bsoncxx::document::element element = doc["firstName"];
+                std::string firstName = element.get_utf8().value.to_string();
 
-		if (firstname.compare(newFirstname) == 0 && newFirstname.compare("") != 0) {
+		if (firstName.compare(newFirstname) == 0 && newFirstname.compare("") != 0) {
 			coll1.update_one(document{} << "id" << id << finalize,
                       		document{} << "$set" << open_document <<
-                      		"firstname" << newFirstname << close_document << finalize);	
+                      		"firstName" << newFirstname << close_document << finalize);	
 		}
 
-                element = doc["lastname"];
-                std::string lastname = element.get_utf8().value.to_string();
+                element = doc["lastName"];
+                std::string lastName = element.get_utf8().value.to_string();
 
-		if (lastname.compare(newLastname) == 0 && newLastname.compare("") != 0) {
+		if (lastName.compare(newLastname) == 0 && newLastname.compare("") != 0) {
 			coll1.update_one(document{} << "id" << id << finalize,
                       		document{} << "$set" << open_document <<
-                      		"lastname" << newLastname << close_document << finalize);
+                      		"lastName" << newLastname << close_document << finalize);
 		}
 
                 element = doc["nickname"];
