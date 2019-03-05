@@ -9,12 +9,10 @@ import QtQuick.Layouts 1.3
 
 Page{
     id: wind1
-
     header: ToolBar{
         id:top
         Label{
-
-           text: "Miqo"
+            text: "Miqo"
             anchors.centerIn: parent
         }
         ToolButton{
@@ -26,32 +24,27 @@ Page{
     }
 
     footer: ToolBar{
-            id: root
-            width: parent.width
-            height: 44
-            anchors.left: parent.left
-            anchors.bottom: parent.bottom
-
-            ScrollView {
-                    width: root.width - ((root.width/10) * 2) - (root.width/15)*2
-                    x:  (root.width/10) + root.width/15
-                    height: root.height - (root.height/5)
-                    clip: true
-
-                    TextArea {
-                        id: textArea
-                        clip: true
-                        width: root.width - ((root.width/10) * 2) - (root.width/15)*2
-                        height: root.height - (root.height/5)
-                        wrapMode: "WrapAtWordBoundaryOrAnywhere"
-                        placeholderText: "Send a message..."
-                    }
-                }
-
-
+        id: root
+        width: parent.width
+        height: 44
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        ScrollView {
+            width: root.width - ((root.width/10) * 2) - (root.width/15)*2
+            x:  (root.width/10) + root.width/15
+            height: root.height - (root.height/5)
+            clip: true
+            TextArea {
+                id: textArea
+                clip: true
+                width: root.width - ((root.width/10) * 2) - (root.width/15)*2
+                height: root.height - (root.height/5)
+                wrapMode: "WrapAtWordBoundaryOrAnywhere"
+                placeholderText: "Send a message..."
+            }
+        }
         ToolButton{
             background: Rectangle{
-                // color: "green"
                 border.color: "green"
                 radius: 30
             }
@@ -66,7 +59,6 @@ Page{
 
         ToolButton{
             background: Rectangle{
-                //  color: "green"
                 border.color: "green"
                 radius: 30
             }
@@ -78,10 +70,7 @@ Page{
             anchors.verticalCenter: parent.verticalCenter
             text: "Send"
         }
-
     }
-
-
 }
 
 

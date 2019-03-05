@@ -10,7 +10,6 @@
         <file>Home.qml</file>
         <file>Forgot_Password.qml</file>
         <file>Message.qml</file>
-        <file>DelegateList.qml</file>
         <file>Conversation.qml</file>
         <file>HomePage.qml</file>
         <file>chat.png</file>
