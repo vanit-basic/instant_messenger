@@ -64,7 +64,7 @@ class MongoDB : public database {
 
 		json::value getGroupShortInfo(json::value request);
 
-		json::value deleteGroup(json::value) {}
+		json::value deleteGroup(json::value);
 
 		bool addUserToGroup(std::string groupID, std::string userID) {}
 

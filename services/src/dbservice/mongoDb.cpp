@@ -550,7 +550,7 @@ json::value MongoDB::updateUserInfo(json::value request) {
 		if (nickname.compare(newNickname) == 0 && newNickname.compare("") != 0) {
 			coll1.update_one(document{} << "id" << id << finalize,
                       		document{} << "$set" << open_document <<
-                      		"firstname" << newNickname << close_document << finalize);
+                      		"nickname" << newNickname << close_document << finalize);
 		}
 
 		json::value req;
@@ -564,6 +564,52 @@ json::value MongoDB::updateUserInfo(json::value request) {
 
 	return response;
 }
+
+json::value MongoDB::deleteGroup(json::value request) {
+        auto response = json::value::object();
+        auto c1 = poolMydb->acquire();
+        auto c3 = poolMydb->acquire();
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
+        auto coll3 = (*c3)["infoDB"]["groupInfo"];
+        std::string groupId = request.at("groupId").as_string();
+        std::string admin = request.at("adminId").as_string();
+
+        bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll3.find_one(document{} << "groupId" << groupId << finalize);
+
+	if (result) {
+		coll3.delete_one(document{} << "groupId" << groupId << finalize);
+		bsoncxx::document::view doc = result->view();
+                bsoncxx::document::element element = doc["adminId"];
+                std::string adminId = element.get_utf8().value.to_string();
+
+	if (admin.compare(adminId) == 0) {
+		bsoncxx::document::element element = doc["usersQuantity"];
+        	std::string count = element.get_utf8().value.to_string();
+
+		int n = std::stoi(count);
+		std::string* a = new std::string[n];
+	
+		for (int i = 0; i < n; ++i) {
+        		bsoncxx::document::element el = doc["members"];
+			a[i] = el.get_utf8().value.to_string();
+			if (a[i].compare(groupId) == 0) {
+				a[i] = "";
+			}
+		}
+
+
+		//to_json(doc);
+		coll1.update_one(document{} << "id" << id << finalize,
+			document{} << "$set" << open_document <<
+			"members" << newNickname << close_document << finalize);
+
+
+		}
+	}
+}
+
+
 /*
 json::value MongoDB::deleteGroup(json::value request) {
 	auto response = json::value::object();
@@ -598,8 +644,6 @@ json::value MongoDB::deleteGroup(json::value request) {
 	}
 
 */			
-
-
 
 /*        if (result) {
                 bsoncxx::document::view doc = result->view();
