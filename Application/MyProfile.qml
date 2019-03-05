@@ -186,7 +186,7 @@ Page{
                         id: model
 
                         ListElement {
-                            lang: "US"
+                            lang: "EN"
                             sources: "qrc:/us.png"
                         }
                         ListElement {

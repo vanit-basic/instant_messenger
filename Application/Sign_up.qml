@@ -225,19 +225,19 @@ Page {
                                 width: parent.width
                                 anchors.left: parent.left
 
-                            color: "transparent"
-                            Text {
-                                id: slaq
-                                anchors.verticalCenter:  parent.verticalCenter
-                                anchors.left: parent.left
-                                anchors.leftMargin: 10
+                                color: "transparent"
+                                Text {
+                                    id: slaq
+                                    anchors.verticalCenter:  parent.verticalCenter
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: 10
 
-                                text: qsTr("Birth date")
-                                color: "white"
+                                    text: qsTr("Birth date")
+                                    color: "white"
+
+                                }
 
                             }
-
-}
                             Popup{
                                 id: popup
                                 x:parent.x
@@ -274,14 +274,14 @@ Page {
                                                     if (years[year_t.currentIndex]%4 == 0)
                                                         day_t.model = nahanj
                                                     else
-                                                    day_t.model = february
+                                                        day_t.model = february
 
                                                 } else if(currentIndex ==3 || currentIndex ==5 || currentIndex ==8 ||currentIndex ==10){
                                                     day_t.model = zuyg
                                                 } else{
-                                                day_t.model = days
+                                                    day_t.model = days
                                                 }
-                                        }
+                                            }
                                         }
                                         Tumbler {
                                             id: day_t
@@ -308,43 +308,43 @@ Page {
                                             currentIndex: 0
 
                                             onCurrentIndexChanged: {
-                                               if(month_t.currentIndex == 1){
-                                            if (years[year_t.currentIndex]%4 == 0){
+                                                if(month_t.currentIndex == 1){
+                                                    if (years[year_t.currentIndex]%4 == 0){
 
-                                                day_t.model = nahanj
+                                                        day_t.model = nahanj
+                                                    }
+
+
+                                                    else{day_t.model = february}
+                                                }
                                             }
-
-
-                                            else{day_t.model = february}
-                                               }
-                                            }
-                                            }
-
-
                                         }
+
+
                                     }
+                                }
 
-                                    Button{
-                                        height: sign_in.height
-                                        width: sign_in.width-30
-                                        text: "Save"
+                                Button{
+                                    height: sign_in.height
+                                    width: sign_in.width-30
+                                    text: "Save"
 
-                                        anchors.horizontalCenter: parent.horizontalCenter
+                                    anchors.horizontalCenter: parent.horizontalCenter
 
-                                        background: Rectangle{
-                                            radius: 30
-                                            color: "teal"
+                                    background: Rectangle{
+                                        radius: 30
+                                        color: "teal"
 
 
-                                        }
-                                        onClicked: {
+                                    }
+                                    onClicked: {
                                         slaq.text   /*comboBox.displayText*/ =days[day_t.currentIndex]+"  "+ month[month_t.currentIndex]+"  "+years[year_t.currentIndex]
-                                            popup.close()
-
-                                        }
+                                        popup.close()
 
                                     }
-                                     }
+
+                                }
+                            }
 
 
 
@@ -366,7 +366,7 @@ Page {
                                 id: radioButton
 
                                 indicator.height: 25
-                                    indicator.width: 25
+                                indicator.width: 25
                                 onClicked:      {
                                     bbbb.start()
                                 }
@@ -389,7 +389,7 @@ Page {
                                     bbbb.start()
                                 }
                                 indicator.height: 25
-                                    indicator.width: 25
+                                indicator.width: 25
 
                                 Text {
                                     id: female
@@ -423,7 +423,7 @@ Page {
                             onPressed:   {
                                 us.height = 2
                                 us.color = "darkgrey"
-                               kkkk.start()
+                                kkkk.start()
 
                             }
 
@@ -469,47 +469,6 @@ Page {
                             onEditingFinished:  { repass.height = 1; repass.color = "white"}
                             onPressed:   { repass.height = 2 ; repass.color = "green";ssss.start()}
                             echoMode: TextInput.Password
-                        }
-                        Row{
-                            id: row2
-
-                            width: parent.width
-                            height: username.height
-                            //spacing: 2
-                        CheckBox{
-                        id:agree
-                        indicator.height: 25
-                            indicator.width: 25
-                        anchors.verticalCenter: parent.verticalCenter
-                        }
-                        Text {
-
-                            //x:agree.x+agree.width+10
-                            id: read_agree
-                            text: qsTr("I agree to the ")
-                            anchors.verticalCenter: parent.verticalCenter
-                            color: "white"
-                            //font.pointSize: 8
-                        }
-                        Button{
-                        id:terms_and_conditions
-                        width: terms1.width
-                        //x:read_agree.x+read_agree.width+50
-                        height: agree.height
-                        anchors.verticalCenter: parent.verticalCenter
-                        background: Rectangle{
-                        color: "transparent"
-                        }
-                        Text {
-                            id: terms1
-                            text: qsTr("Terms")
-                            font.underline: true
-                            color: "blue"
-                            anchors.verticalCenter: parent.verticalCenter
-                            //font.pointSize: 8
-                        }
-                        onPressed: stack.push(Qt.resolvedUrl("Terms1.qml"))
-                        }
                         }
                         Button{
 

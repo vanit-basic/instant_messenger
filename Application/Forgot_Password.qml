@@ -149,7 +149,7 @@ Page {
                         radius: 30
                         color: "teal"
                     }
-                    text: "ok"
+                    text: "Ok"
                     enabled: (code.text ==="")?false:true
                     onPressed: {
                         code.visible = false
@@ -229,7 +229,7 @@ Page {
                                 radius: 30
                                 color: "teal"
                             }
-                            text: "submit"
+                            text: "Submit"
                             enabled: (newp.text ==="" || repeatp.text ==="")?false:true
                         }
                     }
