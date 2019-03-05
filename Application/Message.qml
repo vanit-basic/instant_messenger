@@ -5,13 +5,111 @@ import QtQuick.Layouts 1.3
 
 Page{
     id: wind
+    Component{
+        id: delegate
+        SwipeDelegate{
+            id:swDel
+            width: Screen.width
+            height: Screen.height/8
+
+            background: Rectangle{
+                color:"white"
+            }
+            swipe.right:Rectangle{
+                anchors.right: parent.right
+                width: rm.width + mute.width + 20
+                height: parent.height - 40
+                anchors.verticalCenter: parent.verticalCenter
+                Button{
+                    id: rm
+                    width: 32
+                    height: 32
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
+                    background: Rectangle{
+                        BorderImage{
+                            source: "qrc:/delete1.png"
+                            anchors.fill: parent
+                        }
+
+                        anchors.fill: parent
+                        color: "red"
+                        radius: 20
+                    }
+                }
+                Button{
+                    id: mute
+                    width: 32
+                    height: 32
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
+                    background: Rectangle{
+                        BorderImage{
+                            source: "qrc:/notification.png"
+                            anchors.fill: parent
+
+                        }
+
+                        anchors.fill: parent
+                        color: "red"
+                        radius: 20
+                    }
+                }
+            }
+
+
+            Image {
+                id: userImage
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.leftMargin: 10
+                anchors.topMargin: 10
+                width: parent.height - 10
+                height: parent.height - 10
+            }
+            Text {
+                id: lastMessage
+                anchors.top: textI.bottom
+                anchors.topMargin: 3
+                x:textI.x
+                text: message
+                color: "black"
+                font.pixelSize: 12
+            }
+            Text{
+                id: textI
+                anchors.left: parent.left
+                anchors.top:parent.top
+                anchors.leftMargin: userImage.width + 30
+                anchors.topMargin: 5
+                text: textField
+                font.pixelSize: 18
+                color: "black"
+            }
+
+            MouseArea{
+                height: parent.height
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                width: parent.width/2
+                onClicked: {
+                    stack55.push(Qt.resolvedUrl("Conversation.qml"))
+                }
+                // onPressAndHold:pane.visible = true
+            }
+
+        }
+
+    }
 
     StackView{
         id:stackMess
         anchors.fill: parent
         initialItem:
         Rectangle{
-            //anchors.fill: parent
+
         Rectangle{
             id:rect
             anchors.fill: parent
@@ -86,13 +184,13 @@ Page{
                         clip: true
                         ScrollIndicator.vertical: ScrollIndicator { }
 
-                        model: /*MyListModel{}*/ ListModel{
+                        model:  ListModel{
                             ListElement{
                                 textField: "VanIt"
                                 message: "barev"
                             }
                         }
-                        delegate: /*MyListDelegate{}*/ DelegateList{}
+                        delegate: delegate
                     }
                 }
                 Item {
@@ -104,13 +202,13 @@ Page{
                         clip: true
                         ScrollIndicator.vertical: ScrollIndicator { }
 
-                        model: /*MyListPersonalModel{}*/ListModel{
+                        model: ListModel{
                             ListElement{
                                 textField: "Miqo"
                                 message: "kyanqs))"
                             }
                         }
-                        delegate: /*MyListDelegate{}*/ DelegateList{}
+                        delegate: delegate
                     }
                 }
                 Item {
@@ -121,13 +219,13 @@ Page{
                         spacing: 2
                         clip:true
                         ScrollIndicator.vertical: ScrollIndicator { }
-                        model: /*MyListGroupsModel{}*/ListModel{
+                        model: ListModel{
                             ListElement{
                                 textField: "FrontEnd team"
                                 message: "barev"
                             }
                         }
-                        delegate: /*MyListDelegate{}*/ DelegateList{}
+                        delegate: delegate
 
                     }
                 }
@@ -148,7 +246,7 @@ Page{
                 anchors.bottomMargin: 10
                 font.pixelSize: 30
                 text: "+"
-                //onClicked: stackMess.push(kk)
+               // onClicked: stack00.push(kk)
             }
 
         }

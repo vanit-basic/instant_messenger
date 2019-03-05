@@ -10,7 +10,6 @@
         <file>Home.qml</file>
         <file>Forgot_Password.qml</file>
         <file>Message.qml</file>
-        <file>DelegateList.qml</file>
         <file>Conversation.qml</file>
         <file>HomePage.qml</file>
         <file>chat.png</file>
@@ -45,6 +44,7 @@
         <file>mainnn.qml</file>
         <file>About_us.qml</file>
         <file>Terms.qml</file>
+        <file>indicator.png</file>
         <file>Terms1.qml</file>
     </qresource>
 </RCC>
