@@ -20,11 +20,12 @@
 #include <dbservice/mongoDb.hpp>
 #include <dbservice/database.hpp>
 
+using bsoncxx::builder::stream::open_array;
 using bsoncxx::builder::stream::close_array;
+using bsoncxx::builder::stream::open_document;
 using bsoncxx::builder::stream::close_document;
 using bsoncxx::builder::stream::document;
 using bsoncxx::builder::stream::finalize;
-using bsoncxx::builder::stream::open_document;
 using namespace cfx;
 using namespace utility;
 using namespace web;
@@ -563,28 +564,77 @@ json::value MongoDB::updateUserInfo(json::value request) {
 
 	return response;
 }
-
+/*
 json::value MongoDB::deleteGroup(json::value request) {
 	auto response = json::value::object();
+        auto c1 = poolMydb->acquire();
         auto c3 = poolMydb->acquire();
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
         auto coll3 = (*c3)["infoDB"]["groupInfo"];
 	std::string groupId = request.at("groupId").as_string();
         std::string admin = request.at("adminId").as_string();
 
-	// jnjel userneri infoic group id-n
-
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll3.find_one(document{} << "groupId" << groupId << finalize);
-	
-	if (result) {
-                bsoncxx::document::view doc = result->view();
 
+	if (result) {
+		coll3.delete_one(document{} << "groupId" << groupId << finalize);
+		bsoncxx::document::view doc = result->view();
                 bsoncxx::document::element element = doc["adminId"];
                 std::string adminId = element.get_utf8().value.to_string();
 
 		if (admin.compare(adminId) == 0) {
+			bsoncxx::document::element element = doc["usersQuantity"];
+        	        std::string count = element.get_utf8().value.to_string();
+
+			bsoncxx::stdx::optional<bsoncxx::document::value> res =
+        		        coll1.update_many(document{} << "groups" << groupId << finalize,
+				document{} << "$set"  << open_document <<
+                                "groups" << "" << close_document << finalize);
+                }
+
+		response["status"] = json::value::string("OK");
+		
+	}
+
+*/			
+
+
+
+/*        if (result) {
+                bsoncxx::document::view doc = result->view();
+                bsoncxx::document::element element = doc["adminId"];
+                std::string adminId = element.get_utf8().value.to_string();
+
+		if (admin.compare(adminId) == 0) {
+			json::value arr;
+			bsoncxx::document::element element = doc["usersQuantity"];
+        	        std::string count = element.get_utf8().value.to_string();
+			
+                	bsoncxx::document::element el = doc["members"][];
+			json::value::array arr = el.get_utf8().value[0].to_string();
+		 	// = members.get_utf8().value.to_string();
+			
+			int n = std::stoi(count);
+			std::string* a = new std::string[n];
+
+			for (int i = 0; i < n; ++i) {
+                		//bsoncxx::document::element = array[i];
+				arr[i] = json::value(false);
+			}
+
+			for (int i = 0; i < n; ++i) {
+				bsoncxx::stdx::optional<mongocxx::result::update> deleteResult =
+					coll1.update_one(document{} << "id" << a[i] << "groups"
+					<< document{} << "$pull" << document{} << "groups"
+				       	<< open_array << groupId << close_array << finalize);
+			}
+
+			delete [] a;
+		
 			coll3.delete_one(document{} << "groupId" << groupId << finalize);
 			response["status"] = json::value::string("OK");
+
 		} else {
 			response["status"] = json::value::string("INVAILD_ADMIN_ID");
 		}
@@ -594,4 +644,4 @@ json::value MongoDB::deleteGroup(json::value request) {
 	}
 
 	return response;
-} 
+}*/ 

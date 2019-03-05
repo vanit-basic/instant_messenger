@@ -53,7 +53,7 @@ class MongoDB : public database {
 
 		bool updateUserMessage(std::string from, std::string to, std::string messageInfo) {}
 
-		json::value deleteUser(json::value);
+		json::value deleteUser(json::value) {}
 
 
 		bool removeUserConversation(std::string fromUserId, std::string toUserId) {}
@@ -64,7 +64,7 @@ class MongoDB : public database {
 
 		json::value getGroupShortInfo(json::value request);
 
-		json::value deleteGroup(json::value);
+		json::value deleteGroup(json::value) {}
 
 		bool addUserToGroup(std::string groupID, std::string userID) {}
 
