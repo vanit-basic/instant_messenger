@@ -19,67 +19,64 @@ class database {
 
 	//Public pure virtual functions
 	public:
-		virtual bool setToken(json::value) = 0;
+		virtual bool setToken(std::string userId, std::string token) = 0;
                 
 		virtual bool checkToken(std::string id, std::string token) = 0;
                 
-		virtual bool deleteToken(json::value) = 0;
+		virtual bool deleteToken(std::string userId) = 0;
 
 		//user related queries
-		virtual json::value mail_login(json::value) = 0;
+		virtual json::value checkMailAndLogin(std::string mail, std::string login) = 0;
 
-		virtual json::value registerUser(json::value) = 0;
+		virtual json::value registerUser(json::value user) = 0;
 		
-		virtual json::value loginUser(json::value) = 0;
-
+		virtual json::value loginUser(std::string login, std::string pass) = 0;
 		
-		virtual json::value getUserInfo(json::value) = 0;
+		virtual json::value getUserInfo(std::string userId) = 0;
 	
-		virtual json::value getUserShortInfo(json::value) = 0;
+		virtual json::value getUserShortInfo(std::string userId) = 0;
 
-		virtual json::value getUserConversations(json::value) = 0;
+		virtual json::value getUserConversations(std::string userId) = 0;
 		
-		virtual json::value getUsersConversation(json::value) = 0;
+		virtual json::value getUsersConversation(std::string userId1, std::string userId2) = 0;
 		
 		virtual std::string addUserMessage(std::string from, std::string to, std::string message) = 0;
 
 		virtual bool updateUserMessage(std::string from, std::string to, std::string messageInfo) = 0;
 
-		virtual json::value deleteUser(json::value) = 0;
+		virtual json::value deleteUser(std::string userId) = 0;
 
-		virtual bool removeUserConversation(std::string fromUserId, std::string toUserId) = 0;
+		virtual bool removeUserConversation(std::string userId1, std::string userId2) = 0;
 
-		virtual json::value updateUserInfo(json::value request) = 0;
+		virtual json::value updateUserInfo(json::value user) = 0;
 	
 		//group related queries
 	
-		virtual json::value getGroupShortInfo(json::value request) = 0;
+		virtual json::value getGroupShortInfo(std::string groupId) = 0;
 		
-		virtual std::string createGroup(std::string groupInfo) = 0;
+		virtual std::string createGroup(json::value groupInfo) = 0;
 
-                virtual json::value deleteGroup(json::value) = 0;
+                virtual json::value deleteGroup(std::string groupId) = 0;
 
 		virtual bool addUserToGroup(std::string groupID, std::string userID) = 0;
 
                 virtual bool removeFromGroup(std::string groupID, std::string userID) = 0;
 
-                virtual bool removeMessage(std::string messageInfo) = 0;
+                virtual bool removeMessage(json::value messageInfo) = 0;
 
-                virtual bool removeGroupConversation(std::string groupInfo) = 0;
+                virtual bool removeGroupConversation(std::string groupId) = 0;
 
-		virtual bool removeMessageFromGroupConversation(std::string groupInfo) = 0;
+		virtual bool removeMessageFromGroupConversation(std::string groupId, std::string messageId) = 0;
 		
 		virtual std::string getGroupInfo(std::string groupID) = 0;
 		
-		virtual std::string getGroupConversation(std::string userID, std::string groupID) = 0;
+		virtual std::string getGroupConversation(std::string groupID) = 0;
 		
-		virtual bool updateGroupInfo(std::string groupInfo) = 0;
+		virtual bool updateGroupInfo(json::value groupInfo) = 0;
 
-		virtual std::string addGroupMessage(std::string groupId, std::string userId, std::string message) = 0;
+		virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message) = 0;
 
-		virtual json::value getGroupUsers(json::value) = 0;
-		
-		virtual bool updateGroupMessage(std::string groupId, std::string messBody) = 0;
+		virtual bool updateGroupMessage(std::string groupId, json::value message) = 0;
 	
 	public:
 		database() {}

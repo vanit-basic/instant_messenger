@@ -78,30 +78,35 @@ void DbService::handlePost(http_request message) {
 	message.extract_json()
 		.then([message, this](json::value request) {
 				std::cout<<request.at("firstname").as_string();
-			auto path = requestPath(message);
-			if (!path.empty()) {
+				auto path = requestPath(message);
+				if (!path.empty()) {
 				if (path[0] == "check") {
-					if (path[1] == "mail&login") {
-						json::value response = m_db->mail_login(request);
-						message.reply(status_codes::OK, response);
-					} else if (path[1] == "userLogin") {
-							json::value response = m_db->loginUser(request);
-							message.reply(status_codes::OK, response);
-						}
-						else{
-							message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-						}
-				} else if (path[0] == "insert") {
-						if (path[1] == "registration") {
-							std::cout<<"path registration"<<std::endl;
-							json::value response = m_db->registerUser(request);
-							message.reply(status_codes::OK, response);
-						}else {
-							message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-						}
-					}
-			}else {
+				if (path[1] == "mail&login") {
+				std::string mail = request.at("mail").as_string();
+				std::string login = request.at("login").as_string();
+
+				json::value response = m_db->checkMailAndLogin(mail, login);
+				message.reply(status_codes::OK, response);
+				} else if (path[1] == "userLogin") {
+				std::string login = request.at("login").as_string();
+				std::string pass = request.at("password").as_string();
+				json::value response = m_db->loginUser(login, pass);
+				message.reply(status_codes::OK, response);
+				}
+				else{
 				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-			}
+				}
+				} else if (path[0] == "insert") {
+				if (path[1] == "registration") {
+				std::cout<<"path registration"<<std::endl;
+				json::value response = m_db->registerUser(request);
+				message.reply(status_codes::OK, response);
+				}else {
+					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+				}
+				}
+				}else {
+					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+				}
 		});
 }

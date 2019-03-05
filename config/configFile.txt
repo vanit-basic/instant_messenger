@@ -15,9 +15,7 @@
 
 		"notification":"http://host_auto_ip4:6509/v1/mafclub/api",
 		
-		"infoDB":"mongodb://localhost:27017",
-		
-		"tokenDB":"mongodb://localhost:6511",
+		"mongodbServer" : "mongodb://localhost:27017",
 
 		"executor":{
 				"uri":"http://host_auto_ip4:6510/v1/mafclub/api",

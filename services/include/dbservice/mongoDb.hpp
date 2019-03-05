@@ -34,59 +34,64 @@ using namespace concurrency::streams;
 
 class MongoDB : public database {
 	public:
-		bool setToken(json::value);
-		bool checkToken(std::string id, std::string token);
-		bool deleteToken(json::value);
-		json::value mail_login(json::value);
-		json::value registerUser(json::value);
-		json::value updateUserInfo(json::value request);
-		json::value loginUser(json::value);
-		json::value getUserInfo(json::value);
+		virtual bool setToken(std::string userId, std::string token);
+                
+		virtual bool checkToken(std::string id, std::string token);
+                
+		virtual bool deleteToken(std::string userId);
 
-		json::value getUserShortInfo(json::value);
+		//user related queries
+		virtual json::value checkMailAndLogin(std::string mail, std::string login);
 
-		json::value getUserConversations(json::value) {}
+		virtual json::value registerUser(json::value user);
+		
+		virtual json::value loginUser(std::string login, std::string pass);
+		
+		virtual json::value getUserInfo(std::string userId);
+	
+		virtual json::value getUserShortInfo(std::string userId);
 
-		json::value getUsersConversation(json::value) {}
+		virtual json::value deleteUser(std::string userId){};
 
-		std::string addUserMessage(std::string from, std::string to, std::string message) {}
+		virtual json::value updateUserInfo(json::value user);
 
-		bool updateUserMessage(std::string from, std::string to, std::string messageInfo) {}
+		virtual bool removeUserConversation(std::string userId1, std::string userId2){};
 
-		json::value deleteUser(json::value) {}
+		virtual json::value getUserConversations(std::string userId){};
+		
+		virtual json::value getUsersConversation(std::string userId1, std::string userId2){};
 
+		virtual std::string addUserMessage(std::string from, std::string to, std::string message){};
 
-		bool removeUserConversation(std::string fromUserId, std::string toUserId) {}
-
+		virtual bool updateUserMessage(std::string from, std::string to, std::string messageInfo){};
+	
 		//group related queries
+	
+		virtual json::value getGroupShortInfo(std::string groupId);
+		
+		virtual std::string createGroup(json::value groupInfo) {}
 
-		std::string createGroup(std::string groupInfo) {}
+                virtual json::value deleteGroup(std::string groupId);
 
-		json::value getGroupShortInfo(json::value request);
+		virtual bool addUserToGroup(std::string groupID, std::string userID){};
 
-		json::value deleteGroup(json::value);
+                virtual bool removeFromGroup(std::string groupID, std::string userID){};
+		
+		virtual bool updateGroupInfo(json::value groupInfo) {}
 
-		bool addUserToGroup(std::string groupID, std::string userID) {}
+		virtual std::string getGroupInfo(std::string groupID) {}
+               
+	       	virtual bool removeMessage(json::value messageInfo){};
 
-		bool removeFromGroup(std::string groupID, std::string userID) {}
+                virtual bool removeGroupConversation(std::string groupId){};
 
-		bool removeMessage(std::string messageInfo) {}
+		virtual bool removeMessageFromGroupConversation(std::string groupId, std::string messageId){};
+		
+		virtual std::string getGroupConversation(std::string groupID){};
 
-		bool removeGroupConversation(std::string groupInfo) {}
+		virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message){};
 
-		bool removeMessageFromGroupConversation(std::string groupInfo) {}
-
-		std::string getGroupInfo(std::string groupID) {}
-
-		std::string getGroupConversation(std::string userID, std::string groupID) {}
-
-		bool updateGroupInfo(std::string groupInfo) {}
-
-		std::string addGroupMessage(std::string groupId, std::string userId, std::string message) {}
-
-		json::value getGroupUsers(json::value) {}
-
-		bool updateGroupMessage(std::string groupId, std::string messBody) {}
+		virtual bool updateGroupMessage(std::string groupId, json::value message) {};
 
 		MongoDB(std::string);
 		~MongoDB();
