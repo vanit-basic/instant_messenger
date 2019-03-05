@@ -193,17 +193,19 @@ Page{
                         height: parent.height
                         anchors.horizontalCenter: parent.horizontalCenter
                         color: "transparent"
-                        Text{
-                            id: players
-                            text: "Players:"
-                            verticalAlignment: Text.AlignVCenter
+                        Label{
+                            id: minor
                             anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: parent.left
+                            anchors.leftMargin: 3
+                            text: "3"
                         }
                         Label{
+                            id: major
                             anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: players.right
+                            anchors.left:minor.right
                             anchors.leftMargin: 3
-                            text: "3/12"
+                            text: "/12"
                         }
                     }
                 }
