@@ -113,24 +113,23 @@ int main()
 					      std::cout<<__LINE__<<std::endl;
 							std::cout<<response.to_string()<<std::endl;
 					      std::cout<<__LINE__<<std::endl;
-                                        }).wait();
-							}).wait();
-/*                        client.request(methods::POST, registr.to_string(), regReq1).then([](http_response resp){
+                                        });
+							});
+                        client.request(methods::POST, registr.to_string(), regReq1).then([](http_response resp){
 					      std::cout<<__LINE__<<std::endl;
 					resp.extract_json().then([](json::value response){
 					      std::cout<<__LINE__<<std::endl;
 							std::cout<<response.to_string()<<std::endl;
 					      std::cout<<__LINE__<<std::endl;
-							}).wait();
-					}).wait();
-*/		
+							});
+					});
                 } catch (http_exception e) {
                         std::cerr<<"error  "<<e.what()<<std::endl;
                 }
-/*	while(1)
+	while(1)
 	{
 		usleep(1000);
-	}*/
+	}
         return 0;
 }
 
