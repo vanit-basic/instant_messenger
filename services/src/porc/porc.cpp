@@ -48,6 +48,14 @@ void postRequest(http_client client, uri_builder uri, json::value value)
 			}).wait();
 }
 
+void getRequest(http_client client, uri_builder uri)
+{
+	client.request(methods::GET, uri.to_string()).then([](http_response response){
+			response.extract_json().then([](json::value message){
+					std::cout<<message.to_string()<<std::endl;
+					}).wait();
+			}).wait();
+}
 int main()
 {
         http_client dbServiceClient(NetworkUtils::hostURI("http://host_auto_ip4:6508/v1/mafclub/api"));
@@ -55,13 +63,17 @@ int main()
         http_client routerClient(NetworkUtils::hostURI("http://host_auto_ip4:6504/v1/mafclub/api"));
         http_client accountClient(NetworkUtils::hostURI("http://host_auto_ip4:6502/v1/mafclub/api"));
         http_client messagingClient(NetworkUtils::hostURI("http://host_auto_ip4:6503/v1/mafclub/api"));
-        uri_builder test(U("/ServiceTest"));
+        
+	uri_builder test(U("/ServiceTest"));
         uri_builder registr(U("/insert/registration"));
         uri_builder signIn(U("/check/signIn"));
 	uri_builder checkMailAndLogin(U("/check/mailAndLogin"));
         uri_builder signOut(U("/account/signOut?clientId=u1"));
-        uri_builder getUserInfo(U("/account/getUserInfo?userId=u1"));
-        uri_builder getUserShortInfo(U("/account/getUserShortInfo?clientId=u1&userId=u2"));
+        
+	uri_builder getUserInfo1(U("/account/getUserInfo?userId=u1"));
+        uri_builder getUserInfo2(U("/account/getUserInfo?userId=u100000"));
+        
+	uri_builder getUserShortInfo(U("/account/getUserShortInfo?clientId=u1&userId=u2"));
         uri_builder deleteUser(U("/account/deleteUser?clientId=u1"));
         uri_builder creatGroup(U("/account/creatGroup"));
         uri_builder deleteGroup(U("/account/deleteGroup?clientId=u1&groupId=g1"));
@@ -78,33 +90,42 @@ int main()
 	Token["userId"] = json::value::string("u1");
 	Token["token"] = json::value::string("asdasdasdasdasd54564asd");
 	
-	json::value regReq2;
-        regReq2["firstName"] = json::value::string("Valod");
-        regReq2["lastName"] = json::value::string("Valodyan");
-        regReq2["gender"] = json::value::string("male");
-        regReq2["email"] = json::value::string("valodyan1212@mail.ru");
-        regReq2["birthDate"] = json::value::string("12.12.1990");
-        regReq2["login"] = json::value::string("valodyan1212");
-        regReq2["password"] = json::value::string("Valodik90");
+	json::value registrationRequest1;
+        registrationRequest1["firstName"] = json::value::string("Valod");
+        registrationRequest1["lastName"] = json::value::string("Valodyan");
+        registrationRequest1["gender"] = json::value::string("male");
+        registrationRequest1["email"] = json::value::string("valodyan1212@mail.ru");
+        registrationRequest1["birthDate"] = json::value::string("12.12.1990");
+        registrationRequest1["login"] = json::value::string("valodyan1212");
+        registrationRequest1["password"] = json::value::string("Valodik90");
         
-	json::value regReq1;
-        regReq1["firstName"] = json::value::string("Jon");
-        regReq1["lastName"] = json::value::string("Valodyan");
-        regReq1["gender"] = json::value::string("male");
-        regReq1["email"] = json::value::string("valodyan@mail.ru");
-        regReq1["birthDate"] = json::value::string("12.12.1990");
-        regReq1["login"] = json::value::string("valodyan");
-        regReq1["password"] = json::value::string("Valodik90");
+	json::value registrationRequest2;
+        registrationRequest2["firstName"] = json::value::string("Jon");
+        registrationRequest2["lastName"] = json::value::string("Valodyan");
+        registrationRequest2["gender"] = json::value::string("male");
+        registrationRequest2["email"] = json::value::string("valodyan@mail.ru");
+        registrationRequest2["birthDate"] = json::value::string("12.12.1990");
+        registrationRequest2["login"] = json::value::string("valodyan");
+        registrationRequest2["password"] = json::value::string("Valodik90");
 
-	json::value checkMailAndLoginReq;
-	checkMailAndLoginReq["email"] = json::value::string("valodyan12@mail.ru");
-	checkMailAndLoginReq["login"] = json::value::string("valodyan1215");
+	json::value checkMailAndLoginReq1;
+	checkMailAndLoginReq1["email"] = json::value::string("valodyan1212@mail.ru");
+	checkMailAndLoginReq1["login"] = json::value::string("valodyan1212");
+	
 
-        json::value signInReq;
-        signInReq["login"] = json::value::string("valodyan");
-        signInReq["password"] = json::value::string("Valodik90");
+	json::value checkMailAndLoginReq2;
+	checkMailAndLoginReq2["email"] = json::value::string("valodyan12@mail.ru");
+	checkMailAndLoginReq2["login"] = json::value::string("valodyan1215");
+        
+	json::value signInReq1;
+        signInReq1["login"] = json::value::string("valodyan1212");
+        signInReq1["password"] = json::value::string("Valodik90");
 
-        json::value creatGroupReq;
+	json::value signInReq2;
+        signInReq2["login"] = json::value::string("valod1212");
+        signInReq2["password"] = json::value::string("Valod90");
+        
+	json::value creatGroupReq;
         creatGroupReq["groupName"] = json::value::string("Best");
         creatGroupReq["clientId"] = json::value::string("u1");
         creatGroupReq["access"] = json::value::string("public");
@@ -132,37 +153,41 @@ int main()
 	do{
 		try {
                         ++count;
-			//////////      TOKEN  DB  SERVICE TEST   /////////////
-//			postRequest(tokenClient, setToken, Token);
-//			postRequest(tokenClient, checkToken, Token);
-//			postRequest(tokenClient, deleteToken, Token);
+			
+			std::cout<<"///////////////////      TOKEN  DB  SERVICE TEST      /////////////////"<<std::endl;
+			postRequest(tokenClient, setToken, Token);
+			postRequest(tokenClient, checkToken, Token);
+			postRequest(tokenClient, deleteToken, Token);
+			std::cout<<std::endl;
 
+			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, registr, registrationRequest1);
+			postRequest(dbServiceClient, registr, registrationRequest2);
+			std::cout<<std::endl;
 
-			///////     REGISTRATION TEST    //////
-			//postRequest(dbServiceClient, registr, regReq1);
-			//postRequest(dbServiceClient, registr, regReq2);
-
-			postRequest(dbServiceClient, signIn, signInReq);
-
-/*	
-                       client.request(methods::POST, signIn.to_string(), signInReq).then([](http_response respo){
-					respo.extract_json().then([](json::value response2){
-							std::cout<<response2.to_string()<<std::endl;
-							}).wait();
-					}).wait();
-
-			client.request(methods::POST, checkMailAndLogin.to_string(), checkMailAndLoginReq).then([](http_response respo){
-                                        respo.extract_json().then([](json::value response2){
-                                                        std::cout<<response2.to_string()<<std::endl;
-                                                        }).wait();
-                                        }).wait();
-*/
 /*			client.request(methods::GET, getUserInfo.to_string()).then([](http_response respo){
                                         respo.extract_json().then([](json::value response2){
                                                         std::cout<<response2.to_string()<<std::endl;
                                                         }).wait();
                                         }).wait();
 	*/		
+			
+			std::cout<<"///////////////////     CHECK MAIL AND LOGIN(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
+			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq2);
+			std::cout<<std::endl;
+
+	
+			//std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			//postRequest(dbServiceClient, signIn, signInReq1);
+			//postRequest(dbServiceClient, signIn, signInReq2);
+			
+			//std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			//getRequest(dbServiceClient, getUserInfo1);
+			//getRequest(dbServiceClient, getUserInfo2);
+			
+			
+		
 		} 
 		catch (http_exception e) {
 			std::cerr<<"error  "<<e.what()<<std::endl;
