@@ -1,5 +1,5 @@
 {
-		"account":"http://host_auto_ip4:6502/v1/ivmero/api",
+		"account":"http://host_auto_ip4:6502/v1/mafclub/api",
 
 		"messaging":"http://host_auto_ip4:6503/v1/mafclub/api",
 
@@ -15,12 +15,10 @@
 
 		"notification":"http://host_auto_ip4:6509/v1/mafclub/api",
 		
-		"infoDB":"mongodb://localhost:27017",
-		
-		"tokenDB":"mongodb://localhost:27016",
+		"mongodbserver" : "mongodb://localhost:27017",
 
 		"executor":{
 				"uri":"http://host_auto_ip4:6510/v1/mafclub/api",
-				 "services":["router","account","dbservice"]
+				 "services":["dbservice", "account", "messaging", "router"]
 			   }
 }

@@ -1,0 +1,12 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "user",
+	"description": "user info",
+	"type": "object",
+	"properties": {
+		"id": {"type": "string", "pattern" : "u[0-9]"},
+		"firtsNname": { "type": "string", "maxLength": 128 },
+		"lastNname": { "type": "string", "maxLength": 128 },
+		"email": { "type": "string", "pattern": "^[a-z0-9]+(\\.[_a-z0-9]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,15})$"}
+	}
+}

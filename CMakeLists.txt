@@ -47,6 +47,7 @@ add_executable("executor"
 add_executable("dbservice" 		
 	./services/src/dbservice/main.cpp
 	./services/src/dbservice/dbservice.cpp
+	./services/src/dbservice/mongoDb.cpp
 	./services/src/base/basic_controller.cpp
 	./utilities/network_utils.cpp)
 
@@ -62,6 +63,18 @@ add_executable("messaging"
 	./services/src/base/basic_controller.cpp
 	./utilities/network_utils.cpp)
 
+add_executable("porc" 		
+	./services/src/porc/porc.cpp
+	./services/src/base/basic_controller.cpp
+	./utilities/network_utils.cpp)
+
+
+add_executable("tokenDbService" 		
+	./services/src/tokenDbService/main.cpp
+	./services/src/tokenDbService/tokenDbService.cpp
+	./services/src/tokenDbService/mongoTokenDb.cpp
+	./services/src/base/basic_controller.cpp
+	./utilities/network_utils.cpp)
 
 # headers search paths ...
 set(SERVICES_INCLUDE_DIR "./services/include")
@@ -92,3 +105,7 @@ target_link_libraries("dbservice" ${LIBRARIES_SEARCH_PATHS})
 target_link_libraries("account" ${LIBRARIES_SEARCH_PATHS})
 
 target_link_libraries("messaging" ${LIBRARIES_SEARCH_PATHS})
+
+target_link_libraries("tokenDbService" ${LIBRARIES_SEARCH_PATHS})
+
+target_link_libraries("porc" ${LIBRARIES_SEARCH_PATHS})

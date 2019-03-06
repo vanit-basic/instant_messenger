@@ -4,11 +4,27 @@
 #include <string>
 
 #include <base/basic_controller.hpp>
-#include <dbservice/database.hpp>
 #include <cpprest/http_client.h>
 
 #include <cpprest/filestream.h>
+#include <bsoncxx/json.hpp>
+#include <mongocxx/client.hpp>
+#include <mongocxx/stdx.hpp>
+#include <mongocxx/uri.hpp>
+#include <mongocxx/pool.hpp>
+#include <bsoncxx/builder/stream/document.hpp>
+#include <mongocxx/instance.hpp>
+#include <cpprest/http_client.h>
+#include <cpprest/filestream.h>
+#include <bsoncxx/types.hpp>
 
+#include <dbservice/database.hpp>
+
+using bsoncxx::builder::stream::close_array;
+using bsoncxx::builder::stream::close_document;
+using bsoncxx::builder::stream::document;
+using bsoncxx::builder::stream::finalize;
+using bsoncxx::builder::stream::open_document;
 using namespace cfx;
 using namespace utility;
 using namespace web;
@@ -18,65 +34,74 @@ using namespace concurrency::streams;
 
 class MongoDB : public database {
 	public:
-		json::value mail&login(json::value);
-		json::value registerUser(json::value);
+		virtual bool setToken(json::value);
+                
+		virtual bool checkToken(json::value);
+                
+		virtual bool deleteToken(json::value);
 
-		bool loginUser(std::string login, std::string password);
+		//user related queries
+		virtual json::value checkMailAndLogin(std::string mail, std::string login);
 
-		bool updateUserInfo(std::string userInfo);
+		virtual json::value registerUser(json::value user);
+		
+		virtual json::value loginUser(std::string login, std::string pass);
+		
+		virtual json::value getUserInfo(std::string userId);
+	
+		virtual json::value getUserShortInfo(std::string userId);
 
-		bool getUserInfo(std::string userID);
+		virtual json::value deleteUser(std::string userId);
 
-		bool getUserShortInfo(std::string userID);
+		virtual json::value updateUserInfo(json::value user);
 
-		bool getUserConversations(std::string userID);
+		virtual bool removeUserConversation(std::string userId1, std::string userId2){};
 
-		bool getUsersConversation(std::string fromID, std::string toID);
+		virtual json::value getUserConversations(std::string userId){};
+		
+		virtual json::value getUsersConversation(std::string userId1, std::string userId2){};
 
-		bool addUserMessage(std::string from, std::string to, std::string message);
+		virtual std::string addUserMessage(std::string from, std::string to, std::string message){};
 
-		bool updateUserMessage(std::string from, std::string to, std::string messageInfo);
-
-		bool deleteUser(std::string userId);
-
-		bool removeUserConversation(std::string fromUserId, std::string toUserId);
-
+		virtual bool updateUserMessage(std::string from, std::string to, std::string messageInfo){};
+	
 		//group related queries
+	
+		virtual json::value getGroupShortInfo(std::string groupId);
+		
+		virtual json::value createGroup(json::value groupInfo);
 
-		bool createGroup(std::string groupInfo);
+                virtual json::value deleteGroup(std::string groupId);
 
-		bool deleteGroup(std::string groupID);
+		virtual json::value addUserToGroup(json::value);
 
-		bool addUserToGroup(std::string groupID, std::string userID);
+                virtual json::value removeFromGroup(json::value);
+		
+		virtual json::value updateGroupInfo(json::value groupInfo);
 
-		bool removeFromGroup(std::string groupID, std::string userID);
+		virtual json::value getGroupInfo(json::value);
+               
+	       	virtual bool removeMessage(json::value messageInfo){};
 
-		bool removeMessage(std::string messageInfo);
+                virtual bool removeGroupConversation(std::string groupId){};
 
-		bool removeGroupConversation(std::string groupInfo);
+		virtual bool removeMessageFromGroupConversation(std::string groupId, std::string messageId){};
+		
+		virtual std::string getGroupConversation(std::string groupID){};
 
-		bool removeMessageFromGroupConversation(std::string groupInfo);
+		virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message){};
 
-		bool getGroupInfo(std::string groupID);
-
-		bool getGroupConversation(std::string userID, std::string groupID);
-
-		bool updateGroupInfo(std::string groupInfo);
-
-		bool addGroupMessage(std::string groupId, std::string userId, std::string message);
-
-		bool getGroupUsers(std::string groupId);
-
-		bool updateGroupMessage(std::string groupId, std::string messBody);
-
-		MongoDB() {}
-		~MongoDB() {}
+		virtual bool updateGroupMessage(std::string groupId, json::value message) {};
+		
+		virtual json::value getPublicGroupInfo(std::string, std::string); 
+		
+		MongoDB(std::string);
+		~MongoDB();
 
 	private:
 		mongocxx::pool* poolMydb;
                 mongocxx::pool* poolDB;
                 bool createPool(std::string);
-
 };
 
 #endif
