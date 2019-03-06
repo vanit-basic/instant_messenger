@@ -124,6 +124,17 @@ int main()
                 } catch (http_exception e) {
                         std::cerr<<"error  "<<e.what()<<std::endl;
                 }
+
+		 try {
+                        ++count;
+                        pplx::task<web::http::http_response> requestTask = client.request(methods::GET, deleteUser.to_string());
+                        requestTask.then([](http_response resp){std::cout<<resp.to_string()<<std::endl;});
+                        requestTask.wait();
+
+                } catch (http_exception e) {
+                        std::cerr<<e.what()<<std::endl;
+                }
+
 	}
 	while(count < 1);
 /*	while(1)

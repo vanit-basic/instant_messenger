@@ -51,7 +51,7 @@ class MongoDB : public database {
 	
 		virtual json::value getUserShortInfo(std::string userId);
 
-		virtual json::value deleteUser(std::string userId){};
+		virtual json::value deleteUser(std::string userId);
 
 		virtual json::value updateUserInfo(json::value user);
 
@@ -69,17 +69,17 @@ class MongoDB : public database {
 	
 		virtual json::value getGroupShortInfo(std::string groupId);
 		
-		virtual std::string createGroup(json::value groupInfo) {}
+		virtual json::value createGroup(json::value groupInfo);
 
                 virtual json::value deleteGroup(std::string groupId);
 
-		virtual bool addUserToGroup(std::string groupID, std::string userID){};
+		virtual json::value addUserToGroup(json::value);
 
-                virtual bool removeFromGroup(std::string groupID, std::string userID){};
+                virtual json::value removeFromGroup(json::value);
 		
-		virtual bool updateGroupInfo(json::value groupInfo) {}
+		virtual json::value updateGroupInfo(json::value groupInfo);
 
-		virtual std::string getGroupInfo(std::string groupID) {}
+		virtual json::value getGroupInfo(json::value);
                
 	       	virtual bool removeMessage(json::value messageInfo){};
 
@@ -92,7 +92,9 @@ class MongoDB : public database {
 		virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message){};
 
 		virtual bool updateGroupMessage(std::string groupId, json::value message) {};
-
+		
+		virtual json::value getPublicGroupInfo(std::string, std::string); 
+		
 		MongoDB(std::string);
 		~MongoDB();
 
