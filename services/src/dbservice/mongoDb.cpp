@@ -49,31 +49,25 @@ bool MongoDB::deleteToken(std::string userId)
 }
 
 std::string generateID(mongocxx::collection collection) {
-	std::cout<<"generateId function"<<std::endl;
         std::string id;
-        auto lastId = collection.find_one(document{} << "lastId" << open_document << "$gte" << 0 << close_document << finalize);
-        if(!lastId) {
-	std::cout<<"if(!lastId)"<<std::endl;
+        auto lastIdf = collection.find_one(document{} << "lastId" << open_document << "$gte" << 0 << close_document << finalize);
+        if(!lastIdf) {
                 auto doc = bsoncxx::builder::stream::document{};
                 bsoncxx::document::value doc_value = doc
                         << "lastId" << 1
                         << bsoncxx::builder::stream::finalize;
                 auto result = collection.insert_one(std::move(doc_value));
-                id = "u1";
-        }
-        else {
-	std::cout<<"else"<<std::endl;
+	}
+        auto lastId = collection.find_one(document{} << "lastId" << open_document << "$gte" << 0 << close_document << finalize);
                 bsoncxx::document::view view = lastId.value().view();
                 bsoncxx::document::element element = view["lastId"];
                 if(element.type() != bsoncxx::type::k_utf8) {
-	std::cout<<"if(element.type)"<<std::endl;
                 bsoncxx::document::view view = lastId.value().view();
                         int n = element.get_int32().value;
                         id = "u" + std::to_string(n);
                         collection.update_one(bsoncxx::builder::stream::document{} << "lastId" << n << finalize,
                                         bsoncxx::builder::stream::document{} << "$inc" << open_document
                                         << "lastId" << 1 << close_document << bsoncxx::builder::stream::finalize);
-                }
         }
         return id;
 }
@@ -141,13 +135,11 @@ json::value MongoDB::checkMailAndLogin(std::string mail, std::string login) {
 }
 
 json::value MongoDB::registerUser(json::value request) {
-	std::cout<<"registerUser function"<<std::endl;
 	auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
         auto coll1 = (*c1)["infoDB"]["account"];
         auto coll2 = (*c2)["passDB"]["signin"];
 	
-	std::cout<<request.at(utility::string_t("firstName")).as_string()<<std::endl;
 	std::string firstName =  request.at(utility::string_t("firstName")).as_string();
         std::string lastName = request.at("lastName").as_string();
         std::string email =  request.at("email").as_string();
@@ -155,9 +147,7 @@ json::value MongoDB::registerUser(json::value request) {
         std::string birthDate =  request.at("birthDate").as_string();
         std::string gender =  request.at("gender").as_string();
         std::string password = request.at("password").as_string();
-	std::cout<<"login  "<<login<<std::endl;
 	std::string id = generateID(coll2);
-	std::cout<<__LINE__<<std::endl;
 	std::string joinDate = date();
 	
 	auto builder = bsoncxx::builder::stream::document{};
@@ -183,7 +173,6 @@ json::value MongoDB::registerUser(json::value request) {
 	response["gender"] = json::value::string(gender);
 	response["email"] = json::value::string(email);
 	response["login"] = json::value::string(login);
-	std::cout<< "login2  "<<login<<std::endl;
 
 	auto builder1 = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value2 = builder1
