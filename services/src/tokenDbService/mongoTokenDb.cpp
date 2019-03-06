@@ -15,7 +15,7 @@ bool MongoTokenDb::createPool(std::string path)
 	{
                 configFile >> config;
                 configFile.close();
-                this->clientPool = new mongocxx::pool ({config.at("mongodbServer").as_string()});
+                this->clientPool = new mongocxx::pool ({config.at("mongodbserver").as_string()});
                 return true;
         } 
 	else 
@@ -67,7 +67,7 @@ bool MongoTokenDb::checkToken(json::value info)
 	std::string token;
 	try
 	{
-		id = info.at("id").as_string();
+		id = info.at("userId").as_string();
 		token = info.at("token").as_string();
 		auto client = clientPool->acquire();
 		mongocxx::database db = (*client)["tokenDb"];
@@ -92,7 +92,7 @@ bool MongoTokenDb::deleteToken(json::value info)
 	std::string token;
 	try
 	{
-		id = info.at("id").as_string();
+		id = info.at("userId").as_string();
 		token = info.at("token").as_string();
 		auto client = clientPool->acquire();
 		mongocxx::database db = (*client)["tokenDb"];

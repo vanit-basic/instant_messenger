@@ -22,7 +22,7 @@ using namespace concurrency::streams;
 /*
                 "account":"http://host_auto_ip4:6502/v1/mafclub/api",
 
-		"messaging":"http://host_auto_ip4:6503/v1/mafclub/api",
+                "messaging":"http://host_auto_ip4:6503/v1/mafclub/api",
 
                 "router":"http://host_auto_ip4:6504/v1/mafclub/api",
 
@@ -36,9 +36,8 @@ using namespace concurrency::streams;
 
                 "notification":"http://host_auto_ip4:6509/v1/mafclub/api",
 
-                "infoDB":"mongodb://localhost:27017",
+                "mongodbserver" : "mongodb://localhost:27017",
 
-                "tokenDB":"mongodb://localhost:27016",
 */
 void postRequest(http_client client, uri_builder uri, json::value value)
 {

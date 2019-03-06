@@ -14,7 +14,7 @@ bool tokenDbService::getUri(std::string path) {
         if (configFile.is_open()) {
                 configFile >> config;
                 configFile.close();
-                this->tokenDbServiceUri = config.at("tokenDbService").as_string();
+                this->tokenDbServiceUri = config.at("tokendbservice").as_string();
                 return true;
         } else {
                 std::cerr << "ConfigFile is not exist!!!" << std::endl;
