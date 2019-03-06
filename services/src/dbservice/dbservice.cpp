@@ -72,12 +72,9 @@ if (!(path.empty())) {
 }
 
 void DbService::handlePost(http_request message) {
-	std::cout<<"message  "<<message.to_string()<<std::endl;
-
-
-	message.extract_json()
-		.then([message, this](json::value request) {
-				std::cout<<request.at("firstname").as_string();
+	//std::cout<<"message  "<<message.to_string()<<std::endl;
+	message.extract_json().then([message, this](json::value request) {
+				std::cout<<request.to_string()<<std::endl;
 				auto path = requestPath(message);
 				if (!path.empty()) {
 				if (path[0] == "check") {
@@ -87,7 +84,7 @@ void DbService::handlePost(http_request message) {
 
 				json::value response = m_db->checkMailAndLogin(mail, login);
 				message.reply(status_codes::OK, response);
-				} else if (path[1] == "userLogin") {
+				} else if (path[1] == "signIn") {
 				std::string login = request.at("login").as_string();
 				std::string pass = request.at("password").as_string();
 				json::value response = m_db->loginUser(login, pass);
@@ -98,7 +95,6 @@ void DbService::handlePost(http_request message) {
 				}
 				} else if (path[0] == "insert") {
 				if (path[1] == "registration") {
-				std::cout<<"path registration"<<std::endl;
 				json::value response = m_db->registerUser(request);
 				message.reply(status_codes::OK, response);
 				}else {

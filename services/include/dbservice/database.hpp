@@ -54,13 +54,13 @@ class database {
 	
 		virtual json::value getGroupShortInfo(std::string groupId) = 0;
 		
-		virtual std::string createGroup(json::value groupInfo) = 0;
+		virtual json::value createGroup(json::value groupInfo) = 0;
 
                 virtual json::value deleteGroup(std::string groupId) = 0;
 
-		virtual bool addUserToGroup(std::string groupID, std::string userID) = 0;
+		virtual json::value addUserToGroup(json::value) = 0;
 
-                virtual bool removeFromGroup(std::string groupID, std::string userID) = 0;
+                virtual json::value removeFromGroup(json::value) = 0;
 
                 virtual bool removeMessage(json::value messageInfo) = 0;
 
@@ -68,16 +68,18 @@ class database {
 
 		virtual bool removeMessageFromGroupConversation(std::string groupId, std::string messageId) = 0;
 		
-		virtual std::string getGroupInfo(std::string groupID) = 0;
+		virtual json::value getGroupInfo(json::value) = 0;
 		
 		virtual std::string getGroupConversation(std::string groupID) = 0;
 		
-		virtual bool updateGroupInfo(json::value groupInfo) = 0;
+		virtual json::value updateGroupInfo(json::value groupInfo) = 0;
 
 		virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message) = 0;
 
 		virtual bool updateGroupMessage(std::string groupId, json::value message) = 0;
-	
+		
+		virtual json::value getPublicGroupInfo(std::string, std::string) = 0; 
+
 	public:
 		database() {}
 		~database() {}
