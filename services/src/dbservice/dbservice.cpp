@@ -74,35 +74,39 @@ if (!(path.empty())) {
 void DbService::handlePost(http_request message) {
 	//std::cout<<"message  "<<message.to_string()<<std::endl;
 	message.extract_json().then([message, this](json::value request) {
-				std::cout<<request.to_string()<<std::endl;
-				auto path = requestPath(message);
-				if (!path.empty()) {
-				if (path[0] == "check") {
-				if (path[1] == "mail&login") {
-				std::string mail = request.at("mail").as_string();
-				std::string login = request.at("login").as_string();
-
-				json::value response = m_db->checkMailAndLogin(mail, login);
-				message.reply(status_codes::OK, response);
+		std::cout<<request.to_string()<<std::endl;
+		auto path = requestPath(message);
+		if (!path.empty()) {
+			if (path[0] == "check") {
+				if (path[1] == "mailAndLogin") {
+					std::string mail = request.at("email").as_string();
+					std::string login = request.at("login").as_string();
+					json::value response = m_db->checkMailAndLogin(mail, login);
+					message.reply(status_codes::OK, response);
 				} else if (path[1] == "signIn") {
-				std::string login = request.at("login").as_string();
-				std::string pass = request.at("password").as_string();
-				json::value response = m_db->loginUser(login, pass);
-				message.reply(status_codes::OK, response);
+					std::string login = request.at("login").as_string();
+					std::string pass = request.at("password").as_string();
+					json::value response = m_db->loginUser(login, pass);
+					message.reply(status_codes::OK, response);
+				} else {
+					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 				}
-				else{
-				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-				}
-				} else if (path[0] == "insert") {
+			} else if (path[0] == "insert") {
 				if (path[1] == "registration") {
-				json::value response = m_db->registerUser(request);
-				message.reply(status_codes::OK, response);
-				}else {
-					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+					json::value response = m_db->registerUser(request);
+					message.reply(status_codes::OK, response);
+				} else if (path[0] == "account") {
+					if (path[1] == "getUserInfo") {
+						std::string id = request.at("id").as_string();
+						json::value response = m_db->getUserInfo(id);
+						message.reply(status_codes::OK, response);
+					}
+				} else { 
+						message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 				}
-				}
-				}else {
-					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-				}
+			}
+		} else {
+			message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+		}
 		});
 }

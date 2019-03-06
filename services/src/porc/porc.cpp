@@ -49,8 +49,9 @@ int main()
         uri_builder test(U("/ServiceTest"));
         uri_builder registr(U("/insert/registration"));
         uri_builder signIn(U("/check/signIn"));
+	uri_builder checkMailAndLogin(U("/check/mailAndLogin"));
         uri_builder signOut(U("/account/signOut?clientId=u1"));
-        uri_builder getUserInfo(U("/account/getUserInfo?clientId=u1"));
+        uri_builder getUserInfo(U("/account/getUserInfo?userId=u1"));
         uri_builder getUserShortInfo(U("/account/getUserShortInfo?clientId=u1&userId=u2"));
         uri_builder deleteUser(U("/account/deleteUser?clientId=u1"));
         uri_builder creatGroup(U("/account/creatGroup"));
@@ -79,9 +80,13 @@ int main()
         regReq1["login"] = json::value::string("valodyan");
         regReq1["password"] = json::value::string("Valodik90");
 
+	json::value checkMailAndLoginReq;
+	checkMailAndLoginReq["email"] = json::value::string("valodyan12@mail.ru");
+	checkMailAndLoginReq["login"] = json::value::string("valodyan1215");
+
         json::value signInReq;
-        signInReq["login"] = json::value::string("v.valodyan");
-        signInReq["password"] = json::value::string("Valodik90");
+        signInReq["login"] = json::value::string("valod1212");
+        signInReq["password"] = json::value::string("Valod90");
 
         json::value creatGroupReq;
         creatGroupReq["groupName"] = json::value::string("Best");
@@ -110,17 +115,30 @@ int main()
                         ++count;
 			regReq1["count"] = json::value::string(std::to_string(count));
 			regReq2["count"] = json::value::string(std::to_string(count));
-                     client.request(methods::POST, registr.to_string(), regReq2).then([](http_response resp){
+/*                     client.request(methods::POST, registr.to_string(), regReq1).then([](http_response resp){
 					resp.extract_json().then([](json::value response1){
 							std::cout<<response1.to_string()<<std::endl;
                                         }).wait();
 							}).wait();
 		     //usleep(1000000);
-                     client.request(methods::POST, registr.to_string(), regReq1).then([](http_response respo){
+                     client.request(methods::POST, signIn.to_string(), signInReq).then([](http_response respo){
 					respo.extract_json().then([](json::value response2){
 							std::cout<<response2.to_string()<<std::endl;
 							}).wait();
 					}).wait();
+
+			client.request(methods::POST, checkMailAndLogin.to_string(), checkMailAndLoginReq).then([](http_response respo){
+                                        respo.extract_json().then([](json::value response2){
+                                                        std::cout<<response2.to_string()<<std::endl;
+                                                        }).wait();
+                                        }).wait();
+*/
+			 client.request(methods::GET, getUserInfo.to_string()).then([](http_response respo){
+                                        respo.extract_json().then([](json::value response2){
+                                                        std::cout<<response2.to_string()<<std::endl;
+                                                        }).wait();
+                                        }).wait();
+
                 } catch (http_exception e) {
                         std::cerr<<"error  "<<e.what()<<std::endl;
                 }
