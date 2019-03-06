@@ -32,7 +32,7 @@ tokenDbService::tokenDbService(std::string path, database* m) : BasicController(
 void tokenDbService::handleGet(http_request message)
 {
 	std::cout<<"message  " <<message.to_string()<<std::endl;
-	std::string token;
+/*	std::string token;
 	json::value response;
 	if(message.headers().match("token", token))
 	{
@@ -58,7 +58,7 @@ void tokenDbService::handleGet(http_request message)
 		response["status"] = json::value::string("invalidRequest");
 		message.reply(status_codes::OK, response);
 	}
-
+*/
 }
 void tokenDbService::handlePost(http_request message)
 {
@@ -94,9 +94,7 @@ void tokenDbService::handlePost(http_request message)
 			{
 				if(path[0] == "checkToken")
 				{
-					std::string id = info.at("userId").as_string();
-					std::string token = info.at("token").as_string();
-					if((this->db)->checkToken(id, token))
+					if((this->db)->checkToken(info))
 					{
 						response["status"] = json::value::string("OK");
 					}

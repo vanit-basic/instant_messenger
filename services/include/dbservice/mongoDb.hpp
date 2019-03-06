@@ -34,11 +34,11 @@ using namespace concurrency::streams;
 
 class MongoDB : public database {
 	public:
-		virtual bool setToken(std::string userId, std::string token);
+		virtual bool setToken(json::value);
                 
-		virtual bool checkToken(std::string id, std::string token);
+		virtual bool checkToken(json::value);
                 
-		virtual bool deleteToken(std::string userId);
+		virtual bool deleteToken(json::value);
 
 		//user related queries
 		virtual json::value checkMailAndLogin(std::string mail, std::string login);

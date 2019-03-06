@@ -161,7 +161,7 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 	DataBaseClient->request(methods::GET, gSInfo.to_string()).
 	then([=](http_response groupShortInfo)
 	{
-		groupInfo.extract_json().
+		groupShortInfo.extract_json().
 		then([=](json::value groupShortInf)
 		{
 			if(groupShortInf.at("access").as_string() == "private")
@@ -172,21 +172,21 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 				{
 					if(!(groupUsersResp.at(userId).is_null()))
 					{
-						return groupInfo;
+						return groupShortInfo;
 					}
 					else
 					{
 						http_response resp;
 						json::value groupShortInfoResp;
 						groupShortInfoResp["status"] = json::value::string("Not Found");
-						resp.set_body(groupInfoResp);
+						resp.set_body(groupShortInfoResp);
 						return resp;
 					}
 				});
 			}
 			else
 			{
-				return groupInfo;
+				return groupShortInfo;
 			}
 		});
 	});
@@ -255,7 +255,9 @@ http_response signOut(std::string userId, http_client* TokenDb){
 
 
 void Account::handleGet(http_request message) {
-	std::cout<<"message  " <<message.to_string()<<std::endl;
+	if(message.headers().has("token")){
+		std::cout<<"message  " << message.headers().operator[]("token")<<std::endl;
+	}
 	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
 	std::map<std::string, std::string>::iterator it;
 	for (it = i.begin(); it!=i.end(); ++it)
@@ -273,7 +275,7 @@ void Account::handleGet(http_request message) {
 		else if(path_first_request[1] == "getUserInfo")
 		{
 			std::string userId = "";
-			userId = i.find("clientId")->second;
+			userId = i.find("userId")->second;
 			if(!(userId == ""))
 			{
 				auto userInfo = getUserInfo(userId, this -> DataBaseClient);
@@ -289,7 +291,7 @@ void Account::handleGet(http_request message) {
 			if(path_first_request[1] == "getUserShortInfo")
 			{
 				std::string userId = "";
-				userId = i.find("clientId")->second;
+				userId = i.find("userId")->second;
 				if(!(userId == ""))
 				{
 					auto userShortInfo = getUserShortInfo(userId, this -> DataBaseClient);
@@ -306,7 +308,7 @@ void Account::handleGet(http_request message) {
 				{
 					std::string userId = "";
 					std::string groupId = "";
-					userId = i.find("clientId")->second;
+					userId = i.find("userId")->second;
 					groupId = i.find("groupId")->second;
 					if(!(userId == ""))
 					{
@@ -330,7 +332,7 @@ void Account::handleGet(http_request message) {
 					if (path_first_request[1] == "userDelete")
 					{	
 						std::string userId = "";
-						userId = i.find("clientId")->second;
+						userId = i.find("userId")->second;
 						if(!(userId == ""))
 						{
 							auto resp = userDelete(userId, this->DataBaseClient);
@@ -346,7 +348,7 @@ void Account::handleGet(http_request message) {
 						if(path_first_request[1] == "signOut")
 						{
 							std::string userId = "";
-							userId = i.find("clientId")->second;
+							userId = i.find("userId")->second;
 							if(!(userId == ""))
 							{
 								auto resp = signOut(userId, this->TokenDBClient);
@@ -363,7 +365,7 @@ void Account::handleGet(http_request message) {
 							{
 								std::string userId = "";
 								std::string groupId = "";
-								userId = i.find("clientId")->second;
+								userId = i.find("userId")->second;
 								groupId = i.find("groupId")->second;
 								if(!(userId == ""))
 								{
