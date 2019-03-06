@@ -33,17 +33,17 @@ using namespace web::http;
 using namespace web::http::client;
 using namespace concurrency::streams;
 
-bool MongoDB::setToken(std::string userId, std::string token)
+bool MongoDB::setToken(json::value token)
 {
 	std::cout<<"setToken"<<std::endl;
 }
 
-bool MongoDB::checkToken(std::string userId, std::string token)
+bool MongoDB::checkToken(json::value token)
 {
 	std::cout<<"checkToken"<<std::endl;
 }
 
-bool MongoDB::deleteToken(std::string userId)
+bool MongoDB::deleteToken(json::value token)
 {
 	std::cout<<"deleteToken"<<std::endl;
 }
@@ -112,7 +112,7 @@ json::value MongoDB::checkMailAndLogin(std::string mail, std::string login) {
 	auto c1 = poolMydb->acquire();
 	auto coll1 = (*c1)["infoDB"]["account"];
 	bsoncxx::stdx::optional<bsoncxx::document::value> mailResult =
-		coll1.find_one(document{} << "mail" << mail << finalize);
+		coll1.find_one(document{} << "email" << mail << finalize);
 
 	bsoncxx::stdx::optional<bsoncxx::document::value> loginResult =
 		coll1.find_one(document{} << "login" << login << finalize);
@@ -157,6 +157,7 @@ json::value MongoDB::registerUser(json::value request) {
 		<< "lastName" << lastName
 		<< "email" << email
 		<< "login" << login
+		<< "nickname" << firstName
 		<< "birthDate" << birthDate
 		<< "gender" << gender
 		<< "joinDate" << joinDate
@@ -169,6 +170,7 @@ json::value MongoDB::registerUser(json::value request) {
 	response["id"] = json::value::string(id);
 	response["firstName"] = json::value::string(firstName);
 	response["lastName"] = json::value::string(lastName);
+	response["nickname"] = json::value::string(firstName);
 	response["birthDate"] = json::value::string(birthDate);
 	response["gender"] = json::value::string(gender);
 	response["email"] = json::value::string(email);
@@ -197,31 +199,35 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		coll2.find_one(document{} << "login" << login
 				<< "password" << password << finalize);
 
+	std::cout << "SignIn\n";
 	if (result) {
 		bsoncxx::stdx::optional<bsoncxx::document::value> infoResult =
-			coll2.find_one(document{} << "login" << login << finalize);
+			coll1.find_one(document{} << "login" << login << finalize);
 		bsoncxx::document::view doc = result->view();
 		bsoncxx::document::view docInfo = infoResult->view();
-
-		bsoncxx::document::element element = doc["id"];
+		
+		bsoncxx::document::element element = docInfo["id"];
 		std::string id = element.get_utf8().value.to_string();
 
-		element = doc["firstName"];
-		std::string firstName = element.get_utf8().value.to_string();
+		bsoncxx::document::element element1 = docInfo["firstName"];
+		std::string firstName = element1.get_utf8().value.to_string();
 
-		element = doc["lastName"];
-		std::string lastName = element.get_utf8().value.to_string();
-
-		element = doc["birthDate"];
+		bsoncxx::document::element element2 = docInfo["lastName"];
+		std::string lastName = element2.get_utf8().value.to_string();
+		
+		element = docInfo["birthDate"];
 		std::string birthDate = element.get_utf8().value.to_string();
 
-		element = doc["gender"];
+		element = docInfo["gender"];
 		std::string gender = element.get_utf8().value.to_string();
+		
+		element = docInfo["nickname"];
+		std::string nickname = element.get_utf8().value.to_string();
 
-		element = doc["email"];
+		element = docInfo["email"];
 		std::string mail = element.get_utf8().value.to_string();
 
-		element = doc["login"];
+		element = docInfo["login"];
 		std::string login = element.get_utf8().value.to_string();
 
 
@@ -237,18 +243,22 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
 			coll2.find_one(document{} << "login" << login << finalize);
 		if (loginPassResult) {
+			std::cout << "--password\n";
 			response["passResult"] = json::value::string("wrongPass");
 			std::string loginDate = date();
 
+			std::cout << "--password\n";
 			bsoncxx::stdx::optional<bsoncxx::document::value> info =
-				coll1.find_one(document{} << "login" << login << finalize);
+				coll2.find_one(document{} << "login" << login << finalize);
+			std::cout << "--password\n";
 			bsoncxx::document::view doc_view = info->view();
-			coll1.update_one(document{} << "login" << login << finalize,
-					document{} << "$set" <<
+			coll2.update_one(document{} << "login" << login << finalize,
 					document{} << "$inc" << open_document <<
 					"visitCount" << 1 << close_document << finalize);
 
-			coll1.update_one(document{} << "login" << login
+
+			std::cout << "--password\n";
+			coll2.update_one(document{} << "login" << login
 					<< finalize,
 					document{} << "$set" << open_document <<
 					"visitTime" << date() << close_document << finalize);
@@ -266,11 +276,14 @@ json::value MongoDB::getUserInfo(std::string id) {
 	auto c1 = poolMydb->acquire();
 	auto coll1 = (*c1)["infoDB"]["account"];
 
+	std::cout << __LINE__ << std::endl;
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
 		coll1.find_one(document{} << "id" << id << finalize);
 
+	std::cout << __LINE__ << std::endl;
 	if (result) {
 		bsoncxx::document::view doc = result->view();
+	std::cout << __LINE__ << std::endl;
 
 		bsoncxx::document::element element = doc["firstName"];
 		std::string firstName = element.get_utf8().value.to_string();
@@ -292,6 +305,7 @@ json::value MongoDB::getUserInfo(std::string id) {
 
 		element = doc["login"];
 		std::string login = element.get_utf8().value.to_string();
+	std::cout << __LINE__ << std::endl;
 
 		response["firstName"] = json::value::string(firstName);
 		response["lastName"] = json::value::string(lastName);
@@ -302,6 +316,7 @@ json::value MongoDB::getUserInfo(std::string id) {
 		response["login"] = json::value::string(login);
 
 	} else {
+	std::cout << __LINE__ << std::endl;
 		response["infoStatus"] = json::value::string("unknownID");
 	}
 

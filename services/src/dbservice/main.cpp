@@ -13,7 +13,6 @@ int main (int argc, char** argv) {
 		InterruptHandler::hookSIGINT();
 		std::string path = std::string(argv[1]);
 		database* m = new MongoDB(path);
-		//m->deleteGroup("g3");
 		std::cout<<"database\n";
 		DbService db(path, m);
 		std::cout<<"dbservice\n";
