@@ -115,7 +115,7 @@ void Router::initRestOpHandlers() {
     _listener.support(methods::POST, std::bind(&Router::handlePost, this, std::placeholders::_1));
 }
 
-bool tokenValidator(http_request){
+bool tokenValidator(http_request message){
 	if(message.headers().has("token")){
 		return true;
 	}
@@ -150,8 +150,10 @@ void Router::handleGet(http_request message) {
 			uri_builder checkToken_path(U("/checkToken/"));
 
 			TokenDbClient->request(methods::POST, checkToken_path.to_string(), tokenInfo).
-				then([message, path ,this](http_response tokenStatus){
-						tokenStatus.extract_json().then([message, this](json::value token){
+				then([=](http_response tokenStatus){
+						tokenStatus.extract_json().
+						then([=](json::value token)
+						{
 								if(token.at("token").as_string() == "OK")
 								{ 
 								if(path[0] == "Account")
@@ -251,6 +253,7 @@ bool postIdValidator (http_request message){
 void Router::handlePost(http_request message) {
 	std::cout<<message.to_string()<<std::endl;	
 	auto checkAction = requestPath(message);
+	auto path = requestPath(message);
 	if(path.empty()){ 
 		if(!(checkAction[1] == "registration" || checkAction[1] == "signin" || checkAction[1] == "forgotPassword"))
 		{
