@@ -33,37 +33,40 @@ class MongoTokenDb : public database
 {
 	public:
 		bool setToken(json::value) override;
-		bool checkToken(std::string id, std::string token) override;
+		bool checkToken(json::value) override;
 		bool deleteToken(json::value) override;
 		MongoTokenDb(std::string);
 		~MongoTokenDb();
 
-               json::value mail_login(json::value){};
-               json::value registerUser(json::value){};
-               json::value loginUser(json::value){};
-               bool updateUserInfo(std::string userInfo){};
-               json::value getUserInfo(json::value){};
-               json::value getUserShortInfo(json::value){};
-               json::value getUserConversations(json::value){};
-               json::value getUsersConversation(json::value){};
-               std::string addUserMessage(std::string from, std::string to, std::string message){};
-               bool updateUserMessage(std::string from, std::string to, std::string messageInfo){};
-               json::value deleteUser(json::value){};
-               bool removeUserConversation(std::string fromUserId, std::string toUserId){};
-               std::string createGroup(std::string groupInfo){};
-               bool deleteGroup(std::string groupID) {};
-               bool addUserToGroup(std::string groupID, std::string userID) {};
-               bool removeFromGroup(std::string groupID, std::string userID) {};
-               bool removeMessage(std::string messageInfo) {};
-               bool removeGroupConversation(std::string groupInfo) {};
-               bool removeMessageFromGroupConversation(std::string groupInfo) {};
-               std::string getGroupInfo(std::string groupID) {};
-               std::string getGroupConversation(std::string userID, std::string groupID) {};
-               bool updateGroupInfo(std::string groupInfo) {};
-               std::string addGroupMessage(std::string groupId, std::string userId, std::string message) {};
-               json::value getGroupUsers(json::value) {};
-               bool updateGroupMessage(std::string groupId, std::string messBody) {};
+		json::value checkMailAndLogin(std::string mail, std::string login){};
+		json::value registerUser(json::value){};
+		json::value loginUser(std::string login, std::string pass){};
+		bool updateUserInfo(std::string userInfo){};
+		json::value getUserInfo(std::string userId){};
+		json::value getUserShortInfo(std::string userId){};
+		json::value getUserConversations(std::string userId){};
+		json::value getUsersConversation(std::string userId1, std::string userId2){};
+		std::string addUserMessage(std::string from, std::string to, std::string message){};
+		json::value updateUserInfo(json::value user){};
 
+		bool updateUserMessage(std::string from, std::string to, std::string messageInfo){};
+		json::value deleteUser(std::string userId){};
+		bool removeUserConversation(std::string fromUserId, std::string toUserId){};
+		json::value createGroup(json::value groupInfo){};
+		json::value deleteGroup(std::string groupID) {};
+		json::value addUserToGroup(json::value) {};
+		json::value removeFromGroup(json::value){};
+		bool removeMessage(json::value messageInfo){};
+		bool removeGroupConversation(std::string groupInfo) {};
+		bool removeMessageFromGroupConversation(std::string groupId, std::string messageId){};
+		json::value getGroupShortInfo(std::string groupId){};
+		json::value getGroupInfo(json::value){};
+		std::string getGroupConversation(std::string groupID){};
+		std::string addGroupMessage(std::string groupId, std::string userId, json::value message){};
+		json::value getGroupUsers(json::value) {};
+		bool updateGroupMessage(std::string groupId, json::value message){};
+		json::value updateGroupInfo(json::value groupInfo){};
+		json::value getPublicGroupInfo(std::string, std::string){};
 
 	
 	private:

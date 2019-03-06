@@ -33,17 +33,17 @@ using namespace web::http;
 using namespace web::http::client;
 using namespace concurrency::streams;
 
-bool MongoDB::setToken(std::string userId, std::string token)
+bool MongoDB::setToken(json::value token)
 {
 	std::cout<<"setToken"<<std::endl;
 }
 
-bool MongoDB::checkToken(std::string userId, std::string token)
+bool MongoDB::checkToken(json::value token)
 {
 	std::cout<<"checkToken"<<std::endl;
 }
 
-bool MongoDB::deleteToken(std::string userId)
+bool MongoDB::deleteToken(json::value token)
 {
 	std::cout<<"deleteToken"<<std::endl;
 }
