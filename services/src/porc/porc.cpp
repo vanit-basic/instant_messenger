@@ -22,7 +22,7 @@ using namespace concurrency::streams;
 /*
                 "account":"http://host_auto_ip4:6502/v1/mafclub/api",
 
-                "messaging":"http://host_auto_ip4:6503/v1/mafclub/api",
+		"messaging":"http://host_auto_ip4:6503/v1/mafclub/api",
 
                 "router":"http://host_auto_ip4:6504/v1/mafclub/api",
 
@@ -121,6 +121,9 @@ int main()
         updateUserInfoReq["avatar"] = json::value::string("base64_string");
         updateUserInfoReq["nickName"] = json::value::string("asenqValod");
 
+	http_request req(methods::GET);
+	req.headers().add(U("token"), U("112431574564"));
+	req.set_request_uri(U("Account/getUserInfo?clientId=u1"));
         int count = 0;
 	do{
 		try {

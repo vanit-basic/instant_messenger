@@ -116,12 +116,25 @@ void Router::initRestOpHandlers() {
 }
 
 void Router::handleGet(http_request message) {
+	//if(message.headers().has("token")){
+	//	std::cout<<"message  " << message.headers().operator[]("token")<<std::endl;
+	//}
+
 	std::cout<<message.to_string()<<std::endl;
-	TokenDbClient->request(message).
+
+	json::value tokenInfo;
+ 	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
+
+	tokenInfo["id"] = json::value::string(i.find("userId")->second);
+	tokenInfo["token"] = json::value::string(message.headers().operator[]("token"));
+	
+	uri_builder checkToken_path(U("/checkToken/"));
+	
+	TokenDbClient->request(methods::POST, checkToken_path.to_string(), tokenInfo).
 		then([message, this](http_response tokenStatus){
 				tokenStatus.extract_json().then([message, this](json::value token){
 				if(token.at("token").as_string() == "valid")
-				{
+				{ 
 					auto path = requestPath(message);
 					if(path[0] == "Account")
 					{
@@ -170,13 +183,13 @@ void Router::handleGet(http_request message) {
 							}
 						}
 					}
-				}
+				}	
 				else
 				{
 					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET) );
 				}
 				});
-		});
+		}); 
 }
 
 void Router::handlePost(http_request message) {

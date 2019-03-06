@@ -19,11 +19,11 @@ class database {
 
 	//Public pure virtual functions
 	public:
-		virtual bool setToken(std::string userId, std::string token) = 0;
+		virtual bool setToken(json::value) = 0;
                 
-		virtual bool checkToken(std::string id, std::string token) = 0;
+		virtual bool checkToken(json::value) = 0;
                 
-		virtual bool deleteToken(std::string userId) = 0;
+		virtual bool deleteToken(json::value) = 0;
 
 		//user related queries
 		virtual json::value checkMailAndLogin(std::string mail, std::string login) = 0;

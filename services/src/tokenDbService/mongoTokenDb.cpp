@@ -15,7 +15,7 @@ bool MongoTokenDb::createPool(std::string path)
 	{
                 configFile >> config;
                 configFile.close();
-                this->clientPool = new mongocxx::pool ({config.at("tokenDB").as_string()});
+                this->clientPool = new mongocxx::pool ({config.at("mongodbServer").as_string()});
                 return true;
         } 
 	else 
@@ -60,11 +60,15 @@ bool MongoTokenDb::setToken(json::value info)
 	return status;
 }
 
-bool MongoTokenDb::checkToken(std::string id, std::string token)
+bool MongoTokenDb::checkToken(json::value info)
 {
 	bool status = false;
+	std::string id;
+	std::string token;
 	try
 	{
+		id = info.at("id").as_string();
+		token = info.at("token").as_string();
 		auto client = clientPool->acquire();
 		mongocxx::database db = (*client)["tokenDb"];
 		mongocxx::collection coll = db["token"];

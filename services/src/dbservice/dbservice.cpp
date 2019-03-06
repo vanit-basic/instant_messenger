@@ -32,11 +32,6 @@ bool DbService::getUri(std::string path) {
 }
 
 DbService::DbService(std::string path, database* m) : BasicController() {
-/*	static int count = 0;
-	if (count < 1) {
-		++count;
-		mongocxx::instance instance{};
-	}*/
 	if(getUri(path)) {
 		this->setEndpoint(dbserviceUri);
 	}
@@ -47,19 +42,6 @@ DbService::~DbService() {
 }
 
 void DbService::handleGet(http_request message) {
-	/*	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
-		auto coll = client[dbname]["account"].insert_one({});
-		};
-		std::thread t([&]() {
-		auto c = poolMydb->acquire();
-		threadfunc(*c, "infoDB");
-	//	});
-
-	auto c = poolMydb->acquire();
-	std::cout<< message.to_string()<<std::endl;
-	auto path = requestPath(message);
-
-	});*/
 std::cout<< message.to_string()<<std::endl;
 auto path = requestPath(message);
 if (!(path.empty())) {
@@ -72,7 +54,6 @@ if (!(path.empty())) {
 }
 
 void DbService::handlePost(http_request message) {
-	//std::cout<<"message  "<<message.to_string()<<std::endl;
 	message.extract_json().then([message, this](json::value request) {
 				std::cout<<request.to_string()<<std::endl;
 				auto path = requestPath(message);

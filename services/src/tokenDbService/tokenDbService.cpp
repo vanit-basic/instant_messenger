@@ -31,34 +31,7 @@ tokenDbService::tokenDbService(std::string path, database* m) : BasicController(
 
 void tokenDbService::handleGet(http_request message)
 {
-	std::cout<<"message  " <<message.to_string()<<std::endl;
-	std::string token;
-	json::value response;
-	if(message.headers().match("token", token))
-	{
-		std::map<utility::string_t, utility::string_t>  inf = uri::split_query(message.request_uri().query());
-		std::string id = std::string(inf["userId"]);
-		auto path = requestPath(message);
-		if(path[0] == "checkToken")
-		{
-			if(db->checkToken(id, token))
-			{
-				response["status"] = json::value::string("OK");
-				message.reply(status_codes::OK, response);
-			}
-			else
-			{
-				response["status"] = json::value::string("notFound");
-				message.reply(status_codes::OK, response);
-			}
-		}
-	}
-	else
-	{
-		response["status"] = json::value::string("invalidRequest");
-		message.reply(status_codes::OK, response);
-	}
-
+	message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 }
 void tokenDbService::handlePost(http_request message)
 {
@@ -74,8 +47,9 @@ void tokenDbService::handlePost(http_request message)
 			}
 			else
 			{
-				response["status"] = json::value::string("notFound");
+				response["status"] = json::value::string("NOT_OK");
 			}
+			message.reply(status_codes::OK, response);
 		}
 		else
 		{
@@ -87,30 +61,29 @@ void tokenDbService::handlePost(http_request message)
 				}
 				else
 				{
-					response["status"] = json::value::string("notFound");
+					response["status"] = json::value::string("NOT_OK");
 				}
+				message.reply(status_codes::OK, response);
 			}
 			else
 			{
 				if(path[0] == "checkToken")
 				{
-					std::string id = info.at("userId").as_string();
-					std::string token = info.at("token").as_string();
-					if((this->db)->checkToken(id, token))
+					if((this->db)->checkToken(info))
 					{
 						response["status"] = json::value::string("OK");
 					}
 					else
 					{
-						response["status"] = json::value::string("notFound");
+						response["status"] = json::value::string("NOT_OK");
 					}
+					message.reply(status_codes::OK, response);
 				}
 				else
 				{
-					response["status"] = json::value::string("invalidRequest");
+					message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 				}
 			}
 		}
-		message.reply(status_codes::OK, response);
 			});
 }
