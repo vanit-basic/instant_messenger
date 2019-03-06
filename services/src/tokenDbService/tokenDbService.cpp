@@ -31,7 +31,7 @@ tokenDbService::tokenDbService(std::string path, database* m) : BasicController(
 
 void tokenDbService::handleGet(http_request message)
 {
-	message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET))
+	message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 }
 void tokenDbService::handlePost(http_request message)
 {
