@@ -460,7 +460,6 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 						TokenDBClient -> request(methods::POST, token_uri.to_string(), token_json).
 						then([message, &userInfo, id, token](http_response token_response)
 						{
-							userInfo["id"] = json::value::string(id);
 							userInfo["token"] = json::value::string(token);
 							message.reply(status_codes::OK, userInfo);
 						});
