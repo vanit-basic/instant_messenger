@@ -75,7 +75,7 @@ void DbService::handlePost(http_request message) {
 	std::cout<<"message  "<<message.to_string()<<std::endl;
 	message.extract_json()
 		.then([message, this](json::value request) {
-				std::cout<<request.to_string()<<std::endl;
+				//std::cout << request.to_string() << std::endl;
 				message.reply(status_codes::OK, request);
 				//std::cout<<request.at("firstName").as_string();
 				//auto path = requestPath(message);
