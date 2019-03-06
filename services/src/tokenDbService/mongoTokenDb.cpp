@@ -15,7 +15,7 @@ bool MongoTokenDb::createPool(std::string path)
 	{
                 configFile >> config;
                 configFile.close();
-                this->clientPool = new mongocxx::pool ({config.at("tokenDB").as_string()});
+                this->clientPool = new mongocxx::pool ({config.at("mongodbServer").as_string()});
                 return true;
         } 
 	else 
