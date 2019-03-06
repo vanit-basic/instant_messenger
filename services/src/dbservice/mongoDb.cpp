@@ -166,7 +166,7 @@ json::value MongoDB::registerUser(json::value request) {
 	auto result = coll1.insert_one(std::move(doc_value));
 
 	json::value response;
-	response["status"] = json::value::string("successfullyRegistered");
+	response["status"] = json::value::string("SUCCESSFULLY_REGISTERED");
 	response["id"] = json::value::string(id);
 	response["firstName"] = json::value::string(firstName);
 	response["lastName"] = json::value::string(lastName);
