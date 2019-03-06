@@ -85,8 +85,8 @@ bool MongoDB::createPool(std::string path) {
         if (configFile.is_open()) {
                 configFile >> config;
                 configFile.close();
-                this->poolMydb = new mongocxx::pool (mongocxx::uri{config.at("mongodbServer").as_string()});
-                this->poolDB = new mongocxx::pool (mongocxx::uri{config.at("mongodbServer").as_string()});
+                this->poolMydb = new mongocxx::pool (mongocxx::uri{config.at("mongodbserver").as_string()});
+                this->poolDB = new mongocxx::pool (mongocxx::uri{config.at("mongodbserver").as_string()});
                 return true;
         } else {
                 std::cerr << "ConfigFile is not exist!!!" << std::endl;
@@ -159,8 +159,19 @@ json::value MongoDB::registerUser(json::value request) {
 		<< "login" << login
 		<< "nickname" << firstName
 		<< "birthDate" << birthDate
-		<< "gender" << gender
+		<< "gender" << gender 
+		<< "level" << "0"
 		<< "joinDate" << joinDate
+		<< "statistics" << bsoncxx::builder::stream::open_document
+		<< "playedGames" << "0"
+		<< "redCard" << "0"
+		<< "blackCard" << "0"
+		<< "sheriff" << "0"
+		<< "don" << "0"
+		<< "wins" << "0"
+		<< "fails" << "0"
+		<< "killed" << "0"
+		<< bsoncxx::builder::stream::close_document
 		<< bsoncxx::builder::stream::finalize;
 	
 	auto result = coll1.insert_one(std::move(doc_value));
@@ -174,6 +185,15 @@ json::value MongoDB::registerUser(json::value request) {
 	response["birthDate"] = json::value::string(birthDate);
 	response["gender"] = json::value::string(gender);
 	response["email"] = json::value::string(email);
+	response["level"] = json::value::string("0");
+	response["playedGames"] = json::value::string("0");
+       	response["redCard"] = json::value::string("0");
+	response["blackCard"] = json::value::string("0");	
+	response["sheriff"] = json::value::string("0");
+	response["don"] = json::value::string("0"); 
+	response["wins"] = json::value::string("0");
+	response["fails"] = json::value::string("0");
+	response["killed"] = json::value::string("0");
 	response["login"] = json::value::string(login);
 
 	auto builder1 = bsoncxx::builder::stream::document{};
@@ -209,20 +229,47 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		bsoncxx::document::element element = docInfo["id"];
 		std::string id = element.get_utf8().value.to_string();
 
-		bsoncxx::document::element element1 = docInfo["firstName"];
-		std::string firstName = element1.get_utf8().value.to_string();
+		element = docInfo["firstName"];
+		std::string firstName = element.get_utf8().value.to_string();
 
-		bsoncxx::document::element element2 = docInfo["lastName"];
-		std::string lastName = element2.get_utf8().value.to_string();
-		
-		element = docInfo["birthDate"];
-		std::string birthDate = element.get_utf8().value.to_string();
-
-		element = docInfo["gender"];
-		std::string gender = element.get_utf8().value.to_string();
+		element = docInfo["lastName"];
+		std::string lastName = element.get_utf8().value.to_string();
 		
 		element = docInfo["nickname"];
 		std::string nickname = element.get_utf8().value.to_string();
+		
+		element = docInfo["birthDate"];
+		std::string birthDate = element.get_utf8().value.to_string();
+		
+		element = docInfo["gender"];
+		std::string gender = element.get_utf8().value.to_string();
+
+		element = docInfo["level"];
+		std::string level = element.get_utf8().value.to_string();
+		
+		element = docInfo["statistics"]["playedGames"];
+		std::string playedGames = element.get_utf8().value.to_string();
+
+		element = docInfo["statistics"]["redCard"];
+		std::string redCard = element.get_utf8().value.to_string();
+		
+		element = docInfo["statistics"]["blackCard"];
+		std::string blackCard = element.get_utf8().value.to_string();
+		
+		element = docInfo["statistics"]["sheriff"];
+		std::string sheriff = element.get_utf8().value.to_string();
+
+		element = docInfo["statistics"]["don"];
+		std::string don = element.get_utf8().value.to_string();
+		
+		element = docInfo["statistics"]["wins"];
+		std::string wins = element.get_utf8().value.to_string();
+		
+		element = docInfo["statistics"]["fails"];
+		std::string fails = element.get_utf8().value.to_string();
+		
+		element = docInfo["statistics"]["killed"];
+		std::string killed = element.get_utf8().value.to_string();
 
 		element = docInfo["email"];
 		std::string mail = element.get_utf8().value.to_string();
@@ -236,6 +283,15 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		response["lastName"] = json::value::string(lastName);
 		response["birthDate"] = json::value::string(birthDate);
 		response["gender"] = json::value::string(gender);
+		response["level"] = json::value::string(level);
+		response["playedGames"] = json::value::string(playedGames);
+		response["redCard"] = json::value::string(redCard);
+		response["blackCard"] = json::value::string(blackCard);
+		response["sheriff"] = json::value::string(sheriff);
+		response["don"] = json::value::string(don);
+		response["wins"] = json::value::string(wins);
+		response["fails"] = json::value::string(fails);
+		response["killed"] = json::value::string(killed);
 		response["email"] = json::value::string(mail);
 		response["login"] = json::value::string(login);
 
@@ -243,21 +299,16 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
 			coll2.find_one(document{} << "login" << login << finalize);
 		if (loginPassResult) {
-			std::cout << "--password\n";
 			response["passResult"] = json::value::string("wrongPass");
 			std::string loginDate = date();
-
-			std::cout << "--password\n";
+			
 			bsoncxx::stdx::optional<bsoncxx::document::value> info =
 				coll2.find_one(document{} << "login" << login << finalize);
-			std::cout << "--password\n";
 			bsoncxx::document::view doc_view = info->view();
 			coll2.update_one(document{} << "login" << login << finalize,
 					document{} << "$inc" << open_document <<
 					"visitCount" << 1 << close_document << finalize);
 
-
-			std::cout << "--password\n";
 			coll2.update_one(document{} << "login" << login
 					<< finalize,
 					document{} << "$set" << open_document <<
@@ -300,18 +351,56 @@ json::value MongoDB::getUserInfo(std::string id) {
 		element = doc["gender"];
 		std::string gender = element.get_utf8().value.to_string();
 
+		
+
+		element = doc["level"];
+		std::string level = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["playedGames"];
+		std::string playedGames = element.get_utf8().value.to_string();
+
+		element = doc["statistics"]["redCard"];
+		std::string redCard = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["blackCard"];
+		std::string blackCard = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["sheriff"];
+		std::string sheriff = element.get_utf8().value.to_string();
+
+		element = doc["statistics"]["don"];
+		std::string don = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["wins"];
+		std::string wins = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["fails"];
+		std::string fails = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["killed"];
+		std::string killed = element.get_utf8().value.to_string();
+
 		element = doc["email"];
 		std::string mail = element.get_utf8().value.to_string();
 
 		element = doc["login"];
 		std::string login = element.get_utf8().value.to_string();
-	std::cout << __LINE__ << std::endl;
+		std::cout << __LINE__ << std::endl;
 
 		response["firstName"] = json::value::string(firstName);
 		response["lastName"] = json::value::string(lastName);
 		response["nickname"] = json::value::string(nickname);
 		response["birthDate"] = json::value::string(birthDate);
 		response["gender"] = json::value::string(gender);
+		response["level"] = json::value::string(level);
+		response["playedGames"] = json::value::string(playedGames);
+		response["redCard"] = json::value::string(redCard);
+		response["blackCard"] = json::value::string(blackCard);
+		response["sheriff"] = json::value::string(sheriff);
+		response["don"] = json::value::string(don);
+		response["wins"] = json::value::string(wins);
+		response["fails"] = json::value::string(fails);
+		response["killed"] = json::value::string(killed);
 		response["email"] = json::value::string(mail);
 		response["login"] = json::value::string(login);
 
@@ -343,9 +432,45 @@ json::value MongoDB::getUserShortInfo(std::string id) {
                 element = doc["nickname"];
                 std::string nickname = element.get_utf8().value.to_string();
 
+		element = doc["level"];
+		std::string level = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["playedGames"];
+		std::string playedGames = element.get_utf8().value.to_string();
+
+		element = doc["statistics"]["redCard"];
+		std::string redCard = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["blackCard"];
+		std::string blackCard = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["sheriff"];
+		std::string sheriff = element.get_utf8().value.to_string();
+
+		element = doc["statistics"]["don"];
+		std::string don = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["wins"];
+		std::string wins = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["fails"];
+		std::string fails = element.get_utf8().value.to_string();
+		
+		element = doc["statistics"]["killed"];
+		std::string killed = element.get_utf8().value.to_string();
+
                 response["firstName"] = json::value::string(firstName);
                 response["lastName"] = json::value::string(lastName);
                 response["nickname"] = json::value::string(nickname);
+		response["level"] = json::value::string(level);
+		response["playedGames"] = json::value::string(playedGames);
+		response["redCard"] = json::value::string(redCard);
+		response["blackCard"] = json::value::string(blackCard);
+		response["sheriff"] = json::value::string(sheriff);
+		response["don"] = json::value::string(don);
+		response["wins"] = json::value::string(wins);
+		response["fails"] = json::value::string(fails);
+		response["killed"] = json::value::string(killed);
 
         } else {
                 response["infoStatus"] = json::value::string("unknownID");

@@ -101,8 +101,8 @@ int main()
 	checkMailAndLoginReq["login"] = json::value::string("valodyan1215");
 
         json::value signInReq;
-        signInReq["login"] = json::value::string("valod1212");
-        signInReq["password"] = json::value::string("Valod90");
+        signInReq["login"] = json::value::string("valodyan");
+        signInReq["password"] = json::value::string("Valodik90");
 
         json::value creatGroupReq;
         creatGroupReq["groupName"] = json::value::string("Best");
@@ -133,16 +133,19 @@ int main()
 		try {
                         ++count;
 			//////////      TOKEN  DB  SERVICE TEST   /////////////
-			postRequest(tokenClient, setToken, Token);
-			postRequest(tokenClient, checkToken, Token);
-			postRequest(tokenClient, deleteToken, Token);
+//			postRequest(tokenClient, setToken, Token);
+//			postRequest(tokenClient, checkToken, Token);
+//			postRequest(tokenClient, deleteToken, Token);
 
 
 			///////     REGISTRATION TEST    //////
 			//postRequest(dbServiceClient, registr, regReq1);
 			//postRequest(dbServiceClient, registr, regReq2);
-	
-/*                     client.request(methods::POST, signIn.to_string(), signInReq).then([](http_response respo){
+
+			postRequest(dbServiceClient, signIn, signInReq);
+
+/*	
+                       client.request(methods::POST, signIn.to_string(), signInReq).then([](http_response respo){
 					respo.extract_json().then([](json::value response2){
 							std::cout<<response2.to_string()<<std::endl;
 							}).wait();
@@ -154,12 +157,12 @@ int main()
                                                         }).wait();
                                         }).wait();
 */
-			client.request(methods::GET, getUserInfo.to_string()).then([](http_response respo){
+/*			client.request(methods::GET, getUserInfo.to_string()).then([](http_response respo){
                                         respo.extract_json().then([](json::value response2){
                                                         std::cout<<response2.to_string()<<std::endl;
                                                         }).wait();
                                         }).wait();
-			
+	*/		
 		} 
 		catch (http_exception e) {
 			std::cerr<<"error  "<<e.what()<<std::endl;
