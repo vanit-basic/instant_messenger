@@ -7,7 +7,6 @@
 #include <thread>
 
 #include <dbservice/database.hpp>
-#include <dbservice/mongoDb.hpp>
 #include <dbservice/dbservice.hpp>
 
 
@@ -32,11 +31,6 @@ bool DbService::getUri(std::string path) {
 }
 
 DbService::DbService(std::string path, database* m) : BasicController() {
-/*	static int count = 0;
-	if (count < 1) {
-		++count;
-		mongocxx::instance instance{};
-	}*/
 	if(getUri(path)) {
 		this->setEndpoint(dbserviceUri);
 	}
@@ -47,20 +41,6 @@ DbService::~DbService() {
 }
 
 void DbService::handleGet(http_request message) {
-	/*	auto threadfunc = [](mongocxx::client& client, std::string dbname) {
-		auto coll = client[dbname]["account"].insert_one({});
-		};
-		std::thread t([&]() {
-		auto c = poolMydb->acquire();
-		threadfunc(*c, "infoDB");
-	//	});
-
-	auto c = poolMydb->acquire();
-	std::cout<< message.to_string()<<std::endl;
-	auto path = requestPath(message);
-
-	});*/
-std::cout<< message.to_string()<<std::endl;
 auto path = requestPath(message);
 if (!(path.empty())) {
 	if (path[0] == "ServiceTest"){
@@ -71,38 +51,56 @@ if (!(path.empty())) {
 }
 }
 
-void DbService::handlePost(http_request message) {
-	//std::cout<<"message  "<<message.to_string()<<std::endl;
-	message.extract_json().then([message, this](json::value request) {
-				std::cout<<request.to_string()<<std::endl;
-				auto path = requestPath(message);
-				if (!path.empty()) {
-				if (path[0] == "check") {
-				if (path[1] == "mail&login") {
+void checkMailAndLogin(const http_request &message, const DbService *service) {
+	message.extract_json().then([message, service](json::value request) {
 				std::string mail = request.at("mail").as_string();
 				std::string login = request.at("login").as_string();
+				json::value response = service->m_db->checkMailAndLogin(mail, login);
+				message.reply(status_codes::OK, response);
+			});
+}
 
-				json::value response = m_db->checkMailAndLogin(mail, login);
-				message.reply(status_codes::OK, response);
-				} else if (path[1] == "signIn") {
-				std::string login = request.at("login").as_string();
-				std::string pass = request.at("password").as_string();
-				json::value response = m_db->loginUser(login, pass);
-				message.reply(status_codes::OK, response);
-				}
-				else{
-				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-				}
-				} else if (path[0] == "insert") {
-				if (path[1] == "registration") {
-				json::value response = m_db->registerUser(request);
-				message.reply(status_codes::OK, response);
-				}else {
-					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-				}
-				}
-				}else {
-					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-				}
-		});
+void signIn (const http_request &message, const DbService *service) {
+	message.extract_json().then([message, service](json::value request) {
+			std::string login = request.at("login").as_string();
+			std::string pass = request.at("password").as_string();
+			json::value response = service->m_db->loginUser(login, pass);
+			message.reply(status_codes::OK, response);
+			});
+}
+
+void signUp (const http_request &message, const DbService *service) {
+	message.extract_json().then([message, service](json::value request) {
+	json::value response = service->m_db->registerUser(request);
+	message.reply(status_codes::OK, response);
+			});
+}
+
+void notImplemented(const http_request &message) {
+	message.reply(status_codes::NotImplemented);
+}
+
+void DbService::handlePost(http_request message) {
+	auto path = requestPath(message);
+	if (!path.empty()) {
+		if (path[0] == "check") {
+			if (path[1] == "mail&login") {
+				checkMailAndLogin(message, this);
+			} else if (path[1] == "signIn") {
+				signIn(message, this);
+			} else {
+				notImplemented(message);
+			}
+		} else if (path[0] == "insert") {
+			if (path[1] == "registration") {
+				signUp(message, this);
+			} else {
+				notImplemented(message);
+			}
+		} else {
+			notImplemented(message);
+		}
+	} else {
+		notImplemented(message);
+	}
 }

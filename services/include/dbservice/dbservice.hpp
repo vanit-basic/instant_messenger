@@ -22,10 +22,10 @@ using namespace concurrency::streams;
 
 class DbService: public BasicController, Controller {
 	public:
+		database * m_db;
 		DbService(std::string , database*);
 		virtual ~DbService();
 	private:
-		database * m_db;
 		std::string dbserviceUri; 
 		bool getUri(std::string);
 		void handleGet(http_request message) override;
