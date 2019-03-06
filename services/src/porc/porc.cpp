@@ -157,14 +157,19 @@ int main()
 			postRequest(tokenClient, setToken, Token);
 			postRequest(tokenClient, checkToken, Token);
 			postRequest(tokenClient, deleteToken, Token);
-			
-			//std::cout<<"///////////////////     CHECK MAIL AND LOGIN(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			//postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
-			//postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq2);
+			std::cout<<std::endl;
 
-			//std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			//postRequest(dbServiceClient, registr, registrationRequest1);
-			//postRequest(dbServiceClient, registr, registrationRequest2);
+			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, registr, registrationRequest1);
+			postRequest(dbServiceClient, registr, registrationRequest2);
+			std::cout<<std::endl;
+
+			
+			std::cout<<"///////////////////     CHECK MAIL AND LOGIN(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
+			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq2);
+			std::cout<<std::endl;
+
 	
 			//std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			//postRequest(dbServiceClient, signIn, signInReq1);

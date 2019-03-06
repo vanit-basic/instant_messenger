@@ -85,8 +85,8 @@ bool MongoDB::createPool(std::string path) {
         if (configFile.is_open()) {
                 configFile >> config;
                 configFile.close();
-                this->poolMydb = new mongocxx::pool (mongocxx::uri{config.at("mongodbServer").as_string()});
-                this->poolDB = new mongocxx::pool (mongocxx::uri{config.at("mongodbServer").as_string()});
+                this->poolMydb = new mongocxx::pool (mongocxx::uri{config.at("mongodbserver").as_string()});
+                this->poolDB = new mongocxx::pool (mongocxx::uri{config.at("mongodbserver").as_string()});
                 return true;
         } else {
                 std::cerr << "ConfigFile is not exist!!!" << std::endl;
