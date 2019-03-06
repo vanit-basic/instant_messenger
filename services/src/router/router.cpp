@@ -115,162 +115,253 @@ void Router::initRestOpHandlers() {
     _listener.support(methods::POST, std::bind(&Router::handlePost, this, std::placeholders::_1));
 }
 
+bool tokenValidator(http_request){
+	if(message.headers().has("token")){
+		return true;
+	}
+	return true;
+}
+
+bool getIdValidator (http_request message){
+	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
+	if(i.find( "userId" ) != i.end()){
+		return true;
+	}
+	return false;
+}
+
 void Router::handleGet(http_request message) {
-	//if(message.headers().has("token")){
-	//	std::cout<<"message  " << message.headers().operator[]("token")<<std::endl;
-	//}
 
 	std::cout<<message.to_string()<<std::endl;
+	auto path = requestPath(message);
+	if (!(path.empty())){
 
-	json::value tokenInfo;
- 	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
+		json::value tokenInfo;
+		std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
 
-	tokenInfo["id"] = json::value::string(i.find("userId")->second);
-	tokenInfo["token"] = json::value::string(message.headers().operator[]("token"));
-	
-	uri_builder checkToken_path(U("/checkToken/"));
-	
-	TokenDbClient->request(methods::POST, checkToken_path.to_string(), tokenInfo).
-		then([message, this](http_response tokenStatus){
-				tokenStatus.extract_json().then([message, this](json::value token){
-				if(token.at("token").as_string() == "valid")
-				{ 
-					auto path = requestPath(message);
-					if(path[0] == "Account")
-					{
-					AccountClient->request(message).
-					then([message](http_response response){
-						message.reply(response);
-						});
-					}
-					else
-					{
-						if(path[0] == "Conversation")
-						{
-						ConversationClient->request(message).
-						then([message](http_response response){
-							message.reply(response);
-						});
-						}		
-						else
-						{
-							if(path[0] == "Search")
-							{
-							SearchClient->request(message).
-							then([message](http_response response){
-								message.reply(response);
-								});
-							}
-							else
-							{
-								if(path[0] == "Game")
+		bool Id = getIdValidator(message);
+		bool Token = tokenValidator(message);
+
+		if(Id && Token)
+		{
+			tokenInfo["id"] = json::value::string(i.find("userId")->second);
+			tokenInfo["token"] = json::value::string(message.headers().operator[]("token"));
+
+			uri_builder checkToken_path(U("/checkToken/"));
+
+			TokenDbClient->request(methods::POST, checkToken_path.to_string(), tokenInfo).
+				then([message, path ,this](http_response tokenStatus){
+						tokenStatus.extract_json().then([message, this](json::value token){
+								if(token.at("token").as_string() == "OK")
+								{ 
+								if(path[0] == "Account")
 								{
-								GameClient->request(message).
+								AccountClient->request(message).
 								then([message](http_response response){
-									message.reply(response);
-									});
+										message.reply(response);
+										});
 								}
 								else
 								{
-									if(path[0] == "Notification")
-									{
-									NotificationClient->request(message).
-									then([message](http_response response){
+								if(path[0] == "Conversation")
+								{
+								ConversationClient->request(message).
+								then([message](http_response response){
 										message.reply(response);
 										});
+								}		
+								else
+								{
+									if(path[0] == "Search")
+									{
+										SearchClient->request(message).
+											then([message](http_response response){
+													message.reply(response);
+													});
+									}
+									else
+									{
+										if(path[0] == "Game")
+										{
+											GameClient->request(message).
+												then([message](http_response response){
+														message.reply(response);
+														});
+										}
+										else
+										{
+											if(path[0] == "Notification")
+											{
+												NotificationClient->request(message).
+													then([message](http_response response){
+															message.reply(response);
+															});
+											}
+										}
 									}
 								}
-							}
-						}
-					}
-				}	
-				else
-				{
-					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET) );
-				}
-				});
-		}); 
+								}
+								}	
+								else
+								{
+									message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET) );
+								}
+						});
+				}); 
+		}
+		else
+		{
+			if(Id){
+				http_response resp;
+				resp.set_status_code(status_codes::OK);
+				json::value info;
+				info["status"] = json::value::string("TOKEN_IS_MISSING");
+				resp.set_body(info);
+				message.reply(resp);
+			}
+			else{
+				http_response resp;
+				resp.set_status_code(status_codes::OK);
+				json::value info;
+				info["status"] = json::value::string("USER_ID_IS_MISSING");
+				resp.set_body(info);
+				message.reply(resp);
+			}
+		}
+
+	}
+	else
+	{
+		message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET) );
+	}
+
+}
+
+bool postIdValidator (http_request message){
+	message.extract_json().
+		then([=](json::value info)
+	        {
+		if(!(info.at("userId" ).is_null())){
+			return true;
+		}
+		return false;
+	});
 }
 
 void Router::handlePost(http_request message) {
 	std::cout<<message.to_string()<<std::endl;	
 	auto checkAction = requestPath(message);
-	if(!(checkAction[1] == "registration" || checkAction[1] == "signin" || checkAction[1] == "forgotPassword"))
-	{
-		TokenDbClient->request(message).
-		then([message, this](http_response tokenStatus){
-				tokenStatus.extract_json().then([message, this](json::value token){
-				if(token.at("token").as_string() == "valid")
+	if(path.empty()){ 
+		if(!(checkAction[1] == "registration" || checkAction[1] == "signin" || checkAction[1] == "forgotPassword"))
+		{
+			json::value tokenInfo;
+			std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
+
+			bool Id = postIdValidator(message);
+			bool Token = tokenValidator(message);
+
+			if(Id && Token)
+			{
+				tokenInfo["id"] = json::value::string(i.find("userId")->second);
+				tokenInfo["token"] = json::value::string(message.headers().operator[]("token"));
+
+				uri_builder checkToken_path(U("/checkToken/"));
+				TokenDbClient->request(message).
+				then([message, this](http_response tokenStatus)
 				{
-					auto path = requestPath(message);
-					if(path[0] == "Account")
+					tokenStatus.extract_json().then([message, this](json::value token)
 					{
-					AccountClient->request(message).
-					then([message](http_response response){
-						message.reply(response);
-						});
-					}
-					else
-					{
-						if(path[0] == "Conversation")
+						if(token.at("token").as_string() == "valid")
 						{
-						ConversationClient->request(message).
-						then([message](http_response response){
-							message.reply(response);
-						});
-						}		
-						else
-						{
-							if(path[0] == "Search")
+							auto path = requestPath(message);
+							if(path[0] == "Account")
 							{
-							SearchClient->request(message).
-							then([message](http_response response){
-								message.reply(response);
+								AccountClient->request(message).
+								then([message](http_response response){
+									message.reply(response);
 								});
 							}
 							else
 							{
-								if(path[0] == "Game")
+								if(path[0] == "Conversation")
 								{
-								GameClient->request(message).
-								then([message](http_response response){
-									message.reply(response);
-									});
-								}
-								else
-								{
-									if(path[0] == "Notification")
-									{
-									NotificationClient->request(message).
+									ConversationClient->request(message).
 									then([message](http_response response){
 										message.reply(response);
-										});
+									});
+								}		
+								else
+								{
+									if(path[0] == "Search")
+									{
+										SearchClient->request(message).
+										then([message](http_response response){
+										message.reply(response);
+									});
+									}
+									else
+									{
+										if(path[0] == "Game")
+										{
+											GameClient->request(message).
+											then([message](http_response response){
+												message.reply(response);
+											});
+										}
+										else
+										{
+											if(path[0] == "Notification")
+											{
+												NotificationClient->request(message).
+												then([message](http_response response){
+													message.reply(response);
+												});
+											}
+										}
 									}
 								}
 							}
 						}
-					}
-				}
-				else
-				{
-					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET) );
-				}
-				});
-		});
-	}
-	else
-	{
-		if(checkAction[1] == "registration" || checkAction[1] == "signin" || checkAction[1] == "forgotPassword")
-		{
-			AccountClient->request(message).
-			then([message](http_response response){
-					message.reply(response);
+						else
+						{
+							message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET) );
+						}
 					});
+				});
+			}
+			else
+			{
+				if(Id){
+					http_response resp;
+					resp.set_status_code(status_codes::OK);
+					json::value info;
+					info["status"] = json::value::string("TOKEN_IS_MISSING");
+					resp.set_body(info);
+					message.reply(resp);
+				}
+				else{
+					http_response resp;
+					resp.set_status_code(status_codes::OK);
+					json::value info;
+					info["status"] = json::value::string("USER_ID_IS_MISSING");
+					resp.set_body(info);
+					message.reply(resp);
+				}
+			}
 		}
 		else
 		{
-			message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET) );
+			if(checkAction[1] == "registration" || checkAction[1] == "signin" || checkAction[1] == "forgotPassword")
+			{
+				AccountClient->request(message).
+					then([message](http_response response){
+							message.reply(response);
+							});
+			}
+			else
+			{
+				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET) );
+			}
 		}
 	}
-
 }
