@@ -40,12 +40,22 @@ using namespace concurrency::streams;
 
                 "tokenDB":"mongodb://localhost:27016",
 */
-
+void postRequest(http_client client, uri_builder uri, json::value value)
+{
+	client.request(methods::POST, uri.to_string(), value).then([](http_response response){
+			response.extract_json().then([](json::value message){
+					std::cout<<message.to_string()<<std::endl;
+					}).wait();
+			}).wait();
+}
 
 int main()
 {
-        http_client client(NetworkUtils::hostURI("http://host_auto_ip4:6508/v1/mafclub/api"));
-        http_client client1(NetworkUtils::hostURI("http://host_auto_ip4:6508/v1/mafclub/api"));
+        http_client dbServiceClient(NetworkUtils::hostURI("http://host_auto_ip4:6508/v1/mafclub/api"));
+        http_client tokenClient(NetworkUtils::hostURI("http://host_auto_ip4:6507/v1/mafclub/api"));
+        http_client routerClient(NetworkUtils::hostURI("http://host_auto_ip4:6504/v1/mafclub/api"));
+        http_client accountClient(NetworkUtils::hostURI("http://host_auto_ip4:6502/v1/mafclub/api"));
+        http_client messagingClient(NetworkUtils::hostURI("http://host_auto_ip4:6503/v1/mafclub/api"));
         uri_builder test(U("/ServiceTest"));
         uri_builder registr(U("/insert/registration"));
         uri_builder signIn(U("/check/signIn"));
@@ -60,7 +70,14 @@ int main()
         uri_builder updateGroupInfo(U("/account/updateGroupInfo?clientId=u1"));
         uri_builder groupRemoveUser(U("/account/groupRemoveUser"));
         uri_builder updateUserInfo(U("/account/updateUserInfo?clientId=u1"));
+        uri_builder checkToken(U("/checkToken"));
+        uri_builder deleteToken(U("/deleteToken"));
+        uri_builder setToken(U("/setToken"));
 
+	json::value Token;
+	Token["userId"] = json::value::string("u1");
+	Token["token"] = json::value::string("asdasdasdasdasd54564asd");
+	
 	json::value regReq2;
         regReq2["firstName"] = json::value::string("Valod");
         regReq2["lastName"] = json::value::string("Valodyan");
@@ -109,32 +126,24 @@ int main()
 	req.set_request_uri(U("Account/getUserInfo?clientId=u1"));
         int count = 0;
 	do{
-                try {
+		try {
                         ++count;
-/*			regReq1["count"] = json::value::string(std::to_string(count));
-			regReq2["count"] = json::value::string(std::to_string(count));
-                     client.request(methods::POST, registr.to_string(), regReq2).then([](http_response resp){
-					resp.extract_json().then([](json::value response1){
-							std::cout<<response1.to_string()<<std::endl;
-                                        }).wait();
-							}).wait();
-		     //usleep(1000000);
-                     client.request(methods::POST, registr.to_string(), regReq1).then([](http_response respo){
-					respo.extract_json().then([](json::value response2){
-							std::cout<<response2.to_string()<<std::endl;
-							}).wait();
-					}).wait();
-*/                        
-		     
-		     	pplx::task<web::http::http_response> requestTask = client.request(methods::GET, deleteUser.to_string());
-                        requestTask.then([](http_response resp){std::cout<<resp.to_string()<<std::endl;});
-                        requestTask.wait();
-                } catch (http_exception e) {
-                        std::cerr<<"error  "<<e.what()<<std::endl;
+			//////////      TOKEN  DB  SERVICE TEST   /////////////
+			postRequest(tokenClient, setToken, Token);
+			postRequest(tokenClient, checkToken, Token);
+			postRequest(tokenClient, deleteToken, Token);
+
+
+			///////     REGISTRATION TEST    //////
+			//postRequest(dbServiceClient, registr, regReq1);
+			//postRequest(dbServiceClient, registr, regReq2);
+	
+			
+		} 
+		catch (http_exception e) {
+			std::cerr<<"error  "<<e.what()<<std::endl;
                 }
-
-
-
+			usleep(1000000);
 	}
 	while(count < 1);
 /*	while(1)
