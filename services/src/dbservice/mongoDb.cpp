@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <thread>
 
-//#include <bsoncxx/array/view.hpp>
 #include <bsoncxx/builder/basic/array.hpp>
 #include <bsoncxx/json.hpp>
 #include <mongocxx/client.hpp>
@@ -18,6 +17,9 @@
 #include <cpprest/http_client.h>
 #include <cpprest/filestream.h>
 #include <bsoncxx/types.hpp>
+
+#include <bsoncxx/document/value.hpp>
+//#include <mongocxx/document/array.hpp>
 
 #include <dbservice/mongoDb.hpp>
 #include <dbservice/database.hpp>
@@ -34,6 +36,7 @@ using namespace web;
 using namespace web::http;
 using namespace web::http::client;
 using namespace concurrency::streams;
+//using namespace bsoncxx::array;
 //using namespace bsoncxx;
 
 bool MongoDB::setToken(json::value token)
@@ -473,21 +476,22 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		element = docInfo["statistics"]["killed"];
 		std::string killed = std::to_string(element.get_int32().value);
 
-		/*std::string users = "";
-		std::string field_key = "groups";
-		json::array::element ele = doc["groups"];
-		for (document::element ele : view) {
+		
+		/*bsoncxx::array::element value = doc["public"];
+		bsoncxx::array::view view = value.view();
+		for (bsoncxx::document::element ele : view) {
 	        	stdx::string_view field_key{ele.key()};
-			array::view subarr = ele.get_utf8().get_array().value;
-			for (array::element ele : subarr) {
-				users += bsoncxx::string::to_string(ele.get_utf8().value) + ",";
+		}
 
-			}
+		bsoncxx::array::view subarr = ele.get_array().value;
+                for (bsoncxx::array::element ele : subarr) {
+			std::cout << "array element: "
+				<< bsoncxx::string::to_string(ele.get_utf8().value) << std::endl;
 		}*/
 
-                response["firstName"] = json::value::string(firstName);
-                response["lastName"] = json::value::string(lastName);
-                response["nickname"] = json::value::string(nickname);
+		response["firstName"] = json::value::string(firstName);
+		response["lastName"] = json::value::string(lastName);
+		response["nickname"] = json::value::string(nickname);
 		response["level"] = json::value::string(level);
 		response["playedGames"] = json::value::string(playedGames);
 		response["redCard"] = json::value::string(redCard);
@@ -498,10 +502,10 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		response["fails"] = json::value::string(fails);
 		response["killed"] = json::value::string(killed);
 
-        } else {
-                response["infoStatus"] = json::value::string("unknownID");
+	} else {
+       		response["infoStatus"] = json::value::string("unknownID");
         }
-	
+*/	
 	return response;
 }
 
