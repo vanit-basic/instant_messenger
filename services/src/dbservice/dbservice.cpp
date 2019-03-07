@@ -41,15 +41,22 @@ DbService::~DbService() {
 }
 
 void DbService::handleGet(http_request message) {
-std::cout<< message.to_string()<<std::endl;
-auto path = requestPath(message);
-if (!(path.empty())) {
-	if (path[0] == "ServiceTest"){
-		message.reply(status_codes::OK, "DbService_Start");
+	std::cout<< message.to_string()<<std::endl;
+	auto path = requestPath(message);
+	if (!(path.empty())) {
+		if (path[0] == "ServiceTest"){
+			message.reply(status_codes::OK, "DbService_Start");
+/*		} else if (path[0] == "account") {
+			if (path[1] == "getUserInfo") {
+				std::string id = //.at("id").as_string();
+				json::value response = m_db->getUserInfo(id);
+				message.reply(status_codes::OK, response);
+			}*/
+		}
+		else{
+			message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+		}
 	}
-}else{
-	message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-}
 }
 
 void DbService::handlePost(http_request message) {
@@ -80,11 +87,7 @@ void DbService::handlePost(http_request message) {
 						message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 				}
 			}else if (path[0] == "account") {
-                                        if (path[1] == "getUserInfo") {
-                                                std::string id = request.at("id").as_string();
-                                                json::value response = m_db->getUserInfo(id);
-                                                message.reply(status_codes::OK, response);
-                                        } else if (path[1] == "createGroup") {
+                                        if (path[1] == "createGroup") {
                                                 std::cout<<__LINE__<<std::endl;
                                                         json::value response = m_db->createGroup(request);
                                                         message.reply(status_codes::OK, response);

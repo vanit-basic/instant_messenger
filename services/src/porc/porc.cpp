@@ -178,19 +178,18 @@ int main()
 			std::cout<<std::endl;
 */
 	
-			//std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			//postRequest(dbServiceClient, signIn, signInReq1);
+			  std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			  postRequest(dbServiceClient, signIn, signInReq1);
 			//postRequest(dbServiceClient, signIn, signInReq2);
 			
 			//std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			//getRequest(dbServiceClient, getUserInfo1);
 			//getRequest(dbServiceClient, getUserInfo2);
-			
 			std::cout<<std::endl;
+			
 			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, createGroup, createGroupReq);
 			
-			getRequest(dbServiceClient, getUserInfo1);	
 		} 
 		catch (http_exception e) {
 			std::cerr<<"error  "<<e.what()<<std::endl;

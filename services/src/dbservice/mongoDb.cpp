@@ -232,6 +232,7 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		
 		bsoncxx::document::element element = docInfo["id"];
 		std::string id = element.get_utf8().value.to_string();
+		std::cout << "ID  " << id <<std::endl;
 
 		element = docInfo["firstName"];
 		std::string firstName = element.get_utf8().value.to_string();
@@ -249,31 +250,33 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		std::string gender = element.get_utf8().value.to_string();
 		
 		element = docInfo["level"];
-		std::string level = element.get_utf8().value.to_string();
+		std::string level = std::to_string(element.get_int32().value);
+		std::cout << "LEVEL  " << level <<std::endl;
 		
 		element = docInfo["statistics"]["playedGames"];
-		std::string playedGames = element.get_utf8().value.to_string();
+		std::string playedGames = std::to_string(element.get_int32().value);
 
 		element = docInfo["statistics"]["redCard"];
-		std::string redCard = element.get_utf8().value.to_string();
+		std::string redCard = std::to_string(element.get_int32().value);
 		
 		element = docInfo["statistics"]["blackCard"];
-		std::string blackCard = element.get_utf8().value.to_string();
+		std::string blackCard = std::to_string(element.get_int32().value);
 		
 		element = docInfo["statistics"]["sheriff"];
-		std::string sheriff = element.get_utf8().value.to_string();
+		std::string sheriff = std::to_string(element.get_int32().value);
 
 		element = docInfo["statistics"]["don"];
-		std::string don = element.get_utf8().value.to_string();
+		std::string don = std::to_string(element.get_int32().value);
+		std::cout << "DON  " << don <<std::endl;
 		
 		element = docInfo["statistics"]["wins"];
-		std::string wins = element.get_utf8().value.to_string();
+		std::string wins = std::to_string(element.get_int32().value);
 		
 		element = docInfo["statistics"]["fails"];
-		std::string fails = element.get_utf8().value.to_string();
+		std::string fails = std::to_string(element.get_int32().value);
 		
 		element = docInfo["statistics"]["killed"];
-		std::string killed = element.get_utf8().value.to_string();
+		std::string killed = std::to_string(element.get_int32().value);
 
 		element = docInfo["email"];
 		std::string mail = element.get_utf8().value.to_string();
@@ -357,32 +360,34 @@ json::value MongoDB::getUserInfo(std::string id) {
 		element = doc["gender"];
 		std::string gender = element.get_utf8().value.to_string();
 
-		element = doc["level"];
-		std::string level = element.get_utf8().value.to_string();
+		element = docInfo["level"];
+		std::string level = std::to_string(element.get_int32().value);
+		std::cout << "LEVEL  " << level <<std::endl;
 		
-		element = doc["statistics"]["playedGames"];
-		std::string playedGames = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["playedGames"];
+		std::string playedGames = std::to_string(element.get_int32().value);
 
-		element = doc["statistics"]["redCard"];
-		std::string redCard = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["redCard"];
+		std::string redCard = std::to_string(element.get_int32().value);
 		
-		element = doc["statistics"]["blackCard"];
-		std::string blackCard = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["blackCard"];
+		std::string blackCard = std::to_string(element.get_int32().value);
 		
-		element = doc["statistics"]["sheriff"];
-		std::string sheriff = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["sheriff"];
+		std::string sheriff = std::to_string(element.get_int32().value);
 
-		element = doc["statistics"]["don"];
-		std::string don = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["don"];
+		std::string don = std::to_string(element.get_int32().value);
+		std::cout << "DON  " << don <<std::endl;
 		
-		element = doc["statistics"]["wins"];
-		std::string wins = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["wins"];
+		std::string wins = std::to_string(element.get_int32().value);
 		
-		element = doc["statistics"]["fails"];
-		std::string fails = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["fails"];
+		std::string fails = std::to_string(element.get_int32().value);
 		
-		element = doc["statistics"]["killed"];
-		std::string killed = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["killed"];
+		std::string killed = std::to_string(element.get_int32().value);
 
 		element = doc["email"];
 		std::string mail = element.get_utf8().value.to_string();
@@ -439,34 +444,36 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		element = doc["nickname"];
                 std::string nickname = element.get_utf8().value.to_string();
 
-		element = doc["level"];
-		std::string level = element.get_utf8().value.to_string();
+		element = docInfo["level"];
+		std::string level = std::to_string(element.get_int32().value);
+		std::cout << "LEVEL  " << level <<std::endl;
 		
-		element = doc["statistics"]["playedGames"];
-		std::string playedGames = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["playedGames"];
+		std::string playedGames = std::to_string(element.get_int32().value);
 
-		element = doc["statistics"]["redCard"];
-		std::string redCard = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["redCard"];
+		std::string redCard = std::to_string(element.get_int32().value);
 		
-		element = doc["statistics"]["blackCard"];
-		std::string blackCard = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["blackCard"];
+		std::string blackCard = std::to_string(element.get_int32().value);
 		
-		element = doc["statistics"]["sheriff"];
-		std::string sheriff = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["sheriff"];
+		std::string sheriff = std::to_string(element.get_int32().value);
 
-		element = doc["statistics"]["don"];
-		std::string don = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["don"];
+		std::string don = std::to_string(element.get_int32().value);
+		std::cout << "DON  " << don <<std::endl;
 		
-		element = doc["statistics"]["wins"];
-		std::string wins = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["wins"];
+		std::string wins = std::to_string(element.get_int32().value);
 		
-		element = doc["statistics"]["fails"];
-		std::string fails = element.get_utf8().value.to_string();
-	
-		element = doc["statistics"]["killed"];
-		std::string killed = element.get_utf8().value.to_string();
+		element = docInfo["statistics"]["fails"];
+		std::string fails = std::to_string(element.get_int32().value);
+		
+		element = docInfo["statistics"]["killed"];
+		std::string killed = std::to_string(element.get_int32().value);
 
-		std::string users = "";
+		/*std::string users = "";
 		std::string field_key = "groups";
 		json::array::element ele = doc["groups"];
 		for (document::element ele : view) {
@@ -474,10 +481,9 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 			array::view subarr = ele.get_utf8().get_array().value;
 			for (array::element ele : subarr) {
 				users += bsoncxx::string::to_string(ele.get_utf8().value) + ",";
+
 			}
-		}
-
-
+		}*/
 
                 response["firstName"] = json::value::string(firstName);
                 response["lastName"] = json::value::string(lastName);
@@ -510,8 +516,7 @@ json::value MongoDB::getGroupUsers(std::string groupId) {
 	if (result) {
 		bsoncxx::document::view doc = result->view();
 		bsoncxx::document::element count = doc["usersQuantity"];
-		std::string usersQuantity = count.get_utf8().value.to_string();
-                int n = std::stoi(usersQuantity);
+		std::string n = count.get_int32().value;
 		
 		std::string allUsers = "";
 		for (int i = 0; i < n; ++i) {
@@ -547,7 +552,7 @@ json::value MongoDB::getGroupShortInfo(std::string groupId) {
                 std::string groupName = element.get_utf8().value.to_string();
 
                 element = doc["usersQuantity"];
-                std::string count = element.get_utf8().value.to_string();
+                std::string count = std::to_string(element.get_int32().value);
 
                 response["groupName"] = json::value::string(groupName);
                 response["usersQuantity"] = json::value::string(count);
