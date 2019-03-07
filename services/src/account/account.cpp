@@ -567,7 +567,7 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 						}
 				}
 				http_response resp;
-				resp.set_status_code(status_codes::OK);//statusy chgitem incha ylnelu 
+				resp.set_status_code(status_codes::OK);
 				json::value info;
 				info["status"] = json::value::string("GROUP_NOT_FOUND");
 				resp.set_body(info);
