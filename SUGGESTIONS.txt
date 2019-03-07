@@ -1,0 +1,1 @@
+1) Possibility to remove a user via voting (Քվեարկության միջոցով յուզերին հեռացնել)
