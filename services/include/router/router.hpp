@@ -42,7 +42,7 @@ class Router : public BasicController, Controller {
     public:
         bool checkServices();
         Router(std::string);
-        ~Router() {}
+        ~Router();
 
     private:
         std::string routerUri;
