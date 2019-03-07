@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <thread>
 
+//#include <bsoncxx/array/view.hpp>
+#include <bsoncxx/builder/basic/array.hpp>
 #include <bsoncxx/json.hpp>
 #include <mongocxx/client.hpp>
 #include <mongocxx/stdx.hpp>
@@ -32,6 +34,7 @@ using namespace web;
 using namespace web::http;
 using namespace web::http::client;
 using namespace concurrency::streams;
+//using namespace bsoncxx;
 
 bool MongoDB::setToken(json::value token)
 {
@@ -354,7 +357,6 @@ json::value MongoDB::getUserInfo(std::string id) {
 		element = doc["gender"];
 		std::string gender = element.get_utf8().value.to_string();
 
-
 		element = doc["level"];
 		std::string level = element.get_utf8().value.to_string();
 		
@@ -431,7 +433,10 @@ json::value MongoDB::getUserShortInfo(std::string id) {
                 element = doc["lastName"];
                 std::string lastName = element.get_utf8().value.to_string();
 
-                element = doc["nickname"];
+                element = doc["groupsQuantity"];
+                std::string count = element.get_utf8().value.to_string();
+
+		element = doc["nickname"];
                 std::string nickname = element.get_utf8().value.to_string();
 
 		element = doc["level"];
@@ -457,9 +462,22 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		
 		element = doc["statistics"]["fails"];
 		std::string fails = element.get_utf8().value.to_string();
-		
+	
 		element = doc["statistics"]["killed"];
 		std::string killed = element.get_utf8().value.to_string();
+
+		std::string users = "";
+		std::string field_key = "groups";
+		json::array::element ele = doc["groups"];
+		for (document::element ele : view) {
+	        	stdx::string_view field_key{ele.key()};
+			array::view subarr = ele.get_utf8().get_array().value;
+			for (array::element ele : subarr) {
+				users += bsoncxx::string::to_string(ele.get_utf8().value) + ",";
+			}
+		}
+
+
 
                 response["firstName"] = json::value::string(firstName);
                 response["lastName"] = json::value::string(lastName);
@@ -478,6 +496,40 @@ json::value MongoDB::getUserShortInfo(std::string id) {
                 response["infoStatus"] = json::value::string("unknownID");
         }
 	
+	return response;
+}
+
+json::value MongoDB::getGroupUsers(std::string groupId) {
+	auto c3 = poolMydb->acquire();
+        auto coll3 = (*c3)["infoDB"]["groupInfo"];
+	auto response = json::value::object();
+
+        bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll3.find_one(document{} << "groupId" << groupId << finalize);
+	
+	if (result) {
+		bsoncxx::document::view doc = result->view();
+		bsoncxx::document::element count = doc["usersQuantity"];
+		std::string usersQuantity = count.get_utf8().value.to_string();
+                int n = std::stoi(usersQuantity);
+		
+		std::string allUsers = "";
+		for (int i = 0; i < n; ++i) {
+			bsoncxx::array::element element = doc["memebers"][i];
+			std::string user = element.get_utf8().value.to_string();
+                	if (i == n) {
+                	        allUsers += user;
+                	} else {
+                	        allUsers += user + ",";
+                	}
+        	}
+
+		response["members"] = json::value::string(allUsers);
+		response["status"] = json::value::string("OK");
+	} else {
+		response["status"] = json::value::string("INVALID_MAIL");
+	}
+
 	return response;
 }
 

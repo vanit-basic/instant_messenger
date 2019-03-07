@@ -242,10 +242,11 @@ http_response userDelete(std::string userId, http_client* DataBaseClient){
 }
 
 
-http_response signOut(std::string userId, http_client* TokenDb){
+http_response signOut(std::string userId, std::string token, http_client* TokenDb){
 	uri_builder deleteToken("/deleteToken");
 	json::value userIdInfo;
 	userIdInfo["userId"] = json::value::string(userId);
+	userIdInfo["token"] = json::value::string(token);
 	TokenDb->request(methods::POST, deleteToken.to_string(), userIdInfo).
 	then([=](http_response status)
 	{
@@ -257,7 +258,6 @@ http_response signOut(std::string userId, http_client* TokenDb){
 
 
 void Account::handleGet(http_request message) {
-		std::cout<<"message  " << message.headers().operator[]("token")<<std::endl;
 	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
 	std::map<std::string, std::string>::iterator it;
 
@@ -344,10 +344,11 @@ void Account::handleGet(http_request message) {
 						if(path_first_request[1] == "signOut")
 						{
 							std::string userId = "";
+							std::string token = message.headers().operator[]("token");
 							userId = i.find("userId")->second;
 							if(!(userId == ""))
 							{
-								auto resp = signOut(userId, this->TokenDBClient);
+								auto resp = signOut(userId, token, this->TokenDBClient);
 								message.reply(resp);
 							}
 							else
@@ -408,8 +409,7 @@ void registration(http_request message , http_client* DataBaseClient, http_clien
 			{
 				if(mail_login_json.at("mailStatus").as_string() == "notUsing" && mail_login_json.at("loginStatus").as_string() == "notUsing")
 				{
-					uri_builder reg_path(U("/insert"));
-					DataBaseClient->request(methods::POST,  reg_path.to_string(), info).
+					DataBaseClient->request(message).
 					then([=](http_response registration_response)
 					{
 						registration_response.extract_json().
@@ -417,7 +417,7 @@ void registration(http_request message , http_client* DataBaseClient, http_clien
 						{
 							if("SUCCESSFULLY_REGISTERED" == regInfo.at("status").as_string())
 							{
-								std::string token = setToken();
+								std::string token = getToken();
 								uri_builder token_uri("/SetToken/");
 								json::value token_json;
 								token_json["token"] = json::value::string(token);
@@ -508,7 +508,7 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 							then([=](json::value userInf)
 							{
 								json::value userInfo = userInf;
-								std::string token = setToken();
+								std::string token = getToken();
 								uri_builder token_uri("/SetToken/");
 								json::value token_json;
 								token_json["token"] = json::value::string(token);

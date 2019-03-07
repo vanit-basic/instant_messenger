@@ -51,7 +51,9 @@ class database {
 		virtual json::value updateUserInfo(json::value user) = 0;
 	
 		//group related queries
-	
+
+                virtual json::value getGroupUsers(std::string groupId) = 0;
+
 		virtual json::value getGroupShortInfo(std::string groupId) = 0;
 		
 		virtual json::value createGroup(json::value groupInfo) = 0;
