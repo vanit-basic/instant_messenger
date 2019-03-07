@@ -134,7 +134,8 @@ bool ServiceStart (http_client* client, std::string serviceName) {
         } catch (http_exception e) {
             error = e.error_code();
             std::cerr<<e.what()<<std::endl;
-        }}
+        }
+    }
     while (error.value());
     return true;
 }
@@ -180,8 +181,17 @@ Router::Router(std::string path)
     this->createClients(path);
 }
 
+Router::~Router()
+{
+	delete[] TokenDbClient;
+	delete[] AccountClient;
+	delete[] GameClient;
+	delete[] ConversationClient;
+	delete[] NotificationClient;
+	delete[] SearchClient;
+}
 
-void Router::initRestOpHandlers() {
+void Router::initRestOpHandlers(){
     _listener.support(methods::GET, std::bind(&Router::handleGet, this, std::placeholders::_1));
     _listener.support(methods::POST, std::bind(&Router::handlePost, this, std::placeholders::_1));
 }
@@ -220,19 +230,17 @@ bool checkToken (std::string id, std::string token, http_client* tokenService) {
     json::value tokenInfo;
     tokenInfo["id"] = json::value::string(id);
     tokenInfo["token"] = json::value::string(token);
-    uri_builder checkToken_path(U("/checkToken/"));
+    uri_builder checkToken_path(U("/checkToken"));
     http_response tokenStatus = tokenService->request(methods::POST, checkToken_path.to_string(), tokenInfo).get();
     json::value tokenJson  = tokenStatus.extract_json().get();
-    if(tokenJson.at("token").as_string() != "OK")
+    if(tokenJson.at("status").as_string() != "OK")
     { 
         return false;
     }
     return true;
 }
 
-RequestStatus validateRequest(
-                        http_request request, std::vector<std::string> urlPath, 
-                        http_client* tokenService, bool authorized = true) 
+RequestStatus validateRequest  (http_request request, std::vector<std::string> urlPath, http_client* tokenService, bool authorized = true)
 {
     std::string id = extractID(request);
     std::string token = extractToken(request);
@@ -316,7 +324,7 @@ void Router::handleGet(http_request message) {
     std::string serviceName = urlPath[0];
 
     ServiceType servType = serviceTypeFromString(serviceName);
-    http_client *service = serviceClient(servType);
+    http_client *service = serviceClient(servType);//??????????????????
 
     service->request(message).then([message](http_response response){
             message.reply(response);
@@ -331,8 +339,10 @@ void Router::handlePost(http_request message) {
     bool authorized = isAuthorizedAction(action);
 
     RequestStatus status = validateRequest(message, urlPath, TokenDbClient, authorized);
-    if(status != RequestStatusValid) return replyToInvalidRequest(status, message);
-
+    if(status != RequestStatusValid)
+    { 
+	    return replyToInvalidRequest(status, message);
+    }
 
     std::string serviceName = urlPath[0];
 
