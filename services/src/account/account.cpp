@@ -165,7 +165,7 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 				groupUsers.extract_json().
 				then([=](json::value groupUsersResp)
 				{
-					if(!(groupUsersResp.at(userId).is_null()))
+					if(!(groupUsersResp.at(userId).is_null()))//poxel
 					{
 						return groupShortInfo;
 					}
@@ -173,7 +173,7 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 					{
 						http_response resp;
 						json::value groupShortInfoResp;
-						groupShortInfoResp["status"] = json::value::string("Not Found");
+						groupShortInfoResp["status"] = json::value::string("Not Found");//status@ poxel
 						resp.set_body(groupShortInfoResp);
 						return resp;
 					}
@@ -201,7 +201,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 				groupUsers.extract_json().
 				then([=](json::value groupUsersResp)
 				{
-					if(!(groupUsersResp.at(userId).is_null()))
+					if(!(groupUsersResp.at(userId).is_null()))//poxel
 					{
 						return groupInfo;
 					}
@@ -209,7 +209,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 					{
 						http_response resp;
 						json::value groupInfoResp;
-						groupInfoResp["status"] = json::value::string("Not Found");
+						groupInfoResp["status"] = json::value::string("Not Found");//status@ poxel
 						resp.set_body(groupInfoResp);
 						return resp;
 					}
@@ -226,7 +226,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 
 http_response userDelete(std::string userId, http_client* DataBaseClient){
 	json::value userDeleteInfo;
-	uri_builder userDelete_path(U("/userDelete/"));
+	uri_builder userDelete_path(U("/userDelete"));
 	userDeleteInfo["userId"] = json::value::string(userId);
 	DataBaseClient->request(methods::POST, userDelete_path.to_string(), userDeleteInfo).
 	then([=](http_response status){
@@ -236,7 +236,7 @@ http_response userDelete(std::string userId, http_client* DataBaseClient){
 
 
 http_response signOut(std::string userId, http_client* TokenDb){
-	uri_builder deleteToken("/deleteToken/");
+	uri_builder deleteToken("/deleteToken");
 	json::value userIdInfo;
 	userIdInfo["userId"] = json::value::string(userId);
 	TokenDb->request(methods::POST, deleteToken.to_string(), userIdInfo).
@@ -250,15 +250,9 @@ http_response signOut(std::string userId, http_client* TokenDb){
 
 
 void Account::handleGet(http_request message) {
-	if(message.headers().has("token")){
 		std::cout<<"message  " << message.headers().operator[]("token")<<std::endl;
-	}
 	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
 	std::map<std::string, std::string>::iterator it;
-	for (it = i.begin(); it!=i.end(); ++it)
-	{
-		std::cout<<(it->first)<<"   "<<(it->second)<<std::endl;
-	}
 
 	auto path_first_request = requestPath(message);
 	if (!(path_first_request.empty())) 
