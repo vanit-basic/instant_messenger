@@ -57,19 +57,23 @@ Page{
                 }
                 Popup{
                     id:notpopup
-                    x:homePage.width - width - 15
+                    x: bar.x
                     y:notifications.y + notifications.height + 3
-                    width: homePage.width/2 + 80
+                    width: bar.width
                     height: homePage.height/2
-                    visible: false
+                    visible: tab.currentIndex !== 1 ? false : false
                     clip:true
+                    background:Rectangle {
+                        radius: 20
+                    }
+
                     exit: Transition {
                         NumberAnimation {properties: "height"; from: notpopup.height; to: 0; easing.type: Easing.Linear }
                     }
                     enter: Transition {
                         NumberAnimation { properties: "height"; from: 0; to: homePage.height/2; easing.type: Easing.Linear }
                     }
-                    closePolicy: Popup.CloseOnPressOutside
+                    closePolicy: Popup.CloseOnReleaseOutsideParent
                     contentData: ListView{
                         id:notList
                         anchors.fill: parent
@@ -97,7 +101,7 @@ Page{
                             width:notList.width
                             height: 35
                             Rectangle{
-                                color: "#007399"
+                                //color: "#007399"
                                 anchors.fill: parent
                                 Image{
                                     id: notImage

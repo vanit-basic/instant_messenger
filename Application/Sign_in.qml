@@ -249,7 +249,7 @@ Page{
             id:instay
             property: "y"
             target: button2
-            from: button2.y
+            //from: button2.y
             to: column.y+column.height
             duration: 500
 
