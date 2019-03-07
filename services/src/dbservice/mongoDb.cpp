@@ -363,33 +363,33 @@ json::value MongoDB::getUserInfo(std::string id) {
 		element = doc["gender"];
 		std::string gender = element.get_utf8().value.to_string();
 
-		element = docInfo["level"];
+		element = doc["level"];
 		std::string level = std::to_string(element.get_int32().value);
 		std::cout << "LEVEL  " << level <<std::endl;
 		
-		element = docInfo["statistics"]["playedGames"];
+		element = doc["statistics"]["playedGames"];
 		std::string playedGames = std::to_string(element.get_int32().value);
 
-		element = docInfo["statistics"]["redCard"];
+		element = doc["statistics"]["redCard"];
 		std::string redCard = std::to_string(element.get_int32().value);
 		
-		element = docInfo["statistics"]["blackCard"];
+		element = doc["statistics"]["blackCard"];
 		std::string blackCard = std::to_string(element.get_int32().value);
 		
-		element = docInfo["statistics"]["sheriff"];
+		element = doc["statistics"]["sheriff"];
 		std::string sheriff = std::to_string(element.get_int32().value);
 
-		element = docInfo["statistics"]["don"];
+		element = doc["statistics"]["don"];
 		std::string don = std::to_string(element.get_int32().value);
 		std::cout << "DON  " << don <<std::endl;
 		
-		element = docInfo["statistics"]["wins"];
+		element = doc["statistics"]["wins"];
 		std::string wins = std::to_string(element.get_int32().value);
 		
-		element = docInfo["statistics"]["fails"];
+		element = doc["statistics"]["fails"];
 		std::string fails = std::to_string(element.get_int32().value);
 		
-		element = docInfo["statistics"]["killed"];
+		element = doc["statistics"]["killed"];
 		std::string killed = std::to_string(element.get_int32().value);
 
 		element = doc["email"];
@@ -427,7 +427,7 @@ json::value MongoDB::getUserInfo(std::string id) {
 json::value MongoDB::getUserShortInfo(std::string id) {
 	auto response = json::value::object();
         auto c1 = poolMydb->acquire();
-        auto coll1 = (*c1)["infoDB"]["userInfo"];
+        auto coll1 = (*c1)["infoDB"]["account"];
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll1.find_one(document{} << "id" << id << finalize);
@@ -447,33 +447,33 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		element = doc["nickname"];
                 std::string nickname = element.get_utf8().value.to_string();
 
-		element = docInfo["level"];
+		element = doc["level"];
 		std::string level = std::to_string(element.get_int32().value);
 		std::cout << "LEVEL  " << level <<std::endl;
 		
-		element = docInfo["statistics"]["playedGames"];
+		element = doc["statistics"]["playedGames"];
 		std::string playedGames = std::to_string(element.get_int32().value);
 
-		element = docInfo["statistics"]["redCard"];
+		element = doc["statistics"]["redCard"];
 		std::string redCard = std::to_string(element.get_int32().value);
 		
-		element = docInfo["statistics"]["blackCard"];
+		element = doc["statistics"]["blackCard"];
 		std::string blackCard = std::to_string(element.get_int32().value);
 		
-		element = docInfo["statistics"]["sheriff"];
+		element = doc["statistics"]["sheriff"];
 		std::string sheriff = std::to_string(element.get_int32().value);
 
-		element = docInfo["statistics"]["don"];
+		element = doc["statistics"]["don"];
 		std::string don = std::to_string(element.get_int32().value);
 		std::cout << "DON  " << don <<std::endl;
 		
-		element = docInfo["statistics"]["wins"];
+		element = doc["statistics"]["wins"];
 		std::string wins = std::to_string(element.get_int32().value);
 		
-		element = docInfo["statistics"]["fails"];
+		element = doc["statistics"]["fails"];
 		std::string fails = std::to_string(element.get_int32().value);
 		
-		element = docInfo["statistics"]["killed"];
+		element = doc["statistics"]["killed"];
 		std::string killed = std::to_string(element.get_int32().value);
 
 		
@@ -505,7 +505,7 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 	} else {
        		response["infoStatus"] = json::value::string("unknownID");
         }
-*/	
+	
 	return response;
 }
 
@@ -520,7 +520,7 @@ json::value MongoDB::getGroupUsers(std::string groupId) {
 	if (result) {
 		bsoncxx::document::view doc = result->view();
 		bsoncxx::document::element count = doc["usersQuantity"];
-		std::string n = count.get_int32().value;
+		int n = count.get_int32().value;
 		
 		std::string allUsers = "";
 		for (int i = 0; i < n; ++i) {
@@ -570,24 +570,28 @@ json::value MongoDB::getGroupShortInfo(std::string groupId) {
 }
 
 json::value MongoDB::updateUserInfo(json::value user) {
+	std::cout << __LINE__ << std::endl;
 	auto response = json::value::object();
         auto c1 = poolMydb->acquire();
-        auto coll1 = (*c1)["infoDB"]["userInfo"];
-        std::string id = user.at("id").as_string();
+        auto coll1 = (*c1)["infoDB"]["account"];
+        std::string id = user.at("userId").as_string();
 	std::string newNickname = user.at("nickname").as_string();
 	std::string newFirstname = user.at("firstName").as_string();
 	std::string newLastname = user.at("lastName").as_string();
         
+	std::cout << __LINE__ << std::endl;
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll1.find_one(document{} << "id" << id << finalize);
 
         if (result) {
+	std::cout << __LINE__ << std::endl;
 		bsoncxx::document::view doc = result->view();
 
                 bsoncxx::document::element element = doc["firstName"];
                 std::string firstName = element.get_utf8().value.to_string();
 
 		if (firstName.compare(newFirstname) == 0 && newFirstname.compare("") != 0) {
+	std::cout << __LINE__ << std::endl;
 			coll1.update_one(document{} << "id" << id << finalize,
                       		document{} << "$set" << open_document <<
                       		"firstName" << newFirstname << close_document << finalize);	
@@ -597,6 +601,7 @@ json::value MongoDB::updateUserInfo(json::value user) {
                 std::string lastName = element.get_utf8().value.to_string();
 
 		if (lastName.compare(newLastname) == 0 && newLastname.compare("") != 0) {
+	std::cout << __LINE__ << std::endl;
 			coll1.update_one(document{} << "id" << id << finalize,
                       		document{} << "$set" << open_document <<
                       		"lastName" << newLastname << close_document << finalize);
@@ -606,11 +611,13 @@ json::value MongoDB::updateUserInfo(json::value user) {
                 std::string nickname = element.get_utf8().value.to_string();
 		
 		if (nickname.compare(newNickname) == 0 && newNickname.compare("") != 0) {
+	std::cout << __LINE__ << std::endl;
 			coll1.update_one(document{} << "id" << id << finalize,
                       		document{} << "$set" << open_document <<
                       		"nickname" << newNickname << close_document << finalize);
 		}
 
+	std::cout << __LINE__ << std::endl;
                 response = getUserInfo(id);
                 response["status"] = json::value::string("OK");
 
@@ -642,21 +649,25 @@ json::value MongoDB::deleteUser(std::string id){
         auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
         auto c3 = poolMydb->acquire();
-        auto coll1 = (*c1)["infoDB"]["userInfo"];
+        auto coll1 = (*c1)["infoDB"]["account"];
         auto coll2 = (*c2)["passDB"]["signin"];
         auto coll3 = (*c3)["infoDB"]["groupInfo"];
         auto response = json::value::object();
 
+	std::cout << __LINE__ << std::endl;
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll3.find_one(document{} << "userId" << id << finalize);
+                coll1.find_one(document{} << "id" << id << finalize);
 
         if (result) {
+	std::cout << __LINE__ << std::endl;
                 bsoncxx::document::view doc = result->view();
 
-                auto count = doc["groupsQuantity"];
-                int n = std::stoi(count.get_utf8().value.to_string());
+           /*     auto count = doc["groupsQuantity"];
+        	int n = count.get_int32().value;
 
+		if (n != 0) {
                 for (int i = 0; i < n; ++i) {
+	std::cout << __LINE__ << std::endl;
                         bsoncxx::array::element element = doc["groups"][i];
                         std::string group = element.get_utf8().value.to_string();
                                 bsoncxx::stdx::optional<mongocxx::result::update> deleteResult =
@@ -670,17 +681,23 @@ json::value MongoDB::deleteUser(std::string id){
                                         document{} << "$inc" << open_document <<
                                         "usersQunatity" << -1 << close_document << finalize);
                 }
-
+		}
+*/
+	std::cout << __LINE__ << std::endl;
                 bsoncxx::stdx::optional<mongocxx::result::delete_result> result1 =
                         coll1.delete_one(document{} << "id" << id << finalize);
+	std::cout << __LINE__ << std::endl;
 
                 bsoncxx::stdx::optional<mongocxx::result::delete_result> result2 =
                         coll2.delete_one(document{} << "id" << id << finalize);
+	std::cout << __LINE__ << std::endl;
 
                 bsoncxx::stdx::optional<mongocxx::result::delete_result> result3 =
                         coll3.delete_many(document{} << "id" << id << finalize);
+	std::cout << __LINE__ << std::endl;
 
                 if (result1 && result2) {
+	std::cout << __LINE__ << std::endl;
                         response["deteteStatus"] = json::value::string("userSuccesfullyDeleted");
                 }
         } else  {
@@ -771,7 +788,7 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 json::value MongoDB::addUserToGroup(json::value request) {
 	auto c1 = poolMydb->acquire();
 	auto c3 = poolMydb->acquire();
-	auto coll1 = (*c1)["infoDB"]["userInfo"];
+	auto coll1 = (*c1)["infoDB"]["account"];
 	auto coll3 = (*c3)["infoDB"]["groupInfo"];
 	auto response = json::value::object();
 

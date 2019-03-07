@@ -5,6 +5,7 @@
 #include <fstream>
 #include <stdio.h>
 #include <thread>
+#include <map>
 
 #include <dbservice/database.hpp>
 #include <dbservice/dbservice.hpp>
@@ -44,14 +45,23 @@ void DbService::handleGet(http_request message) {
 	std::cout<< message.to_string()<<std::endl;
 	auto path = requestPath(message);
 	if (!(path.empty())) {
+	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
 		if (path[0] == "ServiceTest"){
 			message.reply(status_codes::OK, "DbService_Start");
-/*		} else if (path[0] == "account") {
+		} else if (path[0] == "account") {
 			if (path[1] == "getUserInfo") {
-				std::string id = //.at("id").as_string();
+				std::string id = "";
+				id = i.find("userId")->second;
 				json::value response = m_db->getUserInfo(id);
 				message.reply(status_codes::OK, response);
-			}*/
+			} else {
+				if (path[1] == "deleteUser") {
+					 std::string id = "";
+                        	         id = i.find("userId")->second;
+                                	 json::value response = m_db->deleteUser(id);
+                                	 message.reply(status_codes::OK, response);
+				}
+			}
 		}
 		else{
 			message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
@@ -92,6 +102,12 @@ void DbService::handlePost(http_request message) {
                                                         json::value response = m_db->createGroup(request);
                                                         message.reply(status_codes::OK, response);
                                         }
+					else {
+						if (path[1] == "updateUserInfo") {
+                                                        json::value response = m_db->updateUserInfo(request);
+                                                        message.reply(status_codes::OK, response);
+						}
+					}
                                 }
 		} else {
 			message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));

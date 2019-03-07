@@ -74,14 +74,14 @@ int main()
         uri_builder getUserInfo2(U("/account/getUserInfo?userId=u100000"));
         
 	uri_builder getUserShortInfo(U("/account/getUserShortInfo?clientId=u1&userId=u2"));
-        uri_builder deleteUser(U("/account/deleteUser?clientId=u1"));
+        uri_builder deleteUser(U("/account/deleteUser?userId=u1"));
         uri_builder createGroup(U("/account/createGroup"));
         uri_builder deleteGroup(U("/account/deleteGroup?clientId=u1&groupId=g1"));
         uri_builder getGroupInfo(U("/account/getGroupInfo?clientId=u1&groupId=g1"));
         uri_builder getGroupShortInfo(U("/account/getGroupShortInfo?clientId=u1&groupId=g1"));
         uri_builder updateGroupInfo(U("/account/updateGroupInfo?clientId=u1"));
         uri_builder groupRemoveUser(U("/account/groupRemoveUser"));
-        uri_builder updateUserInfo(U("/account/updateUserInfo?clientId=u1"));
+        uri_builder updateUserInfo(U("/account/updateUserInfo"));
         uri_builder checkToken(U("/checkToken"));
         uri_builder deleteToken(U("/deleteToken"));
         uri_builder setToken(U("/setToken"));
@@ -141,10 +141,11 @@ int main()
         groupRemoveUserReq["userId"] = json::value::string("u2");
 
         json::value updateUserInfoReq;
-        updateUserInfoReq["firstName"] = json::value::string("Valod");
+	updateUserInfoReq["userId"] = json::value::string("u1");
+        updateUserInfoReq["firstName"] = json::value::string("Valodik");
         updateUserInfoReq["lastName"] = json::value::string("Valodyan");
         updateUserInfoReq["avatar"] = json::value::string("base64_string");
-        updateUserInfoReq["nickName"] = json::value::string("asenqValod");
+        updateUserInfoReq["nickname"] = json::value::string("Valod");
 
 	http_request req(methods::GET);
 	req.headers().add(U("token"), U("112431574564"));
@@ -159,37 +160,37 @@ int main()
 			postRequest(tokenClient, checkToken, Token);
 			postRequest(tokenClient, deleteToken, Token);
 			std::cout<<std::endl;
-
-*/			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
+*/
+			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, registr, registrationRequest1);
 /*			postRequest(dbServiceClient, registr, registrationRequest2);
+	*/		std::cout<<std::endl;
+			std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq);
 			std::cout<<std::endl;
-
-			client.request(methods::GET, getUserInfo.to_string()).then([](http_response respo){
-                                        respo.extract_json().then([](json::value response2){
-                                                        std::cout<<response2.to_string()<<std::endl;
-                                                        }).wait();
-                                        }).wait();
-			
+/*
 			
 			std::cout<<"///////////////////     CHECK MAIL AND LOGIN(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
 			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq2);
 			std::cout<<std::endl;
-*/
+
 	
 			  std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			  postRequest(dbServiceClient, signIn, signInReq1);
 			//postRequest(dbServiceClient, signIn, signInReq2);
 			
-			//std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			//getRequest(dbServiceClient, getUserInfo1);
+			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			getRequest(dbServiceClient, getUserInfo1);
 			//getRequest(dbServiceClient, getUserInfo2);
 			std::cout<<std::endl;
 			
 			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, createGroup, createGroupReq);
-			
+
+			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
+                        getRequest(dbServiceClient, deleteUser);
+                        std::cout<<std::endl;			*/
 		} 
 		catch (http_exception e) {
 			std::cerr<<"error  "<<e.what()<<std::endl;
