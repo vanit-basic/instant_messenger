@@ -55,6 +55,79 @@ Page{
                     text: "+"
                     onClicked: stack00.push(Qt.resolvedUrl("MyProfile.qml"))
                 }
+                Popup{
+                    id:notpopup
+                    x:homePage.width - width - 15
+                    y:notifications.y + notifications.height + 3
+                    width: homePage.width/2 + 80
+                    height: homePage.height/2
+                    visible: false
+                    clip:true
+                    exit: Transition {
+                        NumberAnimation {properties: "height"; from: notpopup.height; to: 0; easing.type: Easing.Linear }
+                    }
+                    enter: Transition {
+                        NumberAnimation { properties: "height"; from: 0; to: homePage.height/2; easing.type: Easing.Linear }
+                    }
+                    closePolicy: Popup.CloseOnPressOutside
+                    contentData: ListView{
+                        id:notList
+                        anchors.fill: parent
+                        spacing: 2
+                        clip: true
+                        model: ListModel{
+                            ListElement{
+                                number:"You have new present."
+                                anun: "qrc:/not.png"
+                            }
+                            ListElement{
+                                number:"You have new present."
+                                anun: "qrc:/not.png"
+                            }
+                            ListElement{
+                                number:"You have new present."
+                                anun: "qrc:/not.png"
+                            }
+                            ListElement{
+                                number:"You have new present."
+                                anun: "qrc:/not.png"
+                            }
+                        }
+                        delegate: ItemDelegate{
+                            width:notList.width
+                            height: 35
+                            Rectangle{
+                                color: "#007399"
+                                anchors.fill: parent
+                                Image{
+                                    id: notImage
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: 3
+                                    source: anun
+                                    height: 20
+                                    width: 20
+                                }
+                                Text{
+                                    anchors.left: notImage.right
+                                    anchors.leftMargin:3
+                                    text:number
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                                Image{
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: 3
+                                    width: 20
+                                    height: 30
+                                    source: "qrc:/trash.png"
+                                }
+                            }
+                        }
+                    }
+
+                }
+
                 Image {
                     id: notifications
                     source: "not.png"
@@ -63,6 +136,10 @@ Page{
                     anchors.rightMargin: 15
                     width: 30
                     height: 30
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: notpopup.opened ? notpopup.close() : notpopup.open()
+                    }
                 }
                 Label {
                     id: userName
@@ -157,7 +234,7 @@ Page{
                 id:  dragDelegate
                 Rectangle{
                     width: bar.width
-                    height: 35
+                    height: 40
                     color: "LightCyan"
 
                     Text{
@@ -189,7 +266,7 @@ Page{
                         }
                     }
                     Rectangle{
-                        width:100
+                        width:tabbutton.width/2
                         height: parent.height
                         anchors.horizontalCenter: parent.horizontalCenter
                         color: "transparent"
@@ -197,19 +274,82 @@ Page{
                             id: minor
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: parent.left
-                            anchors.leftMargin: 3
+                            anchors.leftMargin: 5
                             text: "3"
+                        }
+                        Label{
+                            id: slash
+                            anchors.centerIn: parent
+                            text: "/"
                         }
                         Label{
                             id: major
                             anchors.verticalCenter: parent.verticalCenter
-                            anchors.left:minor.right
-                            anchors.leftMargin: 3
-                            text: "/12"
+                            anchors.right:parent.right
+                            anchors.rightMargin: 3
+                            text: "12"
                         }
                     }
                 }
 
+            }
+            Component{
+                id:leadersDelegate
+                Rectangle {
+                    height: 40
+                    width: bar.width
+                    color: "#007399"
+                    Image {
+                        id: leadersAvatar
+                        source: sources
+                        height: parent.height - 10
+                        width: height
+                        anchors.left: winners.left
+                        anchors.leftMargin: 20
+                        anchors.verticalCenter: parent.verticalCenter
+                        fillMode: Image.PreserveAspectCrop
+                        layer.enabled: true
+                        layer.effect: OpacityMask {
+                            maskSource: mask
+                        }
+                    }
+                    Rectangle{
+                        id: mask
+                        width: leadersAvatar.width
+                        height: leadersAvatar.height
+                        radius: 250
+                        visible: false
+                    }
+
+                    Text{
+                        id:names
+                        height: parent.height
+                        horizontalAlignment:Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        anchors.left: leadersAvatar.left
+                        anchors.leftMargin: (leadersAvatar.width)*1.5
+                        text: txt
+                        color: "white"
+                    }
+                    Text{
+                        text: wins
+                        height: parent.height
+                        anchors.right: parent.right
+                        anchors.rightMargin: 20
+                        verticalAlignment: Text.AlignVCenter
+                        color: "white"
+                    }
+                    Text {
+                        id: winners
+                        text: indexes
+                        height: parent.height
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                        horizontalAlignment:Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        color: "white"
+                    }
+                }
             }
 
             Rectangle{
@@ -248,8 +388,28 @@ Page{
                         ListView {
                             id: view3
                             anchors { fill: parent; margins: 2 }
-                            model: /*ListModel {}*/10
-                            delegate: dragDelegate
+                            model: ListModel{
+                                ListElement {
+                                    txt: "Astgh"
+                                    wins: "33 wins"
+                                    indexes: "1"
+                                    sources: "qrc:/vector-gray-wooden-planks-background.jpg"
+                                }
+
+                                ListElement {
+                                    txt: "Miqayel"
+                                    wins: "31 wins"
+                                    indexes: "2"
+                                    sources: "qrc:/vector-gray-wooden-planks-background.jpg"
+                                }
+                                ListElement {
+                                    txt: "Narek"
+                                    wins: "31 wins"
+                                    indexes: "3"
+                                    sources: "qrc:/vector-gray-wooden-planks-background.jpg"
+                                }
+                            }
+                            delegate: leadersDelegate
                             spacing: 4
                             clip:true
                         }
