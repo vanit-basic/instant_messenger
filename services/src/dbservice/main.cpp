@@ -13,11 +13,8 @@ int main (int argc, char** argv) {
 		InterruptHandler::hookSIGINT();
 		std::string path = std::string(argv[1]);
 		database* m = new MongoDB(path);
-		std::cout<<"database\n";
 		DbService db(path, m);
-		std::cout<<"dbservice\n";
                         try {
-                                // wait for server initialization...
                                 db.accept().wait();
                                 std::cout << "DbService start " << std::endl;
 

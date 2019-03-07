@@ -234,7 +234,6 @@ RequestStatus validateRequest(
                         http_request request, std::vector<std::string> urlPath, 
                         http_client* tokenService, bool authorized = true) 
 {
-
     std::string id = extractID(request);
     std::string token = extractToken(request);
     if("" == token) {
