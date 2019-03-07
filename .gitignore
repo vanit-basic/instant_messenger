@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+# Project files
+*.pro.user

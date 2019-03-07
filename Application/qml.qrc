@@ -45,6 +45,8 @@
         <file>About_us.qml</file>
         <file>Terms.qml</file>
         <file>indicator.png</file>
-        <file>Terms1.qml</file>
+        <file>trash.png</file>
+        <file>lock.png</file>
+        <file>unlock.png</file>
     </qresource>
 </RCC>
