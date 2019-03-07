@@ -145,6 +145,19 @@ http_response getGroupUsers(std::string groupId, http_client* DataBaseClient){
 	return groupUsers;
 }
 
+bool validUsers(std::string userId ,std::string members ){
+
+	while(members != ""){
+		int pos = members.find(',');
+		std::string clientId = members.substr(0,pos);
+		if(userId == clientId){
+			 return true;
+		}
+		members = members.erase(0,pos-1);
+	}
+	return false;
+}
+
 http_response getGroupShortInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
 	uri_builder gSInfo("/getGroupShortInfo?groupId=" + groupId);
 	DataBaseClient->request(methods::GET, gSInfo.to_string()).
@@ -159,7 +172,7 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 				groupUsers.extract_json().
 				then([=](json::value groupUsersResp)
 				{
-					if(!(groupUsersResp.at(userId).is_null()))//poxel
+					if(validUsers(userId, groupUsersResp.at("members").as_string()))
 					{
 						return groupShortInfo;
 					}
@@ -180,18 +193,7 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 		});
 	});
 }
-bool validUsers(std::string userId ,std::string members ){
 
-	while(members != ""){
-		int pos = members.find(',');
-		std::string clientId = members.substr(0,pos);
-		if(userId == clientId){
-			 return true;
-		}
-		members = members.erase(0,pos-1);
-	}
-	return false;
-}
 http_response getGroupInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
 	uri_builder gInfo("/getGroupInfo?groupId=" + groupId);
 	DataBaseClient->request(methods::GET, gInfo.to_string()).
@@ -206,7 +208,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 				groupUsers.extract_json().
 				then([=](json::value groupUsersResp)
 				{
-					if(validUsers)
+					if(validUsers(userId, groupUsersResp.at("members").as_string()))
 					{
 						return groupInfo;
 					}
