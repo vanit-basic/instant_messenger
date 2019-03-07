@@ -75,7 +75,7 @@ int main()
         
 	uri_builder getUserShortInfo(U("/account/getUserShortInfo?clientId=u1&userId=u2"));
         uri_builder deleteUser(U("/account/deleteUser?clientId=u1"));
-        uri_builder creatGroup(U("/account/creatGroup"));
+        uri_builder createGroup(U("/account/createGroup"));
         uri_builder deleteGroup(U("/account/deleteGroup?clientId=u1&groupId=g1"));
         uri_builder getGroupInfo(U("/account/getGroupInfo?clientId=u1&groupId=g1"));
         uri_builder getGroupShortInfo(U("/account/getGroupShortInfo?clientId=u1&groupId=g1"));
@@ -125,10 +125,10 @@ int main()
         signInReq2["login"] = json::value::string("valod1212");
         signInReq2["password"] = json::value::string("Valod90");
         
-	json::value creatGroupReq;
-        creatGroupReq["groupName"] = json::value::string("Best");
-        creatGroupReq["clientId"] = json::value::string("u1");
-        creatGroupReq["access"] = json::value::string("public");
+	json::value createGroupReq;
+        createGroupReq["groupName"] = json::value::string("Best");
+        createGroupReq["userId"] = json::value::string("u1");
+        createGroupReq["access"] = json::value::string("public");
 
         json::value updateGroupInfoReq;
         updateGroupInfoReq["groupId"] = json::value::string("g1");
@@ -153,30 +153,30 @@ int main()
 	do{
 		try {
                         ++count;
-			
+/*			
 			std::cout<<"///////////////////      TOKEN  DB  SERVICE TEST      /////////////////"<<std::endl;
 			postRequest(tokenClient, setToken, Token);
 			postRequest(tokenClient, checkToken, Token);
 			postRequest(tokenClient, deleteToken, Token);
 			std::cout<<std::endl;
 
-			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
+*/			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, registr, registrationRequest1);
-			postRequest(dbServiceClient, registr, registrationRequest2);
+/*			postRequest(dbServiceClient, registr, registrationRequest2);
 			std::cout<<std::endl;
 
-/*			client.request(methods::GET, getUserInfo.to_string()).then([](http_response respo){
+			client.request(methods::GET, getUserInfo.to_string()).then([](http_response respo){
                                         respo.extract_json().then([](json::value response2){
                                                         std::cout<<response2.to_string()<<std::endl;
                                                         }).wait();
                                         }).wait();
-	*/		
+			
 			
 			std::cout<<"///////////////////     CHECK MAIL AND LOGIN(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
 			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq2);
 			std::cout<<std::endl;
-
+*/
 	
 			//std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			//postRequest(dbServiceClient, signIn, signInReq1);
@@ -186,8 +186,11 @@ int main()
 			//getRequest(dbServiceClient, getUserInfo1);
 			//getRequest(dbServiceClient, getUserInfo2);
 			
+			std::cout<<std::endl;
+			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, createGroup, createGroupReq);
 			
-		
+			getRequest(dbServiceClient, getUserInfo1);	
 		} 
 		catch (http_exception e) {
 			std::cerr<<"error  "<<e.what()<<std::endl;

@@ -160,17 +160,17 @@ json::value MongoDB::registerUser(json::value request) {
 		<< "nickname" << firstName
 		<< "birthDate" << birthDate
 		<< "gender" << gender 
-		<< "level" << "0"
+		<< "level" << 0
 		<< "joinDate" << joinDate
 		<< "statistics" << bsoncxx::builder::stream::open_document
-		<< "playedGames" << "0"
-		<< "redCard" << "0"
-		<< "blackCard" << "0"
-		<< "sheriff" << "0"
-		<< "don" << "0"
-		<< "wins" << "0"
-		<< "fails" << "0"
-		<< "killed" << "0"
+		<< "playedGames" << 0
+		<< "redCard" << 0
+		<< "blackCard" << 0
+		<< "sheriff" << 0
+		<< "don" << 0
+		<< "wins" << 0
+		<< "fails" << 0
+		<< "killed" << 0
 		<< bsoncxx::builder::stream::close_document
 		<< bsoncxx::builder::stream::finalize;
 	
@@ -637,7 +637,7 @@ std::string generateGroupID(mongocxx::collection collection) {
         if(!lastId) {
                 auto doc = bsoncxx::builder::stream::document{};
                 bsoncxx::document::value doc_value = doc
-                        << "lastId" << 1
+                        << "lastId" << 2
                         << bsoncxx::builder::stream::finalize;
                 auto result = collection.insert_one(std::move(doc_value));
                 id = "g1";
@@ -658,6 +658,7 @@ std::string generateGroupID(mongocxx::collection collection) {
 
 
 json::value MongoDB::createGroup(json::value groupInfo) {
+	std::cout << __LINE__ <<std::endl;
 	auto c1 = poolMydb->acquire();
 	auto c3 = poolMydb->acquire();
 	auto coll1 = (*c1)["infoDB"]["userInfo"];
@@ -696,7 +697,8 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 		response["groupName"] = json::value::string(groupName);
 		response["adminId"] = json::value::string(userId);
 		response["createDate"] = json::value::string(date());
-		response["access"] = json::value::string("access");
+		response["usersQuantity"] = json::value::string("1");
+		response["access"] = json::value::string(access);
 		response["status"] = json::value::string("OK");
 	} else {
 		response["status"] = json::value::string("INTERNAL_ERROR");

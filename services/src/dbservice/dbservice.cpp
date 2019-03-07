@@ -75,16 +75,21 @@ void DbService::handlePost(http_request message) {
 				if (path[1] == "registration") {
 					json::value response = m_db->registerUser(request);
 					message.reply(status_codes::OK, response);
-				} else if (path[0] == "account") {
-					if (path[1] == "getUserInfo") {
-						std::string id = request.at("id").as_string();
-						json::value response = m_db->getUserInfo(id);
-						message.reply(status_codes::OK, response);
-					}
+				
 				} else { 
 						message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 				}
-			}
+			}else if (path[0] == "account") {
+                                        if (path[1] == "getUserInfo") {
+                                                std::string id = request.at("id").as_string();
+                                                json::value response = m_db->getUserInfo(id);
+                                                message.reply(status_codes::OK, response);
+                                        } else if (path[1] == "createGroup") {
+                                                std::cout<<__LINE__<<std::endl;
+                                                        json::value response = m_db->createGroup(request);
+                                                        message.reply(status_codes::OK, response);
+                                        }
+                                }
 		} else {
 			message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 		}
