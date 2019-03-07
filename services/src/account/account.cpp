@@ -130,25 +130,19 @@ std::string getToken(){
 http_response getUserInfo(std::string userId, http_client* DataBaseClient){
 	uri_builder uInfo("/getUserInfo?userId=" + userId);
 	http_response userInfo = DataBaseClient->request(methods::GET, uInfo.to_string()).get();
-				return userInfo;
+	return userInfo;
 }
 
 http_response getUserShortInfo(std::string userId, http_client* DataBaseClient){
 	uri_builder uInfo("/getUserShortInfo?userId=" + userId);
-	DataBaseClient->request(methods::GET, uInfo.to_string()).
-	then([=](http_response userShortInfo) 
-			{
-				return userShortInfo;
-			});
+	http_response userShortInfo = DataBaseClient->request(methods::GET, uInfo.to_string()).get();
+	return userShortInfo;
 }
 
 http_response getGroupUsers(std::string groupId, http_client* DataBaseClient){
 	uri_builder gInfo("/getGroupUsers?groupId=" + groupId);
-	DataBaseClient->request(methods::GET, gInfo.to_string()).
-		then([=](http_response groupUsers) 
-			{
-				return groupUsers;
-			});
+	http_response groupUsers = DataBaseClient->request(methods::GET, gInfo.to_string()).get();
+	return groupUsers;
 }
 
 http_response getGroupShortInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
