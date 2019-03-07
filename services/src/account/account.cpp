@@ -430,23 +430,14 @@ void registration(http_request message , http_client* DataBaseClient, http_clien
 									{
 										if("OK" == tokenInfo.at("status").as_string())
 										{
-											json::value resp;
-											resp["id"] 		= json::value::string(regInfo.at("userId").as_string());
-											resp["firstName"] 	= json::value::string(regInfo.at("firstName").as_string());
-											resp["lastName"] 	= json::value::string(regInfo.at("lastName").as_string());
-											resp["nickname"] 	= json::value::string(regInfo.at("nickName").as_string());
-											resp["birthDate"]	= json::value::string(regInfo.at("birthDate").as_string());
-											resp["gender"] 		= json::value::string(regInfo.at("gender").as_string());
-											resp["email"] 		= json::value::string(regInfo.at("email").as_string());
-											resp["login"] 		= json::value::string(regInfo.at("login").as_string());	
-											resp["token"] 		= json::value::string(token);		
+											json::value resp = regInfo;
+											resp["token"] = json::value::string(token);		
 											message.reply(status_codes::OK, resp);		
 										}
 									});
 								});
 							}
 						});
-					//	message.reply(registration_response);
 					});
 				}
 				else
@@ -508,24 +499,32 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 				{
 					if(signinStatus_json["status"] == json::value::string("OK"))
 					{
-						std::string id = signinStatus_json["userId"].as_string();
-						http_response res = getUserInfo(id, DataBaseClient);//hanel
-						res.extract_json().
-						then([=](json::value userInf)
+						int attempt = std::stoi(signinStatus_json["attempt"].as_string());
+						if(max_attempt > attempt)
 						{
-							json::value userInfo = userInf;
-							std::string token = setToken();
-							uri_builder token_uri("/SetToken/");
-							json::value token_json;
-							token_json["token"] = json::value::string(token);
-							token_json["id"] = json::value::string(id);
-							TokenDBClient -> request(methods::POST, token_uri.to_string(), token_json).
-							then([message, &userInfo, id, token](http_response token_response)
+							std::string id = signinStatus_json["userId"].as_string();
+							http_response res = getUserInfo(id, DataBaseClient);//hanel
+							res.extract_json().
+							then([=](json::value userInf)
 							{
-								userInfo["token"] = json::value::string(token);
-								message.reply(status_codes::OK, userInfo);
+								json::value userInfo = userInf;
+								std::string token = setToken();
+								uri_builder token_uri("/SetToken/");
+								json::value token_json;
+								token_json["token"] = json::value::string(token);
+								token_json["id"] = json::value::string(id);
+								TokenDBClient -> request(methods::POST, token_uri.to_string(), token_json).
+								then([message, &userInfo, id, token](http_response token_response)
+								{
+									userInfo["token"] = json::value::string(token);
+									message.reply(status_codes::OK, userInfo);
+								});
 							});
-						});
+						}
+						else
+						{
+							message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
+						}
 					}
 				}
 			}
