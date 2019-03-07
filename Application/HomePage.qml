@@ -243,7 +243,7 @@ Page{
 
                     Text{
                         id: rooms
-                        text: "Room1"
+                        text: "Room 1"
                         verticalAlignment: Text.AlignVCenter
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
@@ -279,7 +279,7 @@ Page{
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: parent.left
                             anchors.leftMargin: 5
-                            text: "3"
+                            text: "10"
                         }
                         Label{
                             id: slash
@@ -291,7 +291,7 @@ Page{
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.right:parent.right
                             anchors.rightMargin: 3
-                            text: "12"
+                            text: "10"
                         }
                     }
                 }
@@ -355,6 +355,62 @@ Page{
                     }
                 }
             }
+            Component {
+            id: delegateRooms
+            Rectangle {
+                id: rows
+                width: parent.width
+                height: 40
+                color: "#564B5E"
+
+                Image {
+                    id:lock
+                }
+
+            RoundButton {
+            id: privatePublic
+            width: 60
+            height: 20
+            radius: 5
+            anchors.right: parent.right
+            anchors.rightMargin: 5
+            anchors.verticalCenter: parent.verticalCenter
+            text: availability
+
+        }
+
+
+            Text {
+                id: roomNumber
+                text: numbers
+                color: "white"
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            Text {
+                id: participantNumber
+                text: participants
+                   color: "white"
+                   anchors.centerIn: parent
+                   horizontalAlignment: Text.AlignHCenter
+                   verticalAlignment: Text.AlignVCenter
+            }
+
+            Image {
+                id: icons
+                height: 25
+                width: 25
+                source: img
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: privatePublic.left
+                anchors.leftMargin: -30
+        }
+        }
+        }
+
 
             Rectangle{
                 width: bar.width
@@ -381,8 +437,30 @@ Page{
                         ListView {
                             id: view2
                             anchors { fill: parent; margins: 2 }
-                            model: /*ListModel {}*/ 10
-                            delegate: dragDelegate
+                            model: ListModel {
+                                id: rooms
+                                ListElement {
+                                    numbers: "Room 1"
+                                    participants: "members 13"
+                                    availability: "public"
+                                    img: "unlock.png"
+
+                                }
+                                ListElement {
+                                    numbers: "Room 3"
+                                    participants: "members 13"
+                                    availability: "public"
+                                    img: "unlock.png"
+                                }
+                                ListElement {
+                                    numbers: "Room 5"
+                                    participants: "members 13"
+                                    availability: "private"
+                                    img: "lock.png"
+                                }
+                            }
+
+                            delegate: delegateRooms
                             spacing: 4
                             clip:true
                         }
@@ -392,6 +470,7 @@ Page{
                         ListView {
                             id: view3
                             anchors { fill: parent; margins: 2 }
+
                             model: ListModel{
                                 ListElement {
                                     txt: "Astgh"
