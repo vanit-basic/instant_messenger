@@ -185,6 +185,7 @@ json::value MongoDB::registerUser(json::value request) {
 	response["birthDate"] = json::value::string(birthDate);
 	response["gender"] = json::value::string(gender);
 	response["email"] = json::value::string(email);
+	response["groupsQuantity"] = json::value::string("0");
 	response["level"] = json::value::string("0");
 	response["playedGames"] = json::value::string("0");
        	response["redCard"] = json::value::string("0");
@@ -243,7 +244,7 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		
 		element = docInfo["gender"];
 		std::string gender = element.get_utf8().value.to_string();
-
+		
 		element = docInfo["level"];
 		std::string level = element.get_utf8().value.to_string();
 		
@@ -277,6 +278,8 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		element = docInfo["login"];
 		std::string login = element.get_utf8().value.to_string();
 
+//		element = docInfo["groups"];
+//		bsoncxx::array::element ele = docInfo["groups"];	
 
 		response["id"] = json::value::string(id);
 		response["firstName"] = json::value::string(firstName);
@@ -294,6 +297,7 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		response["killed"] = json::value::string(killed);
 		response["email"] = json::value::string(mail);
 		response["login"] = json::value::string(login);
+
 
 	} else {
 		bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
@@ -316,7 +320,6 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		} else {
 			response["loginStatus"] = json::value::string("unknownLogin");
 		}
-
 	}
 
 	return response;
@@ -351,7 +354,6 @@ json::value MongoDB::getUserInfo(std::string id) {
 		element = doc["gender"];
 		std::string gender = element.get_utf8().value.to_string();
 
-		
 
 		element = doc["level"];
 		std::string level = element.get_utf8().value.to_string();
