@@ -11,12 +11,14 @@
 
 #include <account/account.hpp>
 
+static int max_attempt = 5;
+
 void Account::initRestOpHandlers() {
     _listener.support(methods::GET, std::bind(&Account::handleGet, this, std::placeholders::_1));
     _listener.support(methods::POST, std::bind(&Account::handlePost, this, std::placeholders::_1));
 }
 
-static int max_attempt = 5;
+
 bool Account::createClients(std::string path)
 {
         std::ifstream ConfigFile(path);
@@ -39,7 +41,7 @@ Account::Account(std::string path)
 {
         this->createClients(path);
 }
-
+/*
 bool checkToken(http_request message, http_client* TokenDB){
 	TokenDB->request(message).
         then([=](http_response tokenStatus)
@@ -57,7 +59,7 @@ bool checkToken(http_request message, http_client* TokenDB){
 			}
 		});
 	});	
-}
+}*/
 
 bool ServiceStart (http_client* client, std::string serviceName) {
         uri_builder builder(U("/ServiceTest/"));
@@ -117,7 +119,7 @@ bool Account::checkServices()
 
 
 
-std::string setToken(){
+std::string getToken(){
 	
 	srand(time(NULL));
         int temp = rand()% 100000000000;
@@ -126,12 +128,9 @@ std::string setToken(){
 }
 
 http_response getUserInfo(std::string userId, http_client* DataBaseClient){
-	uri_builder uInfo("/getUserInfo?userId=" + userId );
-	DataBaseClient->request(methods::GET, uInfo.to_string()).
-		then([=](http_response userInfo ) 
-			{
+	uri_builder uInfo("/getUserInfo?userId=" + userId);
+	http_response userInfo = DataBaseClient->request(methods::GET, uInfo.to_string()).get();
 				return userInfo;
-			});
 }
 
 http_response getUserShortInfo(std::string userId, http_client* DataBaseClient){
