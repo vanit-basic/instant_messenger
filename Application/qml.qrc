@@ -48,5 +48,6 @@
         <file>trash.png</file>
         <file>lock.png</file>
         <file>unlock.png</file>
+        <file>magaxat2.png</file>
     </qresource>
 </RCC>

@@ -17,6 +17,7 @@ Page{
                 }
             }
         }
+
         initialItem:  Rectangle {
             id: root
             gradient: Gradient{
@@ -53,25 +54,30 @@ Page{
                     width: 50
                     height: 50
                     text: "+"
-                    onClicked: stack00.push(Qt.resolvedUrl("MyProfile.qml"))
+                    onClicked:{ stack00.push(Qt.resolvedUrl("MyProfile.qml")); notpopup.close() }
                 }
                 Popup{
                     id:notpopup
-                    x: bar.x
-                    y:notifications.y + notifications.height + 3
-                    width: bar.width
-                    height: homePage.height/2
-                    visible: tab.currentIndex !== 1 ? false : false
+                    x: bar.x - 5
+                    y:notifications.y + notifications.height + 10
+                    width: bar.width + 10
+                    height: bar.height + (bar.y - y) - tabbutton.height
+                    visible: tab.currentIndex !== 1  ? false : false
                     clip:true
                     background:Rectangle {
+                        color: "transparent"
                         radius: 20
+                        Image{
+                            anchors.fill: parent
+                            source: "qrc:/magaxat2.png"
+                        }
                     }
 
                     exit: Transition {
-                        NumberAnimation {properties: "height"; from: notpopup.height; to: 0; easing.type: Easing.Linear }
+                        NumberAnimation { duration: 150;properties: "height"; from: notpopup.height; to: 0; easing.type: Easing.Linear }
                     }
                     enter: Transition {
-                        NumberAnimation { properties: "height"; from: 0; to: homePage.height/2; easing.type: Easing.Linear }
+                        NumberAnimation { properties: "height"; from: 0; to: bar.height + (bar.y - notpopup.y) - tabbutton.height; easing.type: Easing.Linear }
                     }
                     closePolicy: Popup.CloseOnReleaseOutsideParent
                     contentData: ListView{
@@ -80,29 +86,42 @@ Page{
                         spacing: 2
                         clip: true
                         model: ListModel{
+                            id: notmodel
+                            onCountChanged: count === 0 ? notpopup.close() : notpopup.open()
                             ListElement{
-                                number:"You have new present."
+                                number:"You have new present 222."
                                 anun: "qrc:/not.png"
                             }
                             ListElement{
-                                number:"You have new present."
+                                number:"You have new present 333 ."
                                 anun: "qrc:/not.png"
                             }
                             ListElement{
-                                number:"You have new present."
+                                number:"You have new present 444."
                                 anun: "qrc:/not.png"
                             }
                             ListElement{
-                                number:"You have new present."
+                                number:"You have new present 555."
                                 anun: "qrc:/not.png"
                             }
                         }
-                        delegate: ItemDelegate{
+                        delegate: SwipeDelegate{
+                            id:swDel
                             width:notList.width
-                            height: 35
-                            Rectangle{
-                                //color: "#007399"
-                                anchors.fill: parent
+                            height: 40
+                            background: Rectangle{
+                                color: "transparent"
+                            }
+                            swipe.onOpened: notList.model.remove(index)
+                            swipe.left: Rectangle{
+                                anchors.right: parent.right
+                                width: parent.width
+                                height: parent.height
+                                color: "transparent"
+
+                            }
+                            contentItem: Rectangle{
+                                color: "transparent"
                                 Image{
                                     id: notImage
                                     anchors.verticalCenter: parent.verticalCenter
@@ -117,14 +136,6 @@ Page{
                                     anchors.leftMargin:3
                                     text:number
                                     anchors.verticalCenter: parent.verticalCenter
-                                }
-                                Image{
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.right: parent.right
-                                    anchors.rightMargin: 3
-                                    width: 20
-                                    height: 30
-                                    source: "qrc:/trash.png"
                                 }
                             }
                         }
@@ -142,8 +153,9 @@ Page{
                     height: 30
                     MouseArea{
                         anchors.fill: parent
-                        onClicked: notpopup.opened ? notpopup.close() : notpopup.open()
+                        onClicked: notpopup.opened | notList.count ===0 ? notpopup.close() : notpopup.open()
                     }
+
                 }
                 Label {
                     id: userName
@@ -278,7 +290,7 @@ Page{
                             id: minor
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: parent.left
-                            anchors.leftMargin: 5
+                            anchors.leftMargin: 3
                             text: "10"
                         }
                         Label{
@@ -356,60 +368,60 @@ Page{
                 }
             }
             Component {
-            id: delegateRooms
-            Rectangle {
-                id: rows
-                width: parent.width
-                height: 40
-                color: "#564B5E"
+                id: delegateRooms
+                Rectangle {
+                    id: rows
+                    width: parent.width
+                    height: 40
+                    color: "#564B5E"
 
-                Image {
-                    id:lock
+                    Image {
+                        id:lock
+                    }
+
+                    RoundButton {
+                        id: privatePublic
+                        width: 60
+                        height: 20
+                        radius: 5
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: availability
+
+                    }
+
+
+                    Text {
+                        id: roomNumber
+                        text: numbers
+                        color: "white"
+                        anchors.left: parent.left
+                        anchors.leftMargin: 10
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    Text {
+                        id: participantNumber
+                        text: participants
+                        color: "white"
+                        anchors.centerIn: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    Image {
+                        id: icons
+                        height: 25
+                        width: 25
+                        source: img
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: privatePublic.left
+                        anchors.leftMargin: -30
+                    }
                 }
-
-            RoundButton {
-            id: privatePublic
-            width: 60
-            height: 20
-            radius: 5
-            anchors.right: parent.right
-            anchors.rightMargin: 5
-            anchors.verticalCenter: parent.verticalCenter
-            text: availability
-
-        }
-
-
-            Text {
-                id: roomNumber
-                text: numbers
-                color: "white"
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                anchors.verticalCenter: parent.verticalCenter
             }
-            Text {
-                id: participantNumber
-                text: participants
-                   color: "white"
-                   anchors.centerIn: parent
-                   horizontalAlignment: Text.AlignHCenter
-                   verticalAlignment: Text.AlignVCenter
-            }
-
-            Image {
-                id: icons
-                height: 25
-                width: 25
-                source: img
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: privatePublic.left
-                anchors.leftMargin: -30
-        }
-        }
-        }
 
 
             Rectangle{
