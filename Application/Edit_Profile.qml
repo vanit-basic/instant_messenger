@@ -15,34 +15,34 @@ function backPressed(){ bbbb.start()}
         anchors.fill: parent
         onClicked:  {Qt.inputMethod.hide()}
 
-        PropertyAnimation{
-            id:aaaa
-            property: "y"
-            target: rec
-            to:0
-            duration: 200
-        }
-        PropertyAnimation{
-            id:bbbb
-            property: "y"
-            target: rec
-            to: 0
-            duration: 200
-        }
-        PropertyAnimation{
-            id:dddd
-            property: "y"
-            target: rec
-            to: -roundButton.y
-            duration: 200
-        }
-        PropertyAnimation{
-            id:ffff
-            property: "y"
-            target: rec
-            to: -roundButton.y-save_changes.height
-            duration: 200
-        }
+//        PropertyAnimation{
+//            id:aaaa
+//            property: "y"
+//            target: rec
+//            to:0
+//            duration: 200
+//        }
+//        PropertyAnimation{
+//            id:bbbb
+//            property: "y"
+//            target: rec
+//            to: 0
+//            duration: 200
+//        }
+//        PropertyAnimation{
+//            id:dddd
+//            property: "y"
+//            target: rec
+//            to: -roundButton.y
+//            duration: 200
+//        }
+//        PropertyAnimation{
+//            id:ffff
+//            property: "y"
+//            target: rec
+//            to: -roundButton.y-save_changes.height
+//            duration: 200
+//        }
         Rectangle{
             id:root
             height: parent.height
@@ -55,13 +55,13 @@ function backPressed(){ bbbb.start()}
                 GradientStop{ position: 1.0;color:"lightgrey"}
             }
 
-            Rectangle{
-                id: rec
-                x: 0
-                y: 0
-                width: parent.width
-                height: parent.height
-                color: "transparent"
+//            Rectangle{
+//                id: rec
+//                x: 0
+//                y: 0
+//                width: parent.width
+//                height: parent.height
+//                color: "transparent"
 
                 MouseArea{
                     x:0
@@ -70,7 +70,7 @@ function backPressed(){ bbbb.start()}
                     width: parent.width
                     height: parent.height
                     onPressed:{
-                        aaaa.start()
+
                         Qt.inputMethod.hide()
                     }
                     Rectangle{
@@ -128,6 +128,7 @@ function backPressed(){ bbbb.start()}
                             anchors.top: small.bottom
                             anchors.topMargin: 10
                             text: "+"
+                            onClicked: console.log(edit_name.height,"+",edit_surname.height,"+",edit_nickname.height)
                         }
 
                         Button {
@@ -144,6 +145,7 @@ function backPressed(){ bbbb.start()}
                                 anchors.centerIn: parent
                             }
                             font.pointSize: 11
+
                         }
                     }
 
@@ -153,29 +155,44 @@ function backPressed(){ bbbb.start()}
 
                         visible: true
                         width: Screen.width
-                        height: (parent.height - rec1.height)
+                        height: (parent.height - rec1.height-50)
                         anchors.bottom: parent.bottom
+                        anchors.topMargin: 50
 
                         color: "transparent"
                         Column {
                             id: column
-
-                            width: parent.width
+                            x:25
+                            width: parent.width-50
                             height: parent.height/2
                             anchors.top: parent.top
 
                             spacing: height/6
-                            TextField{
-                                id:edit_name
+                            Row{
 
                                 width: parent.width
                                 height: parent.height/6
-                                color: "white"
-                                text: qsTr("Name")
-                                font.pointSize: 11
-                                background: Rectangle{
-                                    color: "transparent"
+                                Rectangle{
+                                    id:rec_name
+                                    width: parent.width/3
+                                    height: parent.height
+                                color: "transparent"
+                                Text {
+                                    id: name_text
+                                    text: qsTr("Name")
+                                    anchors.bottom: parent.bottom
                                 }
+
+                                }
+
+                            TextInput{
+                                id:edit_name
+
+                                width: parent.width-rec_name.width
+                                height: parent.height
+                                color: "white"
+
+
                                 Rectangle {
                                     id:name_rect
                                     color: "white"
@@ -183,20 +200,35 @@ function backPressed(){ bbbb.start()}
                                     width: parent.width
                                     anchors.bottom: parent.bottom
                                 }
-                                onEditingFinished:  { name_rect.height = 1; name_rect.color = "white"}
-                                onPressed:   { name_rect.height = 2 ; name_rect.color = "teal"; bbbb.start()}
-                            }
 
-                            TextField{
-                                id:edit_surname
+                                EnterKey.type:  Qt.EnterKeyNext
+                                onEditingFinished:  { edit_surname.focus = true}
+
+                            }
+                            }
+                            Row{
+
                                 width: parent.width
-                               height: parent.height/6
-                                color: "white"
-                                text: qsTr("Surname")
-                                font.pointSize: 11
-                                background: Rectangle{
-                                    color: "transparent"
+                                height: parent.height/6
+                                Rectangle{
+                                    id:rec_surname
+                                    width: parent.width/3
+                                    height: parent.height
+                                color: "transparent"
+                                Text {
+                                    id: surname_text
+                                    text: qsTr("Surname")
+                                    anchors.bottom: parent.bottom
                                 }
+
+                                }
+
+                            TextInput{
+                                id:edit_surname
+                                width: parent.width-rec_surname.width
+                               height: parent.height
+                                color: "white"
+
                                 Rectangle {
                                     id:surname_rect
                                     color: "white"
@@ -204,20 +236,34 @@ function backPressed(){ bbbb.start()}
                                     width: parent.width
                                     anchors.bottom: parent.bottom
                                 }
-                                onEditingFinished:  { surname_rect.height = 1; surname_rect.color = "white"}
-                                onPressed:   { surname_rect.height = 2 ; surname_rect.color = "teal";dddd.start()}
+                                onEditingFinished:  { edit_nickname.focus = true}
+                                EnterKey.type:  Qt.EnterKeyNext
                             }
+                            }
+                            Row{
 
-                            TextField{
-                                id:edit_nickname
                                 width: parent.width
                                 height: parent.height/6
-                                color: "white"
-                                text: qsTr("Nickname")
-                                font.pointSize: 11
-                                background: Rectangle{
-                                    color: "transparent"
+                                Rectangle{
+                                    id:rec_nickname
+                                    width: parent.width/3
+                                    height: parent.height
+                                color: "transparent"
+                                Text {
+                                    id: nickname_text
+                                    text: qsTr("Nickname")
+                                    anchors.bottom: parent.bottom
                                 }
+
+                                }
+
+
+                            TextInput{
+                                id:edit_nickname
+                                width: parent.width-rec_nickname.width
+                                height: parent.height
+                                color: "white"
+
                                 Rectangle {
                                     id:nick_rect
                                     color: "white"
@@ -226,8 +272,9 @@ function backPressed(){ bbbb.start()}
                                     anchors.bottom: parent.bottom
                                 }
                                 onEditingFinished:  { nick_rect.height = 1; nick_rect.color = "white"}
-                                onPressed:   { nick_rect.height = 2 ; nick_rect.color = "teal";ffff.start()}
+                                //EnterKey.type:  Qt.EnterKeyNext
                             }
+                        }
                         }
 Rectangle{
     width: parent.width
@@ -247,11 +294,7 @@ Rectangle{
                                 }
                             }
                             opacity: enabled ? 1: 0.5
-                            //anchors.horizontalCenter: parent.horizontalCenter
-//                            anchors.top:column.bottom
-//                            anchors.topMargin: 50
-                            //anchors.top: parent.top
-                            //anchors.topMargin: 15
+
                             anchors.centerIn: parent
                             width: 130
                             height: 30
@@ -261,12 +304,12 @@ Rectangle{
                             font.capitalization: Font.Capitalize
                             //spacing: 5
                             enabled: (edit_name.text === "" || edit_surname.text === "" || edit_nickname.text === "" )?false:true
-                            onPressed: {aaaa.start()}
+
                             onClicked: stack00.pop()
                         }
 }
                     }
-                }
+              //  }
             }
         }
     }
