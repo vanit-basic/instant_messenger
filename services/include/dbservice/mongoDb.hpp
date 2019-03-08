@@ -45,8 +45,8 @@ class MongoDB : public database {
 
 		virtual json::value registerUser(json::value user);
 		
-		virtual json::value loginUser(std::string login, std::string pass);
-		
+		virtual json::value loginUser(std::string, std::string);
+	
 		virtual json::value getUserInfo(std::string userId);
 	
 		virtual json::value getUserShortInfo(std::string userId);
