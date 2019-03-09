@@ -17,7 +17,6 @@ Page{
                 }
             }
         }
-
         initialItem:  Rectangle {
             id: root
             gradient: Gradient{
@@ -39,7 +38,6 @@ Page{
                     anchors.centerIn: parent
                 }
             }
-
             Rectangle{
                 id: inforect
                 width: parent.width
@@ -72,7 +70,6 @@ Page{
                             source: "qrc:/magaxat2.png"
                         }
                     }
-
                     exit: Transition {
                         NumberAnimation { duration: 150;properties: "height"; from: notpopup.height; to: 0; easing.type: Easing.Linear }
                     }
@@ -118,7 +115,6 @@ Page{
                                 width: parent.width
                                 height: parent.height
                                 color: "transparent"
-
                             }
                             contentItem: Rectangle{
                                 color: "transparent"
@@ -140,9 +136,7 @@ Page{
                             }
                         }
                     }
-
                 }
-
                 Image {
                     id: notifications
                     source: "not.png"
@@ -155,7 +149,6 @@ Page{
                         anchors.fill: parent
                         onClicked: notpopup.opened | notList.count ===0 ? notpopup.close() : notpopup.open()
                     }
-
                 }
                 Label {
                     id: userName
@@ -193,7 +186,6 @@ Page{
                     radius: 15
                 }
             }
-
             TabBar {
                 id: bar
                 anchors.top: start.bottom
@@ -245,14 +237,12 @@ Page{
                     }
                 }
             }
-
             Component{
                 id:  dragDelegate
                 Rectangle{
                     width: bar.width
                     height: 40
                     color: "LightCyan"
-
                     Text{
                         id: rooms
                         text: "Room 1"
@@ -275,7 +265,6 @@ Page{
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                         }
-
                         background:Rectangle {
                             color: "#476b6b"
                             radius: 8
@@ -336,7 +325,6 @@ Page{
                         radius: 250
                         visible: false
                     }
-
                     Text{
                         id:names
                         height: parent.height
@@ -378,7 +366,6 @@ Page{
                     Image {
                         id:lock
                     }
-
                     RoundButton {
                         id: privatePublic
                         width: 60
@@ -388,10 +375,7 @@ Page{
                         anchors.rightMargin: 5
                         anchors.verticalCenter: parent.verticalCenter
                         text: availability
-
                     }
-
-
                     Text {
                         id: roomNumber
                         text: numbers
@@ -410,7 +394,6 @@ Page{
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-
                     Image {
                         id: icons
                         height: 25
@@ -422,8 +405,6 @@ Page{
                     }
                 }
             }
-
-
             Rectangle{
                 width: bar.width
                 height: bar.height - tabbutton.height
@@ -471,7 +452,6 @@ Page{
                                     img: "lock.png"
                                 }
                             }
-
                             delegate: delegateRooms
                             spacing: 4
                             clip:true
@@ -482,7 +462,6 @@ Page{
                         ListView {
                             id: view3
                             anchors { fill: parent; margins: 2 }
-
                             model: ListModel{
                                 ListElement {
                                     txt: "Astgh"
@@ -490,7 +469,6 @@ Page{
                                     indexes: "1"
                                     sources: "qrc:/vector-gray-wooden-planks-background.jpg"
                                 }
-
                                 ListElement {
                                     txt: "Miqayel"
                                     wins: "31 wins"

@@ -5,7 +5,6 @@ import QtGraphicalEffects 1.12
 import QtQuick.Controls 2.5
 Page {
     focus: true
-
     id:wind
     property variant days: [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
     property variant zuyg: [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
@@ -13,51 +12,14 @@ Page {
     property variant february: [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
     property variant month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     property var years: [2005,2004,2003,2002,2001,2000,1999,1998,1997,1996,1995,1994,1993,1992,1991,1990,1989,1988,1987,1986,1985,1984,1983,1982,1981,1980,1979,1978,1977,1976,1975,1974,1973,1972,1971,1970,1969,1968,1967,1966,1965,1964,1963,1962,1961,1960,1959,1958,1957,1956,1955,1954,1953,1952,1951,1950,1949]
-
     Rectangle{
-
         width: Screen.width
         height: Screen.height
         color: "transparent"
-
-//        PropertyAnimation{
-//            id:bbbb
-//            //objectName: anim1
-//            property: "y"
-//            target: go_top
-//            //from: 0
-//            to:0
-//            duration: 200
-//        }
-//        PropertyAnimation{
-//            id:dddd
-//            property: "y"
-//            target: go_top
-//            //from: 0
-//            to: -90
-//            duration: 200
-//        }
-//        PropertyAnimation{
-//            id:kkkk
-//            property: "y"
-//            target: go_top
-//            //from: 0
-//            to: -150
-//            duration: 200
-//        }
-//        PropertyAnimation{
-//            id:ssss
-//            property: "y"
-//            target: go_top
-//            //from: 0
-//            to: -180
-//            duration: 200
-//        }
         BorderImage {
             id: name
             source: "qrc:/51062817_2189626127969158_7173693744896540672_n.png"
             anchors.fill: parent
-
             Rectangle{
                 id:go_top
                 width: parent.width
@@ -67,12 +29,8 @@ Page {
                     id:mouse
                     anchors.fill:parent
                     onPressed: {
-
                         Qt.inputMethod.hide()
-
-
                     }
-
                     Text {
                         id: register
                         height: back.height
@@ -83,9 +41,7 @@ Page {
                         color: "white"
                         anchors.topMargin: 5
                         anchors.horizontalCenter: mouse.horizontalCenter
-
                     }
-
                     Button{
                         id:back
                         x: 0
@@ -97,7 +53,6 @@ Page {
                         }
                         onPressed: stack.pop()
                         Text {
-
                             id: back_text
                             x:parent.x
                             y:parent.y
@@ -110,21 +65,17 @@ Page {
                             font.pointSize: 30
                             color: "white"
                             anchors.top: parent.top
-
                         }
                     }
                     Column {
                         id: column
                         y:register.height+20
-
                         width: Screen.width-50
                         height: Screen.height -2*column.y
                         parent: go_top
                         spacing: 20
-
                         anchors.horizontalCenter: parent.horizontalCenter
                         Row{
-
                             width: parent.width
                             height: (column.height-9*column.spacing)/9
                             Rectangle{
@@ -138,7 +89,6 @@ Page {
                                 anchors.bottom: parent.bottom
                                 color: "white"
                             }
-
                             }
                         TextInput{
                             id:enter_name
@@ -146,7 +96,6 @@ Page {
                             height: parent.height
                             color: "white"
                             Rectangle {
-                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
@@ -157,7 +106,6 @@ Page {
                         }
                         }
                         Row{
-
                             width: parent.width
                             height: (column.height-9*column.spacing)/9
                             Rectangle{
@@ -171,7 +119,6 @@ Page {
                                 anchors.bottom: parent.bottom
                                 color: "white"
                             }
-
                             }
                         TextInput{
                             id:enter_surname
@@ -179,7 +126,6 @@ Page {
                             height: parent.height
                             color: "white"
                             Rectangle {
-                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
@@ -190,7 +136,6 @@ Page {
                         }
                         }
                         Row{
-
                             width: parent.width
                            height: (column.height-9*column.spacing)/9
                             Rectangle{
@@ -204,7 +149,6 @@ Page {
                                 anchors.bottom: parent.bottom
                                 color: "white"
                             }
-
                             }
                         TextInput{
                             id:enter_email
@@ -212,7 +156,6 @@ Page {
                             height: parent.height
                             color: "white"
                             Rectangle {
-                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
@@ -224,13 +167,9 @@ Page {
                         }
                         ComboBox {
                             id: comboBox
-
-
                             width: parent.width
                             height: enter_name.height
                             editable: false
-
-
                             Rectangle {
                                 id:combo
                                 color: "white"
@@ -238,59 +177,41 @@ Page {
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-
                             background: Rectangle{
                                 color: "transparent"
                             }
-
-
                             Rectangle{
-
                                 height: parent.height
                                 width: parent.width
                                 anchors.left: parent.left
-
                                 color: "transparent"
                                 Text {
                                     id: slaq
                                     anchors.verticalCenter:  parent.verticalCenter
                                     anchors.left: parent.left
                                     anchors.leftMargin: 10
-
                                     text: qsTr("Birth date")
                                     color: "white"
 
                                 }
-
                             }
                             Popup{
                                 id: popup
                                 x:parent.x
-
                                 width:parent.width
                                 height: 6*enter_name.height
                                 modal: true
-
-
                                 background: Rectangle{
                                     color: "gray"
                                 }
-
                                 contentItem: Column{
                                     Row{
                                         height: parent.height-50
                                         width: parent.width
-
-
-
-
-
                                         Tumbler {
                                             id: month_t
-
                                             width: parent.width/2
                                             height: parent.height
-
                                             font.pointSize: 14
                                             model:  month
                                             visibleItemCount: 3
@@ -310,75 +231,49 @@ Page {
                                         }
                                         Tumbler {
                                             id: day_t
-
                                             width: parent.width/4
                                             height: parent.height
-
                                             font.pointSize: 14
                                             visibleItemCount: 3
                                             model: days
                                             currentIndex: 0
                                             font.bold: true
                                         }
-
                                         Tumbler {
                                             id: year_t
-
                                             width: parent.width/4
                                             height: parent.height
-
                                             font.pointSize: 14
                                             visibleItemCount: 3
                                             model: years
                                             currentIndex: 0
-
                                             onCurrentIndexChanged: {
                                                 if(month_t.currentIndex == 1){
                                                     if (years[year_t.currentIndex]%4 == 0){
-
                                                         day_t.model = nahanj
                                                     }
-
-
                                                     else{day_t.model = february}
                                                 }
                                             }
                                         }
-
-
                                     }
                                 }
-
                                 Button{
                                     height: sign_in.height
                                     width: sign_in.width-30
                                     text: "Save"
-
                                     anchors.horizontalCenter: parent.horizontalCenter
-
                                     background: Rectangle{
                                         radius: 30
                                         color: "teal"
-
-
                                     }
                                     onClicked: {
                                         slaq.text =days[day_t.currentIndex]+"  "+ month[month_t.currentIndex]+"  "+years[year_t.currentIndex]
-                                        popup.close()
-
-                                         //Qt.inputMethod.hide()
-
+                                        popup.close()                                         
                                     }
-
                                 }
                             }
-
-
-
                             onPressedChanged: {
-
-
-
                                 enter_name.focus = false
                                 enter_surname.focus = false
                                 enter_email.focus = false
@@ -386,53 +281,40 @@ Page {
                                 enter_password.focus = false
                                 repeat_password.focus = false
                                 popup.open()
-//Qt.inputMethod.hide()
                             }
                         }
-
                         Row {
                             id: row1
-
                             width: parent.width
                             height: enter_name.height
                             spacing: 50
                             RadioButton {
                                 id: radioButton
-
                                 indicator.height: 25
                                 indicator.width: 25
-
                                 Text {
                                     id: male
                                     x: 37
                                     y: 12
                                     text: qsTr("  Male")
                                     color: "white"
-
                                 }
-
                             }
 
                             RadioButton {
                                 id: radioButton1
-
-
-
                                 indicator.height: 25
                                 indicator.width: 25
-
                                 Text {
                                     id: female
                                     x: 35
                                     y: 12
                                     text: qsTr(" Female")
                                     color: "white"
-
                                 }
                             }
                         }
                         Row{
-
                             width: parent.width
                             height: (column.height-9*column.spacing)/9
                             Rectangle{
@@ -446,7 +328,6 @@ Page {
                                 anchors.bottom: parent.bottom
                                 color: "white"
                             }
-
                             }
                         TextInput{
                             id:enter_login
@@ -454,7 +335,6 @@ Page {
                             height: parent.height
                             color: "white"
                             Rectangle {
-                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
@@ -465,7 +345,6 @@ Page {
                         }
                         }
                         Row{
-
                             width: parent.width
                            height: (column.height-9*column.spacing)/9
                             Rectangle{
@@ -479,7 +358,6 @@ Page {
                                 anchors.bottom: parent.bottom
                                 color: "white"
                             }
-
                             }
                         TextInput{
                             id:enter_password
@@ -488,7 +366,6 @@ Page {
                             color: "white"
                             echoMode: TextInput.Password
                             Rectangle {
-                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
@@ -499,7 +376,6 @@ Page {
                         }
                         }
                         Row{
-
                             width: parent.width
                             height: (column.height-9*column.spacing)/9
                             Rectangle{
@@ -513,7 +389,6 @@ Page {
                                 anchors.bottom: parent.bottom
                                 color: "white"
                             }
-
                             }
                         TextInput{
                             id:repeat_password
@@ -522,7 +397,6 @@ Page {
                             color: "white"
                             echoMode: TextInput.Password
                             Rectangle {
-                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
@@ -530,32 +404,23 @@ Page {
                             }
                         }
                         }
-
                         Button{
-
                             id: sign_in
                             anchors.bottomMargin: 30
                             anchors.horizontalCenter: parent.horizontalCenter
                             width: 180
-
                             text: "Submit"
                             anchors.horizontalCenterOffset: 0
                             //enabled: username.text === "" || surname.text === "" || mail.text === "" || u_pass.text === "" || repass.text === ""  ?false:true
-
                             background: Rectangle{
                                 radius: 30
                                 color: "lightgreen"
                                 opacity: 0.75
-
                             }
-                            //onPressed: {bbbb.start()}
-
                         }
-
                     }
                 }
             }
         }
-
     }
 }

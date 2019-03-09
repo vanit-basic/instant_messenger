@@ -5,11 +5,9 @@ import QtQuick.Controls 2.3
 import QtGraphicalEffects 1.12
 import QtQuick.Layouts 1.3
 
-Item {
-  //  x: 0
+Item {  
     width: 355
     height: 44
-
     ToolBar {
         id: toolBar
         anchors.fill: parent
@@ -22,9 +20,7 @@ Item {
                 color: "transparent"
             }
             Image {
-                id: image
-                //            x: 0
-                //            y: 0
+                id: image                
                 width: 30
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -42,7 +38,6 @@ Item {
             fillMode: Image.PreserveAspectFit
             source: "searchb.png"
         }
-
         Image {
             id: image2
             x: 0

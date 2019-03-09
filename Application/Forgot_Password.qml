@@ -5,10 +5,7 @@ import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.12
 
 Page {
-    id:wind
-    //    visible: true
-    //    width: Screen.width
-    //    height: Screen.height
+    id:wind   
     Rectangle{
         width: Screen.width
         height: Screen.height
@@ -19,8 +16,6 @@ Page {
             GradientStop { position: 0.75;color:"silver"}
             GradientStop{ position: 1.0;color:"lightgrey"}
         }
-
-
         MouseArea{
             anchors.fill:parent
             onPressed:{Qt.inputMethod.hide()}
@@ -109,7 +104,6 @@ Page {
                         reset.visible = false
                         email.visible = false
                     }
-
                 }
                 TextField{
                     id:code
@@ -166,12 +160,10 @@ Page {
                     color: "transparent"
                     anchors.top: parent.top
                     anchors.topMargin: parent.height/12
-
                     MouseArea{
                         id:mouse1
                         anchors.fill: parent
                         onPressed:{Qt.inputMethod.hide()}
-
                         TextField{
                             id:newp
                             width: parent.width
@@ -183,7 +175,6 @@ Page {
                             background: Rectangle{
                                 color: "transparent"
                             }
-
                             Rectangle {
                                 id:new_rect
                                 color: "white"
@@ -194,7 +185,6 @@ Page {
                             onEditingFinished:  {new_rect.height = 1; new_rect.color = "white"}
                             onPressed:   {new_rect.height = 2 ; new_rect.color = "#325f5f"}
                         }
-
                         TextField{
                             id:repeatp
                             width: parent.width
@@ -217,7 +207,6 @@ Page {
                             onEditingFinished:  {repeat_rect.height = 1; repeat_rect.color = "white"}
                             onPressed:   {repeat_rect.height = 2 ; repeat_rect.color = "#325f5f"}
                         }
-
                         Button{
                             id:submit
                             height: 30
@@ -238,4 +227,3 @@ Page {
         }
     }
 }
-

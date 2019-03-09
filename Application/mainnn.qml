@@ -3,16 +3,12 @@ import QtQuick.Window 2.2
 import QtQuick.Controls 2.0
 import QtSensors 5.12
 ApplicationWindow {
-
     visible: true
     width: Screen.width
     height: Screen.height
     title: qsTr("MafClub")
-
     StackView{
-
         Keys.onPressed:  {
-
             if (event.key === Qt.Key_Back) {
                 event.accepted = true
                 var topStack = stack55.top()

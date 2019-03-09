@@ -18,7 +18,6 @@ Page{
             }
         }
     }
-
     footer: ToolBar{
         id: root
         width: parent.width
@@ -67,5 +66,3 @@ Page{
         }
     }
 }
-
-

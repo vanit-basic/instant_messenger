@@ -39,7 +39,6 @@ Page {
             color: "lightgrey"
             anchors.centerIn: parent
         }
-
         Button {
             id: button
             width: back.width
@@ -58,7 +57,6 @@ Page {
             }
             onClicked: stack00.pop()
         }
-
     }
     Rectangle {
         id: middlelabel
@@ -88,7 +86,6 @@ Page {
             anchors.centerIn: parent
         }
     }
-
     Rectangle{
         id: textRect
         width:wind_terms.width - 60

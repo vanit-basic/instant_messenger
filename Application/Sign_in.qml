@@ -2,11 +2,9 @@ import QtQuick 2.12
 import QtQuick.Window 2.2
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Controls 2.3
-//import "signup.qml"
 Page{
     id: wind
     focus: true
-
     Rectangle{
         width: wind.width
         height: wind.height
@@ -42,7 +40,6 @@ Page{
             from: column.y+column.height
             to: button.y
             duration: 500
-
         }
         PropertyAnimation{
             id:fbx1
@@ -83,7 +80,6 @@ Page{
             from: column.y+column.height
             to: button1.y
             duration: 500
-
         }
         PropertyAnimation{
             id:gx1
@@ -124,7 +120,6 @@ Page{
             from: column.y+column.height
             to: button2.y
             duration: 500
-
         }
         PropertyAnimation{
             id:instax1
@@ -166,7 +161,6 @@ Page{
             from: button.y
             to: column.y+column.height
             duration: 500
-
         }
         PropertyAnimation{
             id:fbx
@@ -207,7 +201,6 @@ Page{
             from: button1.y
             to: column.y+column.height
             duration: 500
-
         }
         PropertyAnimation{
             id:gx
@@ -248,7 +241,6 @@ Page{
             //from: button2.y
             to: column.y+column.height
             duration: 500
-
         }
         PropertyAnimation{
             id:instax
@@ -258,7 +250,6 @@ Page{
             to: column.x+column.width-110
             duration: 500
         }
-
         BorderImage {
             id: name
             source: "qrc:/51062817_2189626127969158_7173693744896540672_n.png"
@@ -271,8 +262,7 @@ Page{
             onPressed: {
                 Qt.inputMethod.hide()
             }
-            Column{
-                //parent: wind
+            Column{               
                 id: column
                 width: 300
                 height: 362
@@ -295,10 +285,8 @@ Page{
                         width: parent.width
                         anchors.bottom: parent.bottom
                     }
-
                     onEditingFinished:  { log_rect.height = 1; log_rect.color = "white"}
                     onPressed:   { log_rect.height = 2 ; log_rect.color = "green"}
-
                 }
                 TextField{
                     id:password
@@ -319,7 +307,6 @@ Page{
                     onPressed:   { passw_rect.height = 2 ; passw_rect.color = "green"}
                     echoMode: TextInput.Password
                 }
-
                 Button{
                     anchors.horizontalCenter: parent.horizontalCenter
                     id: sign_in
@@ -333,7 +320,6 @@ Page{
                     enabled: login.text == "" || password.text == "" ?false:true
                     onPressed: stack.push(Qt.resolvedUrl("Home.qml"))
                 }
-
                 Button{
                     background: Rectangle{
                         radius: 30
@@ -343,33 +329,26 @@ Page{
                     anchors.horizontalCenter: parent.horizontalCenter
                     id:sign_up
                     width: 180
-                    text: "Sign up"
-                    //onPressed: windowLoader.source = "signup.qml"
+                    text: "Sign up"                    
                     onPressed: stack.push(Qt.resolvedUrl("Sign_up.qml"))
-
-
                 }
                 Button{
                     anchors.horizontalCenter: parent.horizontalCenter
                     id:forgot_password
-
                     font.family: "Arial"
                     width: forg_pass.width
                     height: forg_pass.height
                     Text {
-
                         id:forg_pass
                         text: "Forgot password?"
                         anchors.centerIn:  parent
                         color: "white"
-
                     }
                     background:Rectangle {
                         color: "transparent"
                     }
                     onPressed: stack.push(Qt.resolvedUrl("Forgot_Password.qml"))
                 }
-
                 Button{
                     anchors.horizontalCenter: parent.horizontalCenter
                     id: sign_up_with
@@ -382,18 +361,11 @@ Page{
                         color: "white"
                         anchors.centerIn: parent
                     }
-
                     background:Rectangle {
                         color: "transparent"
                     }
-
                     onPressed:  {
-
-
                         if( button.height == 0){
-//                            button.visible =true
-//                            button1.visible =true
-//                            button2.visible =true
                             fbx.start()
                             fby.start()
                             fbo.start()
@@ -409,10 +381,8 @@ Page{
                             instao.start()
                             instaw.start()
                             instah.start()
-
                         }
                         else{
-
                             fbx1.start()
                             fby1.start()
                             fbo1.start()
@@ -428,26 +398,17 @@ Page{
                             instao1.start()
                             instaw1.start()
                             instah1.start()
-//                            button.visible =false
-//                            button1.visible =false
-//                            button2.visible =false
-
                         }
-
                     }
                 }
-
             }
-
             Button {
-                id: button
-                //visible: false
+                id: button                
                 x: column.x+50
                 y: column.y+column.height
                 width: 0
                 height:0
-                background: Rectangle{
-                    //radius: 30
+                background: Rectangle{                   
                     color:"transparent"
                 }
                 BorderImage {
@@ -455,19 +416,15 @@ Page{
                     source: "qrc:/5ab8bcb464f2c(1).png"
                     width: parent.width
                     height: parent.height
-
                 }
             }
-
             Button {
-                id: button1
-                //visible: false
+                id: button1               
                 x: column.x+column.width/2-25
                 y: column.y+column.height
                 width: 0
                 height: 0
-                background: Rectangle{
-                    //radius: 30
+                background: Rectangle{                  
                     color:"transparent"
                 }
                 BorderImage {
@@ -475,21 +432,15 @@ Page{
                     width: parent.width
                     height: parent.height
                     source: "qrc:/5ab8bcb464f2c(3).png"
-
                 }
-
-
             }
-
             Button {
-                id: button2
-                //visible: false
+                id: button2               
                 x: column.x+column.width-100
                 y: column.y+column.height
                 width: 0
                 height: 0
-                background: Rectangle{
-                   // radius: 30
+                background: Rectangle{                   
                     color:"transparent"
                 }
                 BorderImage {
@@ -497,12 +448,8 @@ Page{
                     width: parent.width
                     height: parent.height
                     source: "qrc:/5ab8bcb464f2c(2).png"
-
                 }
             }
-
-
         }
     }
-
 }

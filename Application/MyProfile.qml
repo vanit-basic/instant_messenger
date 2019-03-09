@@ -8,11 +8,10 @@ import QtQuick.Controls.Material 2.1
 
 Page{
     id:wind
-
     Drawer {
         id: drawer
         width:  wind.width-rectangle.x-tab_stat.width+50
-        height: Screen.height//-tool_bar_form.height
+        height: Screen.height
         dragMargin: -1
         edge: Qt.RightEdge
         background: Rectangle{
@@ -77,7 +76,6 @@ Page{
                         color: "white"
                         font.pointSize: 15
                     }
-
                     onClicked:{
                         drawer.close()
                         stack00.push(Qt.resolvedUrl("Edit_Profile.qml"))
@@ -117,7 +115,6 @@ Page{
                         stack00.push(Qt.resolvedUrl("Change_Password.qml"))
                     }
                 }
-
             }
             Rectangle{
                 width: parent.width
@@ -173,7 +170,6 @@ Page{
                         anchors.leftMargin: 5
                         anchors.left: parent.left
                     }
-
                     indicator: Image{
                         anchors.right: parent.right
                         anchors.rightMargin: 10
@@ -216,7 +212,6 @@ Page{
                                 anchors.leftMargin: 4
                                 anchors.verticalCenter: parent.verticalCenter
                             }
-
                             Image{
                                 width: 25
                                 height: 15
@@ -225,7 +220,6 @@ Page{
                                 anchors.verticalCenter: parent.verticalCenter
                                 source: sources
                             }
-
                         }
                     }
                 }
@@ -272,7 +266,6 @@ Page{
                         anchors.verticalCenter: parent.verticalCenter
                         radius: 13
                         color: control.checked ? "#17a81a" : "#ffffff"
-
                         Rectangle {
                             x: control.checked ? parent.width - width : 0
                             width: height
@@ -313,8 +306,7 @@ Page{
                         font.pointSize: 15
                     }
                     onClicked:{
-                        drawer.close()
-                        // stack.push(Qt.resolvedUrl("Edit_Profile.qml"))
+                        drawer.close()                        
                     }
                 }
             }
@@ -414,18 +406,13 @@ Page{
                         color: "white"
                         font.pointSize: 15
                     }
-                    onClicked:{
-                       // drawer.close()
-                        stack.clear()
-                        //stack.push(Qt.resolvedUrl("Sign_in.qml"))
+                    onClicked:{                       
+                        stack.clear()                       
                     }
                 }
             }
         }
-
-
     }
-
     Rectangle{
         id:back_color
         x: 0
@@ -440,7 +427,6 @@ Page{
             GradientStop { position: 0.75;color:"silver"}
             GradientStop{ position: 1.0;color:"lightgrey"}
         }
-
         Rectangle {
             id: rect
             x: 0
@@ -449,7 +435,6 @@ Page{
             height: 1
             color: "#ffffff"
         }
-
         Rectangle {
             id: rectangle
             anchors.horizontalCenter: parent.horizontalCenter
@@ -471,17 +456,12 @@ Page{
                     id: tabButton
                     text: qsTr("Information")
                 }
-
             }
-
             StackLayout {
                 width: parent.width
                 anchors.fill: rectangle
                 anchors.topMargin: tabButton.height
-                currentIndex: bar.currentIndex
-
-                //anchors.bottom: wind.bottom
-                //anchors.bottomMargin: (Screen.height)/12
+                currentIndex: bar.currentIndex               
                 ListView{
                     id:statistic
                     spacing: 3
@@ -490,7 +470,7 @@ Page{
                     delegate:
                         Rectangle{
                         width: rectangle.width
-                        height: /*rectangle.height-tabButton.height*/ 50
+                        height:  50
                         Image {
                             id: stat
                             source: /*"qrc:/vector-gray-wooden-planks-background.jpg"*/ "qrc:/taxtak.png"
@@ -501,7 +481,6 @@ Page{
                                 anchors.leftMargin: 10
                                 text: name
                                 color: "white"
-
                             }
                             Text{
                                 anchors.verticalCenter: parent.verticalCenter
@@ -548,7 +527,6 @@ Page{
                         number:"7"
                     }
                 }
-
                 ListView{
                     id:information
                     clip: true
@@ -557,20 +535,17 @@ Page{
                     delegate:
                         Rectangle{
                         width: rectangle.width
-                        height: /*rectangle.height-tabButton.height*/ 50
+                        height:  50
                         Image {
                             id: stat1
-                            source: /*"qrc:/vector-gray-wooden-planks-background.jpg"*/ "qrc:/taxtak.png"
+                            source:  "qrc:/taxtak.png"
                             anchors.fill: parent
-
-
                             Text{
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.left: parent.left
                                 anchors.leftMargin: 10
                                 text: name
                                 color: "white"
-
                             }
                             Text{
                                 anchors.verticalCenter: parent.verticalCenter
@@ -581,7 +556,6 @@ Page{
                             }
                         }
                     }
-
                     ListModel{
                         id:list_model_info
                         ListElement{
@@ -612,7 +586,6 @@ Page{
                 }
             }
         }
-
         Label {
             id: toplabel
             x: 0
@@ -626,7 +599,6 @@ Page{
                 color: "lightgrey"
                 anchors.centerIn: parent
             }
-
             Button {
                 id: button
                 x: 8
@@ -688,7 +660,6 @@ Page{
                 height: 57
                 text: "+"
             }
-
             Button {
                 id: name_surname
                 anchors.left: parent.left
@@ -737,6 +708,5 @@ Page{
             anchors.bottomMargin: bar.height
             color: "transparent"
         }
-
     }
 }

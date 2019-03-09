@@ -11,7 +11,6 @@ Page{
             id:swDel
             width: Screen.width
             height: Screen.height/8
-
             background: Rectangle{
                 color:"white"
             }
@@ -32,7 +31,6 @@ Page{
                             source: "qrc:/delete1.png"
                             anchors.fill: parent
                         }
-
                         anchors.fill: parent
                         color: "red"
                         radius: 20
@@ -49,17 +47,13 @@ Page{
                         BorderImage{
                             source: "qrc:/notification.png"
                             anchors.fill: parent
-
                         }
-
                         anchors.fill: parent
                         color: "red"
                         radius: 20
                     }
                 }
             }
-
-
             Image {
                 id: userImage
                 anchors.left: parent.left
@@ -88,7 +82,6 @@ Page{
                 font.pixelSize: 18
                 color: "black"
             }
-
             MouseArea{
                 height: parent.height
                 anchors.verticalCenter: parent.verticalCenter
@@ -97,19 +90,14 @@ Page{
                 onClicked: {
                     stack55.push(Qt.resolvedUrl("Conversation.qml"))
                 }
-                // onPressAndHold:pane.visible = true
             }
-
         }
-
     }
-
     StackView{
         id:stackMess
         anchors.fill: parent
         initialItem:
         Rectangle{
-
         Rectangle{
             id:rect
             anchors.fill: parent
@@ -118,22 +106,18 @@ Page{
             anchors.topMargin: toolbar.height + searchrect.height +tabbar.height
             color: "white"
         }
-
             Rectangle{
                 id: toolbar
                 width: parent.width
                 height: 44
-
                 color: "lightblue"
                 anchors.top: parent.top
-
                 Text {
                     text: "Message"
                     anchors.centerIn: parent
                     font.pixelSize: 30
                 }
             }
-
             Rectangle{
                 id: searchrect
                 anchors.top: toolbar.bottom
@@ -149,9 +133,7 @@ Page{
                         anchors.fill: search
                         color: "lightgrey"
                     }
-
                 }
-
             }
             TabBar{
                 anchors.top:searchrect.bottom
@@ -168,10 +150,8 @@ Page{
                 TabButton{
                     id:groups
                     text: "Groups"
-
                 }
             }
-
             StackLayout{
                 anchors.fill: rect
                 currentIndex: tabbar.currentIndex
@@ -183,7 +163,6 @@ Page{
                         spacing: 2
                         clip: true
                         ScrollIndicator.vertical: ScrollIndicator { }
-
                         model:  ListModel{
                             ListElement{
                                 textField: "VanIt"
@@ -201,7 +180,6 @@ Page{
                         spacing: 2
                         clip: true
                         ScrollIndicator.vertical: ScrollIndicator { }
-
                         model: ListModel{
                             ListElement{
                                 textField: "Miqo"
@@ -226,12 +204,9 @@ Page{
                             }
                         }
                         delegate: delegate
-
                     }
                 }
-
             }
-
             RoundButton{
                 id:roundBtn
                 width: 50
@@ -245,11 +220,8 @@ Page{
                 anchors.rightMargin: 10
                 anchors.bottomMargin: 10
                 font.pixelSize: 30
-                text: "+"
-               // onClicked: stack00.push(kk)
+                text: "+"               
             }
-
         }
-
     }
 }
