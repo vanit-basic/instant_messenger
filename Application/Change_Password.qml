@@ -6,9 +6,7 @@ import QtGraphicalEffects 1.12
 
 Page {
     id:wind
-    //    visible: true
-    //    width: Screen.width
-    //    height: Screen.height
+
     MouseArea {
         anchors.fill: parent
         onPressed: {Qt.inputMethod.hide()}
@@ -64,21 +62,33 @@ Page {
 
             Column {
                 id: column
-                x: rec.x+50
-                y:   small.height + 15
-                width: rec.width - 100
-                spacing: 20
-                TextField{
-                    id:currentp
-                    x:0
-                    y:0
+                x: 25
+                y:   small.height + 50
+                width: parent.width - 50
+                spacing: 50
+                Row{
+
                     width: parent.width
                     height: 50
-                    color: "white"
-                    background: Rectangle{
-                        color: "transparent"
+                    Rectangle{
+                        id:rec_pass
+                        width: confirm_pass_text.width+5
+                        height: parent.height
+                    color: "transparent"
+                    Text {
+                        id: pass_text
+                        text: qsTr("Current Password")
+                        anchors.bottom: parent.bottom
+                        color: "white"
                     }
-                    placeholderText: "Current Password"
+
+                    }
+                TextInput{
+                    id:currentp
+                    width: parent.width-rec_pass.width
+                    height: parent.height
+                    color: "white"
+
                     Rectangle {
                         id:current
                         color: "white"
@@ -86,16 +96,32 @@ Page {
                         width: parent.width
                         anchors.bottom: parent.bottom
                     }
+                    EnterKey.type:  Qt.EnterKeyNext
+                    onEditingFinished:  { newp.focus = true}
                 }
-                TextField{
-                    id:newp
+                }
+                Row{
+
                     width: parent.width
                     height: 50
-                    color: "white"
-                    placeholderText: "New Password"
-                    background: Rectangle{
-                        color: "transparent"
+                    Rectangle{
+                        id:rec_new_pass
+                        width: confirm_pass_text.width+5
+                        height: parent.height
+                    color: "transparent"
+                    Text {
+                        id: new_pass_text
+                        text: qsTr("New Password")
+                        anchors.bottom: parent.bottom
+                        color: "white"
                     }
+
+                    }
+                TextInput{
+                    id:newp
+                    width: parent.width-rec_new_pass.width
+                    height: parent.height
+                    color: "white"
                     Rectangle {
                         id:neww
                         color: "white"
@@ -103,24 +129,42 @@ Page {
                         width: parent.width
                         anchors.bottom: parent.bottom
                     }
+                    EnterKey.type:  Qt.EnterKeyNext
+                    onEditingFinished:  {confirm_pass.focus = true}
                 }
-                TextField{
-                    id:confirmp
+                }
+                Row{
+
                     width: parent.width
                     height: 50
-                    color: "white"
-                    placeholderText: "Confirm Password"
-                    background: Rectangle{
-                        color: "transparent"
+                    Rectangle{
+                        id:rec_confirm_pass
+                        width: confirm_pass_text.width+5
+                        height: parent.height
+                    color: "transparent"
+                    Text {
+                        id: confirm_pass_text
+                        text: qsTr("Confirm Password")
+                        anchors.bottom: parent.bottom
+                        color: "white"
                     }
+
+                    }
+                TextInput{
+                    id:confirm_pass
+                    width: parent.width-rec_confirm_pass.width
+                    height: parent.height
+                    color: "white"
                     Rectangle {
-                        id:confirm
+                        id:conf
                         color: "white"
                         height: 1
                         width: parent.width
                         anchors.bottom: parent.bottom
                     }
                 }
+                }
+
             }
             Button{
                 id:save_changes
@@ -132,8 +176,10 @@ Page {
                 anchors.top:  column.bottom
                 anchors.topMargin: 50
                 width: 180
+                height: 30
+                opacity: enabled ? 1: 0.5
                 text: "Save changes"
-                enabled: (currentp.text === "" || newp.text === "" || confirmp.text === "" )?false:true
+                enabled: (currentp.text === "" ||newp.text === "" || confirm_pass.text === "" )?false:true
                 onClicked: stack00.pop()
             }
         }

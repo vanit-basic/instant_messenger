@@ -15,34 +15,7 @@ function backPressed(){ bbbb.start()}
         anchors.fill: parent
         onClicked:  {Qt.inputMethod.hide()}
 
-//        PropertyAnimation{
-//            id:aaaa
-//            property: "y"
-//            target: rec
-//            to:0
-//            duration: 200
-//        }
-//        PropertyAnimation{
-//            id:bbbb
-//            property: "y"
-//            target: rec
-//            to: 0
-//            duration: 200
-//        }
-//        PropertyAnimation{
-//            id:dddd
-//            property: "y"
-//            target: rec
-//            to: -roundButton.y
-//            duration: 200
-//        }
-//        PropertyAnimation{
-//            id:ffff
-//            property: "y"
-//            target: rec
-//            to: -roundButton.y-save_changes.height
-//            duration: 200
-//        }
+
         Rectangle{
             id:root
             height: parent.height
@@ -55,13 +28,7 @@ function backPressed(){ bbbb.start()}
                 GradientStop{ position: 1.0;color:"lightgrey"}
             }
 
-//            Rectangle{
-//                id: rec
-//                x: 0
-//                y: 0
-//                width: parent.width
-//                height: parent.height
-//                color: "transparent"
+
 
                 MouseArea{
                     x:0
@@ -123,7 +90,7 @@ function backPressed(){ bbbb.start()}
                             id: roundButton
                             width: 70
                             height: 70
-//                            anchors.verticalCenter: parent.verticalCenter
+
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.top: small.bottom
                             anchors.topMargin: 10
@@ -181,6 +148,7 @@ function backPressed(){ bbbb.start()}
                                     id: name_text
                                     text: qsTr("Name")
                                     anchors.bottom: parent.bottom
+                                    color: "white"
                                 }
 
                                 }
@@ -191,6 +159,7 @@ function backPressed(){ bbbb.start()}
                                 width: parent.width-rec_name.width
                                 height: parent.height
                                 color: "white"
+                                text: "Valod"
 
 
                                 Rectangle {
@@ -219,6 +188,7 @@ function backPressed(){ bbbb.start()}
                                     id: surname_text
                                     text: qsTr("Surname")
                                     anchors.bottom: parent.bottom
+                                    color: "white"
                                 }
 
                                 }
@@ -228,6 +198,7 @@ function backPressed(){ bbbb.start()}
                                 width: parent.width-rec_surname.width
                                height: parent.height
                                 color: "white"
+                                 text: "Valodyan"
 
                                 Rectangle {
                                     id:surname_rect
@@ -253,6 +224,7 @@ function backPressed(){ bbbb.start()}
                                     id: nickname_text
                                     text: qsTr("Nickname")
                                     anchors.bottom: parent.bottom
+                                    color: "white"
                                 }
 
                                 }
@@ -263,6 +235,7 @@ function backPressed(){ bbbb.start()}
                                 width: parent.width-rec_nickname.width
                                 height: parent.height
                                 color: "white"
+                                 text: "Valod"
 
                                 Rectangle {
                                     id:nick_rect
@@ -290,21 +263,18 @@ Rectangle{
                                     text: qsTr("Save changes")
                                     color: "white"
                                     anchors.centerIn: parent
-                                    font.pointSize: 11
+                                    //font.pointSize: 11
                                 }
                             }
                             opacity: enabled ? 1: 0.5
-
                             anchors.centerIn: parent
-                            width: 130
+                            width: 180
                             height: 30
                             font.weight: Font.Light
                             font.pointSize: 10
                             font.family: "Courier"
                             font.capitalization: Font.Capitalize
-                            //spacing: 5
                             enabled: (edit_name.text === "" || edit_surname.text === "" || edit_nickname.text === "" )?false:true
-
                             onClicked: stack00.pop()
                         }
 }

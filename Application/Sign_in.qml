@@ -6,11 +6,7 @@ import QtQuick.Controls 2.3
 Page{
     id: wind
     focus: true
-   // visible: true
-//    width:Screen.width
-//    height: Screen.height
-   // Signup {id:kkkkkk}
-   // Conversation{id:convs}
+
     Rectangle{
         width: wind.width
         height: wind.height

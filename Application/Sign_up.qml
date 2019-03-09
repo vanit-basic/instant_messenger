@@ -1,6 +1,7 @@
-import QtQuick 2.5
+import QtQuick 2.9
 import QtQuick.Window 2.2
 import QtQuick.Controls.Styles 1.4
+import QtGraphicalEffects 1.12
 import QtQuick.Controls 2.5
 Page {
     focus: true
@@ -19,39 +20,39 @@ Page {
         height: Screen.height
         color: "transparent"
 
-        PropertyAnimation{
-            id:bbbb
-            //objectName: anim1
-            property: "y"
-            target: go_top
-            //from: 0
-            to:0
-            duration: 200
-        }
-        PropertyAnimation{
-            id:dddd
-            property: "y"
-            target: go_top
-            //from: 0
-            to: -90
-            duration: 200
-        }
-        PropertyAnimation{
-            id:kkkk
-            property: "y"
-            target: go_top
-            //from: 0
-            to: -150
-            duration: 200
-        }
-        PropertyAnimation{
-            id:ssss
-            property: "y"
-            target: go_top
-            //from: 0
-            to: -180
-            duration: 200
-        }
+//        PropertyAnimation{
+//            id:bbbb
+//            //objectName: anim1
+//            property: "y"
+//            target: go_top
+//            //from: 0
+//            to:0
+//            duration: 200
+//        }
+//        PropertyAnimation{
+//            id:dddd
+//            property: "y"
+//            target: go_top
+//            //from: 0
+//            to: -90
+//            duration: 200
+//        }
+//        PropertyAnimation{
+//            id:kkkk
+//            property: "y"
+//            target: go_top
+//            //from: 0
+//            to: -150
+//            duration: 200
+//        }
+//        PropertyAnimation{
+//            id:ssss
+//            property: "y"
+//            target: go_top
+//            //from: 0
+//            to: -180
+//            duration: 200
+//        }
         BorderImage {
             id: name
             source: "qrc:/51062817_2189626127969158_7173693744896540672_n.png"
@@ -68,7 +69,7 @@ Page {
                     onPressed: {
 
                         Qt.inputMethod.hide()
-                        bbbb.start()
+
 
                     }
 
@@ -116,93 +117,117 @@ Page {
                         id: column
                         y:register.height+20
 
-                        width: Screen.width-100
+                        width: Screen.width-50
                         height: Screen.height -2*column.y
                         parent: go_top
                         spacing: 20
 
                         anchors.horizontalCenter: parent.horizontalCenter
-
-                        TextField{
-                            id:username
-                            enabled: true
+                        Row{
 
                             width: parent.width
-                            height: (column.height-10*column.spacing)/10
-                            color: "white"
-                            placeholderText: "Name"
-                            background: Rectangle{
-                                color: "transparent"
+                            height: (column.height-9*column.spacing)/9
+                            Rectangle{
+                                id:rec_name
+                                width: repass_text.width+10
+                                height: parent.height
+                            color: "transparent"
+                            Text {
+                                id: name_text
+                                text: qsTr("Name")
+                                anchors.bottom: parent.bottom
+                                color: "white"
                             }
+
+                            }
+                        TextInput{
+                            id:enter_name
+                            width: parent.width-rec_repass.width
+                            height: parent.height
+                            color: "white"
                             Rectangle {
-                                id:us
+                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  { us.height = 1; us.color = "white"}
-                            onPressed:   {
-                                us.height = 2
-                                us.color = "darkgrey"
-                                bbbb.start()
-
-                            }
-
+                            onEditingFinished:  { enter_surname.focus = true}
+                            EnterKey.type:  Qt.EnterKeyNext
                         }
-
-                        TextField{
-                            id:surname
+                        }
+                        Row{
 
                             width: parent.width
-                            height: username.height
-                            color: "white"
-                            placeholderText: "Surname"
-                            background: Rectangle{
-                                color: "transparent"
+                            height: (column.height-9*column.spacing)/9
+                            Rectangle{
+                                id:rec_surname
+                                width: repass_text.width+10
+                                height: parent.height
+                            color: "transparent"
+                            Text {
+                                id: surname_text
+                                text: qsTr("Surname")
+                                anchors.bottom: parent.bottom
+                                color: "white"
                             }
+
+                            }
+                        TextInput{
+                            id:enter_surname
+                            width: parent.width-rec_repass.width
+                            height: parent.height
+                            color: "white"
                             Rectangle {
-                                id:sur
+                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  { sur.height = 1; sur.color = "white"}
-                            onPressed:   { sur.height = 2 ;
-                                sur.color = "darkgrey"
-                                bbbb.start()
+                            onEditingFinished:  { enter_email.focus = true}
+                            EnterKey.type:  Qt.EnterKeyNext
+                        }
+                        }
+                        Row{
+
+                            width: parent.width
+                           height: (column.height-9*column.spacing)/9
+                            Rectangle{
+                                id:rec_email
+                                width: repass_text.width+10
+                                height: parent.height
+                            color: "transparent"
+                            Text {
+                                id: email_text
+                                text: qsTr("Email")
+                                anchors.bottom: parent.bottom
+                                color: "white"
                             }
 
-                        }
-                        TextField{
-                            id:email
-                            height: username.height
-                            width: parent.width
-                            color: "white"
-                            placeholderText: "Email"
-                            background: Rectangle{
-                                color: "transparent"
                             }
+                        TextInput{
+                            id:enter_email
+                            width: parent.width-rec_repass.width
+                            height: parent.height
+                            color: "white"
                             Rectangle {
-                                id:mail
+                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  { mail.height = 1; mail.color = "white"}
-                            onPressed:   { mail.height = 2 ; mail.color = "darkgrey";dddd.start()}
-
+                            onEditingFinished:  { enter_login.focus= true}
+                            EnterKey.type:  Qt.EnterKeyNext
                         }
-
-
+                        }
                         ComboBox {
                             id: comboBox
 
 
                             width: parent.width
-                            height: username.height
+                            height: enter_name.height
                             editable: false
 
 
@@ -243,7 +268,7 @@ Page {
                                 x:parent.x
 
                                 width:parent.width
-                                height: 6*username.height
+                                height: 6*enter_name.height
                                 modal: true
 
 
@@ -338,8 +363,10 @@ Page {
 
                                     }
                                     onClicked: {
-                                        slaq.text   /*comboBox.displayText*/ =days[day_t.currentIndex]+"  "+ month[month_t.currentIndex]+"  "+years[year_t.currentIndex]
+                                        slaq.text =days[day_t.currentIndex]+"  "+ month[month_t.currentIndex]+"  "+years[year_t.currentIndex]
                                         popup.close()
+
+                                         //Qt.inputMethod.hide()
 
                                     }
 
@@ -349,10 +376,17 @@ Page {
 
 
                             onPressedChanged: {
-                                bbbb.start()
 
+
+
+                                enter_name.focus = false
+                                enter_surname.focus = false
+                                enter_email.focus = false
+                                enter_login.focus = false
+                                enter_password.focus = false
+                                repeat_password.focus = false
                                 popup.open()
-
+//Qt.inputMethod.hide()
                             }
                         }
 
@@ -360,16 +394,14 @@ Page {
                             id: row1
 
                             width: parent.width
-                            height: username.height
+                            height: enter_name.height
                             spacing: 50
                             RadioButton {
                                 id: radioButton
 
                                 indicator.height: 25
                                 indicator.width: 25
-                                onClicked:      {
-                                    bbbb.start()
-                                }
+
                                 Text {
                                     id: male
                                     x: 37
@@ -385,9 +417,7 @@ Page {
                                 id: radioButton1
 
 
-                                onClicked:  {
-                                    bbbb.start()
-                                }
+
                                 indicator.height: 25
                                 indicator.width: 25
 
@@ -401,75 +431,106 @@ Page {
                                 }
                             }
                         }
-                        TextField{
-                            id:login
-                            enabled: true
+                        Row{
 
                             width: parent.width
-                            height: username.height
-                            color: "white"
-                            placeholderText: "Login"
-                            background: Rectangle{
-                                color: "transparent"
+                            height: (column.height-9*column.spacing)/9
+                            Rectangle{
+                                id:rec_login
+                                width: repass_text.width+10
+                                height: parent.height
+                            color: "transparent"
+                            Text {
+                                id: login_text
+                                text: qsTr("Login")
+                                anchors.bottom: parent.bottom
+                                color: "white"
                             }
+
+                            }
+                        TextInput{
+                            id:enter_login
+                            width: parent.width-rec_repass.width
+                            height: parent.height
+                            color: "white"
                             Rectangle {
-                                id:log
+                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  { us.height = 1; us.color = "white"}
-                            onPressed:   {
-                                us.height = 2
-                                us.color = "darkgrey"
-                                kkkk.start()
-
-                            }
-
+                            onEditingFinished:  { enter_password.focus = true}
+                            EnterKey.type:  Qt.EnterKeyNext
                         }
-                        TextField{
-                            id:user_password
-                            height: username.height
-                            width: parent.width
-                            color: "white"
-                            placeholderText: "Password"
-                            background: Rectangle{
-                                color: "transparent"
-                            }
-                            Rectangle {
-                                id:u_pass
+                        }
+                        Row{
 
-                                color: "white"
-                                height: 1
-                                width: parent.width
+                            width: parent.width
+                           height: (column.height-9*column.spacing)/9
+                            Rectangle{
+                                id:rec_pass
+                                width: repass_text.width+10
+                                height: parent.height
+                            color: "transparent"
+                            Text {
+                                id: pass_text
+                                text: qsTr("Password")
                                 anchors.bottom: parent.bottom
+                                color: "white"
                             }
-                            onEditingFinished:  { u_pass.height = 1; u_pass.color = "white"}
-                            onPressed:   { u_pass.height = 2 ; u_pass.color = "green";kkkk.start()}
+
+                            }
+                        TextInput{
+                            id:enter_password
+                            width: parent.width-rec_repass.width
+                            height: parent.height
+                            color: "white"
                             echoMode: TextInput.Password
-                        }
-                        TextField{
-                            id:repeat_pass
-                            height: username.height
-                            width: parent.width
-                            color: "white"
-                            placeholderText: "Repeat password"
-                            background: Rectangle{
-                                color: "transparent"
-                            }
                             Rectangle {
-                                id:repass
-
+                                //id:conf
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  { repass.height = 1; repass.color = "white"}
-                            onPressed:   { repass.height = 2 ; repass.color = "green";ssss.start()}
-                            echoMode: TextInput.Password
+                            onEditingFinished:  { repeat_password.focus = true}
+                            EnterKey.type:  Qt.EnterKeyNext
                         }
+                        }
+                        Row{
+
+                            width: parent.width
+                            height: (column.height-9*column.spacing)/9
+                            Rectangle{
+                                id:rec_repass
+                                width: repass_text.width+10
+                                height: parent.height
+                            color: "transparent"
+                            Text {
+                                id: repass_text
+                                text: qsTr("Repeat password")
+                                anchors.bottom: parent.bottom
+                                color: "white"
+                            }
+
+                            }
+                        TextInput{
+                            id:repeat_password
+                            width: parent.width-rec_repass.width
+                            height: parent.height
+                            color: "white"
+                            echoMode: TextInput.Password
+                            Rectangle {
+                                //id:conf
+                                color: "white"
+                                height: 1
+                                width: parent.width
+                                anchors.bottom: parent.bottom
+                            }
+                        }
+                        }
+
                         Button{
 
                             id: sign_in
@@ -479,7 +540,7 @@ Page {
 
                             text: "Submit"
                             anchors.horizontalCenterOffset: 0
-                            enabled: username.text === "" || surname.text === "" || mail.text === "" || u_pass.text === "" || repass.text === ""  ?false:true
+                            //enabled: username.text === "" || surname.text === "" || mail.text === "" || u_pass.text === "" || repass.text === ""  ?false:true
 
                             background: Rectangle{
                                 radius: 30
@@ -487,7 +548,7 @@ Page {
                                 opacity: 0.75
 
                             }
-                            onPressed: {bbbb.start()}
+                            //onPressed: {bbbb.start()}
 
                         }
 
