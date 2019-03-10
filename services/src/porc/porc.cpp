@@ -192,10 +192,10 @@ int main()
 			getRequest(dbServiceClient, getUserInfo1);
 			//getRequest(dbServiceClient, getUserInfo2);
 			std::cout<<std::endl;
-			
+	*/		
 			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, createGroup, createGroupReq);
-
+/*
 			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, deleteUser);
                         std::cout<<std::endl;			*/

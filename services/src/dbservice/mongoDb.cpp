@@ -18,8 +18,11 @@
 #include <cpprest/filestream.h>
 #include <bsoncxx/types.hpp>
 
+#include <bsoncxx/types/value.hpp>
+
 #include <bsoncxx/document/value.hpp>
-//#include <mongocxx/document/array.hpp>
+#include <bsoncxx/builder/basic/array.hpp>
+#include <bsoncxx/array/view.hpp>
 
 #include <dbservice/mongoDb.hpp>
 #include <dbservice/database.hpp>
@@ -30,6 +33,7 @@ using bsoncxx::builder::stream::open_document;
 using bsoncxx::builder::stream::close_document;
 using bsoncxx::builder::stream::document;
 using bsoncxx::builder::stream::finalize;
+using bsoncxx::type;
 using namespace cfx;
 using namespace utility;
 using namespace web;
@@ -116,7 +120,7 @@ MongoDB::~MongoDB() {
 
 json::value MongoDB::checkMailAndLogin(std::string mail, std::string login) {
 	auto c1 = poolMydb->acquire();
-	auto coll1 = (*c1)["infoDB"]["account"];
+	auto coll1 = (*c1)["infoDB"]["userInfo"];
 	bsoncxx::stdx::optional<bsoncxx::document::value> mailResult =
 		coll1.find_one(document{} << "email" << mail << finalize);
 
@@ -143,7 +147,7 @@ json::value MongoDB::checkMailAndLogin(std::string mail, std::string login) {
 json::value MongoDB::registerUser(json::value request) {
 	auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
-        auto coll1 = (*c1)["infoDB"]["account"];
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
         auto coll2 = (*c2)["passDB"]["signin"];
 	
 	std::string firstName =  request.at(utility::string_t("firstName")).as_string();
@@ -218,7 +222,7 @@ json::value MongoDB::registerUser(json::value request) {
 json::value MongoDB::loginUser(std::string login, std::string password) {
 	auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
-        auto coll1 = (*c1)["infoDB"]["account"];
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
         auto coll2 = (*c2)["passDB"]["signin"];
 	json::value response;
 
@@ -287,8 +291,19 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		element = docInfo["login"];
 		std::string login = element.get_utf8().value.to_string();
 
-//		element = docInfo["groups"];
-//		bsoncxx::array::element ele = docInfo["groups"];	
+		element = docInfo["groups"];
+		int i = 0;
+		if (element.type() == type::k_array) {
+			bsoncxx::array::view subarray{element.get_array().value};
+			for (const bsoncxx::array::element& gId : subarray) {
+				if (gId.type() == type::k_utf8) {
+					std::string groupId = gId.get_utf8().value.to_string();
+					std::string group = "group" + std::to_string(i);
+					response[group] = json::value::string(groupId);
+					i++;
+				}
+			}
+		}
 
 		response["id"] = json::value::string(id);
 		response["firstName"] = json::value::string(firstName);
@@ -337,7 +352,7 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 json::value MongoDB::getUserInfo(std::string id) {
 	auto response = json::value::object();
 	auto c1 = poolMydb->acquire();
-	auto coll1 = (*c1)["infoDB"]["account"];
+	auto coll1 = (*c1)["infoDB"]["userInfo"];
 
 	std::cout << __LINE__ << std::endl;
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
@@ -431,7 +446,7 @@ json::value MongoDB::getUserInfo(std::string id) {
 json::value MongoDB::getUserShortInfo(std::string id) {
 	auto response = json::value::object();
         auto c1 = poolMydb->acquire();
-        auto coll1 = (*c1)["infoDB"]["account"];
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll1.find_one(document{} << "id" << id << finalize);
@@ -574,43 +589,33 @@ json::value MongoDB::getGroupShortInfo(std::string groupId) {
 }
 
 json::value MongoDB::updateUserInfo(json::value user) {
-	std::cout << __LINE__ << std::endl;
 	auto response = json::value::object();
         auto c1 = poolMydb->acquire();
-        auto coll1 = (*c1)["infoDB"]["account"];
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
         std::string id = user.at("userId").as_string();
 	std::string newNickname = user.at("nickName").as_string();
 	std::string newFirstname = user.at("firstName").as_string();
 	std::string newLastname = user.at("lastName").as_string();
         
-	std::cout << __LINE__ << std::endl;
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll1.find_one(document{} << "id" << id << finalize);
 
         if (result) {
-	std::cout << __LINE__ << std::endl;
 		bsoncxx::document::view doc = result->view();
 
-	std::cout << __LINE__ << std::endl;
                 bsoncxx::document::element element = doc["firstName"];
-	std::cout << __LINE__ << std::endl;
                 std::string firstName = element.get_utf8().value.to_string();
-	std::cout << firstName << __LINE__ << std::endl;
 
 		if (firstName.compare(newFirstname) != 0 && newFirstname.compare("") != 0) {
-	std::cout << __LINE__ << std::endl;
 			coll1.update_one(document{} << "id" << id << finalize,
                       		document{} << "$set" << open_document <<
                       		"firstName" << newFirstname << close_document << finalize);	
 		}
-	std::cout << __LINE__ << std::endl;
-
-                element = doc["lastName"];
+                
+		element = doc["lastName"];
                 std::string lastName = element.get_utf8().value.to_string();
-	std::cout << __LINE__ << std::endl;
 
 		if (lastName.compare(newLastname) != 0 && newLastname.compare("") != 0) {
-	std::cout << __LINE__ << std::endl;
 			coll1.update_one(document{} << "id" << id << finalize,
                       		document{} << "$set" << open_document <<
                       		"lastName" << newLastname << close_document << finalize);
@@ -618,16 +623,13 @@ json::value MongoDB::updateUserInfo(json::value user) {
 
                 element = doc["nickName"];
                 std::string nickName = element.get_utf8().value.to_string();
-	std::cout << __LINE__ << std::endl;
 		
 		if (nickName.compare(newNickname) != 0 && newNickname.compare("") != 0) {
-	std::cout << __LINE__ << std::endl;
 			coll1.update_one(document{} << "id" << id << finalize,
                       		document{} << "$set" << open_document <<
                       		"nickName" << newNickname << close_document << finalize);
 		}
 
-	std::cout << __LINE__ << std::endl;
                 response = getUserInfo(id);
                 response["status"] = json::value::string("OK");
 
@@ -641,8 +643,8 @@ json::value MongoDB::updateUserInfo(json::value user) {
 json::value MongoDB::deleteGroup(std::string groupId) {
         auto client = poolMydb->acquire();
         auto db = (*client)["infoDB"];
-        auto groups = db["groups"];
-        auto users = db["users"];
+        auto groups = db["groupInfo"];
+        auto users = db["userInfo"];
         std::cout << groupId << std::endl;
 
         bsoncxx::stdx::optional<bsoncxx::document::value> group = groups.find_one(document{} << "groupId" << groupId <<  finalize);
@@ -659,7 +661,7 @@ json::value MongoDB::deleteUser(std::string id){
         auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
         auto c3 = poolMydb->acquire();
-        auto coll1 = (*c1)["infoDB"]["account"];
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
         auto coll2 = (*c2)["passDB"]["signin"];
         auto coll3 = (*c3)["infoDB"]["groupInfo"];
         auto response = json::value::object();
@@ -798,7 +800,7 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 json::value MongoDB::addUserToGroup(json::value request) {
 	auto c1 = poolMydb->acquire();
 	auto c3 = poolMydb->acquire();
-	auto coll1 = (*c1)["infoDB"]["account"];
+	auto coll1 = (*c1)["infoDB"]["userInfo"];
 	auto coll3 = (*c3)["infoDB"]["groupInfo"];
 	auto response = json::value::object();
 
