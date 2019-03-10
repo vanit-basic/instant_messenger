@@ -145,7 +145,7 @@ int main()
         updateUserInfoReq["firstName"] = json::value::string("Valodik");
         updateUserInfoReq["lastName"] = json::value::string("Valodyan");
         updateUserInfoReq["avatar"] = json::value::string("base64_string");
-        updateUserInfoReq["nickname"] = json::value::string("Valod");
+        updateUserInfoReq["nickName"] = json::value::string("Valod90");
 
 	http_request req(methods::GET);
 	req.headers().add(U("token"), U("112431574564"));
@@ -159,8 +159,8 @@ int main()
 			postRequest(tokenClient, setToken, Token);
 			postRequest(tokenClient, checkToken, Token);
 			postRequest(tokenClient, deleteToken, Token);
-			std::cout<<std::endl;
-*/
+			std::cout<<std::endl;*/
+
 			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, registr, registrationRequest1);
 /*			postRequest(dbServiceClient, registr, registrationRequest2);
