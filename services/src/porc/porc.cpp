@@ -140,12 +140,19 @@ int main()
         groupRemoveUserReq["clientId"] = json::value::string("u1");
         groupRemoveUserReq["userId"] = json::value::string("u2");
 
-        json::value updateUserInfoReq;
-	updateUserInfoReq["userId"] = json::value::string("u1");
-        updateUserInfoReq["firstName"] = json::value::string("Valodik");
-        updateUserInfoReq["lastName"] = json::value::string("Valodyan");
-        updateUserInfoReq["avatar"] = json::value::string("base64_string");
-        updateUserInfoReq["nickName"] = json::value::string("Valod90");
+        json::value updateUserInfoReq1;
+	updateUserInfoReq1["userId"] = json::value::string("u1");
+        updateUserInfoReq1["firstName"] = json::value::string("Valodik");
+        updateUserInfoReq1["lastName"] = json::value::string("Valodyan");
+        updateUserInfoReq1["avatar"] = json::value::string("base64_string");
+        updateUserInfoReq1["nickName"] = json::value::string("Valod90");
+        
+	json::value updateUserInfoReq2;
+	updateUserInfoReq2["userId"] = json::value::string("u2");
+        updateUserInfoReq2["firstName"] = json::value::string("Jonik");
+        updateUserInfoReq2["lastName"] = json::value::string("Valodyan");
+        updateUserInfoReq2["avatar"] = json::value::string("base64_string");
+        updateUserInfoReq2["nickName"] = json::value::string("Jon90");
 
 	http_request req(methods::GET);
 	req.headers().add(U("token"), U("112431574564"));
@@ -162,11 +169,12 @@ int main()
 			std::cout<<std::endl;*/
 
 			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, registr, registrationRequest1);
-/*			postRequest(dbServiceClient, registr, registrationRequest2);
-	*/		std::cout<<std::endl;
+//			postRequest(dbServiceClient, registr, registrationRequest1);
+			postRequest(dbServiceClient, registr, registrationRequest2);
+			std::cout<<std::endl;
 			std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq);
+//			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq1);
+			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq2);
 			std::cout<<std::endl;
 /*
 			
