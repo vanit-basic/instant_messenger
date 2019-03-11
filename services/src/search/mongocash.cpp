@@ -63,6 +63,18 @@ json::value MongoCashDb::getInfo(std::string key, std::string from, std::string 
 		auto coll = (*client)["CashDb"]["userIds"];
 		int x = std::stoi(from);
 		int y = std::stoi(to);
+/*		bsoncxx::document::element  element = docInfo[key];
+		std::vector <json::value> Ids;
+		if (element.type() == type::k_array)
+		{
+			bsoncxx::array::view subarray{element.get_array().value};
+			int q = std::distance(subarray.begin(), subarray.end());
+			if(y > q)
+			{
+				y = q;
+			}
+
+		}
 		for (int i = x, )///sharunakel
-	}
+*/	}
 }
