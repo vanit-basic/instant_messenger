@@ -156,6 +156,10 @@ Page{
                     anchors.top: parent.top
                     anchors.left: avatar.right
                     anchors.leftMargin: 20
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: { stack00.push(Qt.resolvedUrl("MyProfile.qml")); notpopup.close() }
+                    }
                 }
                 ProgressBar {
                     id: progressBar
