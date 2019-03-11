@@ -76,6 +76,7 @@ Page {
                         spacing: 20
                         anchors.horizontalCenter: parent.horizontalCenter
                         Row{
+                            id:row_name
                             width: parent.width
                             height: (column.height-9*column.spacing)/9
                             Rectangle{
@@ -93,15 +94,19 @@ Page {
                         TextInput{
                             id:enter_name
                             width: parent.width-rec_repass.width
-                            height: parent.height
+                            height: 20
                             color: "white"
+                            anchors.bottom: parent.bottom
+
+
+
                             Rectangle {
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  { enter_surname.focus = true}
+                            onAccepted:  { enter_surname.focus = true}
                             EnterKey.type:  Qt.EnterKeyNext
                         }
                         }
@@ -123,15 +128,16 @@ Page {
                         TextInput{
                             id:enter_surname
                             width: parent.width-rec_repass.width
-                            height: parent.height
+                            height: 20
                             color: "white"
+                            anchors.bottom: parent.bottom
                             Rectangle {
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  { enter_email.focus = true}
+                            onAccepted:  { enter_email.focus = true}
                             EnterKey.type:  Qt.EnterKeyNext
                         }
                         }
@@ -153,22 +159,23 @@ Page {
                         TextInput{
                             id:enter_email
                             width: parent.width-rec_repass.width
-                            height: parent.height
+                            height: 20
                             color: "white"
+                            anchors.bottom: parent.bottom
                             Rectangle {
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  { enter_login.focus= true}
+                            onAccepted:  {enter_login.focus = true}
                             EnterKey.type:  Qt.EnterKeyNext
                         }
                         }
                         ComboBox {
                             id: comboBox
                             width: parent.width
-                            height: enter_name.height
+                            height: row_name.height
                             editable: false
                             Rectangle {
                                 id:combo
@@ -199,7 +206,7 @@ Page {
                                 id: popup
                                 x:parent.x
                                 width:parent.width
-                                height: 6*enter_name.height
+                                height: 6*row_name.height
                                 modal: true
                                 background: Rectangle{
                                     color: "gray"
@@ -269,24 +276,22 @@ Page {
                                     }
                                     onClicked: {
                                         slaq.text =days[day_t.currentIndex]+"  "+ month[month_t.currentIndex]+"  "+years[year_t.currentIndex]
-                                        popup.close()                                         
+                                        popup.close()
+//enter_login.focus = true
                                     }
                                 }
                             }
                             onPressedChanged: {
-                                enter_name.focus = false
-                                enter_surname.focus = false
-                                enter_email.focus = false
-                                enter_login.focus = false
-                                enter_password.focus = false
-                                repeat_password.focus = false
+
                                 popup.open()
+
+                               // Qt.inputMethod.hide()
                             }
                         }
                         Row {
                             id: row1
                             width: parent.width
-                            height: enter_name.height
+                            height: row_name.height
                             spacing: 50
                             RadioButton {
                                 id: radioButton
@@ -332,15 +337,16 @@ Page {
                         TextInput{
                             id:enter_login
                             width: parent.width-rec_repass.width
-                            height: parent.height
+                            height: 20
                             color: "white"
+                            anchors.bottom: parent.bottom
                             Rectangle {
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  { enter_password.focus = true}
+                            onAccepted:   { enter_password.focus = true}
                             EnterKey.type:  Qt.EnterKeyNext
                         }
                         }
@@ -362,16 +368,17 @@ Page {
                         TextInput{
                             id:enter_password
                             width: parent.width-rec_repass.width
-                            height: parent.height
+                            height: 20
                             color: "white"
                             echoMode: TextInput.Password
+                            anchors.bottom: parent.bottom
                             Rectangle {
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  { repeat_password.focus = true}
+                            onAccepted:  { repeat_password.focus = true}
                             EnterKey.type:  Qt.EnterKeyNext
                         }
                         }
@@ -393,9 +400,10 @@ Page {
                         TextInput{
                             id:repeat_password
                             width: parent.width-rec_repass.width
-                            height: parent.height
+                            height: 20
                             color: "white"
                             echoMode: TextInput.Password
+                            anchors.bottom: parent.bottom
                             Rectangle {
                                 color: "white"
                                 height: 1
