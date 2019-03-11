@@ -97,6 +97,7 @@ Page {
                             height: 20
                             color: "white"
                             anchors.bottom: parent.bottom
+                            clip: true
 
 
 
@@ -131,6 +132,7 @@ Page {
                             height: 20
                             color: "white"
                             anchors.bottom: parent.bottom
+                            clip: true
                             Rectangle {
                                 color: "white"
                                 height: 1
@@ -162,6 +164,7 @@ Page {
                             height: 20
                             color: "white"
                             anchors.bottom: parent.bottom
+                            clip: true
                             Rectangle {
                                 color: "white"
                                 height: 1
@@ -340,6 +343,7 @@ Page {
                             height: 20
                             color: "white"
                             anchors.bottom: parent.bottom
+                            clip: true
                             Rectangle {
                                 color: "white"
                                 height: 1
@@ -371,7 +375,33 @@ Page {
                             height: 20
                             color: "white"
                             echoMode: TextInput.Password
+                            passwordCharacter: "*"
                             anchors.bottom: parent.bottom
+                            clip: true
+                            Button{
+                            id:see_pass
+                            width: parent.height
+                            height: parent.height
+                            background: Rectangle{
+                            color: "transparent"
+                            }
+                            anchors.bottom: parent.bottom
+                            anchors.right: parent.right
+
+                            Image {
+                                id: glaz
+                                source: "qrc:/glaz.png"
+                                anchors.fill: parent
+
+                            }
+                            onClicked: {
+                            enter_password.echoMode === TextInput.Password?(enter_password.echoMode =TextInput.Normal ) :(enter_password.echoMode = TextInput.Password)
+glaz.source == "qrc:/glaz.png"? glaz.source= "qrc:/glaz1.png": glaz.source= "qrc:/glaz.png"
+                            }
+
+
+
+                            }
                             Rectangle {
                                 color: "white"
                                 height: 1
@@ -403,12 +433,38 @@ Page {
                             height: 20
                             color: "white"
                             echoMode: TextInput.Password
+                            passwordCharacter: "*"
                             anchors.bottom: parent.bottom
+                            Button{
+                            id:see_repass
+                            width: parent.height
+                            height: parent.height
+                            background: Rectangle{
+                            color: "transparent"
+                            }
+                            anchors.bottom: parent.bottom
+                            anchors.right: parent.right
+
+                            Image {
+                                id: glaz1
+                                source: "qrc:/glaz.png"
+                                anchors.fill: parent
+
+                            }
+                            onClicked: {
+                            repeat_password.echoMode === TextInput.Password?(repeat_password.echoMode =TextInput.Normal ) :(repeat_password.echoMode = TextInput.Password)
+                            glaz1.source == "qrc:/glaz.png"? glaz1.source= "qrc:/glaz1.png": glaz1.source= "qrc:/glaz.png"
+                            }
+
+
+
+                            }
                             Rectangle {
                                 color: "white"
                                 height: 1
                                 width: parent.width
                                 anchors.bottom: parent.bottom
+                                clip: true
                             }
                         }
                         }

@@ -74,31 +74,32 @@ Page {
                         id:rec_pass
                         width: confirm_pass_text.width+5
                         height: parent.height
-                    color: "transparent"
-                    Text {
-                        id: pass_text
-                        text: qsTr("Current Password")
-                        anchors.bottom: parent.bottom
-                        color: "white"
-                    }
+                        color: "transparent"
+                        Text {
+                            id: pass_text
+                            text: qsTr("Current Password")
+                            anchors.bottom: parent.bottom
+                            color: "white"
+                        }
 
                     }
-                TextInput{
-                    id:currentp
-                    width: parent.width-rec_pass.width
-                    height: parent.height
-                    color: "white"
-
-                    Rectangle {
-                        id:current
-                        color: "white"
-                        height: 1
-                        width: parent.width
+                    TextInput{
+                        id:currentp
+                        width: parent.width-rec_pass.width
+                        height: 20
                         anchors.bottom: parent.bottom
+                        color: "white"
+                        clip: true
+                        Rectangle {
+                            id:current
+                            color: "white"
+                            height: 1
+                            width: parent.width
+                            anchors.bottom: parent.bottom
+                        }
+                        EnterKey.type:  Qt.EnterKeyNext
+                        onEditingFinished:  { newp.focus = true}
                     }
-                    EnterKey.type:  Qt.EnterKeyNext
-                    onEditingFinished:  { newp.focus = true}
-                }
                 }
                 Row{
 
@@ -108,30 +109,32 @@ Page {
                         id:rec_new_pass
                         width: confirm_pass_text.width+5
                         height: parent.height
-                    color: "transparent"
-                    Text {
-                        id: new_pass_text
-                        text: qsTr("New Password")
-                        anchors.bottom: parent.bottom
-                        color: "white"
-                    }
+                        color: "transparent"
+                        Text {
+                            id: new_pass_text
+                            text: qsTr("New Password")
+                            anchors.bottom: parent.bottom
+                            color: "white"
+                        }
 
                     }
-                TextInput{
-                    id:newp
-                    width: parent.width-rec_new_pass.width
-                    height: parent.height
-                    color: "white"
-                    Rectangle {
-                        id:neww
-                        color: "white"
-                        height: 1
-                        width: parent.width
+                    TextInput{
+                        id:newp
+                        width: parent.width-rec_new_pass.width
+                        height: 20
                         anchors.bottom: parent.bottom
+                        color: "white"
+                        clip: true
+                        Rectangle {
+                            id:neww
+                            color: "white"
+                            height: 1
+                            width: parent.width
+                            anchors.bottom: parent.bottom
+                        }
+                        EnterKey.type:  Qt.EnterKeyNext
+                        onEditingFinished:  {confirm_pass.focus = true}
                     }
-                    EnterKey.type:  Qt.EnterKeyNext
-                    onEditingFinished:  {confirm_pass.focus = true}
-                }
                 }
                 Row{
 
@@ -141,28 +144,30 @@ Page {
                         id:rec_confirm_pass
                         width: confirm_pass_text.width+5
                         height: parent.height
-                    color: "transparent"
-                    Text {
-                        id: confirm_pass_text
-                        text: qsTr("Confirm Password")
-                        anchors.bottom: parent.bottom
-                        color: "white"
-                    }
+                        color: "transparent"
+                        Text {
+                            id: confirm_pass_text
+                            text: qsTr("Confirm Password")
+                            anchors.bottom: parent.bottom
+                            color: "white"
+                        }
 
                     }
-                TextInput{
-                    id:confirm_pass
-                    width: parent.width-rec_confirm_pass.width
-                    height: parent.height
-                    color: "white"
-                    Rectangle {
-                        id:conf
-                        color: "white"
-                        height: 1
-                        width: parent.width
+                    TextInput{
+                        id:confirm_pass
+                        width: parent.width-rec_confirm_pass.width
+                        height: 20
                         anchors.bottom: parent.bottom
+                        color: "white"
+                        clip: true
+                        Rectangle {
+                            id:conf
+                            color: "white"
+                            height: 1
+                            width: parent.width
+                            anchors.bottom: parent.bottom
+                        }
                     }
-                }
                 }
 
             }

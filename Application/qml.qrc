@@ -49,5 +49,7 @@
         <file>lock.png</file>
         <file>unlock.png</file>
         <file>magaxat2.png</file>
+        <file>glaz1.png</file>
+        <file>glaz.png</file>
     </qresource>
 </RCC>

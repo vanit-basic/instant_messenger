@@ -293,8 +293,37 @@ Page{
                     width: 300
                     color: "white"
                     placeholderText: "Password"
+                    passwordCharacter: "*"
+
                     background: Rectangle{
                         color: "transparent"
+
+                    }
+                    Button{
+                    id:see_pass
+                    width: parent.height
+                    height: parent.height
+                    background: Rectangle{
+                    color: "transparent"
+                    }
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+                    icon.source: "qrc:/glaz.png"
+                    icon.color: "white"
+//                    Image {
+//                        id: glaz
+//                        source: "qrc:/glaz.png"
+//                        anchors.fill: parent
+
+//                    }
+                    onClicked: {
+                    password.echoMode === TextInput.Password?(password.echoMode =TextInput.Normal ) :(password.echoMode = TextInput.Password)
+                    icon.source == "qrc:/glaz.png"? icon.source= "qrc:/glaz1.png": icon.source= "qrc:/glaz.png"
+                       // Qt.inputMethod.hide()
+                    }
+
+
+
                     }
                     Rectangle {
                         id:passw_rect
