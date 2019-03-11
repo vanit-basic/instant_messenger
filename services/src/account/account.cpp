@@ -145,7 +145,8 @@ http_response getGroupUsers(std::string groupId, http_client* DataBaseClient){
 	return groupUsers;
 }
 
-bool validUsers(std::string userId ,std::string members ){
+/*
+ bool validUsers(std::string userId ,std::string members ){
 
 	while(members != ""){
 		int pos = members.find(',');
@@ -157,7 +158,7 @@ bool validUsers(std::string userId ,std::string members ){
 	}
 	return false;
 }
-
+*/
 http_response getGroupShortInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
 	uri_builder gSInfo("/getGroupShortInfo?groupId=" + groupId);
 	DataBaseClient->request(methods::GET, gSInfo.to_string()).
@@ -172,18 +173,24 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 				groupUsers.extract_json().
 				then([=](json::value groupUsersResp)
 				{
-					if(validUsers(userId, groupUsersResp.at("members").as_string()))
+				        std::string quantity = groupUsersResp.at("usersQuantity").as_string();
+                                        int temp = std::stoi(quantity);
+                                        std::string members[temp];
+                                        int j = temp;
+                                        for(int temp = 0 ; temp<j ; j++)
 					{
-						return groupShortInfo;
-					}
-					else
-					{
+                                                members[temp] =groupUsersResp.at("members").as_string();
+                                                if(userId == members[temp])
+                                                {
+                                                        return groupShortInfo;
+                                                }
+                                        }
+						
 						http_response resp;
 						json::value groupShortInfoResp;
 						groupShortInfoResp["status"] = json::value::string("Not Found");//status@ poxel
 						resp.set_body(groupShortInfoResp);
 						return resp;
-					}
 				});
 			}
 			else
@@ -208,18 +215,23 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 				groupUsers.extract_json().
 				then([=](json::value groupUsersResp)
 				{
-					if(validUsers(userId, groupUsersResp.at("members").as_string()))
-					{
-						return groupInfo;
-					}
-					else
-					{
+                                        std::string quantity = groupUsersResp.at("usersQuantity").as_string();
+                                        int temp = std::stoi(quantity);
+                                        std::string members[temp];
+                                        int j = temp;
+                                        for(int temp = 0 ; temp<j ; j++)
+                                        {
+                                                members[temp] =groupUsersResp.at("members").as_string();
+                                                if(userId == members[temp])
+                                                {
+                                                        return groupInfo;
+                                                }
+                                        }
 						http_response resp;
 						json::value groupInfoResp;
 						groupInfoResp["status"] = json::value::string("Not Found");//status@ poxel
 						resp.set_body(groupInfoResp);
 						return resp;
-					}
 				});
 			}
 			else
