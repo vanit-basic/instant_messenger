@@ -130,9 +130,11 @@ Page {
                             TextInput{
                                 id:edit_name
                                 width: parent.width-rec_name.width
-                                height: parent.height
+                                height: 20
+                                anchors.bottom: parent.bottom
                                 color: "white"
                                 text: "Valod"
+                                clip: true
                                 Rectangle {
                                     id:name_rect
                                     color: "white"
@@ -162,9 +164,11 @@ Page {
                             TextInput{
                                 id:edit_surname
                                 width: parent.width-rec_surname.width
-                                height: parent.height
+                                height: 20
+                                anchors.bottom: parent.bottom
                                 color: "white"
                                 text: "Valodyan"
+                                clip: true
                                 Rectangle {
                                     id:surname_rect
                                     color: "white"
@@ -194,9 +198,11 @@ Page {
                             TextInput{
                                 id:edit_nickname
                                 width: parent.width-rec_nickname.width
-                                height: parent.height
+                                height: 20
+                                anchors.bottom: parent.bottom
                                 color: "white"
                                 text: "Valod"
+                                clip: true
 
                                 Rectangle {
                                     id:nick_rect
