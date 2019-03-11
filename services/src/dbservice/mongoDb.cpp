@@ -236,12 +236,13 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 			coll1.find_one(document{} << "login" << login << finalize);
 		bsoncxx::document::view doc = result->view();
 		bsoncxx::document::view docInfo = infoResult->view();
-		
+
+
 		bsoncxx::document::element element = docInfo["id"];
 		std::string id = element.get_utf8().value.to_string();
-		std::cout << "ID  " << id <<std::endl;
+		response = getUserInfo(id);
 
-		element = docInfo["firstName"];
+/*		element = docInfo["firstName"];
 		std::string firstName = element.get_utf8().value.to_string();
 
 		element = docInfo["lastName"];
@@ -291,20 +292,32 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		element = docInfo["login"];
 		std::string login = element.get_utf8().value.to_string();
 
-		element = docInfo["groups"];
-		int i = 0;
+		element = docInfo["publicGroup"];
+		std::vector <json::value> gIDs;
 		if (element.type() == type::k_array) {
 			bsoncxx::array::view subarray{element.get_array().value};
 			for (const bsoncxx::array::element& gId : subarray) {
 				if (gId.type() == type::k_utf8) {
-					std::string groupId = gId.get_utf8().value.to_string();
-					std::string group = "group" + std::to_string(i);
-					response[group] = json::value::string(groupId);
-					i++;
+					json::value groupId(gId.get_utf8().value.to_string());
+					gIDs.push_back(groupId);
 				}
 			}
 		}
 
+		element = docInfo["privateGroup"];
+		std::vector <json::value> gID;
+		if (element.type() == type::k_array) {
+			bsoncxx::array::view subarray{element.get_array().value};
+			for (const bsoncxx::array::element& gId : subarray) {
+				if (gId.type() == type::k_utf8) {
+					json::value groupId(gId.get_utf8().value.to_string());
+					gID.push_back(groupId);
+				}
+			}
+		}
+
+		response["publicGroup"] = json::value::array(gIDs);
+		response["privateGroup"] = json::value::array(gID);
 		response["id"] = json::value::string(id);
 		response["firstName"] = json::value::string(firstName);
 		response["lastName"] = json::value::string(lastName);
@@ -321,7 +334,7 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		response["killed"] = json::value::string(killed);
 		response["email"] = json::value::string(mail);
 		response["login"] = json::value::string(login);
-
+*/
 
 	} else {
 		bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
@@ -354,20 +367,16 @@ json::value MongoDB::getUserInfo(std::string id) {
 	auto c1 = poolMydb->acquire();
 	auto coll1 = (*c1)["infoDB"]["userInfo"];
 
-	std::cout << __LINE__ << std::endl;
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
 		coll1.find_one(document{} << "id" << id << finalize);
 
-	std::cout << __LINE__ << std::endl;
 	if (result) {
 		bsoncxx::document::view doc = result->view();
-	std::cout << __LINE__ << std::endl;
 
 		bsoncxx::document::element element = doc["firstName"];
 		std::string firstName = element.get_utf8().value.to_string();
 		std::cout << firstName << std::endl;
 
-	std::cout << __LINE__ << std::endl;
 		element = doc["lastName"];
 		std::string lastName = element.get_utf8().value.to_string();
 
@@ -384,7 +393,6 @@ json::value MongoDB::getUserInfo(std::string id) {
 		std::string level = std::to_string(element.get_int32().value);
 		std::cout << "LEVEL  " << level <<std::endl;
 		
-	std::cout << __LINE__ << std::endl;
 		element = doc["statistics"]["playedGames"];
 		std::string playedGames = std::to_string(element.get_int32().value);
 
@@ -409,21 +417,47 @@ json::value MongoDB::getUserInfo(std::string id) {
 		
 		element = doc["statistics"]["killed"];
 		std::string killed = std::to_string(element.get_int32().value);
-	std::cout << __LINE__ << std::endl;
 
 		element = doc["email"];
 		std::string mail = element.get_utf8().value.to_string();
 
 		element = doc["login"];
 		std::string login = element.get_utf8().value.to_string();
-		std::cout << __LINE__ << std::endl;
 
+		element = doc["publicGroup"];
+                std::vector <json::value> gIDs;
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& gId : subarray) {
+                                if (gId.type() == type::k_utf8) {
+                                        json::value groupId(gId.get_utf8().value.to_string());
+                                        gIDs.push_back(groupId);
+                                }
+                        }
+                }
+
+                element = doc["privateGroup"];
+                std::vector <json::value> gID;
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& gId : subarray) {
+                                if (gId.type() == type::k_utf8) {
+                                        json::value groupId(gId.get_utf8().value.to_string());
+                                        gID.push_back(groupId);
+                                }
+                        }
+                }
+
+
+                response["id"] = json::value::string(id);
 		response["firstName"] = json::value::string(firstName);
 		response["lastName"] = json::value::string(lastName);
 		response["nickName"] = json::value::string(nickName);
 		response["birthDate"] = json::value::string(birthDate);
 		response["gender"] = json::value::string(gender);
 		response["level"] = json::value::string(level);
+		response["publicGroup"] = json::value::array(gIDs);
+                response["privateGroup"] = json::value::array(gID);
 		response["playedGames"] = json::value::string(playedGames);
 		response["redCard"] = json::value::string(redCard);
 		response["blackCard"] = json::value::string(blackCard);
@@ -495,22 +529,23 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		element = doc["statistics"]["killed"];
 		std::string killed = std::to_string(element.get_int32().value);
 
-		
-		/*bsoncxx::array::element value = doc["public"];
-		bsoncxx::array::view view = value.view();
-		for (bsoncxx::document::element ele : view) {
-	        	stdx::string_view field_key{ele.key()};
-		}
 
-		bsoncxx::array::view subarr = ele.get_array().value;
-                for (bsoncxx::array::element ele : subarr) {
-			std::cout << "array element: "
-				<< bsoncxx::string::to_string(ele.get_utf8().value) << std::endl;
-		}*/
+		element = doc["publicGroup"];
+		std::vector <json::value> gIDs;
+		if (element.type() == type::k_array) {
+			bsoncxx::array::view subarray{element.get_array().value};
+			for (const bsoncxx::array::element& gId : subarray) {
+				if (gId.type() == type::k_utf8) {
+					json::value groupId(gId.get_utf8().value.to_string());
+					gIDs.push_back(groupId);
+				}
+			}
+		}
 
 		response["firstName"] = json::value::string(firstName);
 		response["lastName"] = json::value::string(lastName);
 		response["nickName"] = json::value::string(nickName);
+		response["publicGroup"] = json::value::array(gIDs);
 		response["level"] = json::value::string(level);
 		response["playedGames"] = json::value::string(playedGames);
 		response["redCard"] = json::value::string(redCard);
@@ -538,21 +573,19 @@ json::value MongoDB::getGroupUsers(std::string groupId) {
 	
 	if (result) {
 		bsoncxx::document::view doc = result->view();
-		bsoncxx::document::element count = doc["usersQuantity"];
-		int n = count.get_int32().value;
-		
-		std::string allUsers = "";
-		for (int i = 0; i < n; ++i) {
-			bsoncxx::array::element element = doc["memebers"][i];
-			std::string user = element.get_utf8().value.to_string();
-                	if (i == n) {
-                	        allUsers += user;
-                	} else {
-                	        allUsers += user + ",";
-                	}
-        	}
+		bsoncxx::document::element element = doc["members"];
+                std::vector <json::value> mIDs;
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& mId : subarray) {
+                                if (mId.type() == type::k_utf8) {
+                                        json::value memberId(mId.get_utf8().value.to_string());
+                                        mIDs.push_back(memberId);
+                                }
+                        }
+                }
 
-		response["members"] = json::value::string(allUsers);
+		response["member"] = json::value::array(mIDs);
 		response["status"] = json::value::string("OK");
 	} else {
 		response["status"] = json::value::string("INVALID_MAIL");
@@ -813,11 +846,8 @@ json::value MongoDB::addUserToGroup(json::value request) {
 	if (groupResult) {
                 	bsoncxx::document::view doc = groupResult->view();
 
-                	auto count = doc["usersQuantity"];
-                	int n = std::stoi(count.get_utf8().value.to_string());
+                        	bsoncxx::array::element element = doc["members"];
 
-                	for (int i = 0; i < n; ++i) {
-                        	bsoncxx::array::element element = doc["memebers"][i];
                         	std::string user = element.get_utf8().value.to_string();
 				if (user.compare(userId) == 0) {
 					response["status"] = json::value::string("ALREADY_IN_GROUP");
