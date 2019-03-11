@@ -60,6 +60,14 @@ void DbService::handleGet(http_request message) {
                         	         id = i.find("userId")->second;
                                 	 json::value response = m_db->deleteUser(id);
                                 	 message.reply(status_codes::OK, response);
+				} else {
+					if (path[1] == "addUserToGroup") {
+						std::string userId = i.find("userId")->second;
+						std::string groupId = i.find("groupId")->second;
+						std::string clientId = i.find("clientId")->second;
+                                         	json::value response = m_db->addUserToGroup(userId, groupId, clientId);
+                                         	message.reply(status_codes::OK, response);
+					}
 				}
 			}
 		}

@@ -424,7 +424,7 @@ json::value MongoDB::getUserInfo(std::string id) {
 		element = doc["login"];
 		std::string login = element.get_utf8().value.to_string();
 
-		element = doc["publicGroup"];
+		element = doc["publicGroups"];
                 std::vector <json::value> gIDs;
                 if (element.type() == type::k_array) {
                         bsoncxx::array::view subarray{element.get_array().value};
@@ -436,7 +436,7 @@ json::value MongoDB::getUserInfo(std::string id) {
                         }
                 }
 
-                element = doc["privateGroup"];
+                element = doc["privateGroups"];
                 std::vector <json::value> gID;
                 if (element.type() == type::k_array) {
                         bsoncxx::array::view subarray{element.get_array().value};
@@ -456,8 +456,8 @@ json::value MongoDB::getUserInfo(std::string id) {
 		response["birthDate"] = json::value::string(birthDate);
 		response["gender"] = json::value::string(gender);
 		response["level"] = json::value::string(level);
-		response["publicGroup"] = json::value::array(gIDs);
-                response["privateGroup"] = json::value::array(gID);
+		response["publicGroups"] = json::value::array(gIDs);
+                response["privateGroups"] = json::value::array(gID);
 		response["playedGames"] = json::value::string(playedGames);
 		response["redCard"] = json::value::string(redCard);
 		response["blackCard"] = json::value::string(blackCard);
@@ -530,7 +530,7 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		std::string killed = std::to_string(element.get_int32().value);
 
 
-		element = doc["publicGroup"];
+		element = doc["publicGroups"];
 		std::vector <json::value> gIDs;
 		if (element.type() == type::k_array) {
 			bsoncxx::array::view subarray{element.get_array().value};
@@ -545,7 +545,7 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		response["firstName"] = json::value::string(firstName);
 		response["lastName"] = json::value::string(lastName);
 		response["nickName"] = json::value::string(nickName);
-		response["publicGroup"] = json::value::array(gIDs);
+		response["publicGroups"] = json::value::array(gIDs);
 		response["level"] = json::value::string(level);
 		response["playedGames"] = json::value::string(playedGames);
 		response["redCard"] = json::value::string(redCard);
@@ -800,7 +800,6 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 		<< "access" << access
 		<< "adminId" << userId
 		<< "createDate" << date()
-		<< "usersQuantity" << 1
 		<< "members" << bsoncxx::builder::stream::open_array
 		<< userId << close_array
 		<< bsoncxx::builder::stream::finalize;
@@ -814,11 +813,11 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 
 	bsoncxx::stdx::optional<mongocxx::result::update> result;
 	if (access.compare("public") == 0) {
-			result = coll1.update_one(document{} << "userId" << userId << finalize,
+			result = coll1.update_one(document{} << "id" << userId << finalize,
 			document{} << "$push" << open_document
-			<< "publiGroups" << id << close_document << finalize);
+			<< "publicGroups" << id << close_document << finalize);
 	} else if (access.compare("private") == 0) {
-			result = coll1.update_one(document{} << "userId" << userId << finalize,
+			result = coll1.update_one(document{} << "id" << userId << finalize,
 			document{} << "$push" << open_document
 			<< "privateGroups" << id << close_document << finalize);
 	}
@@ -828,7 +827,6 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 		response["groupName"] = json::value::string(groupName);
 		response["adminId"] = json::value::string(userId);
 		response["createDate"] = json::value::string(date());
-		response["usersQuantity"] = json::value::string("1");
 		response["access"] = json::value::string(access);
 		response["status"] = json::value::string("OK");
 	} else {
@@ -838,64 +836,87 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 	return response;
 }
 
-json::value MongoDB::addUserToGroup(json::value request) {
+json::value MongoDB::addUserToGroup(std::string userId, std::string groupId, std::string clientId) {
+	std::cout << __LINE__ << std::endl;
+	std::cout << "UserId " << userId << std::endl;
 	auto c1 = poolMydb->acquire();
 	auto c3 = poolMydb->acquire();
 	auto coll1 = (*c1)["infoDB"]["userInfo"];
 	auto coll3 = (*c3)["infoDB"]["groupInfo"];
-	auto response = json::value::object();
-
-	std::string userId = request.at("userId").as_string();
-	std::string groupId = request.at("groupId").as_string();
+	json::value response;
+	std::cout << __LINE__ << std::endl;
 
 	bsoncxx::stdx::optional<bsoncxx::document::value> groupResult =
 		coll3.find_one(document{} << "groupId" << groupId << finalize);
 
 	if (groupResult) {
+	std::cout << __LINE__ << std::endl;
 		bsoncxx::document::view doc = groupResult->view();
 		bsoncxx::document::element element = doc["members"];
+		bool f = false; 
 
                 if (element.type() == type::k_array) {
+			std::cout << __LINE__ << std::endl;
                         bsoncxx::array::view subarray{element.get_array().value};
-                        for (const bsoncxx::array::element& uId : subarray) {
-                                if (uId.type() == type::k_utf8) {
-                                        json::value usId(uId.get_utf8().value.to_string());
-					std::string user = usId.to_string();
+                        for (const bsoncxx::array::element& uIds : subarray) {
+                                if (uIds.type() == type::k_utf8) {
+                                        json::value uId(uIds.get_utf8().value.to_string());
+					std::string user = uId.to_string();
+					std::cout << user << std::endl;
+					user = user.substr(1, 2);
+					std::cout << user << std::endl;
 					if (user.compare(userId) == 0) {
-						response["status"] = json::value::string("ALREADY_IN_GROUP");
-						return response;
+						std::cout << __LINE__ << std::endl;
+						f = true;
+					} else {
+						response["status"] = json::value::string("INVALID_MEMBER_ID");
 					}
-                                }
-                        }
-                }
-		
-		bsoncxx::document::element el = doc["access"];
-		std::string access = el.get_utf8().value.to_string();
-		
-		bsoncxx::stdx::optional<mongocxx::result::update> result;
-		if (access.compare("public") == 0) {
-			result = coll1.update_one(document{} << "userId" << userId << finalize,
-					document{} << "$push" << open_document
-					<< "publicGroups" << groupId << close_document << finalize);
-		} else if (access.compare("private") == 0) {
-			result = coll1.update_one(document{} << "userId" << userId << finalize,
-					document{} << "$push" << open_document
-					<< "privateGroups" << groupId << close_document << finalize);
+				}
+			}
 		}
+		if (f == true) {
+		std::cout << __LINE__ << std::endl;
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& uIds : subarray) {
+                                if (uIds.type() == type::k_utf8) {
+                                        json::value uId(uIds.get_utf8().value.to_string());
+					std::string user = uId.to_string();
+					if (user.compare(clientId) == 0) {
+						response["status"] = json::value::string("ALREADY_IN_GROUP");
+					} 
 
+					element = doc["access"];
+					std::string access = element.get_utf8().value.to_string();
 
+					std::cout << __LINE__ << std::endl;
+					bsoncxx::stdx::optional<mongocxx::result::update> result;
+					if (access.compare("public") == 0) {
+						result = coll1.update_one(document{} << "id" << clientId << finalize,
+								document{} << "$push" << open_document
+								<< "publicGroups" << groupId << close_document << finalize);
+					} else if (access.compare("private") == 0) {
+						std::cout << __LINE__ << std::endl;
+						result = coll1.update_one(document{} << "id" << clientId << finalize,
+								document{} << "$push" << open_document
+								<< "privateGroups" << groupId << close_document << finalize);
+					}
 
-		bsoncxx::stdx::optional<mongocxx::result::update> result1 =
-			coll3.update_one(document{} << "groupId" << groupId << finalize,
-					document{} << "$push" << open_document
-					<< "members" << userId << close_document << finalize);
-	
-		if (result && result1) {
-			response["status"] = json::value::string("OK");
-		} else {
-			response["status"] = json::value::string("INTERNAL_ERROR");
+					bsoncxx::stdx::optional<mongocxx::result::update> result1 =
+						coll3.update_one(document{} << "groupId" << groupId << finalize,
+								document{} << "$push" << open_document
+								<< "members" << clientId << close_document << finalize);
+					std::cout << __LINE__ << std::endl;
+
+					if (result && result1) {
+						response["status"] = json::value::string("OK");
+					} else {
+						response["status"] = json::value::string("INTERNAL_ERROR");
+					}
+				}
+			}
 		}
-
+	}
 	} else {
 		response["status"] = json::value::string("INVALID_GROUP");
 	}
