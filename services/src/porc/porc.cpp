@@ -73,8 +73,11 @@ int main()
 	uri_builder getUserInfo1(U("/account/getUserInfo?userId=u1"));
         uri_builder getUserInfo2(U("/account/getUserInfo?userId=u2"));
         
-	uri_builder getUserShortInfo(U("/account/getUserShortInfo?clientId=u2"));
-	uri_builder addUserToGroup(U("/account/addUserToGroup?userId=u1&groupId=g1&clientId=u2"));
+	uri_builder getUserShortInfo1(U("/account/getUserShortInfo?clientId=u1"));
+	uri_builder getUserShortInfo2(U("/account/getUserShortInfo?clientId=u2"));
+
+	uri_builder isUserInGroup(U("/account/isUserInGroup?groupId=g1&userId=u1"));
+	uri_builder addUserToGroup(U("/account/addUserToGroup?userId=u2&groupId=g2&clientId=u1"));
         uri_builder deleteUser(U("/account/deleteUser?userId=u1"));
         uri_builder createGroup(U("/account/createGroup"));
         uri_builder deleteGroup(U("/account/deleteGroup?clientId=u1&groupId=g1"));
@@ -123,13 +126,18 @@ int main()
         signInReq1["password"] = json::value::string("Valodik90");
 
 	json::value signInReq2;
-        signInReq2["login"] = json::value::string("valod1212");
-        signInReq2["password"] = json::value::string("Valod90");
+        signInReq2["login"] = json::value::string("valodyan");
+        signInReq2["password"] = json::value::string("Valodik90"); 
         
-	json::value createGroupReq;
-        createGroupReq["groupName"] = json::value::string("Best");
-        createGroupReq["userId"] = json::value::string("u1");
-        createGroupReq["access"] = json::value::string("public");
+	json::value createGroupReq1;
+        createGroupReq1["groupName"] = json::value::string("Best");
+        createGroupReq1["userId"] = json::value::string("u1");
+        createGroupReq1["access"] = json::value::string("public");
+
+	json::value createGroupReq2;
+        createGroupReq2["groupName"] = json::value::string("Mafia");
+        createGroupReq2["userId"] = json::value::string("u2");
+        createGroupReq2["access"] = json::value::string("private");
 
         json::value updateGroupInfoReq;
         updateGroupInfoReq["groupId"] = json::value::string("g1");
@@ -186,21 +194,27 @@ int main()
 			std::cout<<std::endl;
 
 	
-			  std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			  postRequest(dbServiceClient, signIn, signInReq1);
-			//postRequest(dbServiceClient, signIn, signInReq2);
+			std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, signIn, signInReq1);
+			postRequest(dbServiceClient, signIn, signInReq2);
 		
 			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserInfo1);
 			getRequest(dbServiceClient, getUserInfo2);
 			std::cout<<std::endl;
 			
-*/			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getUserShortInfo);
+			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			getRequest(dbServiceClient, getUserShortInfo1);
+			getRequest(dbServiceClient, getUserShortInfo2);
 			std::cout<<std::endl;
-
-/*			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, createGroup, createGroupReq);
+*/
+			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			getRequest(dbServiceClient, isUserInGroup);
+			std::cout<<std::endl;
+/*
+			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, createGroup, createGroupReq1);
+			postRequest(dbServiceClient, createGroup, createGroupReq2);
                         std::cout<<std::endl;			
 
 			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;

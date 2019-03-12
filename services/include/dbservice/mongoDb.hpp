@@ -101,7 +101,7 @@ class MongoDB : public database {
 		~MongoDB();
 
 	private:
-		bool isUserInGroup(std::string, std::string);
+		json::value isUserInGroup(std::string, std::string);
 		mongocxx::pool* poolMydb;
                 mongocxx::pool* poolDB;
                 bool createPool(std::string);

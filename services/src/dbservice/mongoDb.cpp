@@ -182,8 +182,8 @@ json::value MongoDB::registerUser(json::value request) {
 		<< "fails" << 0
 		<< "killed" << 0
 		<< bsoncxx::builder::stream::close_document
-		<< "publicGroups" << open_array << "0" << close_array
-		<< "privateGroups" << open_array << "0" << close_array
+		<< "publicGroups" << open_array  << close_array
+		<< "privateGroups" << open_array  << close_array
 		<< bsoncxx::builder::stream::finalize;
 	
 	auto result = coll1.insert_one(std::move(doc_value));
@@ -197,7 +197,6 @@ json::value MongoDB::registerUser(json::value request) {
 	response["birthDate"] = json::value::string(birthDate);
 	response["gender"] = json::value::string(gender);
 	response["email"] = json::value::string(email);
-	response["groupsQuantity"] = json::value::string("0");
 	response["level"] = json::value::string("0");
 	response["playedGames"] = json::value::string("0");
        	response["redCard"] = json::value::string("0");
@@ -549,7 +548,7 @@ json::value MongoDB::getGroupShortInfo(std::string groupId) {
 }
 
 json::value MongoDB::updateUserInfo(json::value user) {
-	auto response = json::value::object();
+	json::value response;
         auto c1 = poolMydb->acquire();
         auto coll1 = (*c1)["infoDB"]["userInfo"];
         std::string id = user.at("userId").as_string();
@@ -617,9 +616,10 @@ json::value MongoDB::deleteGroup(std::string groupId) {
         }
 }
 
-bool MongoDB::isUserInGroup(std::string gid, std::string uid) {
+json::value MongoDB::isUserInGroup(std::string gid, std::string uid) {
         auto c3 = poolMydb->acquire();
         auto coll3 = (*c3)["infoDB"]["groupInfo"];
+	json::value response;
 
 	bsoncxx::stdx::optional<bsoncxx::document::value> groupResult =
                 coll3.find_one(document{} << "groupId" << gid << finalize);
@@ -628,23 +628,25 @@ bool MongoDB::isUserInGroup(std::string gid, std::string uid) {
                 bsoncxx::document::view doc = groupResult->view();
                 bsoncxx::document::element element = doc["members"];
 
+		std::cout << uid << std::endl;
                 if (element.type() == type::k_array) {
                         bsoncxx::array::view subarray{element.get_array().value};
                         for (const bsoncxx::array::element& userIds : subarray) {
                                 if (userIds.type() == type::k_utf8) {
 					std::string user = userIds.get_utf8().value.to_string();
+					std::cout << user << std::endl;
 					if (user.compare(uid) == 0) {
-						return true;
+						response["status"] = json::value::string("IN_GROUP");
                                         } else {
-						return false;
+						response["status"] = json::value::string("NOT_FOUND_IN_GROUP");
                                         }
                                 }
                         }
                 }
 	} else {
-		return false;
+		response["status"] = json::value::string("INVALID_GROUP");
 	}
-
+	return response;
 }
 
 json::value MongoDB::deleteUser(std::string id){
