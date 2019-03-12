@@ -690,6 +690,36 @@ json::value MongoDB::deleteGroup(std::string groupId) {
         }
 }
 
+bool MongoDB::isUserInGroup(std::string gid, std::string uid) {
+        auto c3 = poolMydb->acquire();
+        auto coll3 = (*c3)["infoDB"]["groupInfo"];
+
+	bsoncxx::stdx::optional<bsoncxx::document::value> groupResult =
+                coll3.find_one(document{} << "groupId" << gid << finalize);
+
+        if (groupResult) {
+                bsoncxx::document::view doc = groupResult->view();
+                bsoncxx::document::element element = doc["members"];
+
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& userIds : subarray) {
+                                if (userIds.type() == type::k_utf8) {
+					std::string user = userIds.get_utf8().value.to_string();
+					if (user.compare(uid) == 0) {
+						return true;
+                                        } else {
+						return false;
+                                        }
+                                }
+                        }
+                }
+	} else {
+		return false;
+	}
+
+}
+
 json::value MongoDB::deleteUser(std::string id){
         auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
