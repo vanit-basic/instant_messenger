@@ -242,100 +242,6 @@ json::value MongoDB::loginUser(std::string login, std::string password) {
 		std::string id = element.get_utf8().value.to_string();
 		response = getUserInfo(id);
 
-/*		element = docInfo["firstName"];
-		std::string firstName = element.get_utf8().value.to_string();
-
-		element = docInfo["lastName"];
-		std::string lastName = element.get_utf8().value.to_string();
-		
-		element = docInfo["nickName"];
-		std::string nickName = element.get_utf8().value.to_string();
-		
-		element = docInfo["birthDate"];
-		std::string birthDate = element.get_utf8().value.to_string();
-		
-		element = docInfo["gender"];
-		std::string gender = element.get_utf8().value.to_string();
-		
-		element = docInfo["level"];
-		std::string level = std::to_string(element.get_int32().value);
-		std::cout << "LEVEL  " << level <<std::endl;
-		
-		element = docInfo["statistics"]["playedGames"];
-		std::string playedGames = std::to_string(element.get_int32().value);
-
-		element = docInfo["statistics"]["redCard"];
-		std::string redCard = std::to_string(element.get_int32().value);
-		
-		element = docInfo["statistics"]["blackCard"];
-		std::string blackCard = std::to_string(element.get_int32().value);
-		
-		element = docInfo["statistics"]["sheriff"];
-		std::string sheriff = std::to_string(element.get_int32().value);
-
-		element = docInfo["statistics"]["don"];
-		std::string don = std::to_string(element.get_int32().value);
-		std::cout << "DON  " << don <<std::endl;
-		
-		element = docInfo["statistics"]["wins"];
-		std::string wins = std::to_string(element.get_int32().value);
-		
-		element = docInfo["statistics"]["fails"];
-		std::string fails = std::to_string(element.get_int32().value);
-		
-		element = docInfo["statistics"]["killed"];
-		std::string killed = std::to_string(element.get_int32().value);
-
-		element = docInfo["email"];
-		std::string mail = element.get_utf8().value.to_string();
-
-		element = docInfo["login"];
-		std::string login = element.get_utf8().value.to_string();
-
-		element = docInfo["publicGroup"];
-		std::vector <json::value> gIDs;
-		if (element.type() == type::k_array) {
-			bsoncxx::array::view subarray{element.get_array().value};
-			for (const bsoncxx::array::element& gId : subarray) {
-				if (gId.type() == type::k_utf8) {
-					json::value groupId(gId.get_utf8().value.to_string());
-					gIDs.push_back(groupId);
-				}
-			}
-		}
-
-		element = docInfo["privateGroup"];
-		std::vector <json::value> gID;
-		if (element.type() == type::k_array) {
-			bsoncxx::array::view subarray{element.get_array().value};
-			for (const bsoncxx::array::element& gId : subarray) {
-				if (gId.type() == type::k_utf8) {
-					json::value groupId(gId.get_utf8().value.to_string());
-					gID.push_back(groupId);
-				}
-			}
-		}
-
-		response["publicGroup"] = json::value::array(gIDs);
-		response["privateGroup"] = json::value::array(gID);
-		response["id"] = json::value::string(id);
-		response["firstName"] = json::value::string(firstName);
-		response["lastName"] = json::value::string(lastName);
-		response["birthDate"] = json::value::string(birthDate);
-		response["gender"] = json::value::string(gender);
-		response["level"] = json::value::string(level);
-		response["playedGames"] = json::value::string(playedGames);
-		response["redCard"] = json::value::string(redCard);
-		response["blackCard"] = json::value::string(blackCard);
-		response["sheriff"] = json::value::string(sheriff);
-		response["don"] = json::value::string(don);
-		response["wins"] = json::value::string(wins);
-		response["fails"] = json::value::string(fails);
-		response["killed"] = json::value::string(killed);
-		response["email"] = json::value::string(mail);
-		response["login"] = json::value::string(login);
-*/
-
 	} else {
 		bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
 			coll2.find_one(document{} << "login" << login << finalize);
@@ -536,8 +442,11 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 			bsoncxx::array::view subarray{element.get_array().value};
 			for (const bsoncxx::array::element& gId : subarray) {
 				if (gId.type() == type::k_utf8) {
-					json::value groupId(gId.get_utf8().value.to_string());
-					gIDs.push_back(groupId);
+				//	json::value groupId(gId.get_utf8().value.to_string());
+					std::string grId = gId.get_utf8().value.to_string();
+					std::cout<<__LINE__<<std::endl;
+					gIDs.push_back(json::value::string(grId));
+					std::cout<<__LINE__<<std::endl;
 				}
 			}
 		}
@@ -850,73 +759,36 @@ json::value MongoDB::addUserToGroup(std::string userId, std::string groupId, std
 		coll3.find_one(document{} << "groupId" << groupId << finalize);
 
 	if (groupResult) {
-	std::cout << __LINE__ << std::endl;
-		bsoncxx::document::view doc = groupResult->view();
-		bsoncxx::document::element element = doc["members"];
-		bool f = false; 
-
-                if (element.type() == type::k_array) {
-			std::cout << __LINE__ << std::endl;
-                        bsoncxx::array::view subarray{element.get_array().value};
-                        for (const bsoncxx::array::element& uIds : subarray) {
-                                if (uIds.type() == type::k_utf8) {
-                                        json::value uId(uIds.get_utf8().value.to_string());
-					std::string user = uId.to_string();
-					std::cout << user << std::endl;
-					user = user.substr(1, 2);
-					std::cout << user << std::endl;
-					if (user.compare(userId) == 0) {
-						std::cout << __LINE__ << std::endl;
-						f = true;
-					} else {
-						response["status"] = json::value::string("INVALID_MEMBER_ID");
-					}
-				}
-			}
-		}
-		if (f == true) {
 		std::cout << __LINE__ << std::endl;
-                if (element.type() == type::k_array) {
-                        bsoncxx::array::view subarray{element.get_array().value};
-                        for (const bsoncxx::array::element& uIds : subarray) {
-                                if (uIds.type() == type::k_utf8) {
-                                        json::value uId(uIds.get_utf8().value.to_string());
-					std::string user = uId.to_string();
-					if (user.compare(clientId) == 0) {
-						response["status"] = json::value::string("ALREADY_IN_GROUP");
-					} 
+		bsoncxx::document::view doc = groupResult->view();
 
-					element = doc["access"];
-					std::string access = element.get_utf8().value.to_string();
+		bsoncxx::document::element element = doc["access"];
+		std::string access = element.get_utf8().value.to_string();
 
-					std::cout << __LINE__ << std::endl;
-					bsoncxx::stdx::optional<mongocxx::result::update> result;
-					if (access.compare("public") == 0) {
-						result = coll1.update_one(document{} << "id" << clientId << finalize,
-								document{} << "$push" << open_document
-								<< "publicGroups" << groupId << close_document << finalize);
-					} else if (access.compare("private") == 0) {
-						std::cout << __LINE__ << std::endl;
-						result = coll1.update_one(document{} << "id" << clientId << finalize,
-								document{} << "$push" << open_document
-								<< "privateGroups" << groupId << close_document << finalize);
-					}
-
-					bsoncxx::stdx::optional<mongocxx::result::update> result1 =
-						coll3.update_one(document{} << "groupId" << groupId << finalize,
-								document{} << "$push" << open_document
-								<< "members" << clientId << close_document << finalize);
-					std::cout << __LINE__ << std::endl;
-
-					if (result && result1) {
-						response["status"] = json::value::string("OK");
-					} else {
-						response["status"] = json::value::string("INTERNAL_ERROR");
-					}
-				}
-			}
+		std::cout << __LINE__ << std::endl;
+		bsoncxx::stdx::optional<mongocxx::result::update> result;
+		if (access.compare("public") == 0) {
+			result = coll1.update_one(document{} << "id" << clientId << finalize,
+					document{} << "$push" << open_document
+					<< "publicGroups" << groupId << close_document << finalize);
+		} else if (access.compare("private") == 0) {
+			std::cout << __LINE__ << std::endl;
+			result = coll1.update_one(document{} << "id" << clientId << finalize,
+					document{} << "$push" << open_document
+					<< "privateGroups" << groupId << close_document << finalize);
 		}
-	}
+
+		bsoncxx::stdx::optional<mongocxx::result::update> result1 =
+			coll3.update_one(document{} << "groupId" << groupId << finalize,
+					document{} << "$push" << open_document
+					<< "members" << clientId << close_document << finalize);
+		std::cout << __LINE__ << std::endl;
+
+		if (result && result1) {
+			response["status"] = json::value::string("OK");
+		} else {
+			response["status"] = json::value::string("INTERNAL_ERROR");
+		}
 	} else {
 		response["status"] = json::value::string("INVALID_GROUP");
 	}
