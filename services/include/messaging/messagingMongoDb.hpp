@@ -24,17 +24,17 @@ using namespace concurrency::streams;
 
 class messagingMongoDb : public messagingDbBase {
 	
-	virtual json::value getUserConversations(std::string userId);
-        virtual json::value getUsersConversation(std::string userId1, std::string userId2);
-        virtual std::string addUserMessage(std::string from, std::string to, std::string message);
-        virtual bool updateUserMessage(std::string from, std::string to, std::string messageInfo);
-        virtual bool removeUserConversation(std::string userId1, std::string userId2);
-        virtual bool removeMessage(json::value messageInfo);
-        virtual bool removeGroupConversation(std::string groupId);
-        virtual bool removeMessageFromGroupConversation(std::string groupId, std::string messageId);
-        virtual std::string getGroupConversation(std::string groupID);
-        virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message);
-        virtual bool updateGroupMessage(std::string groupId, json::value message);
+	virtual json::value getUserConversations(std::string);
+        virtual json::value getUsersConversation(std::string, std::string );
+        virtual std::string userSendMessage(std::string, std::string, std::string );
+        virtual bool userUpdateMessage(std::string, std::string, std::string );
+        virtual bool userRemoveConversation(std::string, std::string );
+        virtual bool userRemoveMessage(std::string, std::string, std::string);
+        virtual bool groupRemoveConversation(std::string );
+        virtual bool groupRemoveMessage(std::string, std::string );
+        virtual std::string getGroupConversation(std::string);
+        virtual std::string groupSendMessage(std::string , std::string , json::value );
+        virtual bool groupUpdateMessage(std::string, std::string, json::value );
 
 
 }
