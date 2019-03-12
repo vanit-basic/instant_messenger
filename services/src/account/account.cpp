@@ -139,26 +139,48 @@ http_response getUserShortInfo(std::string userId, http_client* DataBaseClient){
 	return userShortInfo;
 }
 
-http_response getGroupUsers(std::string groupId, http_client* DataBaseClient){
-	uri_builder gInfo("/getGroupUsers?groupId=" + groupId);
-	http_response groupUsers = DataBaseClient->request(methods::GET, gInfo.to_string()).get();
-	return groupUsers;
-}
-
-/*
- bool validUsers(std::string userId ,std::string members ){
-
-	while(members != ""){
-		int pos = members.find(',');
-		std::string clientId = members.substr(0,pos);
-		if(userId == clientId){
-			 return true;
+std::string randUserFromGroup(std::string userId, std::string groupId, http_client* DataBaseClient){
+	uri_builder usersInfo("/getGroupUsers?groupId=" + groupId);
+	http_response users = DataBaseClient->request(methods::GET, usersInfo.to_string()).get();
+	users.extract_json().
+	then([=](json::value members)
+	{
+		if(members.at("status").as_string() == "INVALID_GROUP_ID")
+		{
+			std::string status = "INVALID_GROUP_ID";
+			return status;
 		}
-		members = members.erase(0,pos-1);
-	}
-	return false;
+		web::json::array groupMembers = members.at("members").as_array();
+		std::string user;
+		for (auto i = groupMembers.begin(); i != groupMembers.end(); i++)
+		{
+			std::string iterId = (*i).as_string();
+			if(!(userId == iterId))
+			{
+				user = iterId;
+				return user;	
+			}
+		}
+	});
 }
-*/
+
+bool isUserInGroup(std::string userId, std::string groupId, http_client* DataBaseClient){
+	uri_builder isUserGroup("/isUserInGroup?userId=" + userId + "&groupId" + groupId);
+	http_response resp = DataBaseClient->request(methods::GET, isUserGroup.to_string()).get();
+	resp.extract_json().
+	then([=](json::value status)
+	{
+		if(status.at("status") == true)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	});
+}
+
 http_response getGroupShortInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
 	uri_builder gSInfo("/getGroupShortInfo?groupId=" + groupId);
 	DataBaseClient->request(methods::GET, gSInfo.to_string()).
@@ -169,29 +191,18 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 		{
 			if(groupShortInf.at("access").as_string() == "private")
 			{
-				auto groupUsers = getGroupUsers(groupId, DataBaseClient);
-				groupUsers.extract_json().
-				then([=](json::value groupUsersResp)
+				if(isUserInGroup(userId, groupId, DataBaseClient))
 				{
-				        std::string quantity = groupUsersResp.at("usersQuantity").as_string();
-                                        int temp = std::stoi(quantity);
-                                        std::string members[temp];
-                                        int j = temp;
-                                        for(int temp = 0 ; temp<j ; j++)
-					{
-                                                members[temp] =groupUsersResp.at("members").as_string();
-                                                if(userId == members[temp])
-                                                {
-                                                        return groupShortInfo;
-                                                }
-                                        }
-						
-						http_response resp;
-						json::value groupShortInfoResp;
-						groupShortInfoResp["status"] = json::value::string("Not Found");//status@ poxel
-						resp.set_body(groupShortInfoResp);
-						return resp;
-				});
+					return groupShortInfo;
+				}
+				else
+				{
+					http_response resp;
+					json::value groupShortInfoResp;
+					groupShortInfoResp["status"] = json::value::string("Not Found");//status@ poxel
+					resp.set_body(groupShortInfoResp);
+					return resp;
+				}
 			}
 			else
 			{
@@ -211,28 +222,18 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 		{
 			if(groupInf.at("access").as_string() == "private")
 			{
-				auto groupUsers = getGroupUsers(groupId, DataBaseClient);
-				groupUsers.extract_json().
-				then([=](json::value groupUsersResp)
+				if(isUserInGroup(userId, groupId, DataBaseClient))
 				{
-                                        std::string quantity = groupUsersResp.at("usersQuantity").as_string();
-                                        int temp = std::stoi(quantity);
-                                        std::string members[temp];
-                                        int j = temp;
-                                        for(int temp = 0 ; temp<j ; j++)
-                                        {
-                                                members[temp] =groupUsersResp.at("members").as_string();
-                                                if(userId == members[temp])
-                                                {
-                                                        return groupInfo;
-                                                }
-                                        }
-						http_response resp;
-						json::value groupInfoResp;
-						groupInfoResp["status"] = json::value::string("Not Found");//status@ poxel
-						resp.set_body(groupInfoResp);
-						return resp;
-				});
+					return groupInfo;
+				}
+				else
+				{
+					http_response resp;
+					json::value groupInfoResp;
+					groupInfoResp["status"] = json::value::string("Not Found");//status@ poxel
+					resp.set_body(groupInfoResp);
+					return resp;
+				}
 			}
 			else
 			{
@@ -552,30 +553,25 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 	{
 		std::string userId = leaveInfo.at("userId").as_string();
 		std::string groupId = leaveInfo.at("groupId").as_string();
-		auto groupUserInfo = getGroupUsers(groupId,DataBaseClient);
-		groupUserInfo.extract_json().
-		then([=](json::value UserInfo)
+		if(isUserInGroup(userId, groupId, DataBaseClient))
 		{
-			std::string adminId = UserInfo.at("adminId").as_string();
-			if(userId == adminId)
+			auto groupUserInfo = getGroupInfo(userId, groupId, DataBaseClient);
+			groupUserInfo.extract_json().
+			then([=](json::value UserInfo)
 			{
-				http_response resp;
-				resp.set_status_code(status_codes::OK);
-				json::value info;
-				info["error"] = json::value::string("change admin");
-				resp.set_body(info);
-				return resp;
-			}
-			else
-			{
-				std::string quantity = UserInfo.at("usersQuantity").as_string();
-				int temp = std::stoi(quantity);
-				std::string members[temp];
-				int j =temp;
-				for(int temp = 0 ; temp < j ; j++ )
+				std::string adminId = UserInfo.at("adminId").as_string();
+				if(userId == adminId)
 				{
-					members[temp] = UserInfo.at("members").as_string();
-					if(userId == members[temp])
+					http_response resp;
+					resp.set_status_code(status_codes::OK);
+					json::value info;
+					info["error"] = json::value::string("change admin");
+					resp.set_body(info);
+					return resp;
+				}
+				else
+				{
+					if(isUserInGroup(userId, groupId, DataBaseClient))
 					{
 						uri_builder leaveGroup_path(U("/leaveGroup?userId="+userId+"&groupId="+groupId));
 						DataBaseClient->request(methods::GET,  leaveGroup_path.to_string()).
@@ -583,16 +579,19 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 						{
 							return leaveGroup_response;
 						});
-						}
+					}
+					else
+					{
+						http_response resp;
+						resp.set_status_code(status_codes::OK);
+						json::value info;
+						info["status"] = json::value::string("GROUP_NOT_FOUND");
+						resp.set_body(info);
+						return resp;
+					}
 				}
-				http_response resp;
-				resp.set_status_code(status_codes::OK);
-				json::value info;
-				info["status"] = json::value::string("GROUP_NOT_FOUND");
-				resp.set_body(info);
-				return resp;
-			}
-		});
+			});
+		}
 	});
 }
 
