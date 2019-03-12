@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.3
 
 Page{
     id: wind1
+    Component.onCompleted: console.log(stack00.status)
     header: ToolBar{
         id:top
         Label{
@@ -14,7 +15,7 @@ Page{
         ToolButton{
             text: "<"
             onClicked: {
-                onClicked: stack55.pop()
+                onClicked: { stackMess.pop(); swipe.interactive = true ; tab.visible = true}
             }
         }
     }

@@ -306,7 +306,8 @@ Page{
                         font.pointSize: 15
                     }
                     onClicked:{
-                        drawer.close()                        
+                        drawer.close()
+                        stack00.push(Qt.resolvedUrl("Help_Center.qml"))
                     }
                 }
             }

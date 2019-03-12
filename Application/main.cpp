@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[] )
 {
-bool a = true;
+bool a = false;
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
@@ -13,7 +13,7 @@ bool a = true;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     }
     else {
-          engine.load(QUrl(QStringLiteral("qrc:/mainnn.qml")));
+          engine.load(QUrl(QStringLiteral("qrc:/Home.qml")));
     }
     if (engine.rootObjects().isEmpty())
         return -1;

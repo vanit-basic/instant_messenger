@@ -15,6 +15,8 @@ Page{
                 if (stack00.depth > 1) {
                     stack00.pop()
                 }
+                else
+                    Qt.quit()
             }
         }
         initialItem:  Rectangle {

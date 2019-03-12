@@ -9,142 +9,144 @@ Page{
     id: wind
     property int listIndex: 0
     property string delId: ""
-    MessageDialog{
-        id:msgDialog
-        visible: false
-        title: "Message"
-        text: "Are you sure?"
-        standardButtons: StandardButton.Save | StandardButton.Cancel
-        onAccepted: { delId.model.remove(listIndex); delPop.close()}
-        onRejected: delPop.close()
-    }
-    Popup{
-        id:delPop
-        width: 150
-        height: 100
-        anchors.centerIn: parent
-        contentItem:Column {
-            spacing: 3
-            Rectangle{
-                id: popRect
-                color: "transparent"
-                width: parent.width
-                height: 40
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked:msgDialog.open()
-                }
-                Image{
-                    id:imgDel
-                    width: 30
-                    height: 30
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 10
-                    source: "qrc:/trash.png"
-                }
-                Text{
-                    text:"Delete"
-                    font.pointSize: 15
-                    verticalAlignment: Text.AlignVCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: imgDel.right
-                    anchors.leftMargin: 10
-                }
-            }
-            Rectangle{
-                color: "transparent"
-                width: parent.width
-                height: 40
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: txtMute.text == "Mute" ? txtMute.text = "Unmute" : txtMute.text = "Mute"
-                }
-                Image{
-                    id:imgMute
-                    width: 30
-                    height: 30
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 10
-                    source: "qrc:/volume.png"
-                }
-                Text{
-                    id:txtMute
-                    text:"Mute"
-                    font.pointSize: 15
-                    verticalAlignment: Text.AlignVCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: imgMute.right
-                    anchors.leftMargin: 10
-                }
-            }
-        }
-    }
-    Component{
-        id:delegate
-        Rectangle{
-            width: wind.width
-            height: 60
-            color: "yellow"
-            MouseArea{
-                anchors.fill: parent
-                onPressAndHold: { delPop.open(); listIndex = index}
-            }
-
-            Image{
-                id: img
-                source: "qrc:/us.png"
-                width: 50
-                height: 50
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                fillMode: Image.PreserveAspectCrop
-                layer.enabled: true
-                layer.effect: OpacityMask {
-                    maskSource: mask
-                }
-                Rectangle{
-                    id: mask
-                    width: 50
-                    height: 50
-                    radius: 50
-                    visible: false
-                }
-            }
-            Text{
-                id: name
-                text: textName
-                font.pointSize: 20
-                anchors.left: img.right
-                anchors.leftMargin: 10
-                anchors.top: parent.top
-                anchors.topMargin: 10
-            }
-            Text{
-                id:msg
-                text: message
-                font.pointSize: 13
-                x:name.x + 5
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 15
-            }
-        }
-    }
-
-
-
-
-
-
-
-
     StackView{
         id:stackMess
         anchors.fill: parent
+        Keys.onPressed:  {
+            if (event.key === Qt.Key_Back) {
+                event.accepted = true
+                if (stackMess.depth > 1) {
+                    stackMess.pop()
+                } else { swipe.currentIndex = 1}
+            }
+        }
+        //Component.onCompleted: console.log(stack00.status === stack00.Active)
         initialItem:
             Rectangle{
+            color: "transparent"
+            MessageDialog{
+                id:msgDialog
+                visible: false
+                title: "Message"
+                text: "Are you sure?"
+                standardButtons: StandardButton.Save | StandardButton.Cancel
+                onAccepted: { delId.model.remove(listIndex); delPop.close()}
+                onRejected:  delPop.close()
+            }
+            Popup{
+                id:delPop
+                width: 150
+                height: 100
+                anchors.centerIn: parent
+                contentItem:Column {
+                    spacing: 3
+                    Rectangle{
+                        id: popRect
+                        color: "transparent"
+                        width: parent.width
+                        height: 40
+                        MouseArea{
+                            anchors.fill: parent
+                            onClicked:msgDialog.open()
+                        }
+                        Image{
+                            id:imgDel
+                            width: 30
+                            height: 30
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: parent.left
+                            anchors.leftMargin: 10
+                            source: "qrc:/trash.png"
+                        }
+                        Text{
+                            text:"Delete"
+                            font.pointSize: 15
+                            verticalAlignment: Text.AlignVCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: imgDel.right
+                            anchors.leftMargin: 10
+                        }
+                    }
+                    Rectangle{
+                        color: "transparent"
+                        width: parent.width
+                        height: 40
+                        MouseArea{
+                            anchors.fill: parent
+                            onClicked: txtMute.text == "Mute" ? txtMute.text = "Unmute" : txtMute.text = "Mute"
+                        }
+                        Image{
+                            id:imgMute
+                            width: 30
+                            height: 30
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: parent.left
+                            anchors.leftMargin: 10
+                            source: "qrc:/volume.png"
+                        }
+                        Text{
+                            id:txtMute
+                            text:"Mute"
+                            font.pointSize: 15
+                            verticalAlignment: Text.AlignVCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.left: imgMute.right
+                            anchors.leftMargin: 10
+                        }
+                    }
+                }
+            }
+            Component{
+                id:delegate
+                Rectangle{
+                    width: stackMess.width
+                    height: 60
+                    color: "yellow"
+                    MouseArea{
+                        anchors.fill: parent
+                        onPressAndHold: { delPop.open(); listIndex = index}
+                        onClicked: { stackMess.push(Qt.resolvedUrl("qrc:/Conversation.qml")); tab.visible = false ; swipe.interactive = false; console.log(stackMess.status.toString())}
+                    }
+                    Image{
+                        id: img
+                        source: "qrc:/us.png"
+                        width: 50
+                        height: 50
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 10
+                        fillMode: Image.PreserveAspectCrop
+                        layer.enabled: true
+                        layer.effect: OpacityMask {
+                            maskSource: mask
+                        }
+                        Rectangle{
+                            id: mask
+                            width: 50
+                            height: 50
+                            radius: 50
+                            visible: false
+                        }
+                    }
+                    Text{
+                        id: name
+                        text: textName
+                        font.pointSize: 20
+                        anchors.left: img.right
+                        anchors.leftMargin: 10
+                        anchors.top: parent.top
+                        anchors.topMargin: 10
+                    }
+                    Text{
+                        id:msg
+                        text: message
+                        font.pointSize: 13
+                        x:name.x + 5
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 15
+                    }
+                }
+            }
             Rectangle{
                 id:rect
                 anchors.fill: parent

@@ -41,7 +41,6 @@
         <file>ru.png</file>
         <file>us.png</file>
         <file>about.png</file>
-        <file>mainnn.qml</file>
         <file>About_us.qml</file>
         <file>Terms.qml</file>
         <file>indicator.png</file>
@@ -51,5 +50,6 @@
         <file>magaxat2.png</file>
         <file>glaz1.png</file>
         <file>glaz.png</file>
+        <file>Help_Center.qml</file>
     </qresource>
 </RCC>
