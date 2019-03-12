@@ -83,13 +83,39 @@ Page {
                         }
 
                     }
+                    Rectangle{
+                        width: parent.width-confirm_pass_text.width
+                        height: parent.height
+                        color: "transparent"
+                        Button{
+                        id:see_pass
+                        width: parent.height
+                        height: parent.height
+                        background: Rectangle{
+                        color: "transparent"
+                        }
+                        anchors.bottom: parent.bottom
+                        anchors.right: parent.right
+                        icon.source: "qrc:/glaz1.png"
+                        icon.color: "white"
+
+                        onClicked: {
+                        currentp.echoMode === TextInput.Password?(currentp.echoMode =TextInput.Normal ) :(currentp.echoMode = TextInput.Password)
+                        icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
+                        }
+
+
+
+                        }
                     TextInput{
                         id:currentp
-                        width: parent.width-rec_pass.width
+                        width: parent.width
                         height: 20
                         anchors.bottom: parent.bottom
                         color: "white"
                         clip: true
+                        echoMode: TextInput.Password
+                        passwordCharacter: "*"
                         Rectangle {
                             id:current
                             color: "white"
@@ -98,8 +124,9 @@ Page {
                             anchors.bottom: parent.bottom
                         }
                         EnterKey.type:  Qt.EnterKeyNext
-                        onEditingFinished:  { newp.focus = true}
+                        onAccepted:  { newp.focus = true}
                     }
+                }
                 }
                 Row{
 
@@ -118,13 +145,39 @@ Page {
                         }
 
                     }
+                    Rectangle{
+                        width: parent.width-confirm_pass_text.width
+                        height: parent.height
+                        color: "transparent"
+                        Button{
+                        id:see_pass1
+                        width: parent.height
+                        height: parent.height
+                        background: Rectangle{
+                        color: "transparent"
+                        }
+                        anchors.bottom: parent.bottom
+                        anchors.right: parent.right
+                        icon.source: "qrc:/glaz1.png"
+                        icon.color: "white"
+
+                        onClicked: {
+                        newp.echoMode === TextInput.Password?(newp.echoMode =TextInput.Normal ) :(newp.echoMode = TextInput.Password)
+                        icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
+                        }
+
+
+
+                        }
                     TextInput{
                         id:newp
-                        width: parent.width-rec_new_pass.width
+                        width: parent.width
                         height: 20
                         anchors.bottom: parent.bottom
                         color: "white"
                         clip: true
+                        echoMode: TextInput.Password
+                        passwordCharacter: "*"
                         Rectangle {
                             id:neww
                             color: "white"
@@ -133,9 +186,11 @@ Page {
                             anchors.bottom: parent.bottom
                         }
                         EnterKey.type:  Qt.EnterKeyNext
-                        onEditingFinished:  {confirm_pass.focus = true}
+                        onAccepted:  {confirm_pass.focus = true}
                     }
                 }
+                }
+
                 Row{
 
                     width: parent.width
@@ -153,13 +208,39 @@ Page {
                         }
 
                     }
+                    Rectangle{
+                        width: parent.width-confirm_pass_text.width
+                        height: parent.height
+                        color: "transparent"
+                        Button{
+                        id:see_pass2
+                        width: parent.height
+                        height: parent.height
+                        background: Rectangle{
+                        color: "transparent"
+                        }
+                        anchors.bottom: parent.bottom
+                        anchors.right: parent.right
+                        icon.source: "qrc:/glaz1.png"
+                        icon.color: "white"
+
+                        onClicked: {
+                        confirm_pass.echoMode === TextInput.Password?(confirm_pass.echoMode =TextInput.Normal ) :(confirm_pass.echoMode = TextInput.Password)
+                        icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
+                        }
+
+
+
+                        }
                     TextInput{
                         id:confirm_pass
-                        width: parent.width-rec_confirm_pass.width
+                        width: parent.width
                         height: 20
                         anchors.bottom: parent.bottom
                         color: "white"
                         clip: true
+                        echoMode: TextInput.Password
+                        passwordCharacter: "*"
                         Rectangle {
                             id:conf
                             color: "white"
@@ -170,6 +251,7 @@ Page {
                     }
                 }
 
+            }
             }
             Button{
                 id:save_changes

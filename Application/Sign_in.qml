@@ -301,25 +301,20 @@ Page{
                     }
                     Button{
                     id:see_pass
-                    width: parent.height
+                    width: parent.height+20
                     height: parent.height
                     background: Rectangle{
                     color: "transparent"
                     }
                     anchors.bottom: parent.bottom
                     anchors.right: parent.right
-                    icon.source: "qrc:/glaz.png"
+                    icon.source: "qrc:/glaz1.png"
                     icon.color: "white"
-//                    Image {
-//                        id: glaz
-//                        source: "qrc:/glaz.png"
-//                        anchors.fill: parent
 
-//                    }
                     onClicked: {
                     password.echoMode === TextInput.Password?(password.echoMode =TextInput.Normal ) :(password.echoMode = TextInput.Password)
-                    icon.source == "qrc:/glaz.png"? icon.source= "qrc:/glaz1.png": icon.source= "qrc:/glaz.png"
-                       // Qt.inputMethod.hide()
+                    icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
+
                     }
 
 

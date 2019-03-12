@@ -369,39 +369,46 @@ Page {
                                 color: "white"
                             }
                             }
+                            Rectangle{
+                                width: parent.width-rec_repass.width
+                                height: parent.height
+                                color: "transparent"
+                                Button{
+                                id:see_pass
+                                width: parent.height
+                                height: parent.height
+                                background: Rectangle{
+                                color: "transparent"
+                                }
+                                anchors.bottom: parent.bottom
+                                anchors.right: parent.right
+                                icon.source: "qrc:/glaz1.png"
+                                icon.color: "white"
+//                                Image {
+//                                    id: glaz
+//                                    source: "qrc:/glaz.png"
+//                                    anchors.fill: parent
+
+//                                }
+                                onClicked: {
+                                enter_password.echoMode === TextInput.Password?(enter_password.echoMode =TextInput.Normal ) :(enter_password.echoMode = TextInput.Password)
+    icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
+                                }
+
+    }
                         TextInput{
                             id:enter_password
-                            width: parent.width-rec_repass.width
+                            width: parent.width
                             height: 20
                             color: "white"
                             echoMode: TextInput.Password
                             passwordCharacter: "*"
                             anchors.bottom: parent.bottom
                             clip: true
-                            Button{
-                            id:see_pass
-                            width: parent.height
-                            height: parent.height
-                            background: Rectangle{
-                            color: "transparent"
-                            }
-                            anchors.bottom: parent.bottom
-                            anchors.right: parent.right
-
-                            Image {
-                                id: glaz
-                                source: "qrc:/glaz.png"
-                                anchors.fill: parent
-
-                            }
-                            onClicked: {
-                            enter_password.echoMode === TextInput.Password?(enter_password.echoMode =TextInput.Normal ) :(enter_password.echoMode = TextInput.Password)
-glaz.source == "qrc:/glaz.png"? glaz.source= "qrc:/glaz1.png": glaz.source= "qrc:/glaz.png"
-                            }
 
 
 
-                            }
+
                             Rectangle {
                                 color: "white"
                                 height: 1
@@ -410,6 +417,7 @@ glaz.source == "qrc:/glaz.png"? glaz.source= "qrc:/glaz1.png": glaz.source= "qrc
                             }
                             onAccepted:  { repeat_password.focus = true}
                             EnterKey.type:  Qt.EnterKeyNext
+}
                         }
                         }
                         Row{
@@ -427,38 +435,39 @@ glaz.source == "qrc:/glaz.png"? glaz.source= "qrc:/glaz1.png": glaz.source= "qrc
                                 color: "white"
                             }
                             }
+                            Rectangle{
+                                width: parent.width-rec_repass.width
+                                height: parent.height
+                                color: "transparent"
+                                Button{
+                                id:see_repass
+                                width: parent.height
+                                height: parent.height
+                                background: Rectangle{
+                                color: "transparent"
+                                }
+                                anchors.bottom: parent.bottom
+                                anchors.right: parent.right
+                                icon.source: "qrc:/glaz1.png"
+                                icon.color: "white"
+
+                                onClicked: {
+                                repeat_password.echoMode === TextInput.Password?(repeat_password.echoMode =TextInput.Normal ) :(repeat_password.echoMode = TextInput.Password)
+                                icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
+                                }
+
+
+
+                                }
                         TextInput{
                             id:repeat_password
-                            width: parent.width-rec_repass.width
+                            width: parent.width
                             height: 20
                             color: "white"
                             echoMode: TextInput.Password
                             passwordCharacter: "*"
                             anchors.bottom: parent.bottom
-                            Button{
-                            id:see_repass
-                            width: parent.height
-                            height: parent.height
-                            background: Rectangle{
-                            color: "transparent"
-                            }
-                            anchors.bottom: parent.bottom
-                            anchors.right: parent.right
 
-                            Image {
-                                id: glaz1
-                                source: "qrc:/glaz.png"
-                                anchors.fill: parent
-
-                            }
-                            onClicked: {
-                            repeat_password.echoMode === TextInput.Password?(repeat_password.echoMode =TextInput.Normal ) :(repeat_password.echoMode = TextInput.Password)
-                            glaz1.source == "qrc:/glaz.png"? glaz1.source= "qrc:/glaz1.png": glaz1.source= "qrc:/glaz.png"
-                            }
-
-
-
-                            }
                             Rectangle {
                                 color: "white"
                                 height: 1
@@ -466,6 +475,7 @@ glaz.source == "qrc:/glaz.png"? glaz.source= "qrc:/glaz1.png": glaz.source= "qrc
                                 anchors.bottom: parent.bottom
                                 clip: true
                             }
+                        }
                         }
                         }
                         Button{

@@ -121,6 +121,7 @@ Page {
                         width: parent.width
                         anchors.bottom: parent.bottom
                     }
+
                     Rectangle {
                         id:code_rect
                         color: "white"
@@ -171,9 +172,32 @@ Page {
                             color: "white"
                             anchors.top: parent.top
                             anchors.topMargin: 50
+                            echoMode: TextField.Password
+                            passwordCharacter: "*"
                             placeholderText: "New Password"
                             background: Rectangle{
                                 color: "transparent"
+                            }
+                            Button{
+                            id:see_pass
+                            width: parent.height+20
+                            height: parent.height
+                            background: Rectangle{
+                            color: "transparent"
+                            }
+                            anchors.bottom: parent.bottom
+                            anchors.right: parent.right
+                            icon.source: "qrc:/glaz1.png"
+                            icon.color: "white"
+
+                            onClicked: {
+                            newp.echoMode === TextInput.Password?(newp.echoMode =TextInput.Normal ) :(newp.echoMode = TextInput.Password)
+                            icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
+
+                            }
+
+
+
                             }
                             Rectangle {
                                 id:new_rect
@@ -192,8 +216,31 @@ Page {
                             color: "white"
                             anchors.top: newp.bottom
                             anchors.topMargin: 50
+                            echoMode: TextField.Password
+                            passwordCharacter: "*"
                             background: Rectangle{
                                 color: "transparent"
+                            }
+                            Button{
+                            id:see_pass1
+                            width: parent.height+20
+                            height: parent.height
+                            background: Rectangle{
+                            color: "transparent"
+                            }
+                            anchors.bottom: parent.bottom
+                            anchors.right: parent.right
+                            icon.source: "qrc:/glaz1.png"
+                            icon.color: "white"
+
+                            onClicked: {
+                            repeatp.echoMode === TextInput.Password?(repeatp.echoMode =TextInput.Normal ) :(repeatp.echoMode = TextInput.Password)
+                            icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
+
+                            }
+
+
+
                             }
                             placeholderText: "Repeat Password"
 

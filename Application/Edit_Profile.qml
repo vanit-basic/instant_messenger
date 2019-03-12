@@ -143,7 +143,7 @@ Page {
                                     anchors.bottom: parent.bottom
                                 }
                                 EnterKey.type:  Qt.EnterKeyNext
-                                onEditingFinished:  { edit_surname.focus = true}
+                                onAccepted:  { edit_surname.focus = true}
                             }
                         }
                         Row{
@@ -176,7 +176,7 @@ Page {
                                     width: parent.width
                                     anchors.bottom: parent.bottom
                                 }
-                                onEditingFinished:  { edit_nickname.focus = true}
+                                onAccepted:  { edit_nickname.focus = true}
                                 EnterKey.type:  Qt.EnterKeyNext
                             }
                         }
