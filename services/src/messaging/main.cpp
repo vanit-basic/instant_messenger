@@ -16,8 +16,8 @@ int main(int argc, const char * argv[])
 	{
 		std::string path = std::string(argv[1]);
 		InterruptHandler::hookSIGINT();
-
-		Messaging server(path);
+		messagingDbBase* m_db;
+		Messaging server(path,m_db);
 		if(server.checkServices())
 		{
 
