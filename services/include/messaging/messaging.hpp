@@ -13,20 +13,18 @@ using namespace web::http::client;
 using namespace concurrency::streams;
 
 class Messaging : public BasicController, Controller {
-	public:
-		bool checkServices();
-		Messaging(std::string);
-		~Messaging() {}
+        public:
+                bool checkServices();
+                messagingDbBase* m_db;
+                Messaging(std::stringi,database*);
+                virtual ~Messaging();
 
-	private:
-		std::string messagingUri;
-		http_client *DataBaseClient;
-		http_client *AccountClient;
-		http_client *NotificationClient;
+        private:
+                std::string messagingUri;
 
-		bool createClients(std::string path);
-		void handleGet(http_request message) override;
-		void handlePost(http_request message) override;
-		void initRestOpHandlers() override;
+                void handleGet(http_request message) override;
+                void handlePost(http_request message) override;
+                void initRestOpHandlers() override;
 };
+
 

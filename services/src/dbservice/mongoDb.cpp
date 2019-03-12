@@ -330,19 +330,32 @@ json::value MongoDB::getUserInfo(std::string id) {
 		element = doc["login"];
 		std::string login = element.get_utf8().value.to_string();
 
+
 		element = doc["publicGroups"];
                 std::vector <json::value> gIDs;
                 if (element.type() == type::k_array) {
                         bsoncxx::array::view subarray{element.get_array().value};
                         for (const bsoncxx::array::element& gId : subarray) {
                                 if (gId.type() == type::k_utf8) {
-                                        json::value groupId(gId.get_utf8().value.to_string());
-                                        gIDs.push_back(groupId);
+                                        std::string groupId = gId.get_utf8().value.to_string();
+                                        gIDs.push_back(json::value::string(groupId));
                                 }
                         }
                 }
 
-                element = doc["privateGroups"];
+		element = doc["publicGroups"];
+                std::vector <json::value> gID;
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& gId : subarray) {
+                                if (gId.type() == type::k_utf8) {
+                                        std::string groupId = gId.get_utf8().value.to_string();
+                                        gID.push_back(json::value::string(groupId));
+                                }
+                        }
+                }
+
+/*              element = doc["privateGroups"];
                 std::vector <json::value> gID;
                 if (element.type() == type::k_array) {
                         bsoncxx::array::view subarray{element.get_array().value};
@@ -352,7 +365,7 @@ json::value MongoDB::getUserInfo(std::string id) {
                                         gID.push_back(groupId);
                                 }
                         }
-                }
+                }*/
 
 
                 response["id"] = json::value::string(id);
@@ -597,6 +610,36 @@ json::value MongoDB::deleteGroup(std::string groupId) {
                         document{} << "$pull" << open_document
                         << "groups" << groupId << close_document << finalize);
         }
+}
+
+bool MongoDB::isUserInGroup(std::string gid, std::string uid) {
+        auto c3 = poolMydb->acquire();
+        auto coll3 = (*c3)["infoDB"]["groupInfo"];
+
+	bsoncxx::stdx::optional<bsoncxx::document::value> groupResult =
+                coll3.find_one(document{} << "groupId" << gid << finalize);
+
+        if (groupResult) {
+                bsoncxx::document::view doc = groupResult->view();
+                bsoncxx::document::element element = doc["members"];
+
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& userIds : subarray) {
+                                if (userIds.type() == type::k_utf8) {
+					std::string user = userIds.get_utf8().value.to_string();
+					if (user.compare(uid) == 0) {
+						return true;
+                                        } else {
+						return false;
+                                        }
+                                }
+                        }
+                }
+	} else {
+		return false;
+	}
+
 }
 
 json::value MongoDB::deleteUser(std::string id){
