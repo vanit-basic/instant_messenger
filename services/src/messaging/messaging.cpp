@@ -29,7 +29,7 @@ bool Messaging::createClients(std::string path)
 
 Messaging::Messaging(std::string path,messagingDbBase* mongoDb)
 {
-	this->m_db =mongoDb;
+	this->m_db = mongoDb;
 
         this->createClients(path);
 }
@@ -90,66 +90,31 @@ void Messaging::initRestOpHandlers() {
     _listener.support(methods::POST, std::bind(&Messaging::handlePost, this, std::placeholders::_1));
 }
 
-http_response userRemoveMessage(std::string firstUserId, std::string secondUserId, std::string messageId, messagingDbBase* DataBaseClient){
-	uri_builder uRemoveMessage("/userRemoveMessage/"+ firstUserId + "/" + secondUserId + "/" + messageId + "/");
- 	DataBaseClient->request(methods::GET,uRemoveMessage.to_string()).
-  	then([=](http_response removeMessage)
-	{
-		return removeMessage;
-	});
+http_response userRemoveMessage(std::string userId, std::string clientId, std::string messageId, messagingDbBase* DataBaseClient){
+ 	auto resp = DataBaseClient->userRemoveMessage(userId, clientId, messageId);
 }
-http_response userRemoveConversation(std::string firstUserId,std::string secondUserId,http_client* DataBaseClient){
-        uri_builder uRemoveConversation("/userRemoveConversation/"+firstUserId+"/"+secondUserId+"/");
-        DataBaseClient->request(methods::GET,uRemoveConversation.to_string()).
-        then([=](http_response removeConversation)
-        {
-                return removeConversation;
-        });
-}
-//conversation
-http_response getUserConversation(std::string firstUserId,std::string secondUserId,http_client* DataBaseClient){
-        uri_builder gUserConversation("/userRemoveConversation/"+firstUserId+"/"+secondUserId+"/");
-        DataBaseClient->request(methods::GET,gUserConversation.to_string()).
-        then([=](http_response userConversation)
-        {
-                return userConversation;
-        });
-}
-//conversations
-http_response getUserConversations(std::string userId,http_client* DataBaseClient){
-        uri_builder gUserConversations("/getUserConversations/"+userId+"/");
-        DataBaseClient->request(methods::GET,gUserConversations.to_string()).
-        then([=](http_response userConversations)
-        {
-                return userConversations;
-        });
+http_response userRemoveConversation(std::string userId,std::string clientId, messagingDbBase* DataBaseClient){
+ 	auto resp = DataBaseClient->userRemoveonversation(userId, clientId);
 }
 
-http_response getGroupConversation(std::string userId,std::string groupId ,http_client* DataBaseClient){
-        uri_builder gGroupConversation("/getGroupConversation/"+userId+"/"+groupId+"/");
-        DataBaseClient->request(methods::GET,gGroupConversation.to_string()).
-        then([=](http_response groupConversation)
-        {
-                return groupConversation;
-        });
+http_response getUserConversation(std::string userId, std::string clientId, messagingDbBase* DataBaseClient){
+ 	auto resp = DataBaseClient->getUserConversation(userId, clientId);
 }
 
-http_response groupRemoveConversation(std::string userId,std::string groupId ,http_client* DataBaseClient){
-        uri_builder gRemoveConversation("/groupRemoveConversation/"+userId+"/"+groupId+"/");
-        DataBaseClient->request(methods::GET,gRemoveConversation.to_string()).
-        then([=](http_response removeConversation)
-        {
-                return removeConversation;
-        });
+http_response getUserConversations(std::string userId, messagingDbBase* DataBaseClient){
+ 	auto resp = DataBaseClient->getUserConversations(userId);
 }
 
-http_response groupRemoveMessage(std::string userId,std::string groupId , std::string messageId , http_client* DataBaseClient){
-        uri_builder gRemoveMessage("/groupRemoveMessage/"+userId+"/"+groupId+"/"+messageId+"/");
-        DataBaseClient->request(methods::GET,gRemoveMessage.to_string()).
-        then([=](http_response removeMessage)
-        {
-                return removeMessage;
-        });
+http_response getGroupConversation(std::string userId, std::string groupId, messagingDbBase* DataBaseClient){
+ 	auto resp = DataBaseClient->getGroupConversation(userId, groupId);
+}
+
+http_response groupRemoveConversation(std::string userId, std::string groupId, messagingDbBase* DataBaseClient){
+ 	auto resp = DataBaseClient->groupRemoveConversation(userId, groupId);
+}
+
+http_response groupRemoveMessage(std::string userId,std::string groupId , std::string messageId , messagingDbBase* DataBaseClient){
+ 	auto resp = DataBaseClient->groupRemoveMessage(userId, groupId, messageId);
 }
 
 
