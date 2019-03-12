@@ -182,6 +182,8 @@ json::value MongoDB::registerUser(json::value request) {
 		<< "fails" << 0
 		<< "killed" << 0
 		<< bsoncxx::builder::stream::close_document
+		<< "publicGroups" << open_array << "0" << close_array
+		<< "privateGroups" << open_array << "0" << close_array
 		<< bsoncxx::builder::stream::finalize;
 	
 	auto result = coll1.insert_one(std::move(doc_value));
@@ -331,6 +333,7 @@ json::value MongoDB::getUserInfo(std::string id) {
 		std::string login = element.get_utf8().value.to_string();
 
 
+		std::cout << __LINE__ << std::endl;
 		element = doc["publicGroups"];
                 std::vector <json::value> gIDs;
                 if (element.type() == type::k_array) {
@@ -343,7 +346,9 @@ json::value MongoDB::getUserInfo(std::string id) {
                         }
                 }
 
-		element = doc["publicGroups"];
+		std::cout << __LINE__ << std::endl;
+		
+		element = doc["privateGroups"];
                 std::vector <json::value> gID;
                 if (element.type() == type::k_array) {
                         bsoncxx::array::view subarray{element.get_array().value};
@@ -355,6 +360,7 @@ json::value MongoDB::getUserInfo(std::string id) {
                         }
                 }
 
+		std::cout << __LINE__ << std::endl;
 /*              element = doc["privateGroups"];
                 std::vector <json::value> gID;
                 if (element.type() == type::k_array) {
@@ -387,17 +393,18 @@ json::value MongoDB::getUserInfo(std::string id) {
 		response["killed"] = json::value::string(killed);
 		response["email"] = json::value::string(mail);
 		response["login"] = json::value::string(login);
+		response["status"] = json::value::string("OK");
 
 	} else {
-	std::cout << __LINE__ << std::endl;
-		response["infoStatus"] = json::value::string("unknownID");
+		std::cout << __LINE__ << std::endl;
+		response["status"] = json::value::string("INVALID_ID");
 	}
 
 	return response;
 }
 
 json::value MongoDB::getUserShortInfo(std::string id) {
-	auto response = json::value::object();
+	json::value response;
         auto c1 = poolMydb->acquire();
         auto coll1 = (*c1)["infoDB"]["userInfo"];
 
@@ -412,9 +419,6 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 
                 element = doc["lastName"];
                 std::string lastName = element.get_utf8().value.to_string();
-
-                element = doc["groupsQuantity"];
-                std::string count = element.get_utf8().value.to_string();
 
 		element = doc["nickName"];
                 std::string nickName = element.get_utf8().value.to_string();
@@ -449,13 +453,14 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		std::string killed = std::to_string(element.get_int32().value);
 
 
+		std::cout<<__LINE__<<std::endl;
+
 		element = doc["publicGroups"];
 		std::vector <json::value> gIDs;
 		if (element.type() == type::k_array) {
 			bsoncxx::array::view subarray{element.get_array().value};
 			for (const bsoncxx::array::element& gId : subarray) {
 				if (gId.type() == type::k_utf8) {
-				//	json::value groupId(gId.get_utf8().value.to_string());
 					std::string grId = gId.get_utf8().value.to_string();
 					std::cout<<__LINE__<<std::endl;
 					gIDs.push_back(json::value::string(grId));

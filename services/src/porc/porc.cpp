@@ -70,10 +70,10 @@ int main()
 	uri_builder checkMailAndLogin(U("/check/mailAndLogin"));
         uri_builder signOut(U("/account/signOut?clientId=u1"));
         
-	uri_builder getUserInfo1(U("/account/getUserInfo?userId=u2"));
-        uri_builder getUserInfo2(U("/account/getUserInfo?userId=u100000"));
+	uri_builder getUserInfo1(U("/account/getUserInfo?userId=u1"));
+        uri_builder getUserInfo2(U("/account/getUserInfo?userId=u2"));
         
-	uri_builder getUserShortInfo(U("/account/getUserShortInfo?userId=u1&clientId=u2"));
+	uri_builder getUserShortInfo(U("/account/getUserShortInfo?clientId=u2"));
 	uri_builder addUserToGroup(U("/account/addUserToGroup?userId=u1&groupId=g1&clientId=u2"));
         uri_builder deleteUser(U("/account/deleteUser?userId=u1"));
         uri_builder createGroup(U("/account/createGroup"));
@@ -162,7 +162,7 @@ int main()
 	do{
 		try {
                         ++count;
-/*			
+/*
 			std::cout<<"///////////////////      TOKEN  DB  SERVICE TEST      /////////////////"<<std::endl;
 			postRequest(tokenClient, setToken, Token);
 			postRequest(tokenClient, checkToken, Token);
@@ -173,7 +173,7 @@ int main()
 			postRequest(dbServiceClient, registr, registrationRequest1);
 			postRequest(dbServiceClient, registr, registrationRequest2);
 			std::cout<<std::endl;
-		
+	
  			std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq1);
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq2);
@@ -189,27 +189,27 @@ int main()
 			  std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			  postRequest(dbServiceClient, signIn, signInReq1);
 			//postRequest(dbServiceClient, signIn, signInReq2);
-			
+		
 			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserInfo1);
-			//getRequest(dbServiceClient, getUserInfo2);
+			getRequest(dbServiceClient, getUserInfo2);
 			std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+*/			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserShortInfo);
 			std::cout<<std::endl;
-*/
-			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
+
+/*			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, createGroup, createGroupReq);
                         std::cout<<std::endl;			
 
-/*			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, deleteUser);
                         std::cout<<std::endl;			
-*/
+
 			std::cout<<"///////////////////     Add user to group(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, addUserToGroup);
-
+*/
 		} 
 		catch (http_exception e) {
 			std::cerr<<"error  "<<e.what()<<std::endl;
