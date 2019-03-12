@@ -63,18 +63,51 @@ json::value MongoCashDb::getInfo(std::string key, std::string from, std::string 
 		auto coll = (*client)["CashDb"]["userIds"];
 		int x = std::stoi(from);
 		int y = std::stoi(to);
-/*		bsoncxx::document::element  element = docInfo[key];
-		std::vector <json::value> Ids;
-		if (element.type() == type::k_array)
+		auto distinct_results = coll.distinct(key, {});
+		if (distinct_results.begin() != distinct_results.end())
 		{
-			bsoncxx::array::view subarray{element.get_array().value};
-			int q = std::distance(subarray.begin(), subarray.end());
-			if(y > q)
+			std::vector<bsoncxx::document::value> results;
+			for (auto&& result : distinct_results) 
 			{
-				y = q;
+				results.push_back(result);
 			}
-
+			bsoncxx::document::view doc = results[0].view();
+			bsoncxx::document::element element = doc[key];
+			if (element.type() == type::k_array)
+			{
+				bsoncxx::array::view subarray{element.get_array().value};
+				if (std::distance(subarray.begin(), subarray.end()) < (x + y))
+				{
+					y = std::distance(subarray.begin(), subarray.end()) - x;
+				}
+				//auto it_x = subarray.find(x);
+				//auto it_y = subarray.find(y);
+				std::vector<json::value> mass[y];
+				for(int i = 0; i < y; ++i)
+				{
+					mass[i] = json::value::string(((subarray.find(x+i))->get_utf8().value.to_string()));
+				}
+				info["status"] = json::value::string("OK");
+				info["users"] = json::value::array(mass);
+			}
+			else
+			{
+				std::cout<<"MongoCashDb::getInfo element type not array"<<std::endl;
+			}
 		}
-		for (int i = x, )///sharunakel
-*/	}
+		else
+		{
+			std::cout<<"MongoCashDb::getInfo distinct_results is empty"<<std::endl;
+			info["status"] = json::value::string("NOT_FOUND");
+		}
+	}
+	catch(mongocxx::query_exception e) 
+	{
+		std::cerr<<"distinct exception  "<<e.what()<<std::endl;
+	}
+	catch(...) 
+	{
+		std::cerr<<"MongoCashDb::getInfo something wrong"<<std::endl;
+	}
+	return info
 }
