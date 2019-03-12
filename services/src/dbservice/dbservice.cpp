@@ -67,6 +67,12 @@ void DbService::handleGet(http_request message) {
 						std::string clientId = i.find("clientId")->second;
                                          	json::value response = m_db->addUserToGroup(userId, groupId, clientId);
                                          	message.reply(status_codes::OK, response);
+					} else {
+						if (path[1] == "getUserShortInfo") {
+							std::string clientId = i.find("clientId")->second;
+                                			json::value response = m_db->getUserShortInfo(clientId);
+                                			message.reply(status_codes::OK, response);
+						}
 					}
 				}
 			}

@@ -15,9 +15,9 @@ bool Messaging::createClients(std::string path)
         if (ConfigFile.is_open()) {
                 ConfigFile>> config;
                 ConfigFile.close();
-                DataBaseClient = new http_client(NetworkUtils::hostURI(config.at("dbservice").as_string()));
-                AccountClient = new http_client(NetworkUtils::hostURI(config.at("account").as_string()));
-                NotificationClient = new http_client(NetworkUtils::hostURI(config.at("notification").as_string()));
+              //  DataBaseClient = new http_client(NetworkUtils::hostURI(config.at("dbservice").as_string()));
+              //  AccountClient = new http_client(NetworkUtils::hostURI(config.at("account").as_string()));
+              //  NotificationClient = new http_client(NetworkUtils::hostURI(config.at("notification").as_string()));
                 this -> messagingUri = config.at("messaging").as_string();
                 return true;
         }
@@ -27,8 +27,10 @@ bool Messaging::createClients(std::string path)
         }
 }
 
-Messaging::Messaging(std::string path)
+Messaging::Messaging(std::string path,messagingDbBase* mongoDb)
 {
+	this->m_db =mongoDb;
+
         this->createClients(path);
 }
 
@@ -88,7 +90,7 @@ void Messaging::initRestOpHandlers() {
     _listener.support(methods::POST, std::bind(&Messaging::handlePost, this, std::placeholders::_1));
 }
 
-http_response userRemoveMessage(std::string firstUserId, std::string secondUserId, std::string messageId, http_client* DataBaseClient){
+http_response userRemoveMessage(std::string firstUserId, std::string secondUserId, std::string messageId, messagingDbBase* DataBaseClient){
 	uri_builder uRemoveMessage("/userRemoveMessage/"+ firstUserId + "/" + secondUserId + "/" + messageId + "/");
  	DataBaseClient->request(methods::GET,uRemoveMessage.to_string()).
   	then([=](http_response removeMessage)
@@ -166,7 +168,7 @@ void Messaging::handleGet(http_request message) {
 			std::string firstUserId  = path[2];
 			std::string secondUserId = path[3];
 			std::string messageId    = path[4];
-			auto  removeMessage =userRemoveMessage(firstUserId , secondUserId , messageId , this->DataBaseClient);
+			auto  removeMessage =userRemoveMessage(firstUserId , secondUserId , messageId , this->m_db);
 			message.reply(removeMessage);
 		}else
 		{

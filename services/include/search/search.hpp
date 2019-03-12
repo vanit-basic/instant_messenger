@@ -17,7 +17,7 @@ using namespace concurrency::streams;
 class Search : public BasicController, Controller {
         public:
                 bool checkServices();
-                Search(std::string);
+                Search(std::string, cashDatabase*);
                 ~Search() {}
 
         private:
