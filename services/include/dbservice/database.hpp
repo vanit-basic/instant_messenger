@@ -82,6 +82,7 @@ class database {
 		virtual json::value getPublicGroupInfo(std::string, std::string) = 0; 
 
 	public:
+		virtual bool isUserInGroup(std::string, std::string) = 0;
 		database() {}
 		~database() {}
 
