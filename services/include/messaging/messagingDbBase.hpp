@@ -27,7 +27,7 @@ class messagingDbBase {
 	virtual std::string getGroupConversation(std::string groupID) = 0;
 	virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message) = 0;
 	virtual bool updateGroupMessage(std::string groupId, json::value message) = 0;
-}
+};
 #endif
 
 
