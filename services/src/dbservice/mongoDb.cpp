@@ -810,12 +810,20 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 	bsoncxx::stdx::optional<mongocxx::result::insert_one> result1 =
 		coll3.insert_one(view);
 
-	bsoncxx::stdx::optional<mongocxx::result::update> result2 =
-                        coll1.update_one(document{} << "userId" << userId << finalize,
-                        document{} << "$push" << open_document
-                        << "groups" << id << close_document << finalize);
 
-	if (result1 && result2) {
+
+	bsoncxx::stdx::optional<mongocxx::result::update> result;
+	if (access.compare("public") == 0) {
+			result = coll1.update_one(document{} << "userId" << userId << finalize,
+			document{} << "$push" << open_document
+			<< "publiGroups" << id << close_document << finalize);
+	} else if (access.compare("private") == 0) {
+			result = coll1.update_one(document{} << "userId" << userId << finalize,
+			document{} << "$push" << open_document
+			<< "privateGroups" << id << close_document << finalize);
+	}
+
+	if (result) {
 		response["groupId"] = json::value::string(id);
 		response["groupName"] = json::value::string(groupName);
 		response["adminId"] = json::value::string(userId);
@@ -844,43 +852,49 @@ json::value MongoDB::addUserToGroup(json::value request) {
 		coll3.find_one(document{} << "groupId" << groupId << finalize);
 
 	if (groupResult) {
-                	bsoncxx::document::view doc = groupResult->view();
+		bsoncxx::document::view doc = groupResult->view();
+		bsoncxx::document::element element = doc["members"];
 
-                        	bsoncxx::array::element element = doc["members"];
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& uId : subarray) {
+                                if (uId.type() == type::k_utf8) {
+                                        json::value usId(uId.get_utf8().value.to_string());
+					std::string user = usId.to_string();
+					if (user.compare(userId) == 0) {
+						response["status"] = json::value::string("ALREADY_IN_GROUP");
+						return response;
+					}
+                                }
+                        }
+                }
+		
+		bsoncxx::document::element el = doc["access"];
+		std::string access = el.get_utf8().value.to_string();
+		
+		bsoncxx::stdx::optional<mongocxx::result::update> result;
+		if (access.compare("public") == 0) {
+			result = coll1.update_one(document{} << "userId" << userId << finalize,
+					document{} << "$push" << open_document
+					<< "publicGroups" << groupId << close_document << finalize);
+		} else if (access.compare("private") == 0) {
+			result = coll1.update_one(document{} << "userId" << userId << finalize,
+					document{} << "$push" << open_document
+					<< "privateGroups" << groupId << close_document << finalize);
+		}
 
-                        	std::string user = element.get_utf8().value.to_string();
-				if (user.compare(userId) == 0) {
-					response["status"] = json::value::string("ALREADY_IN_GROUP");
-					return response;
-				}
-                	}
 
-			bsoncxx::stdx::optional<mongocxx::result::update> result1 =
-                        	coll3.update_one(document{} << "groupId" << groupId << finalize,
-                        	document{} << "$push" << open_document
-                        	<< "members" << userId << close_document << finalize);
 
-			bsoncxx::stdx::optional<mongocxx::result::update> result2 =
-				coll3.update_one( document{} << "usersQuantity" << open_document <<
-				"groupId" << groupId << close_document << finalize,
-				document{} << "$inc" << open_document <<
-				"usersQunatity" << 1 << close_document << finalize);
-
-			bsoncxx::stdx::optional<mongocxx::result::update> result3 =
-                                coll1.update_one(document{} << "userId" << userId << finalize,
-                                document{} << "$push" << open_document
-                                << "groups" << groupId << close_document << finalize);
-
-			bsoncxx::stdx::optional<mongocxx::result::update> result4 =
-				coll1.update_one( document{} << "groupsQuantity" << open_document <<
-				"userId" << userId << close_document << finalize,
-				document{} << "$inc" << open_document <<
-				"groupsQunatity" << 1 << close_document << finalize);
-			if (result1 && result2 && result3 && result4) {
-				response["status"] = json::value::string("OK");
-			} else {
-				response["status"] = json::value::string("INTERNAL_ERROR");
-			}
+		bsoncxx::stdx::optional<mongocxx::result::update> result1 =
+			coll3.update_one(document{} << "groupId" << groupId << finalize,
+					document{} << "$push" << open_document
+					<< "members" << userId << close_document << finalize);
+	
+		if (result && result1) {
+			response["status"] = json::value::string("OK");
+		} else {
+			response["status"] = json::value::string("INTERNAL_ERROR");
+		}
 
 	} else {
 		response["status"] = json::value::string("INVALID_GROUP");
@@ -903,29 +917,31 @@ json::value MongoDB::removeFromGroup(json::value request){
                 coll3.find_one(document{} << "groupId" << groupId << finalize);
 
 	if (groupResult) {
+		bsoncxx::document::view doc = groupResult->view();
+		bsoncxx::document::element el = doc["access"];
+                std::string access = el.get_utf8().value.to_string();
+
+                bsoncxx::stdx::optional<mongocxx::result::update> result;
+                if (access.compare("public") == 0) {
+                        result = coll1.update_one(document{} << "userId" << userId << finalize,
+                        	document{} << "$pull" << open_document
+                                << "publicGroups" << groupId << close_document << finalize);
+
+		} else if (access.compare("private") == 0) {
+                        result = coll1.update_one(document{} << "userId" << userId << finalize,
+                        	document{} << "$pull" << open_document
+                                << "privateGroups" << groupId << close_document << finalize);
+                }
+
+
+
 		bsoncxx::stdx::optional<mongocxx::result::update> result1 =
 			coll3.update_one(document{} << "groupId" << groupId << finalize,
-			document{} << "$pull" << open_document
-                        << "members" << userId << close_document << finalize);
+				document{} << "$pull" << open_document
+                        	<< "members" << userId << close_document << finalize);
+	
 
-		bsoncxx::stdx::optional<mongocxx::result::update> result2 =
-			coll3.update_one( document{} << "usersQuantity" << open_document <<
-			"groupId" << groupId << close_document << finalize,
-			document{} << "$inc" << open_document <<
-			"usersQunatity" << -1 << close_document << finalize);
-
-		bsoncxx::stdx::optional<mongocxx::result::update> result3 =
-                	coll1.update_one(document{} << "userId" << userId << finalize,
-                        document{} << "$pull" << open_document
-                        << "groups" << groupId << close_document << finalize);
-
-		bsoncxx::stdx::optional<mongocxx::result::update> result4 =
-			coll1.update_one( document{} << "groupsQuantity" << open_document <<
-			"userId" << userId << close_document << finalize,
-			document{} << "$inc" << open_document <<
-			"groupsQunatity" << -1 << close_document << finalize);
-		
-		if (result1 && result2 && result3 && result4) {
+		if (result && result1) {
 			response["status"] = json::value::string("OK");
 		} else {
 			response["status"] = json::value::string("INTERNAL_ERROR");
