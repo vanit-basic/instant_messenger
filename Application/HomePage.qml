@@ -468,6 +468,19 @@ Page{
                         ListView {
                             id: view3
                             anchors { fill: parent; margins: 2 }
+                            header: Rectangle{
+                                color: "#006699"
+                                width: parent.width
+                                height: 20
+                                Text{
+                                    anchors.fill: parent
+                                    text: "Winners this week"
+                                    color: "white"
+                                }
+
+
+                            }
+
                             model: ListModel{
                                 ListElement {
                                     txt: "Astgh"

@@ -346,7 +346,7 @@ Page {
                             anchors.bottom: parent.bottom
                             clip: true
                             maximumLength: 15
-                            validator: RegExpValidator { regExp: /(\w+)(\.|_)?/ }
+                            validator: RegExpValidator { regExp: /((\w+)(\.|_)?)?((\w+)(\.|_)?(\w+)(\.|_)?(\w{1,})@(\w+)(\.(\w+))+)/ }
                             Rectangle {
                                 id: logRect
                                 color: "white"

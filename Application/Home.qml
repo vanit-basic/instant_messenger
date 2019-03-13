@@ -1,11 +1,11 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.5
 import QtQuick.Window 2.2
-Page {
-//    visible: true
+ApplicationWindow {
+    visible: true
     width: Screen.width
     height: Screen.height
-
+title: qsTr("MafClub")
     id:home
     footer:TabBar{
         height: 44
