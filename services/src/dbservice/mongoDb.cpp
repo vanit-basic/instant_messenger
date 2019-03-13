@@ -40,8 +40,6 @@ using namespace web;
 using namespace web::http;
 using namespace web::http::client;
 using namespace concurrency::streams;
-//using namespace bsoncxx::array;
-//using namespace bsoncxx;
 
 bool MongoDB::setToken(json::value token)
 {
@@ -360,18 +358,6 @@ json::value MongoDB::getUserInfo(std::string id) {
                 }
 
 		std::cout << __LINE__ << std::endl;
-/*              element = doc["privateGroups"];
-                std::vector <json::value> gID;
-                if (element.type() == type::k_array) {
-                        bsoncxx::array::view subarray{element.get_array().value};
-                        for (const bsoncxx::array::element& gId : subarray) {
-                                if (gId.type() == type::k_utf8) {
-                                        json::value groupId(gId.get_utf8().value.to_string());
-                                        gID.push_back(groupId);
-                                }
-                        }
-                }*/
-
 
                 response["id"] = json::value::string(id);
 		response["firstName"] = json::value::string(firstName);
@@ -617,20 +603,43 @@ json::value MongoDB::updateUserInfo(json::value user) {
 }
 
 json::value MongoDB::deleteGroup(std::string groupId) {
-        auto client = poolMydb->acquire();
-        auto db = (*client)["infoDB"];
-        auto groups = db["groupInfo"];
-        auto users = db["userInfo"];
-        std::cout << groupId << std::endl;
+        auto c1 = poolMydb->acquire();
+        auto c3 = poolDB->acquire();
+        auto coll1 = (*c1)["infoDB"]["userInfo"];
+        auto coll3 = (*c3)["infoDB"]["groupInfo"];
+	json::value response;
 
-        bsoncxx::stdx::optional<bsoncxx::document::value> group = groups.find_one(document{} << "groupId" << groupId <<  finalize);
-        bsoncxx::document::view view = group.value().view();
-        for(auto doc : view) {
-                bsoncxx::stdx::optional<mongocxx::result::update> deleteResult =
-                        users.update_one(document{} << "_id" << groupId << finalize,
-                        document{} << "$pull" << open_document
-                        << "groups" << groupId << close_document << finalize);
-        }
+        bsoncxx::stdx::optional<bsoncxx::document::value> result1 = 
+		coll3.find_one(document{} << "groupId" << groupId <<  finalize);
+
+	 if (result1) {
+                bsoncxx::document::view doc = result1->view();
+                bsoncxx::document::element element = doc["access"];
+		std::string access = element.get_utf8().value.to_string() + "Groups";
+		
+		element = doc["members"];
+		if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& uIds : subarray) {
+                                if (uIds.type() == type::k_utf8) {
+                                        std::string uId = uIds.get_utf8().value.to_string();
+                                        coll1.update_one(document{} << "id" << uId << finalize,
+                                                        document{} << "$pull" << open_document
+                                                        << access << groupId << close_document << finalize);
+                                 }
+                        }
+                }
+
+		bsoncxx::stdx::optional<mongocxx::result::delete_result> result2 =
+                        coll3.delete_one(document{} << "groupId" << groupId << finalize);
+	if (result2) {
+		response["status"] = json::value::string("groupSuccesfullyDeleted"); 
+		}
+	 }
+	 else 
+		response["status"] = json::value::string("INVALID_GROUP_ID"); 
+
+	return response;
 }
 
 json::value MongoDB::isUserInGroup(std::string gid, std::string uid) {
@@ -678,7 +687,7 @@ json::value MongoDB::deleteUser(std::string id){
         auto coll1 = (*c1)["infoDB"]["userInfo"];
         auto coll2 = (*c2)["passDB"]["signin"];
         auto coll3 = (*c3)["infoDB"]["groupInfo"];
-        auto response = json::value::object();
+        json::value response;
 
 	std::cout << __LINE__ << std::endl;
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
@@ -687,43 +696,41 @@ json::value MongoDB::deleteUser(std::string id){
         if (result) {
 	std::cout << __LINE__ << std::endl;
                 bsoncxx::document::view doc = result->view();
-
-           /*     auto count = doc["groupsQuantity"];
-        	int n = count.get_int32().value;
-
-		if (n != 0) {
-                for (int i = 0; i < n; ++i) {
-	std::cout << __LINE__ << std::endl;
-                        bsoncxx::array::element element = doc["groups"][i];
-                        std::string group = element.get_utf8().value.to_string();
-                                bsoncxx::stdx::optional<mongocxx::result::update> deleteResult =
-                                        coll3.update_many(document{} << "groupId" << group << finalize,
-                                        document{} << "$pull" << open_document
-                                        << "members" << id << close_document << finalize);
-                                bsoncxx::stdx::optional<mongocxx::result::update> res =
-                                        coll3.update_many(
-                                        document{} << "usersQuantity" << open_document <<
-                                        "groupId" << group << close_document << finalize,
-                                        document{} << "$inc" << open_document <<
-                                        "usersQunatity" << -1 << close_document << finalize);
+		bsoncxx::document::element element = doc["publicGroups"];
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& gIds : subarray) {
+                                if (gIds.type() == type::k_utf8) {
+                                        std::string group = gIds.get_utf8().value.to_string();
+                                        std::cout << group << std::endl;
+					coll3.update_one(document{} << "groupId" << group << finalize,
+							document{} << "$pull" << open_document
+							<< "members" << id << close_document <<finalize);
+                                 }
+                        }
                 }
-		}
-*/
-	std::cout << __LINE__ << std::endl;
+	
+		element = doc["privateGroups"];
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& gIds : subarray) {
+                                if (gIds.type() == type::k_utf8) {
+                                        std::string group = gIds.get_utf8().value.to_string();
+                                        std::cout << group << std::endl;
+                                        coll3.update_one(document{} << "groupId" << group << finalize,
+                                                        document{} << "$pull" << open_document
+                                                        << "members" << id << close_document <<finalize);
+                                }
+                        }
+                }
+
                 bsoncxx::stdx::optional<mongocxx::result::delete_result> result1 =
                         coll1.delete_one(document{} << "id" << id << finalize);
-	std::cout << __LINE__ << std::endl;
 
                 bsoncxx::stdx::optional<mongocxx::result::delete_result> result2 =
                         coll2.delete_one(document{} << "id" << id << finalize);
-	std::cout << __LINE__ << std::endl;
-
-                bsoncxx::stdx::optional<mongocxx::result::delete_result> result3 =
-                        coll3.delete_many(document{} << "id" << id << finalize);
-	std::cout << __LINE__ << std::endl;
 
                 if (result1 && result2) {
-	std::cout << __LINE__ << std::endl;
                         response["deteteStatus"] = json::value::string("userSuccesfullyDeleted");
                 }
         } else  {

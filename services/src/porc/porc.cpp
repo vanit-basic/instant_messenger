@@ -76,12 +76,12 @@ int main()
 	uri_builder getUserShortInfo1(U("/account/getUserShortInfo?clientId=u1"));
 	uri_builder getUserShortInfo2(U("/account/getUserShortInfo?clientId=u2"));
 
-	uri_builder isUserInGroup1(U("/account/isUserInGroup?groupId=g1&userId=u1"));
-	uri_builder isUserInGroup2(U("/account/isUserInGroup?groupId=g1&userId=u200"));
-	uri_builder addUserToGroup(U("/account/addUserToGroup?userId=u1&groupId=g1&clientId=u2"));
+	uri_builder isUserInGroup(U("/account/isUserInGroup?groupId=g1&userId=u1"));
+	uri_builder addUserToGroup1(U("/account/addUserToGroup?userId=u1&groupId=g1&clientId=u2"));
+	uri_builder addUserToGroup2(U("/account/addUserToGroup?userId=u2&groupId=g2&clientId=u1"));
         uri_builder deleteUser(U("/account/deleteUser?userId=u1"));
+        uri_builder deleteGroup(U("/account/deleteGroup?groupId=g7&userId=u2"));
         uri_builder createGroup(U("/account/createGroup"));
-        uri_builder deleteGroup(U("/account/deleteGroup?clientId=u1&groupId=g1"));
         uri_builder getGroupInfo(U("/account/getGroupInfo?clientId=u1&groupId=g1"));
         uri_builder getGroupShortInfo(U("/account/getGroupShortInfo?clientId=u1&groupId=g1"));
         uri_builder updateGroupInfo(U("/account/updateGroupInfo?clientId=u1"));
@@ -200,6 +200,20 @@ int main()
 			postRequest(dbServiceClient, signIn, signInReq1);
 			postRequest(dbServiceClient, signIn, signInReq2);
 		
+
+			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			getRequest(dbServiceClient, isUserInGroup);
+			std::cout<<std::endl;
+*/
+			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
+//			postRequest(dbServiceClient, createGroup, createGroupReq1);
+			postRequest(dbServiceClient, createGroup, createGroupReq2);
+                        std::cout<<std::endl;			
+/*
+			std::cout<<"///////////////////     Add user to group(DB  SERVICE) TEST      /////////////////"<<std::endl;
+                        getRequest(dbServiceClient, addUserToGroup1);
+                        getRequest(dbServiceClient, addUserToGroup2);
+
 			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserInfo1);
 			getRequest(dbServiceClient, getUserInfo2);
@@ -212,7 +226,16 @@ int main()
 
 			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, deleteUser);
-                        std::cout<<std::endl;			
+                        std::cout<<std::endl;
+
+			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			getRequest(dbServiceClient, getUserShortInfo1);
+			getRequest(dbServiceClient, getUserShortInfo2);
+			std::cout<<std::endl; */
+
+			std::cout<<"///////////////////     Delete group(DB  SERVICE) TEST      /////////////////"<<std::endl;
+                        getRequest(dbServiceClient, deleteGroup);
+                        std::cout<<std::endl;
 
 			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, createGroup, createGroupReq1);
@@ -220,7 +243,7 @@ int main()
                         std::cout<<std::endl;			
 			
 			std::cout<<"///////////////////     Add user to group(DB  SERVICE) TEST      /////////////////"<<std::endl;
-                        getRequest(dbServiceClient, addUserToGroup);
+                        getRequest(dbServiceClient, addUserToGroup1);
 	
 			std::cout<<"///////////////////     GET GROUP USERS(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupUsers);
@@ -230,7 +253,7 @@ int main()
 			std::cout<<"///////////////////     GET GROUP SHORT INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupShortInfo);
 			std::cout<<std::endl;
-*/
+			
 			std::cout<<"///////////////////     GET GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupInfo);
 			std::cout<<std::endl;
