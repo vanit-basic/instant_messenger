@@ -84,9 +84,9 @@ int main()
         uri_builder createGroup(U("/account/createGroup"));
         uri_builder getGroupInfo(U("/account/getGroupInfo?clientId=u1&groupId=g1"));
         uri_builder getGroupShortInfo(U("/account/getGroupShortInfo?clientId=u1&groupId=g1"));
-        uri_builder updateGroupInfo(U("/account/updateGroupInfo?clientId=u1"));
         uri_builder groupRemoveUser(U("/account/groupRemoveUser"));
         uri_builder updateUserInfo(U("/account/updateUserInfo"));
+        uri_builder updateGroupInfo(U("/account/updateGroupInfo"));
         uri_builder checkToken(U("/checkToken"));
         uri_builder deleteToken(U("/deleteToken"));
         uri_builder setToken(U("/setToken"));
@@ -135,16 +135,18 @@ int main()
         createGroupReq1["groupName"] = json::value::string("Best");
         createGroupReq1["userId"] = json::value::string("u1");
         createGroupReq1["access"] = json::value::string("public");
+        createGroupReq1["avatar"] = json::value::string("base64_string");
 
 	json::value createGroupReq2;
         createGroupReq2["groupName"] = json::value::string("Mafia");
         createGroupReq2["userId"] = json::value::string("u2");
         createGroupReq2["access"] = json::value::string("private");
+        createGroupReq1["avatar"] = json::value::string("base64_string");
 
         json::value updateGroupInfoReq;
-        updateGroupInfoReq["groupId"] = json::value::string("g1");
-        updateGroupInfoReq["name"] = json::value::string("mafiaForever");
-        updateGroupInfoReq["avatar"] = json::value::string("base64_string");
+        updateGroupInfoReq["groupId"] = json::value::string("g10");
+        updateGroupInfoReq["newName"] = json::value::string("mafiaForever");
+        updateGroupInfoReq["newAvatar"] = json::value::string("base64_string1");
 
         json::value groupRemoveUserReq;
         groupRemoveUserReq["groupId"] = json::value::string("g1");
@@ -204,10 +206,14 @@ int main()
 			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, isUserInGroup);
 			std::cout<<std::endl;
-*/
+
 			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
-//			postRequest(dbServiceClient, createGroup, createGroupReq1);
+			postRequest(dbServiceClient, createGroup, createGroupReq1);
 			postRequest(dbServiceClient, createGroup, createGroupReq2);
+                        std::cout<<std::endl;			
+*/
+			std::cout<<"///////////////////     UPDATE GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, updateGroupInfo, updateGroupInfoReq);
                         std::cout<<std::endl;			
 /*
 			std::cout<<"///////////////////     Add user to group(DB  SERVICE) TEST      /////////////////"<<std::endl;
@@ -231,17 +237,12 @@ int main()
 			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserShortInfo1);
 			getRequest(dbServiceClient, getUserShortInfo2);
-			std::cout<<std::endl; */
+			std::cout<<std::endl; 
 
 			std::cout<<"///////////////////     Delete group(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, deleteGroup);
                         std::cout<<std::endl;
 
-			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, createGroup, createGroupReq1);
-	//		postRequest(dbServiceClient, createGroup, createGroupReq2);
-                        std::cout<<std::endl;			
-			
 			std::cout<<"///////////////////     Add user to group(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, addUserToGroup1);
 	
@@ -256,14 +257,7 @@ int main()
 			
 			std::cout<<"///////////////////     GET GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupInfo);
-			std::cout<<std::endl;
-
-/*			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getUserShortInfo1);
-			getRequest(dbServiceClient, getUserShortInfo2);
-			std::cout<<std::endl;
-*/
-
+			std::cout<<std::endl;*/
 
 		} 
 		catch (http_exception e) {

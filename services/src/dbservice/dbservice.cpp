@@ -130,7 +130,11 @@ void DbService::handlePost(http_request message) {
 						if (path[1] == "updateUserInfo") {
                                                         json::value response = m_db->updateUserInfo(request);
                                                         message.reply(status_codes::OK, response);
-						}
+						} else
+							if (path[1] == "updateGroupInfo") {
+								json::value response = m_db->updateGroupInfo(request);
+                                                        	message.reply(status_codes::OK, response);
+							}
 					}
                                 }
 		} else {

@@ -521,9 +521,13 @@ json::value MongoDB::getGroupShortInfo(std::string groupId) {
 		
                 element = doc["groupName"];
                 std::string groupName = element.get_utf8().value.to_string();
+                
+		element = doc["avatar"];
+                std::string avatar = element.get_utf8().value.to_string();
 
-                response["groupName"] = json::value::string(groupName);
                 response["groupId"] = json::value::string(groupId);
+                response["groupName"] = json::value::string(groupName);
+                response["avatar"] = json::value::string(avatar);
 		
 		if (access.compare("public") == 0) {
 			element = doc["members"];
@@ -779,12 +783,14 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 	std::string groupName = groupInfo.at("groupName").as_string();
         std::string userId = groupInfo.at("userId").as_string();
         std::string access = groupInfo.at("access").as_string();
+        std::string avatar = groupInfo.at("avatar").as_string();
 	std::string id = generateGroupID(coll3);
 
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value = builder
 		<< "groupId" << id
 		<< "groupName" << groupName
+		<< "avatar" << avatar
 		<< "access" << access
 		<< "adminId" << userId
 		<< "createDate" << date()
@@ -813,6 +819,7 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 	if (result) {
 		response["groupId"] = json::value::string(id);
 		response["groupName"] = json::value::string(groupName);
+		response["avatar"] = json::value::string(avatar);
 		response["adminId"] = json::value::string(userId);
 		response["createDate"] = json::value::string(date());
 		response["access"] = json::value::string(access);
@@ -886,62 +893,50 @@ json::value MongoDB::removeFromGroup(std::string groupId, std::string userId) {
                 coll3.find_one(document{} << "groupId" << groupId << finalize);
 
 	if (groupResult) {
-		element = doc["members"];
-		std::vector <json::value> uIDs;
-		if (element.type() == type::k_array) {
-			for (const bsoncxx::array::element& uId : subarray) {
-				if (uId.type() == type::k_utf8) {
-					if 
-				}
-			}
-		}
+		auto isInGroup = isUserInGroup(groupId, userId);
+		std::string status = isInGroup.at("status").as_string();
+		if (status.compare("IN_GROUP") == 0) {
+			bsoncxx::document::view doc = groupResult->view();
+			
+			bsoncxx::document::element el = doc["access"];
+                	std::string access = el.get_utf8().value.to_string();
 
-		response["members"] = json::value::array(uIDs);
+                	bsoncxx::stdx::optional<mongocxx::result::update> result;
+                	if (access.compare("public") == 0) {
+                	        result = coll1.update_one(document{} << "userId" << userId << finalize,
+                	        	document{} << "$pull" << open_document
+                	                << "publicGroups" << groupId << close_document << finalize);
 
-		bsoncxx::document::view doc = groupResult->view();
-		bsoncxx::document::element el = doc["access"];
-                std::string access = el.get_utf8().value.to_string();
-
-                bsoncxx::stdx::optional<mongocxx::result::update> result;
-                if (access.compare("public") == 0) {
-                        result = coll1.update_one(document{} << "userId" << userId << finalize,
-                        	document{} << "$pull" << open_document
-                                << "publicGroups" << groupId << close_document << finalize);
-
-		} else if (access.compare("private") == 0) {
-                        result = coll1.update_one(document{} << "userId" << userId << finalize,
-                        	document{} << "$pull" << open_document
-                                << "privateGroups" << groupId << close_document << finalize);
-                }
-
-
-		bsoncxx::stdx::optional<mongocxx::result::update> result1 =
-			coll3.update_one(document{} << "groupId" << groupId << finalize,
-				document{} << "$pull" << open_document
-                        	<< "members" << userId << close_document << finalize);
-	
-
-		if (result && result1) {
+			} else if (access.compare("private") == 0) {
+        	                result = coll1.update_one(document{} << "userId" << userId << finalize,
+                	        	document{} << "$pull" << open_document
+                        	        << "privateGroups" << groupId << close_document << finalize);
+                	}
+			
+			bsoncxx::stdx::optional<mongocxx::result::update> result1 =
+				coll3.update_one(document{} << "groupId" << groupId << finalize,
+					document{} << "$pull" << open_document
+                        		<< "members" << userId << close_document << finalize);
+			
 			response["status"] = json::value::string("OK");
 		} else {
-			response["status"] = json::value::string("INTERNAL_ERROR");
+			response["status"] = json::value::string("INVALID_USER_ID");
 		}
-
 	} else {
-		response["status"] = json::value::string("INVALID_GROUP");
+                response["status"] = json::value::string("INVALID_GROUP_ID");
 	}
 
 	return response;
 }
 
 json::value MongoDB::updateGroupInfo(json::value request) {
-        auto c3 = poolMydb->acquire();
-        auto coll3 = (*c3)["infoDB"]["groupInfo"];
-	auto response = json::value::object();
+	auto c = poolMydb->acquire();
+        auto coll3 = (*c)["infoDB"]["groupInfo"];
+	json::value response;
 
         std::string groupId = request.at("groupId").as_string();
-        std::string userId = request.at("userId").as_string();
-        std::string newName = request.at("name").as_string();
+        std::string newName = request.at("newName").as_string();
+        std::string newAvatar = request.at("newAvatar").as_string();
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll3.find_one(document{} << "groupId" << groupId << finalize);
@@ -949,17 +944,24 @@ json::value MongoDB::updateGroupInfo(json::value request) {
         if (result) {
                 bsoncxx::document::view doc = result->view();
 
-                bsoncxx::document::element element = doc["name"];
+                bsoncxx::document::element element = doc["groupName"];
                 std::string name = element.get_utf8().value.to_string();
 
-                if (name.compare(newName) == 0 && newName.compare("") != 0) {
+                if (name.compare(newName) != 0 && newName.compare("") != 0) {
                         coll3.update_one(document{} << "groupId" << groupId << finalize,
                                 document{} << "$set" << open_document <<
-                                "name" << newName << close_document << finalize);
-                	response["status"] = json::value::string("OK");
-                } else {
-			response["status"] = json::value::string("Names is same");
+        			"groupName" << newName << close_document << finalize);
 		}
+
+		element = doc["avatar"];
+		std::string avatar = element.get_utf8().value.to_string();
+		if (avatar.compare(newAvatar) != 0) {
+			coll3.update_one(document{} << "groupId" << groupId << finalize, 
+					document{} << "$set" << open_document <<
+					"avatar" << newAvatar << close_document << finalize);
+		}
+		response = getGroupInfo(groupId);
+		response["status"] = json::value::string("OK");
 
         } else {
                 response["status"] = json::value::string("unknownID");
@@ -989,6 +991,9 @@ json::value MongoDB::getGroupInfo(std::string groupId) {
 		element = doc["createDate"];
 		std::string createDate = element.get_utf8().value.to_string();
 		
+		element = doc["avatar"];
+		std::string avatar = element.get_utf8().value.to_string();
+		
 		element = doc["members"];
                 std::vector <json::value> uIDs;
                 if (element.type() == type::k_array) {
@@ -1003,6 +1008,7 @@ json::value MongoDB::getGroupInfo(std::string groupId) {
 		
 		response["groupId"] = json::value::string(groupId);
 		response["groupName"] = json::value::string(groupName);
+		response["avatar"] = json::value::string(avatar);
 		response["adminId"] = json::value::string(adminId);
 		response["createDate"] = json::value::string(createDate);
 		response["members"] = json::value::array(uIDs);	
