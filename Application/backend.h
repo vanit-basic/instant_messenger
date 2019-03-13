@@ -9,11 +9,14 @@ class Backend : public QObject
 
 public:
     explicit Backend(QObject *parent = nullptr);
- Q_INVOKABLE void sign_inn(QString);
+    Q_INVOKABLE void sign_inn(QString);
+
 signals:
 
 public slots:
     void ttt();
 };
+
+
 
 #endif // BACKEND_H

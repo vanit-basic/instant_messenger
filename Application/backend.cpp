@@ -1,13 +1,16 @@
 #include "backend.h"
 #include<QDebug>
-#include <QQmlApplicationEngine>
+#include <QQmlEngine>
+
 void Backend::sign_inn(QString name)
 {
     qDebug() << "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT" + name;
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/Home.qml")));
-
-
+//    QQmlEngine engine;
+//   // engine.load(QUrl(QStringLiteral("qrc:/Home.qml")));
+//    engine.setBaseUrl(QUrl::fromLocalFile("myqmlfile.qml"));
+//    QQuickView *view = new QQuickView;
+//        view->setSource(QUrl(QStringLiteral("qrc:/Home.qml")));
+//        view->show();
 
 }
 

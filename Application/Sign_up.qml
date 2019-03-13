@@ -94,7 +94,7 @@ Page {
                         TextInput{
                             id:enter_name
                             width: parent.width-rec_repass.width
-                            height: 20
+                            height: 40
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
@@ -129,7 +129,7 @@ Page {
                         TextInput{
                             id:enter_surname
                             width: parent.width-rec_repass.width
-                            height: 20
+                            height: 40
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
@@ -162,7 +162,7 @@ Page {
                         TextInput{
                             id:enter_email
                             width: parent.width-rec_repass.width
-                            height: 20
+                            height: 40
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
@@ -282,7 +282,6 @@ Page {
                                     onClicked: {
                                         slaq.text =days[day_t.currentIndex]+"  "+ month[month_t.currentIndex]+"  "+years[year_t.currentIndex]
                                         popup.close()
-//enter_login.focus = true
                                     }
                                 }
                             }
@@ -342,11 +341,14 @@ Page {
                         TextInput{
                             id:enter_login
                             width: parent.width-rec_repass.width
-                            height: 20
+                            height: 40
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
+                            maximumLength: 15
+                            validator: RegExpValidator { regExp: /(\w+)(\.|_)?/ }
                             Rectangle {
+                                id: logRect
                                 color: "white"
                                 height: 1
                                 width: parent.width
@@ -354,6 +356,9 @@ Page {
                             }
                             onAccepted:   { enter_password.focus = true}
                             EnterKey.type:  Qt.EnterKeyNext
+                            onFocusChanged: (length < 8 & focus) ? logRect.color = "red" : logRect.color = "white"
+                            onTextChanged: length < 8 ? logRect.color = "red" : logRect.color = "green"
+
                         }
                         }
                         Row{
@@ -401,17 +406,18 @@ Page {
                         TextInput{
                             id:enter_password
                             width: parent.width
-                            height: 20
+                            height: 40
                             color: "white"
                             echoMode: TextInput.Password
                             passwordCharacter: "*"
                             anchors.bottom: parent.bottom
                             clip: true
-                                    validator: RegExpValidator { regExp: /((\w+)(\.|_)?){8,16}/ }
-
-
-
+                            validator: RegExpValidator { regExp: /(\w+)(\.|_)?/ }
+                            maximumLength: 15
+                            onFocusChanged: (length < 8 & focus) ? passRect.color = "red" : passRect.color = "white"
+                            onTextChanged: length < 8 ? passRect.color = "red" : passRect.color = "green"
                             Rectangle {
+                                id : passRect
                                 color: "white"
                                 height: 1
                                 width: parent.width
@@ -464,13 +470,16 @@ Page {
                         TextInput{
                             id:repeat_password
                             width: parent.width
-                            height: 20
+                            height: 40
                             color: "white"
                             echoMode: TextInput.Password
                             passwordCharacter: "*"
                             anchors.bottom: parent.bottom
-
+                            maximumLength: 15
+                            onTextChanged: text == enter_password.text ? repPassRect.color = "green" : repPassRect.color = "red"
+                            onFocusChanged: (enter_password.length >=8 & text == enter_password.text) ? repPassRect.color = "green" : repPassRect.color = "red"
                             Rectangle {
+                                id:repPassRect
                                 color: "white"
                                 height: 1
                                 width: parent.width
@@ -487,6 +496,7 @@ Page {
                             width: 180
                             text: "Submit"
                             anchors.horizontalCenterOffset: 0
+                            enabled: false
                             //enabled: username.text === "" || surname.text === "" || mail.text === "" || u_pass.text === "" || repass.text === ""  ?false:true
                             background: Rectangle{
                                 radius: 30

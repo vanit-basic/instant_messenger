@@ -1,10 +1,11 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.5
 import QtQuick.Window 2.2
-ApplicationWindow {
-    visible: true
+Page {
+//    visible: true
     width: Screen.width
     height: Screen.height
+
     id:home
     footer:TabBar{
         height: 44
