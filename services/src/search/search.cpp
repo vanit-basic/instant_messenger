@@ -102,35 +102,42 @@ void Search::handleGet(http_request message) {
 	{
 		std::map<utility::string_t, utility::string_t>  fields = uri::split_query(message.request_uri().query());
 		json::value info;
+		std::string userId = fields["userId"];
 		if(path[1] == "user")
 		{
-			std::string field_1 = "";
-			std::string field_2 = "";
-			std::string field_3 = "";
-			if(fields.count("field_1") > 0)
+			std::string firstName = "";
+			std::string lastName = "";
+			std::string nickName = "";
+			if(fields.count("firstName") > 0)
 			{
-				field_1 = fields["field_1"];
-				if(fields.count("field_2") > 0)
+				firstName = fields["firstName"];
+				if(fields.count("lastName") > 0)
 				{
-					field_2 = fields["field_2"];
-					if(fields.count("field_3") > 0)
+					lastName = fields["lastName"];
+					if(fields.count("nickName") > 0)
 					{
-						field_3 = fields["field_3"];
+						nickName = fields["nickName"];
 					}
 				}
 
-				info = cashDatabase -> getInfo(field_1 + field_2 + field_3, fields["from"], fields["to"]);
+				info = cashDatabase -> getInfo(firstName + lastName + nickName, fields["from"], fields["to"]);
 				uri_builder usersInfo("/getUsersShortInfos");
 				
 				if(info.at("status").as_string() == "OK")
 				{
+					info.erase("status");
 					http_response response = DataBaseClient->request(methods::POST, usersInfo.to_string(), info).get();
 					message.reply(response);
 				}
 				if(info.at("status").as_string() == "NOT_FOUND")
 				{
-					http_response response = DataBaseClient->request(message).get();//avelanalu e - response pahel cashi mej, request uxarkel dbService-in, patasxamel message-in
-					message.reply(response);
+					http_response response = DataBaseClient->request(message).get();
+					json:: value Ids = response.extract_json().get();
+					cashDatabase -> setInfo(Ids);
+					info.erase("status");
+					info = getInfo(firstName + lastName + nickName, fields["from"], fields["to"]);
+					http_response usersInfos = DataBaseClient->request(methods::POST, usersInfo.to_string(), info).get();
+					message.reply(usersInfos);
 				}
 			}
 			else
@@ -142,7 +149,33 @@ void Search::handleGet(http_request message) {
 		{
 			if(path[1] == "group")
 			{
-
+				std::string groupName = "";
+				if(fields.count("groupName") > 0)
+				{
+					groupName = fields["groupName"];
+					info = cashDatabase -> getInfo(groupName, fields["from"], fields["to"]);
+					uri_builder groupsInfo("/getGroupsShortInfos");
+					if(info.at("status").as_string() == "OK")
+					{
+						info.erase("status");
+						http_response response = DataBaseClient->request(methods::POST, groupsInfo.to_string(), info).get();
+						message.reply(response);
+					}
+					if(info.at("status").as_string() == "NOT_FOUND")
+					{
+						http_response response = DataBaseClient->request(message).get();
+						json:: value Ids = response.extract_json().get();
+						cashDatabase -> setInfo(Ids);
+						info.erase("status");
+						info = getInfo(groupName, fields["from"], fields["to"]);
+						http_response groupsInfos = DataBaseClient->request(methods::POST, groupsInfo.to_string(), info).get();
+						message.reply(groupsInfos);
+					}
+				}
+				else
+				{
+					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+				}
 			}
 			else
 			{
@@ -154,4 +187,10 @@ void Search::handleGet(http_request message) {
 	{
 		message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 	}
+}
+
+void Search::handlePost(http_request message)
+{
+	std::cout<<message.to_string()<<std::endl;
+	message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 }
