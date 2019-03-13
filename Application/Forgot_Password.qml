@@ -5,7 +5,8 @@ import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.12
 
 Page {
-    id:wind   
+    id:wind
+    property alias see_pass: see_pass
     Rectangle{
         width: Screen.width
         height: Screen.height
@@ -165,22 +166,16 @@ Page {
                         id:mouse1
                         anchors.fill: parent
                         onPressed:{Qt.inputMethod.hide()}
-                        TextField{
-                            id:newp
+                        Rectangle{
+                            id:newppp
                             width: parent.width
-                            height: 50
-                            color: "white"
+                            height: newp.height
                             anchors.top: parent.top
                             anchors.topMargin: 50
-                            echoMode: TextField.Password
-                            passwordCharacter: "*"
-                            placeholderText: "New Password"
-                            background: Rectangle{
-                                color: "transparent"
-                            }
+                            color: "transparent"
                             Button{
                             id:see_pass
-                            width: parent.height+20
+                            width: parent.height
                             height: parent.height
                             background: Rectangle{
                             color: "transparent"
@@ -195,9 +190,6 @@ Page {
                             icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
 
                             }
-
-
-
                             }
                             Rectangle {
                                 id:new_rect
@@ -206,24 +198,35 @@ Page {
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
-                            onEditingFinished:  {new_rect.height = 1; new_rect.color = "white"}
-                            onPressed:   {new_rect.height = 2 ; new_rect.color = "#325f5f"}
-                        }
                         TextField{
-                            id:repeatp
-                            width: parent.width
+                            id:newp
+                            width: parent.width-see_pass.width
                             height: 50
                             color: "white"
-                            anchors.top: newp.bottom
-                            anchors.topMargin: 50
+                            anchors.bottom:  parent.bottom
+                            anchors.left: parent.left
                             echoMode: TextField.Password
                             passwordCharacter: "*"
+                            placeholderText: "New Password"
                             background: Rectangle{
                                 color: "transparent"
                             }
+
+
+                            onEditingFinished:  {new_rect.height = 1; new_rect.color = "white"}
+                            onPressed:   {new_rect.height = 2 ; new_rect.color = "#325f5f"}
+                        }
+                        }
+                        Rectangle{
+                            id:repppp
+                            width: parent.width
+                            height: repeatp.height
+                            color:"transparent"
+                            anchors.top: newppp.bottom
+                            anchors.topMargin: 50
                             Button{
                             id:see_pass1
-                            width: parent.height+20
+                            width: parent.height
                             height: parent.height
                             background: Rectangle{
                             color: "transparent"
@@ -238,12 +241,7 @@ Page {
                             icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
 
                             }
-
-
-
                             }
-                            placeholderText: "Repeat Password"
-
                             Rectangle {
                                 id:repeat_rect
                                 color: "white"
@@ -251,15 +249,32 @@ Page {
                                 width: parent.width
                                 anchors.bottom: parent.bottom
                             }
+                        TextField{
+                            id:repeatp
+                            width: parent.width-see_pass1.width
+                            height: 50
+                            color: "white"
+                            anchors.bottom:  parent.bottom
+                            anchors.left: parent.left
+                            echoMode: TextField.Password
+                            passwordCharacter: "*"
+                            background: Rectangle{
+                                color: "transparent"
+                            }
+
+                            placeholderText: "Repeat Password"
+
+
                             onEditingFinished:  {repeat_rect.height = 1; repeat_rect.color = "white"}
                             onPressed:   {repeat_rect.height = 2 ; repeat_rect.color = "#325f5f"}
+                        }
                         }
                         Button{
                             id:submit
                             height: 30
                             width: 120
                             anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.top: repeatp.bottom
+                            anchors.top: repppp.bottom
                             anchors.topMargin:30
                             background: Rectangle{
                                 radius: 30

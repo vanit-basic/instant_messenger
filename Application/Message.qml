@@ -22,14 +22,10 @@ Page{
                     tab.visible = true
                 } else { swipe.currentIndex = 1}
             }
-        }
-
-       // Component.onCompleted: stackMess.push(ttt)
-
+        }       
         initialItem:
             Rectangle{
                 id:ttt
-                //anchors.fill: parent//////
             color: "transparent"
             MessageDialog{
                 id:msgDialog

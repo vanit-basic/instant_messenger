@@ -14,7 +14,7 @@ title: qsTr("MafClub")
         onCurrentIndexChanged: swipe.currentIndex = currentIndex
         background: Rectangle{
             anchors.fill: parent
-            color: tab.currentIndex ===1?"lightgray":"white"
+            color: tab.currentIndex ===1 || tab.currentIndex ===0?"lightgray":"white"
         }
         TabButton{
             id:tb1
