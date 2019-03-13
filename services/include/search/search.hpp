@@ -23,7 +23,7 @@ class Search : public BasicController, Controller {
         private:
                 std::string searchUri;
                 http_client *DataBaseClient;
-		cashDatabase* mongo_cash_db;
+		cashDatabase* cash_db;
                 bool createClients(std::string path);
                 void handleGet(http_request message) override;
                 void handlePost(http_request message) override;
