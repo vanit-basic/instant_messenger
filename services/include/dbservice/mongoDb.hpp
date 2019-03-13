@@ -77,11 +77,11 @@ class MongoDB : public database {
 
 		virtual json::value addUserToGroup(std::string userId, std::string groupId, std::string cleintId);
 
-                virtual json::value removeFromGroup(json::value);
+                virtual json::value removeFromGroup(std::string, std::string);
 		
 		virtual json::value updateGroupInfo(json::value groupInfo);
 
-		virtual json::value getGroupInfo(json::value);
+		virtual json::value getGroupInfo(std::string);
                
 	       	virtual bool removeMessage(json::value messageInfo){};
 
@@ -94,8 +94,6 @@ class MongoDB : public database {
 		virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message){};
 
 		virtual bool updateGroupMessage(std::string groupId, json::value message) {};
-		
-		virtual json::value getPublicGroupInfo(std::string, std::string); 
 		
 		MongoDB(std::string);
 		~MongoDB();

@@ -54,38 +54,41 @@ void DbService::handleGet(http_request message) {
 				id = i.find("userId")->second;
 				json::value response = m_db->getUserInfo(id);
 				message.reply(status_codes::OK, response);
-			} else {
-				if (path[1] == "deleteUser") {
+			} else if (path[1] == "deleteUser") {
 					 std::string id = "";
                         	         id = i.find("userId")->second;
                                 	 json::value response = m_db->deleteUser(id);
                                 	 message.reply(status_codes::OK, response);
-				} else {
-					if (path[1] == "addUserToGroup") {
-						std::string userId = i.find("userId")->second;
-						std::string groupId = i.find("groupId")->second;
-						std::string clientId = i.find("clientId")->second;
-                                         	json::value response = m_db->addUserToGroup(userId, groupId, clientId);
-                                         	message.reply(status_codes::OK, response);
-					} else {
-						if (path[1] == "getUserShortInfo") {
-							std::string clientId = i.find("clientId")->second;
-                                			json::value response = m_db->getUserShortInfo(clientId);
-                                			message.reply(status_codes::OK, response);
-						} else {
-							if (path[1] == "isUserInGroup") {
-								std::string userId = i.find("userId")->second;
-								std::string groupId = i.find("groupId")->second;
-                                         			json::value response = m_db->isUserInGroup(groupId, userId);
-                                         			message.reply(status_codes::OK, response);
-							}
-						}
-					}
-				}
+			} else if (path[1] == "addUserToGroup") {
+				std::string userId = i.find("userId")->second;
+				std::string groupId = i.find("groupId")->second;
+				std::string clientId = i.find("clientId")->second;
+                                json::value response = m_db->addUserToGroup(userId, groupId, clientId);
+                                message.reply(status_codes::OK, response);
+			} else if (path[1] == "getUserShortInfo") {
+				std::string clientId = i.find("clientId")->second;
+                                json::value response = m_db->getUserShortInfo(clientId);
+                                message.reply(status_codes::OK, response);
+			} else if (path[1] == "isUserInGroup") {
+				std::string userId = i.find("userId")->second;
+				std::string groupId = i.find("groupId")->second;
+                                json::value response = m_db->isUserInGroup(groupId, userId);
+                                message.reply(status_codes::OK, response);
+			} else if (path[1] == "getGroupUsers") {
+				std::string groupId = i.find("groupId")->second;
+                                json::value response = m_db->getGroupUsers(groupId);
+                                message.reply(status_codes::OK, response);								
+			} else if (path[1] == "getGroupShortInfo") {
+				std::string groupId = i.find("groupId")->second;
+                                json::value response = m_db->getGroupShortInfo(groupId);
+                                message.reply(status_codes::OK, response);
+			} else if (path[1] == "getGroupInfo") {
+				std::string groupId = i.find("groupId")->second;
+                                json::value response = m_db->getGroupInfo(groupId);
+                                message.reply(status_codes::OK, response);
+			} else {
+				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 			}
-		}
-		else{
-			message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 		}
 	}
 }
