@@ -23,18 +23,24 @@ using namespace web::http::client;
 using namespace concurrency::streams;
 
 class messagingMongoDb : public messagingDbBase {
-	
-	virtual json::value getUserConversations(std::string);
-        virtual json::value getUsersConversation(std::string, std::string );
-        virtual std::string userSendMessage(std::string, std::string, std::string );
-        virtual bool userUpdateMessage(std::string, std::string, std::string );
-        virtual bool userRemoveConversation(std::string, std::string );
-        virtual bool userRemoveMessage(std::string, std::string, std::string);
-        virtual bool groupRemoveConversation(std::string );
-        virtual bool groupRemoveMessage(std::string, std::string );
-        virtual std::string getGroupConversation(std::string);
-        virtual std::string groupSendMessage(std::string , std::string , json::value );
-        virtual bool groupUpdateMessage(std::string, std::string, json::value );
 
+	public:
+		virtual json::value getUserConversations(std::string);
+		virtual json::value getUsersConversation(std::string, std::string );
+		virtual std::string userSendMessage(std::string, std::string, std::string );
+		virtual bool userUpdateMessage(std::string, std::string, std::string );
+		virtual bool userRemoveConversation(std::string, std::string );
+		virtual bool userRemoveMessage(std::string, std::string, std::string);
+		virtual bool groupRemoveConversation(std::string );
+		virtual bool groupRemoveMessage(std::string, std::string );
+		virtual std::string getGroupConversation(std::string);
+		virtual std::string groupSendMessage(std::string , std::string , json::value );
+		virtual bool groupUpdateMessage(std::string, std::string, json::value );
+		messagingMongoDb(std::string path);
+		~messagingMongoDb();
+
+	private:
+		mongocxx::pool* poolDB;
+		bool createPool(std::string);
 
 }
