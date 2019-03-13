@@ -15,7 +15,7 @@ Page{
         ToolButton{
             text: "<"
             onClicked: {
-                  stackMess.pop(); swipe.interactive = true ; tab.visible = true
+                stackMess.pop(); swipe.interactive = true ; tab.visible = true
             }
         }
     }
@@ -25,45 +25,48 @@ Page{
         height: 44
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        ScrollView {
-            width: root.width - ((root.width/10) * 2) - (root.width/15)*2
-            x:  (root.width/10) + root.width/15
-            height: root.height - (root.height/5)
-            clip: true
-            TextArea {
+        Row{
+            anchors.fill: parent
+
+            ToolButton{
+                background: Rectangle{
+                    border.color: "green"
+                    radius: 30
+                }
+                height: 40
+                width: height
+                id: add
+                text: "+"
+                font.pixelSize: 25
+                //            anchors.left: parent.left
+                //            anchors.leftMargin: 5
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            TextField {
                 id: textArea
                 clip: true
-                width: root.width - ((root.width/10) * 2) - (root.width/15)*2
-                height: root.height - (root.height/5)
+                width: root.width - 95
                 wrapMode: "WrapAtWordBoundaryOrAnywhere"
                 placeholderText: "Send a message..."
+
+
+                //topInset: 20
             }
-        }
-        ToolButton{
-            background: Rectangle{
-                border.color: "green"
-                radius: 30
+
+
+            ToolButton{
+                background: Rectangle{
+                    border.color: "green"
+                    radius: 30
+                }
+                height: 30
+                width: 55
+                id: send
+                //            anchors.right: parent.right
+                //            anchors.rightMargin: 5
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Send"
             }
-            height: parent.height
-            width: height
-            id: add
-            text: "+"
-            font.pixelSize: 25
-            anchors.left: parent.left
-            anchors.leftMargin: 5
-        }
-        ToolButton{
-            background: Rectangle{
-                border.color: "green"
-                radius: 30
-            }
-            height: parent.height
-            width: 55
-            id: send
-            anchors.right: parent.right
-            anchors.rightMargin: 5
-            anchors.verticalCenter: parent.verticalCenter
-            text: "Send"
         }
     }
 }

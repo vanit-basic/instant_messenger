@@ -89,7 +89,7 @@ Page {
     Rectangle{
         id: textRect
         width:wind_terms.width - 60
-        height: wind_terms.height - toplabel.height - middlelabel.height
+        height: wind_terms.height - toplabel.height - middlelabel.height - 15
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: middlelabel.bottom
         color: "transparent"

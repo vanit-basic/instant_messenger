@@ -1,4 +1,4 @@
-import QtQuick 2.9
+import QtQuick 2.12
 import QtQuick.Window 2.2
 import QtGraphicalEffects 1.12
 import QtQuick.Controls 2.5
@@ -469,18 +469,17 @@ Page{
                             id: view3
                             anchors { fill: parent; margins: 2 }
                             header: Rectangle{
-                                color: "#006699"
+                                color: "#007399"
                                 width: parent.width
                                 height: 20
                                 Text{
-                                    anchors.fill: parent
+                                    verticalAlignment: Text.AlignVCenter
+                                    anchors.centerIn: parent
                                     text: "Winners this week"
                                     color: "white"
                                 }
-
-
                             }
-
+                            headerPositioning: ListView.PullBackHeader
                             model: ListModel{
                                 ListElement {
                                     txt: "Astgh"
