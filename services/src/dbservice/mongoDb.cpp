@@ -1019,3 +1019,32 @@ json::value MongoDB::getGroupInfo(std::string groupId) {
 
 	return response;
 }
+
+json::value MongoDB::changePassword(json::value request) {
+	auto c = poolDB->acquire();
+        auto coll2 = (*c)["passDB"]["signin"];
+        json::value response;
+
+        std::string user = request.at("userId").as_string();
+        std::string password = request.at("password").as_string();
+        std::string newPassword = request.at("newPassword").as_string();
+
+        bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll2.find_one(document{} << "id" << user << finalize);
+	if (result) {
+                bsoncxx::document::view doc = result->view();
+
+		bsoncxx::document::element element = doc["password"];
+		std::string pass = element.get_utf8().value.to_string();
+		
+                if (pass.compare(password) == 0 && pass.compare(newPassword) != 0) {
+                        coll2.update_one(document{} << "id" << user << finalize,
+                                document{} << "$set" << open_document <<
+        			"password" << newPassword << close_document << finalize);
+		}
+		response["status"] = json::value::string("OK");
+	}
+	else
+		response["status"] = json::value::string("INVALID_USER_ID");
+	return response;
+}

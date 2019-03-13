@@ -48,6 +48,8 @@ class database {
 		virtual bool removeUserConversation(std::string userId1, std::string userId2) = 0;
 
 		virtual json::value updateUserInfo(json::value user) = 0;
+		
+		virtual json::value changePassword(json::value ) = 0;
 	
 		//group related queries
 

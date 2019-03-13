@@ -139,7 +139,11 @@ void DbService::handlePost(http_request message) {
 							if (path[1] == "updateGroupInfo") {
 								json::value response = m_db->updateGroupInfo(request);
                                                         	message.reply(status_codes::OK, response);
-							}
+							} else 
+								if (path[1] == "changePassword") {
+									json::value response = m_db->changePassword(request);
+                                                        		message.reply(status_codes::OK, response);
+								}
 					}
                                 }
 		} else {

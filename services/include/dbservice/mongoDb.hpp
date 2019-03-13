@@ -65,6 +65,8 @@ class MongoDB : public database {
 
 		virtual bool updateUserMessage(std::string from, std::string to, std::string messageInfo){};
 	
+		virtual json::value changePassword(json::value);
+
 		//group related queries
 	
 		virtual json::value getGroupShortInfo(std::string groupId);

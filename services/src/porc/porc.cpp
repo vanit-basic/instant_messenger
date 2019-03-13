@@ -85,8 +85,9 @@ int main()
         uri_builder getGroupInfo(U("/account/getGroupInfo?clientId=u1&groupId=g1"));
         uri_builder getGroupShortInfo(U("/account/getGroupShortInfo?clientId=u1&groupId=g1"));
         uri_builder groupRemoveUser(U("/account/groupRemoveUser"));
-        uri_builder updateUserInfo(U("/account/updateUserInfo"));
-        uri_builder updateGroupInfo(U("/account/updateGroupInfo"));
+      	uri_builder updateUserInfo(U("/account/updateUserInfo"));
+        uri_builder changePassword(U("/account/changePassword"));
+      	uri_builder updateGroupInfo(U("/account/updateGroupInfo"));
         uri_builder checkToken(U("/checkToken"));
         uri_builder deleteToken(U("/deleteToken"));
         uri_builder setToken(U("/setToken"));
@@ -133,6 +134,11 @@ int main()
         signInReq2["login"] = json::value::string("valodyan");
         signInReq2["password"] = json::value::string("Valodik90"); 
         
+	json::value changePasswordReq;
+	changePasswordReq["userId"] = json::value::string("u10");
+	changePasswordReq["password"] = json::value::string("Valodik90");
+	changePasswordReq["newPassword"] = json::value::string("Valod90");
+
 	json::value createGroupReq1;
         createGroupReq1["groupName"] = json::value::string("Best");
         createGroupReq1["userId"] = json::value::string("u1");
@@ -187,8 +193,12 @@ int main()
 			postRequest(dbServiceClient, registr, registrationRequest1);
 			postRequest(dbServiceClient, registr, registrationRequest2);
 			std::cout<<std::endl;
+*/			
+			std::cout<<"///////////////////     CHANGE PASSWORD(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, changePassword, changePasswordReq);
+			std::cout<<std::endl;
 	
- 			std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+/* 			std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq1);
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq2);
 			std::cout<<std::endl;
@@ -213,11 +223,11 @@ int main()
 			postRequest(dbServiceClient, createGroup, createGroupReq1);
 			postRequest(dbServiceClient, createGroup, createGroupReq2);
                         std::cout<<std::endl;			
-*/
+
 			std::cout<<"///////////////////     UPDATE GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, updateGroupInfo, updateGroupInfoReq);
                         std::cout<<std::endl;			
-/*
+
 			
 			std::cout<<"///////////////////     Add user to group(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, addUserToGroup1);
@@ -245,21 +255,18 @@ int main()
 			std::cout<<"///////////////////     DELETE GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, deleteGroup);
                         std::cout<<std::endl;
-*/
-
 	
 			std::cout<<"///////////////////     GET GROUP USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupUsers);
 			std::cout<<std::endl;
 
-
-/*			std::cout<<"///////////////////     GET GROUP SHORT INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     GET GROUP SHORT INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupShortInfo);
 			std::cout<<std::endl;
 			
 			std::cout<<"///////////////////     GET GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupInfo);
-			std::cout<<std::endl;*/
+			std::cout<<std::endl;
 			
 			std::cout<<"///////////////////     REMOVE FROM GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, removeFromGroup);
@@ -269,7 +276,7 @@ int main()
 			std::cout<<"///////////////////     GET GROUP USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupUsers);
 			std::cout<<std::endl;
-
+*/
 
 		} 
 		catch (http_exception e) {
