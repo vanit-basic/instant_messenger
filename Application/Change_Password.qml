@@ -103,19 +103,7 @@ Page {
                         currentp.echoMode === TextInput.Password?(currentp.echoMode =TextInput.Normal ) :(currentp.echoMode = TextInput.Password)
                         icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
                         }
-
-
-
                         }
-                    TextInput{
-                        id:currentp
-                        width: parent.width
-                        height: 20
-                        anchors.bottom: parent.bottom
-                        color: "white"
-                        clip: true
-                        echoMode: TextInput.Password
-                        passwordCharacter: "*"
                         Rectangle {
                             id:current
                             color: "white"
@@ -123,6 +111,15 @@ Page {
                             width: parent.width
                             anchors.bottom: parent.bottom
                         }
+                    TextInput{
+                        id:currentp
+                        width: parent.width-see_pass.width
+                        height: 20
+                        anchors.bottom: parent.bottom
+                        color: "white"
+                        clip: true
+                        echoMode: TextInput.Password
+                        passwordCharacter: "*"
                         EnterKey.type:  Qt.EnterKeyNext
                         onAccepted:  { newp.focus = true}
                     }
@@ -165,19 +162,7 @@ Page {
                         newp.echoMode === TextInput.Password?(newp.echoMode =TextInput.Normal ) :(newp.echoMode = TextInput.Password)
                         icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
                         }
-
-
-
                         }
-                    TextInput{
-                        id:newp
-                        width: parent.width
-                        height: 20
-                        anchors.bottom: parent.bottom
-                        color: "white"
-                        clip: true
-                        echoMode: TextInput.Password
-                        passwordCharacter: "*"
                         Rectangle {
                             id:neww
                             color: "white"
@@ -185,6 +170,15 @@ Page {
                             width: parent.width
                             anchors.bottom: parent.bottom
                         }
+                    TextInput{
+                        id:newp
+                        width: parent.width-see_pass1.width
+                        height: 20
+                        anchors.bottom: parent.bottom
+                        color: "white"
+                        clip: true
+                        echoMode: TextInput.Password
+                        passwordCharacter: "*"
                         EnterKey.type:  Qt.EnterKeyNext
                         onAccepted:  {confirm_pass.focus = true}
                     }
@@ -228,19 +222,7 @@ Page {
                         confirm_pass.echoMode === TextInput.Password?(confirm_pass.echoMode =TextInput.Normal ) :(confirm_pass.echoMode = TextInput.Password)
                         icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
                         }
-
-
-
                         }
-                    TextInput{
-                        id:confirm_pass
-                        width: parent.width
-                        height: 20
-                        anchors.bottom: parent.bottom
-                        color: "white"
-                        clip: true
-                        echoMode: TextInput.Password
-                        passwordCharacter: "*"
                         Rectangle {
                             id:conf
                             color: "white"
@@ -248,6 +230,15 @@ Page {
                             width: parent.width
                             anchors.bottom: parent.bottom
                         }
+                    TextInput{
+                        id:confirm_pass
+                        width: parent.width-see_pass2.width
+                        height: 20
+                        anchors.bottom: parent.bottom
+                        color: "white"
+                        clip: true
+                        echoMode: TextInput.Password
+                        passwordCharacter: "*"                        
                     }
                 }
 

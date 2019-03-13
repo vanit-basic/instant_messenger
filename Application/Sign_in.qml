@@ -290,20 +290,20 @@ Page{
                     onEditingFinished:  { log_rect.height = 1; log_rect.color = "white"}
                     onPressed:   { log_rect.height = 2 ; log_rect.color = "green"}
                 }
-                TextField{
-                    id:password
+                Rectangle{
                     width: 300
-                    color: "white"
-                    placeholderText: "Password"
-                    passwordCharacter: "*"
-
-                    background: Rectangle{
-                        color: "transparent"
-
+                    height: password.height
+                    color: "transparent"
+                    Rectangle {
+                        id:passw_rect
+                        color: "white"
+                        height: 1
+                        width: parent.width
+                        anchors.bottom: parent.bottom
                     }
                     Button{
                     id:see_pass
-                    width: parent.height+20
+                    width: parent.heighth
                     height: parent.height
                     background: Rectangle{
                     color: "transparent"
@@ -312,26 +312,28 @@ Page{
                     anchors.right: parent.right
                     icon.source: "qrc:/glaz1.png"
                     icon.color: "white"
-
                     onClicked: {
                     password.echoMode === TextInput.Password?(password.echoMode =TextInput.Normal ) :(password.echoMode = TextInput.Password)
                     icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
 
                     }
-
-
-
                     }
-                    Rectangle {
-                        id:passw_rect
-                        color: "white"
-                        height: 1
-                        width: parent.width
-                        anchors.bottom: parent.bottom
+                TextField{
+                    id:password
+                    width: 300-see_pass.width
+                    color: "white"
+                    placeholderText: "Password"
+                    passwordCharacter: "*"
+                    background: Rectangle{
+                        color: "transparent"
                     }
+
+
                     onEditingFinished:  { passw_rect.height = 1; passw_rect.color = "white"}
                     onPressed:   { passw_rect.height = 2 ; passw_rect.color = "green"}
                     echoMode: TextInput.Password
+                }
+
                 }
                 Button{
                     anchors.horizontalCenter: parent.horizontalCenter

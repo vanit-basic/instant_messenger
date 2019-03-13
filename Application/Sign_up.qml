@@ -94,7 +94,7 @@ Page {
                         TextInput{
                             id:enter_name
                             width: parent.width-rec_repass.width
-                            height: 40
+                            height: 20
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
@@ -129,7 +129,7 @@ Page {
                         TextInput{
                             id:enter_surname
                             width: parent.width-rec_repass.width
-                            height: 40
+                            height: 20
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
@@ -162,7 +162,7 @@ Page {
                         TextInput{
                             id:enter_email
                             width: parent.width-rec_repass.width
-                            height: 40
+                            height: 20
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
@@ -341,7 +341,7 @@ Page {
                         TextInput{
                             id:enter_login
                             width: parent.width-rec_repass.width
-                            height: 40
+                            height: 20
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
@@ -391,22 +391,26 @@ Page {
                                 anchors.right: parent.right
                                 icon.source: "qrc:/glaz1.png"
                                 icon.color: "white"
-//                                Image {
-//                                    id: glaz
-//                                    source: "qrc:/glaz.png"
-//                                    anchors.fill: parent
 
-//                                }
+
                                 onClicked: {
                                 enter_password.echoMode === TextInput.Password?(enter_password.echoMode =TextInput.Normal ) :(enter_password.echoMode = TextInput.Password)
     icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
                                 }
+                                }
+                                Rectangle {
+                                    id : passRect
+                                    color: "white"
+                                    height: 1
+                                    width: parent.width
+                                    anchors.bottom: parent.bottom
+                                }
 
-    }
+
                         TextInput{
                             id:enter_password
-                            width: parent.width
-                            height: 40
+                            width: parent.width-see_pass.width
+                            height: 20
                             color: "white"
                             echoMode: TextInput.Password
                             passwordCharacter: "*"
@@ -416,13 +420,7 @@ Page {
                             maximumLength: 15
                             onFocusChanged: (length < 8 & focus) ? passRect.color = "red" : passRect.color = "white"
                             onTextChanged: length < 8 ? passRect.color = "red" : passRect.color = "green"
-                            Rectangle {
-                                id : passRect
-                                color: "white"
-                                height: 1
-                                width: parent.width
-                                anchors.bottom: parent.bottom
-                            }
+
                             onAccepted:  { repeat_password.focus = true}
                             EnterKey.type:  Qt.EnterKeyNext
 }
@@ -463,14 +461,20 @@ Page {
                                 repeat_password.echoMode === TextInput.Password?(repeat_password.echoMode =TextInput.Normal ) :(repeat_password.echoMode = TextInput.Password)
                                 icon.source == "qrc:/glaz1.png"? icon.source= "qrc:/glaz.png": icon.source= "qrc:/glaz1.png"
                                 }
-
-
-
+                                                           }
+                                Rectangle {
+                                    id:repPassRect
+                                    color: "white"
+                                    height: 1
+                                    width: parent.width
+                                    anchors.bottom: parent.bottom
+                                    clip: true
                                 }
+
                         TextInput{
                             id:repeat_password
-                            width: parent.width
-                            height: 40
+                            width: parent.width-see_repass.width
+                            height: 20
                             color: "white"
                             echoMode: TextInput.Password
                             passwordCharacter: "*"
@@ -478,14 +482,7 @@ Page {
                             maximumLength: 15
                             onTextChanged: text == enter_password.text ? repPassRect.color = "green" : repPassRect.color = "red"
                             onFocusChanged: (enter_password.length >=8 & text == enter_password.text) ? repPassRect.color = "green" : repPassRect.color = "red"
-                            Rectangle {
-                                id:repPassRect
-                                color: "white"
-                                height: 1
-                                width: parent.width
-                                anchors.bottom: parent.bottom
-                                clip: true
-                            }
+
                         }
                         }
                         }

@@ -11,7 +11,13 @@ Page {
     id:wind
 
     Rectangle{
-        color: "grey"
+        gradient: Gradient{
+            GradientStop { position: 0.0;color:"dimgrey"}
+            GradientStop { position: 0.25;color:"gray"}
+            GradientStop { position: 0.5;color:"darkgrey"}
+            GradientStop { position: 0.75;color:"silver"}
+            GradientStop{ position: 1.0;color:"lightgrey"}
+        }
         anchors.fill: parent
         Rectangle{
             id: rec
