@@ -2,9 +2,11 @@ import QtQuick 2.12
 import QtQuick.Window 2.2
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Controls 2.3
+//import io.qt.examples.Engine 1.0
 Page{
     id: wind
     focus: true
+
     Rectangle{
         width: wind.width
         height: wind.height
@@ -342,7 +344,7 @@ Page{
                         opacity: 0.75
                     }
                     enabled: login.text == "" || password.text == "" ?false:true
-                    onPressed: stack.push(Qt.resolvedUrl("Home.qml"))
+                    onClicked: Class.sign_inn("sdrysdydfy")
                 }
                 Button{
                     background: Rectangle{

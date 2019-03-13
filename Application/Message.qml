@@ -17,6 +17,8 @@ Page{
                 event.accepted = true
                 if (stackMess.depth > 1) {
                     stackMess.pop()
+                    swipe.interactive = true
+                    tab.visible = true
                 } else { swipe.currentIndex = 1}
             }
         }

@@ -14,7 +14,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    authorization.cpp
+    authorization.cpp \
+    backend.cpp
 
 RESOURCES += qml.qrc
 
@@ -30,4 +31,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    authorization.h
+    authorization.h \
+    backend.h
