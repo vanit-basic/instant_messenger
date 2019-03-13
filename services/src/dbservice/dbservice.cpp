@@ -86,6 +86,11 @@ void DbService::handleGet(http_request message) {
 				std::string groupId = i.find("groupId")->second;
                                 json::value response = m_db->getGroupInfo(groupId);
                                 message.reply(status_codes::OK, response);
+			} else if (path[1] == "removeFromGroup") {
+				std::string groupId = i.find("groupId")->second;
+				std::string userId = i.find("userId")->second;
+                                json::value response = m_db->removeFromGroup(groupId, userId);
+                                message.reply(status_codes::OK, response);
 			} else {
 				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 			}
