@@ -98,7 +98,7 @@ Page {
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
-
+                               validator: RegExpValidator { regExp: /[A-Z]{1}[a-z]+/ }
 
 
                             Rectangle {
@@ -133,6 +133,7 @@ Page {
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
+                            validator: RegExpValidator { regExp: /[A-Z]{1}[a-z]+/ }
                             Rectangle {
                                 color: "white"
                                 height: 1
@@ -165,6 +166,7 @@ Page {
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
+                            validator: RegExpValidator { regExp: /(\w+)(\.|_)?(\w+)(\.|_)?(\w{1,})@(\w+)(\.(\w+))+/}
                             Rectangle {
                                 color: "white"
                                 height: 1
@@ -405,7 +407,7 @@ Page {
                             passwordCharacter: "*"
                             anchors.bottom: parent.bottom
                             clip: true
-
+                                    validator: RegExpValidator { regExp: /((\w+)(\.|_)?){8,16}/ }
 
 
 

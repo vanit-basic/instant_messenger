@@ -15,7 +15,7 @@ Page{
         ToolButton{
             text: "<"
             onClicked: {
-               stackMess.pop(); swipe.interactive = true ; tab.visible = true
+                  stackMess.pop(); swipe.interactive = true ; tab.visible = true
             }
         }
     }

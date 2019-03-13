@@ -9,6 +9,7 @@ Page{
     id: wind
     property int listIndex: 0
     property string delId: ""
+
     StackView{
         id:stackMess
         anchors.fill: parent
@@ -22,9 +23,13 @@ Page{
                 } else { swipe.currentIndex = 1}
             }
         }
-        //Component.onCompleted: console.log(stack00.status === stack00.Active)
+
+       // Component.onCompleted: stackMess.push(ttt)
+
         initialItem:
             Rectangle{
+                id:ttt
+                //anchors.fill: parent//////
             color: "transparent"
             MessageDialog{
                 id:msgDialog
@@ -75,7 +80,8 @@ Page{
                         height: 40
                         MouseArea{
                             anchors.fill: parent
-                            onClicked: txtMute.text == "Mute" ? txtMute.text = "Unmute" : txtMute.text = "Mute"
+                            onClicked: {txtMute.text == "Mute" ?  txtMute.text = "Unmute" : txtMute.text = "Mute"
+                            imgMute.source == "qrc:/volume.png" ? imgMute.source = "qrc:/unmute.jpg" : imgMute.source = "qrc:/volume.png"}
                         }
                         Image{
                             id:imgMute
@@ -107,7 +113,7 @@ Page{
                     MouseArea{
                         anchors.fill: parent
                         onPressAndHold: { delPop.open(); listIndex = index}
-                        onClicked: { stackMess.push(Qt.resolvedUrl("qrc:/Conversation.qml")); tab.visible = false ; swipe.interactive = false; console.log(stackMess.status.toString())}
+                        onClicked: { stackMess.push(Qt.resolvedUrl("qrc:/Conversation.qml")); tab.visible = false ; swipe.interactive = false}
                     }
                     Image{
                         id: img

@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[] )
 {
-//bool a = true;
+bool a = true;
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
