@@ -144,6 +144,10 @@ void DbService::handlePost(http_request message) {
 									json::value response = m_db->changePassword(request);
                                                         		message.reply(status_codes::OK, response);
 								}
+								 else if (path[1] == "searchUsers") {
+									json::value response = m_db->searchUsers(request);
+                                                        		message.reply(status_codes::OK, response);
+								}
 					}
                                 }
 		} else {

@@ -76,6 +76,9 @@ class MongoDB : public database {
 		virtual json::value createGroup(json::value groupInfo);
 
                 virtual json::value deleteGroup(std::string groupId);
+                
+		virtual json::value searchUsers(json::value);
+		virtual json::value searchGroups(json::value);
 
 		virtual json::value addUserToGroup(std::string userId, std::string groupId, std::string cleintId);
 
