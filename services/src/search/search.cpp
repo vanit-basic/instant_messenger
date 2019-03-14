@@ -21,8 +21,8 @@ bool Search::createClients(std::string path)
 	{
                 ConfigFile>> config;
                 ConfigFile.close();
-                DataBaseClient = new http_client(NetworkUtils::hostURI(config.at("dbservice").as_string()));
                 this->searchUri = config.at("search").as_string();
+                DataBaseClient = new http_client(NetworkUtils::hostURI(config.at("dbservice").as_string()));
                 return true;
         }
         else 
@@ -37,7 +37,7 @@ Search::Search(std::string path, cashDatabase* mongo_cash_db)
 {
 	if(createClients(path))
 	{
-		this -> cash_db = mongo_cash_db;
+		this -> cashDb = mongo_cash_db;
 	}
 }
 
@@ -76,14 +76,13 @@ bool ServiceStart (http_client* client, std::string serviceName) {
         return true;
 }
 
-bool Account::checkServices()
+bool Search::checkServices()
 {
 //      qani der patrast chen DbServicner@ toxnel vorpes comment
 
 	bool status = false;
 	bool DbServStatus = false;
-	DbServStatus = ServiceStart(DataBaseClient, "Database");
-/*	
+/*	DbServStatus = ServiceStart(DataBaseClient, "Database");	
 	if(DbServStatus)
 	{
 		this->setEndpoint(searchUri);
@@ -120,7 +119,7 @@ void Search::handleGet(http_request message) {
 					}
 				}
 
-				info = cashDatabase -> getInfo(firstName + lastName + nickName, fields["from"], fields["to"]);
+				info = cashDb -> getInfo(firstName + lastName + nickName, fields["from"], fields["to"]);
 				uri_builder usersInfo("/getUsersShortInfos");
 				
 				if(info.at("status").as_string() == "OK")
@@ -133,9 +132,9 @@ void Search::handleGet(http_request message) {
 				{
 					http_response response = DataBaseClient->request(message).get();
 					json:: value Ids = response.extract_json().get();
-					cashDatabase -> setInfo(Ids);
+					cashDb -> setInfo(Ids);
 					info.erase("status");
-					info = getInfo(firstName + lastName + nickName, fields["from"], fields["to"]);
+					info = cashDb -> getInfo(firstName + lastName + nickName, fields["from"], fields["to"]);
 					http_response usersInfos = DataBaseClient->request(methods::POST, usersInfo.to_string(), info).get();
 					message.reply(usersInfos);
 				}
@@ -153,7 +152,7 @@ void Search::handleGet(http_request message) {
 				if(fields.count("groupName") > 0)
 				{
 					groupName = fields["groupName"];
-					info = cashDatabase -> getInfo(groupName, fields["from"], fields["to"]);
+					info = cashDb -> getInfo(groupName, fields["from"], fields["to"]);
 					uri_builder groupsInfo("/getGroupsShortInfos");
 					if(info.at("status").as_string() == "OK")
 					{
@@ -165,9 +164,9 @@ void Search::handleGet(http_request message) {
 					{
 						http_response response = DataBaseClient->request(message).get();
 						json:: value Ids = response.extract_json().get();
-						cashDatabase -> setInfo(Ids);
+						cashDb -> setInfo(Ids);
 						info.erase("status");
-						info = getInfo(groupName, fields["from"], fields["to"]);
+						info = cashDb -> getInfo(groupName, fields["from"], fields["to"]);
 						http_response groupsInfos = DataBaseClient->request(methods::POST, groupsInfo.to_string(), info).get();
 						message.reply(groupsInfos);
 					}

@@ -43,9 +43,9 @@ class MongoDB : public database {
 		//user related queries
 		virtual json::value checkMailAndLogin(std::string mail, std::string login);
 
-		virtual json::value registerUser(json::value user);
+		virtual json::value signUp(json::value user);
 		
-		virtual json::value loginUser(std::string, std::string);
+		virtual json::value signIn(std::string, std::string);
 	
 		virtual json::value getUserInfo(std::string userId);
 	
@@ -53,21 +53,27 @@ class MongoDB : public database {
 
 		virtual json::value deleteUser(std::string userId);
 
-		virtual json::value updateUserInfo(json::value user);
+		virtual json::value userUpdateInfo(json::value user);
 
-		virtual bool removeUserConversation(std::string userId1, std::string userId2){};
+		virtual bool userRemoveConversation(std::string userId1, std::string userId2){};
 
 		virtual json::value getUserConversations(std::string userId){};
 		
 		virtual json::value getUsersConversation(std::string userId1, std::string userId2){};
 
-		virtual std::string addUserMessage(std::string from, std::string to, std::string message){};
+		virtual std::string userSendMessage(std::string from, std::string to, std::string message){};
 
-		virtual bool updateUserMessage(std::string from, std::string to, std::string messageInfo){};
+		virtual bool userRemoveMessage(std::string userId, std::string clientId, std::string mId){};
+
+		virtual bool userUpdateMessage(std::string from, std::string to, std::string messageInfo){};
 	
 		virtual json::value changePassword(json::value);
 
 		//group related queries
+		
+		virtual json::value changeGroupAdmin(std::string, std::string);
+
+		virtual json::value getGroupInfo(std::string);
 	
 		virtual json::value getGroupShortInfo(std::string groupId);
 	
@@ -82,23 +88,19 @@ class MongoDB : public database {
 
 		virtual json::value addUserToGroup(std::string userId, std::string groupId, std::string cleintId);
 
-                virtual json::value removeFromGroup(std::string, std::string);
+                virtual json::value groupRemoveUser(std::string, std::string);
 		
-		virtual json::value updateGroupInfo(json::value groupInfo);
-
-		virtual json::value getGroupInfo(std::string);
+		virtual json::value groupUpdateInfo(json::value groupInfo);
                
-	       	virtual bool removeMessage(json::value messageInfo){};
+                virtual bool groupRemoveConversation(std::string groupId){};
 
-                virtual bool removeGroupConversation(std::string groupId){};
-
-		virtual bool removeMessageFromGroupConversation(std::string groupId, std::string messageId){};
+		virtual bool groupRemoveMessage(std::string groupId, std::string messageId){};
 		
 		virtual std::string getGroupConversation(std::string groupID){};
 
-		virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message){};
+		virtual std::string groupSendMessage(std::string groupId, std::string from, std::string message){};
 
-		virtual bool updateGroupMessage(std::string groupId, json::value message) {};
+		virtual bool groupUpdateMessage(std::string groupId, std::string messagId, std::string message) {};
 		
 		MongoDB(std::string);
 		~MongoDB();

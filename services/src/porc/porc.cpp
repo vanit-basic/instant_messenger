@@ -65,7 +65,7 @@ int main()
         http_client messagingClient(NetworkUtils::hostURI("http://host_auto_ip4:6503/v1/mafclub/api"));
         
 	uri_builder test(U("/ServiceTest"));
-        uri_builder registr(U("/insert/registration"));
+        uri_builder registr(U("/insert/signUp"));
         uri_builder signIn(U("/check/signIn"));
 	uri_builder checkMailAndLogin(U("/check/mailAndLogin"));
         uri_builder signOut(U("/account/signOut?clientId=u1"));
@@ -85,9 +85,9 @@ int main()
         uri_builder getGroupInfo(U("/account/getGroupInfo?clientId=u1&groupId=g1"));
         uri_builder getGroupShortInfo(U("/account/getGroupShortInfo?clientId=u1&groupId=g1"));
         uri_builder groupRemoveUser(U("/account/groupRemoveUser"));
-      	uri_builder updateUserInfo(U("/account/updateUserInfo"));
+      	uri_builder updateUserInfo(U("/account/userUpdateInfo"));
         uri_builder changePassword(U("/account/changePassword"));
-      	uri_builder updateGroupInfo(U("/account/updateGroupInfo"));
+      	uri_builder updateGroupInfo(U("/account/groupUpdateInfo"));
         uri_builder checkToken(U("/checkToken"));
         uri_builder deleteToken(U("/deleteToken"));
         uri_builder setToken(U("/setToken"));
@@ -95,7 +95,7 @@ int main()
 
 	uri_builder searchUsers(U("/account/searchUsers"));
 
-        uri_builder removeFromGroup(U("/account/removeFromGroup?groupId=g1&userId=u2"));
+        uri_builder removeFromGroup(U("/account/groupRemoveUser?groupId=g1&userId=u2"));
 
 	json::value Token;
 	Token["userId"] = json::value::string("u1");
@@ -195,11 +195,11 @@ int main()
 			postRequest(tokenClient, deleteToken, Token);
 			std::cout<<std::endl;
 
-			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
+*/			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, registr, registrationRequest1);
 			postRequest(dbServiceClient, registr, registrationRequest2);
 			std::cout<<std::endl;
-*/			
+			
 			std::cout<<"///////////////////     CHANGE PASSWORD(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, changePassword, changePasswordReq);
 			std::cout<<std::endl;
@@ -208,7 +208,7 @@ int main()
 			postRequest(dbServiceClient, searchUsers, searchUsersReq);
 			std::cout<<std::endl;
 	
-/* 			std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+ 			std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq1);
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq2);
 			std::cout<<std::endl;
@@ -241,7 +241,7 @@ int main()
 			
 			std::cout<<"///////////////////     Add user to group(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, addUserToGroup1);
-                       // getRequest(dbServiceClient, addUserToGroup2);
+                        getRequest(dbServiceClient, addUserToGroup2);
 
 			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserInfo1);
@@ -286,7 +286,7 @@ int main()
 			std::cout<<"///////////////////     GET GROUP USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupUsers);
 			std::cout<<std::endl;
-*/
+
 
 		} 
 		catch (http_exception e) {

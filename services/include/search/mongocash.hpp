@@ -26,6 +26,7 @@ using bsoncxx::builder::stream::close_document;
 using bsoncxx::builder::stream::document;
 using bsoncxx::builder::stream::finalize;
 using bsoncxx::builder::stream::open_document;
+using bsoncxx::type;
 using namespace cfx;
 using namespace utility;
 using namespace web;
@@ -37,10 +38,10 @@ class MongoCashDb : public cashDatabase
 {
 	public:
 		virtual bool setInfo(json::value info);
-		virtual json::value getInfo(std::string key);
+		virtual json::value getInfo(std::string key, std::string from, std::string to);
 		MongoCashDb(std::string path);
 		~MongoCashDb();
 	private:
 		mongocxx::pool* clientPool;
 		bool createPool(std::string);
-}
+};
