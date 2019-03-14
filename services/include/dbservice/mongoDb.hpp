@@ -69,6 +69,8 @@ class MongoDB : public database {
 
 		//group related queries
 		
+		virtual json::value changeGroupAdmin(std::string, std::string);
+
 		virtual json::value getGroupInfo(std::string);
 	
 		virtual json::value getGroupShortInfo(std::string groupId);

@@ -52,6 +52,7 @@ class database {
 		virtual json::value changePassword(json::value ) = 0;
 	
 		//group related queries
+		virtual json::value changeGroupAdmin(std::string, std::string) = 0;
 
                 virtual json::value getGroupUsers(std::string groupId) = 0;
 		
@@ -79,7 +80,7 @@ class database {
 		
 		virtual std::string getGroupConversation(std::string groupID) = 0;
 		
-		virtual json::value updateGroupInfo(json::value groupInfo) = 0;
+		virtual json::value groupUpdateInfo(json::value groupInfo) = 0;
 
 		virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message) = 0;
 

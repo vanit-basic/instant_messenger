@@ -1055,3 +1055,29 @@ json::value MongoDB::searchUsers(json::value request) {
 	return response;
 }
 
+
+json::value MongoDB::changeGroupAdmin(std::string groupId, std::string userId) {
+	auto c3 = poolMydb->acquire();
+        auto coll3 = (*c3)["infoDB"]["groupInfo"];
+
+        bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll3.find_one(document{} << "_id" << groupId << finalize);
+
+	auto response = json::value::object();
+	if (result) {
+		bsoncxx::document::view doc = result->view();
+        	
+		bsoncxx::document::element element = doc["userId"];
+		std::string userId = element.get_utf8().value.to_string();
+		coll3.update_one(document{} << "_id" << groupId << finalize,
+			document{} << "$set" << open_document <<
+			"adminId" << userId << close_document << finalize);
+		
+		response["status"] = json::value::string("OK");
+		return response;
+	} else {
+		response["status"] = json::value::string("NOT_OK");
+		return response;
+	}
+
+}
