@@ -5,6 +5,7 @@
 #include <fstream>
 #include <stdio.h>
 
+#include <mongocxx/exception/query_exception.hpp>
 #include <search/mongocash.hpp>
 
 bool MongoCashDb::createPool(std::string path) 
@@ -42,9 +43,9 @@ bool MongoCashDb::setInfo(json::value info)
 	{
 		auto client = clientPool->acquire();
 		auto coll = (*client)["CashDb"]["userIds"];
-		std::string jsonString = info.to_string();
+		std::string jsonString = info.as_string();
 		bsoncxx::document::value inf = bsoncxx::from_json(jsonString);
-		coll.insert_one(inf);
+		coll.insert_one(std::move(inf));
 		status = true;
 	}
 	catch(...) 
@@ -69,7 +70,7 @@ json::value MongoCashDb::getInfo(std::string key, std::string from, std::string 
 			std::vector<bsoncxx::document::value> results;
 			for (auto&& result : distinct_results) 
 			{
-				results.push_back(result);
+				results.emplace_back(result);
 			}
 			bsoncxx::document::view doc = results[0].view();
 			bsoncxx::document::element element = doc[key];
@@ -80,11 +81,11 @@ json::value MongoCashDb::getInfo(std::string key, std::string from, std::string 
 				{
 					y = std::distance(subarray.begin(), subarray.end()) - x;
 				}
-				//auto it_x = subarray.find(x);
-				//auto it_y = subarray.find(y);
-				std::vector<json::value> mass[y];
+				
+				std::vector<json::value> mass(y);
 				for(int i = 0; i < y; ++i)
 				{
+
 					mass[i] = json::value::string(((subarray.find(x+i))->get_utf8().value.to_string()));
 				}
 				info["status"] = json::value::string("OK");
@@ -109,5 +110,5 @@ json::value MongoCashDb::getInfo(std::string key, std::string from, std::string 
 	{
 		std::cerr<<"MongoCashDb::getInfo something wrong"<<std::endl;
 	}
-	return info
+	return info;
 }
