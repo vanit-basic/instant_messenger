@@ -850,11 +850,11 @@ json::value MongoDB::addUserToGroup(std::string userId, std::string groupId, std
 
 		bsoncxx::stdx::optional<mongocxx::result::update> result;
 		if (access.compare("public") == 0) {
-			coll1.update_one(document{} << "_id" << clientId << finalize,
+			result = coll1.update_one(document{} << "_id" << clientId << finalize,
 					document{} << "$push" << open_document
 					<< "publicGroups" << groupId << close_document << finalize);
 		} else if (access.compare("private") == 0) {
-			coll1.update_one(document{} << "_id" << clientId << finalize,
+			result = coll1.update_one(document{} << "_id" << clientId << finalize,
 					document{} << "$push" << open_document
 					<< "privateGroups" << groupId << close_document << finalize);
 		}
@@ -1101,7 +1101,6 @@ json::value MongoDB::searchGroups(json::value request) {
 	json::value response;
 	
 	web::json::array groupsId = request.at("groups").as_array();
-	//std::string group;
 	for (auto i = groupsId.begin(); i != groupsId.end(); ++i) {
 		std::string id = (*i).as_string();
 		auto doc = getGroupShortInfo(id);
@@ -1115,7 +1114,6 @@ json::value MongoDB::searchUsers(json::value request) {
 	json::value response;
 	
 	web::json::array usersId = request.at("users").as_array();
-	//std::string group;
 	for (auto i = usersId.begin(); i != usersId.end(); ++i) {
 		std::string id = (*i).as_string();
 		auto doc = getUserShortInfo(id);
@@ -1129,16 +1127,14 @@ json::value MongoDB::searchUsers(json::value request) {
 json::value MongoDB::changeGroupAdmin(std::string groupId, std::string userId) {
 	auto c3 = poolMydb->acquire();
         auto coll3 = (*c3)["infoDB"]["groupInfo"];
-	auto response = json::value::object();
+	json::value response;
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll3.find_one(document{} << "_id" << groupId << finalize);
 
 	if (result) {
 		bsoncxx::document::view doc = result->view();
-        	
-		bsoncxx::document::element element = doc["userId"];
-		std::string userId = element.get_utf8().value.to_string();
+        
 		coll3.update_one(document{} << "_id" << groupId << finalize,
 			document{} << "$set" << open_document <<
 			"adminId" << userId << close_document << finalize);
