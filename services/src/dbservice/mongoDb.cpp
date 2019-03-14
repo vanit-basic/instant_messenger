@@ -157,6 +157,11 @@ json::value MongoDB::signUp(json::value request) {
         std::string password = request.at("password").as_string();
 	std::string id = generateID(coll2);
 	std::string joinDate = date();
+	std::string path;
+	if (gender.compare("male")) {
+		path = "resources/male.png";
+	} else 
+		path = "resources/female";
 	
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value = builder
@@ -166,6 +171,7 @@ json::value MongoDB::signUp(json::value request) {
 		<< "email" << email
 		<< "login" << login
 		<< "nickName" << firstName
+		<< "avatar" << path
 		<< "birthDate" << birthDate
 		<< "gender" << gender 
 		<< "level" << 0
@@ -551,6 +557,7 @@ json::value MongoDB::userUpdateInfo(json::value user) {
 	std::string newNickname = user.at("nickName").as_string();
 	std::string newFirstname = user.at("firstName").as_string();
 	std::string newLastname = user.at("lastName").as_string();
+	std::string newAvatar = user.at("avatar").as_string();
         
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll1.find_one(document{} << "_id" << id << finalize);
@@ -585,7 +592,16 @@ json::value MongoDB::userUpdateInfo(json::value user) {
                       		"nickName" << newNickname << close_document << finalize);
 		}
 
-                response = getUserInfo(id);
+                element = doc["avatar"];
+                std::string avatar = element.get_utf8().value.to_string();
+		
+		if (avatar.compare(newAvatar) != 0 && newAvatar.compare("") != 0) {
+			coll1.update_one(document{} << "_id" << id << finalize,
+                      		document{} << "$set" << open_document <<
+                      		"avatar" << newAvatar << close_document << finalize);
+		}
+                
+		response = getUserInfo(id);
                 response["status"] = json::value::string("OK");
 
         } else {
@@ -595,7 +611,7 @@ json::value MongoDB::userUpdateInfo(json::value user) {
 	return response;
 }
 
-json::value MongoDB::groupDelete(std::string groupId) {
+json::value MongoDB::deleteGroup(std::string groupId) {
         auto c1 = poolMydb->acquire();
         auto c3 = poolDB->acquire();
         auto coll1 = (*c1)["infoDB"]["userInfo"];
@@ -763,19 +779,19 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 	auto c3 = poolMydb->acquire();
 	auto coll1 = (*c1)["infoDB"]["userInfo"];
 	auto coll3 = (*c3)["infoDB"]["groupInfo"];
-	json::value pesponse;
+	json::value response;
 
 	std::string groupName = groupInfo.at("groupName").as_string();
         std::string userId = groupInfo.at("userId").as_string();
         std::string access = groupInfo.at("access").as_string();
-        std::string avatar = groupInfo.at("avatar").as_string();
 	std::string id = generateGroupID(coll3);
+	std::string path = "resources/group.png";
 
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value = builder
 		<< "_id" << id
 		<< "groupName" << groupName
-		<< "avatar" << avatar
+		<< "avatar" << path
 		<< "access" << access
 		<< "adminId" << userId
 		<< "createDate" << date()
@@ -792,11 +808,11 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 
 	bsoncxx::stdx::optional<mongocxx::result::update> result;
 	if (access.compare("public") == 0) {
-			coll1.update_one(document{} << "_id" << userId << finalize,
+			result = coll1.update_one(document{} << "_id" << userId << finalize,
 			document{} << "$push" << open_document
 			<< "publicGroups" << id << close_document << finalize);
 	} else if (access.compare("private") == 0) {
-			coll1.update_one(document{} << "_id" << userId << finalize,
+			result = coll1.update_one(document{} << "_id" << userId << finalize,
 			document{} << "$push" << open_document
 			<< "privateGroups" << id << close_document << finalize);
 	}
@@ -804,7 +820,7 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 	if (result) {
 		response["groupId"] = json::value::string(id);
 		response["groupName"] = json::value::string(groupName);
-		response["avatar"] = json::value::string(avatar);
+		response["avatar"] = json::value::string(path);
 		response["adminId"] = json::value::string(userId);
 		response["createDate"] = json::value::string(date());
 		response["access"] = json::value::string(access);

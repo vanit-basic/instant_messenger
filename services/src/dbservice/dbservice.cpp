@@ -89,7 +89,7 @@ void DbService::handleGet(http_request message) {
 			} else if (path[1] == "groupRemoveUser") {
 				std::string groupId = i.find("groupId")->second;
 				std::string userId = i.find("userId")->second;
-                                json::value response = m_db->removeFromGroup(groupId, userId);
+                                json::value response = m_db->groupRemoveUser(groupId, userId);
                                 message.reply(status_codes::OK, response);
 			} else {
 				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
@@ -127,7 +127,6 @@ void DbService::handlePost(http_request message) {
 				}
 			}else if (path[0] == "account") {
                                         if (path[1] == "createGroup") {
-                                                std::cout<<__LINE__<<std::endl;
                                                         json::value response = m_db->createGroup(request);
                                                         message.reply(status_codes::OK, response);
                                         }

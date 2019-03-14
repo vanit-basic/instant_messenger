@@ -73,8 +73,8 @@ int main()
 	uri_builder getUserInfo1(U("/account/getUserInfo?userId=u1"));
         uri_builder getUserInfo2(U("/account/getUserInfo?userId=u2"));
         
-	uri_builder getUserShortInfo1(U("/account/getUserShortInfo?clientId=u1"));
-	uri_builder getUserShortInfo2(U("/account/getUserShortInfo?clientId=u2"));
+	uri_builder getUserShortInfo1(U("/account/getUserShortInfo?userId=u1"));
+	uri_builder getUserShortInfo2(U("/account/getUserShortInfo?userId=u2"));
 
 	uri_builder isUserInGroup(U("/account/isUserInGroup?groupId=g1&userId=u1"));
 	uri_builder addUserToGroup1(U("/account/addUserToGroup?userId=u1&groupId=g1&clientId=u2"));
@@ -149,13 +149,11 @@ int main()
         createGroupReq1["groupName"] = json::value::string("Best");
         createGroupReq1["userId"] = json::value::string("u1");
         createGroupReq1["access"] = json::value::string("public");
-        createGroupReq1["avatar"] = json::value::string("base64_string");
 
 	json::value createGroupReq2;
         createGroupReq2["groupName"] = json::value::string("Mafia");
         createGroupReq2["userId"] = json::value::string("u2");
         createGroupReq2["access"] = json::value::string("private");
-        createGroupReq1["avatar"] = json::value::string("base64_string");
 
         json::value updateGroupInfoReq;
         updateGroupInfoReq["groupId"] = json::value::string("g10");
@@ -194,8 +192,8 @@ int main()
 			postRequest(tokenClient, checkToken, Token);
 			postRequest(tokenClient, deleteToken, Token);
 			std::cout<<std::endl;
-
-*/			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
+*/
+			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, registr, registrationRequest1);
 			postRequest(dbServiceClient, registr, registrationRequest2);
 			std::cout<<std::endl;
@@ -225,7 +223,7 @@ int main()
 			postRequest(dbServiceClient, signIn, signInReq2);
 		
 
-			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     Is USER In GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, isUserInGroup);
 			std::cout<<std::endl;
 
