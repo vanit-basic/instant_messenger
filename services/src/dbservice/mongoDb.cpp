@@ -595,7 +595,7 @@ json::value MongoDB::userUpdateInfo(json::value user) {
 	return response;
 }
 
-json::value MongoDB::groupDelete(std::string groupId) {
+json::value MongoDB::deleteGroup(std::string groupId) {
         auto c1 = poolMydb->acquire();
         auto c3 = poolDB->acquire();
         auto coll1 = (*c1)["infoDB"]["userInfo"];
@@ -763,7 +763,7 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 	auto c3 = poolMydb->acquire();
 	auto coll1 = (*c1)["infoDB"]["userInfo"];
 	auto coll3 = (*c3)["infoDB"]["groupInfo"];
-	json::value pesponse;
+	json::value response;
 
 	std::string groupName = groupInfo.at("groupName").as_string();
         std::string userId = groupInfo.at("userId").as_string();
@@ -1068,11 +1068,11 @@ json::value MongoDB::searchUsers(json::value request) {
 json::value MongoDB::changeGroupAdmin(std::string groupId, std::string userId) {
 	auto c3 = poolMydb->acquire();
         auto coll3 = (*c3)["infoDB"]["groupInfo"];
+	auto response = json::value::object();
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll3.find_one(document{} << "_id" << groupId << finalize);
 
-	auto response = json::value::object();
 	if (result) {
 		bsoncxx::document::view doc = result->view();
         	
@@ -1083,10 +1083,9 @@ json::value MongoDB::changeGroupAdmin(std::string groupId, std::string userId) {
 			"adminId" << userId << close_document << finalize);
 		
 		response["status"] = json::value::string("OK");
-		return response;
 	} else {
 		response["status"] = json::value::string("NOT_OK");
-		return response;
 	}
-
+	
+	return response;
 }
