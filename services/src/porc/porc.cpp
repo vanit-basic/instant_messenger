@@ -77,7 +77,7 @@ int main()
 	uri_builder getUserShortInfo2(U("/account/getUserShortInfo?userId=u2"));
 
 	uri_builder isUserInGroup(U("/account/isUserInGroup?groupId=g1&userId=u1"));
-	uri_builder addUserToGroup1(U("/account/addUserToGroup?userId=u1&groupId=g1&clientId=u1"));
+	uri_builder addUserToGroup1(U("/account/addUserToGroup?userId=u1&groupId=g1&clientId=u2"));
 	uri_builder addUserToGroup2(U("/account/addUserToGroup?userId=u2&groupId=g2&clientId=u1"));
         uri_builder deleteUser(U("/account/deleteUser?userId=u1"));
         uri_builder deleteGroup(U("/account/deleteGroup?groupId=g7&userId=u2"));
@@ -93,7 +93,8 @@ int main()
         uri_builder setToken(U("/setToken"));
         uri_builder getGroupUsers(U("/account/getGroupUsers?groupId=g1"));
         
-	uri_builder changeGroupAdmin(U("/account/changeGroupAdmin?groupId=g1&userId=u2"));
+	uri_builder changeGroupAdmin1(U("/account/changeGroupAdmin?groupId=g1&userId=u2"));
+	uri_builder changeGroupAdmin2(U("/account/changeGroupAdmin?groupId=g2&userId=u1"));
 
 	uri_builder searchUsers(U("/account/searchUsers"));
 
@@ -236,7 +237,7 @@ int main()
                         std::cout<<std::endl;			
 
 			std::cout<<"///////////////////     UPDATE GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, updateGroupInfo, updateGroupInfoReq);
+			postRequest(dbServiceClient, groupUpdateInfo, groupUpdateInfoReq);
                         std::cout<<std::endl;			
 */			
 			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
@@ -252,12 +253,13 @@ int main()
 			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, deleteUser);
                         std::cout<<std::endl;
+*/
 
 			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getUserShortInfo1);
+			//getRequest(dbServiceClient, getUserShortInfo1);
 			getRequest(dbServiceClient, getUserShortInfo2);
 			std::cout<<std::endl; 
-
+/*
 			std::cout<<"///////////////////     DELETE GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, deleteGroup);
                         std::cout<<std::endl;
@@ -279,20 +281,21 @@ int main()
 			//getRequest(dbServiceClient, removeFromGroup);
 			std::cout<<std::endl;
 
-			std::cout<<"///////////////////     Add user to group(DB  SERVICE) TEST      /////////////////"<<std::endl;
-                        getRequest(dbServiceClient, addUserToGroup1);
-                    //  getRequest(dbServiceClient, addUserToGroup2);
-			
+
 			std::cout<<"///////////////////     GET GROUP USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupUsers);
 			std::cout<<std::endl;
 
 
+			std::cout<<"///////////////////     ADD USER TO GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
+                        getRequest(dbServiceClient, addUserToGroup1);
+			getRequest(dbServiceClient, addUserToGroup2);
+			
 			std::cout<<"///////////////////     CHANGE GROUP ADMIN (DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, changeGroupAdmin);
+			getRequest(dbServiceClient, changeGroupAdmin1);
+			getRequest(dbServiceClient, changeGroupAdmin2);
 			std::cout<<std::endl;
 */
-
 		} 
 		catch (http_exception e) {
 			std::cerr<<"error  "<<e.what()<<std::endl;
