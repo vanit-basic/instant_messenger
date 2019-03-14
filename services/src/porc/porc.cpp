@@ -65,7 +65,7 @@ int main()
         http_client messagingClient(NetworkUtils::hostURI("http://host_auto_ip4:6503/v1/mafclub/api"));
         
 	uri_builder test(U("/ServiceTest"));
-        uri_builder registr(U("/insert/registration"));
+        uri_builder registr(U("/insert/signUp"));
         uri_builder signIn(U("/check/signIn"));
 	uri_builder checkMailAndLogin(U("/check/mailAndLogin"));
         uri_builder signOut(U("/account/signOut?clientId=u1"));
@@ -85,9 +85,9 @@ int main()
         uri_builder getGroupInfo(U("/account/getGroupInfo?clientId=u1&groupId=g1"));
         uri_builder getGroupShortInfo(U("/account/getGroupShortInfo?clientId=u1&groupId=g1"));
         uri_builder groupRemoveUser(U("/account/groupRemoveUser"));
-      	uri_builder updateUserInfo(U("/account/updateUserInfo"));
+      	uri_builder updateUserInfo(U("/account/userUpdateInfo"));
         uri_builder changePassword(U("/account/changePassword"));
-      	uri_builder updateGroupInfo(U("/account/updateGroupInfo"));
+      	uri_builder updateGroupInfo(U("/account/groupUpdateInfo"));
         uri_builder checkToken(U("/checkToken"));
         uri_builder deleteToken(U("/deleteToken"));
         uri_builder setToken(U("/setToken"));
@@ -95,7 +95,7 @@ int main()
 
 	uri_builder searchUsers(U("/account/searchUsers"));
 
-        uri_builder removeFromGroup(U("/account/removeFromGroup?groupId=g1&userId=u2"));
+        uri_builder removeFromGroup(U("/account/groupRemoveUser?groupId=g1&userId=u2"));
 
 	json::value Token;
 	Token["userId"] = json::value::string("u1");

@@ -76,6 +76,14 @@ add_executable("tokenDbService"
 	./services/src/base/basic_controller.cpp
 	./utilities/network_utils.cpp)
 
+
+add_executable("search" 		
+	./services/src/search/main.cpp
+	./services/src/search/search.cpp
+	./services/src/search/mongocash.cpp
+	./services/src/base/basic_controller.cpp
+	./utilities/network_utils.cpp)
+
 # headers search paths ...
 set(SERVICES_INCLUDE_DIR "./services/include")
 set(UTILITIES_INCLUDE_DIR "./utilities")
@@ -109,3 +117,5 @@ target_link_libraries("messaging" ${LIBRARIES_SEARCH_PATHS})
 target_link_libraries("tokenDbService" ${LIBRARIES_SEARCH_PATHS})
 
 target_link_libraries("porc" ${LIBRARIES_SEARCH_PATHS})
+
+target_link_libraries("search" ${LIBRARIES_SEARCH_PATHS})

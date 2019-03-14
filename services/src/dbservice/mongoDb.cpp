@@ -915,6 +915,7 @@ json::value MongoDB::groupUpdateInfo(json::value request) {
         std::string groupId = request.at("groupId").as_string();
         std::string newName = request.at("newName").as_string();
         std::string newAvatar = request.at("newAvatar").as_string();
+        std::string newAccess = request.at("newAccess").as_string();
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
                 coll3.find_one(document{} << "_id" << groupId << finalize);
@@ -926,6 +927,14 @@ json::value MongoDB::groupUpdateInfo(json::value request) {
                 std::string name = element.get_utf8().value.to_string();
 
                 if (name.compare(newName) != 0 && newName.compare("") != 0) {
+                        coll3.update_one(document{} << "_id" << groupId << finalize,
+                                document{} << "$set" << open_document <<
+        			"groupName" << newName << close_document << finalize);
+		}
+
+		element = doc["access"];
+		std::string access = element.get_utf8().value.to_string();
+                if (access.compare(newName) != 0 && newName.compare("") != 0) {
                         coll3.update_one(document{} << "_id" << groupId << finalize,
                                 document{} << "$set" << open_document <<
         			"groupName" << newName << close_document << finalize);
@@ -1028,7 +1037,7 @@ json::value MongoDB::changePassword(json::value request) {
 }
 
 json::value MongoDB::searchGroups(json::value request) {
-	auto response = json::value::object();
+	json::value response;
 	
 	web::json::array groupsId = request.at("groups").as_array();
 	//std::string group;
@@ -1042,7 +1051,7 @@ json::value MongoDB::searchGroups(json::value request) {
 }
 
 json::value MongoDB::searchUsers(json::value request) {
-	auto response = json::value::object();
+	json::value response;
 	
 	web::json::array usersId = request.at("users").as_array();
 	//std::string group;
