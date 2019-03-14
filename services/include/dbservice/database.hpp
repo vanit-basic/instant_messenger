@@ -79,7 +79,7 @@ class database {
 		
 		virtual std::string getGroupConversation(std::string groupID) = 0;
 		
-		virtual json::value updateGroupInfo(json::value groupInfo) = 0;
+		virtual json::value groupUpdateInfo(json::value groupInfo) = 0;
 
 		virtual std::string addGroupMessage(std::string groupId, std::string userId, json::value message) = 0;
 
