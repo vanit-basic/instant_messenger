@@ -86,7 +86,7 @@ void DbService::handleGet(http_request message) {
 				std::string groupId = i.find("groupId")->second;
                                 json::value response = m_db->getGroupInfo(groupId);
                                 message.reply(status_codes::OK, response);
-			} else if (path[1] == "removeFromGroup") {
+			} else if (path[1] == "groupRemoveUser") {
 				std::string groupId = i.find("groupId")->second;
 				std::string userId = i.find("userId")->second;
                                 json::value response = m_db->removeFromGroup(groupId, userId);
@@ -112,14 +112,14 @@ void DbService::handlePost(http_request message) {
 				} else if (path[1] == "signIn") {
 					std::string login = request.at("login").as_string();
 					std::string pass = request.at("password").as_string();
-					json::value response = m_db->loginUser(login, pass);
+					json::value response = m_db->signIn(login, pass);
 					message.reply(status_codes::OK, response);
 				} else {
 					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 				}
 			} else if (path[0] == "insert") {
-				if (path[1] == "registration") {
-					json::value response = m_db->registerUser(request);
+				if (path[1] == "signUp") {
+					json::value response = m_db->signUp(request);
 					message.reply(status_codes::OK, response);
 				
 				} else { 
@@ -132,16 +132,20 @@ void DbService::handlePost(http_request message) {
                                                         message.reply(status_codes::OK, response);
                                         }
 					else {
-						if (path[1] == "updateUserInfo") {
-                                                        json::value response = m_db->updateUserInfo(request);
+						if (path[1] == "userUpdateInfo") {
+                                                        json::value response = m_db->userUpdateInfo(request);
                                                         message.reply(status_codes::OK, response);
 						} else
-							if (path[1] == "updateGroupInfo") {
-								json::value response = m_db->updateGroupInfo(request);
+							if (path[1] == "groupUpdateInfo") {
+								json::value response = m_db->groupUpdateInfo(request);
                                                         	message.reply(status_codes::OK, response);
 							} else 
 								if (path[1] == "changePassword") {
 									json::value response = m_db->changePassword(request);
+                                                        		message.reply(status_codes::OK, response);
+								}
+								 else if (path[1] == "searchUsers") {
+									json::value response = m_db->searchUsers(request);
                                                         		message.reply(status_codes::OK, response);
 								}
 					}

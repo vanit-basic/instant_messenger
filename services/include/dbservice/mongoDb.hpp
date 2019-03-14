@@ -43,9 +43,9 @@ class MongoDB : public database {
 		//user related queries
 		virtual json::value checkMailAndLogin(std::string mail, std::string login);
 
-		virtual json::value registerUser(json::value user);
+		virtual json::value signUp(json::value user);
 		
-		virtual json::value loginUser(std::string, std::string);
+		virtual json::value signIn(std::string, std::string);
 	
 		virtual json::value getUserInfo(std::string userId);
 	
@@ -53,7 +53,7 @@ class MongoDB : public database {
 
 		virtual json::value deleteUser(std::string userId);
 
-		virtual json::value updateUserInfo(json::value user);
+		virtual json::value userUpdateInfo(json::value user);
 
 		virtual bool userRemoveConversation(std::string userId1, std::string userId2){};
 
@@ -70,6 +70,10 @@ class MongoDB : public database {
 		virtual json::value changePassword(json::value);
 
 		//group related queries
+		
+		virtual json::value changeGroupAdmin(std::string, std::string);
+
+		virtual json::value getGroupInfo(std::string);
 	
 		virtual json::value getGroupShortInfo(std::string groupId);
 	
@@ -78,14 +82,15 @@ class MongoDB : public database {
 		virtual json::value createGroup(json::value groupInfo);
 
                 virtual json::value deleteGroup(std::string groupId);
+                
+		virtual json::value searchUsers(json::value);
+		virtual json::value searchGroups(json::value);
 
 		virtual json::value addUserToGroup(std::string userId, std::string groupId, std::string cleintId);
 
-                virtual json::value removeFromGroup(std::string, std::string);
+                virtual json::value groupRemoveUser(std::string, std::string);
 		
-		virtual json::value updateGroupInfo(json::value groupInfo);
-
-		virtual json::value getGroupInfo(std::string);
+		virtual json::value groupUpdateInfo(json::value groupInfo);
                
                 virtual bool groupRemoveConversation(std::string groupId){};
 

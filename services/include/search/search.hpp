@@ -3,6 +3,7 @@
 #include <string>
 
 #include <base/basic_controller.hpp>
+#include <network_utils.hpp>
 #include <cpprest/http_client.h>
 #include <cpprest/filestream.h>
 #include <search/cashdatabase.hpp>
@@ -23,7 +24,7 @@ class Search : public BasicController, Controller {
         private:
                 std::string searchUri;
                 http_client *DataBaseClient;
-		cashDatabase* cash_db;
+		cashDatabase* cashDb;
                 bool createClients(std::string path);
                 void handleGet(http_request message) override;
                 void handlePost(http_request message) override;

@@ -2,6 +2,7 @@
 #include <runtime_utils.hpp>
 #include <search/search.hpp>
 #include <search/cashdatabase.hpp>
+#include <search/mongocash.hpp>
 
 int main (int argc, char** argv) {
         if (argc < 2) {
@@ -11,12 +12,14 @@ int main (int argc, char** argv) {
         else{
                 InterruptHandler::hookSIGINT();
                 std::string path = std::string(argv[1]);
-                cashDatabase* m = new MongoCashDb(path);
-                Search server(path, m);
+                cashDatabase* db = new MongoCashDb(path);
+                Search server(path, db);
+		if(server.checkServices())
+		{
                         try {
                                 // wait for server initialization...
                                 server.accept().wait();
-                                std::cout << "tokenDbService start " << std::endl;
+                                std::cout << "Search Service start" << std::endl;
 
                                 InterruptHandler::waitForUserInterrupt();
 
@@ -28,6 +31,7 @@ int main (int argc, char** argv) {
                         catch(...) {
                                 RuntimeUtils::printStackTrace();
                         }
+		}
         }
         return 0;
 }
