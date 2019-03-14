@@ -52,5 +52,9 @@
         <file>glaz.png</file>
         <file>Help_Center.qml</file>
         <file>unmute.jpg</file>
+        <file>avatar.png</file>
+        <file>cancel.png</file>
+        <file>group.png</file>
+        <file>Users_profile.qml</file>
     </qresource>
 </RCC>

@@ -9,8 +9,19 @@ import QtQml 2.12
 
 Page {
     id:wind
+    StackView{
+        id:stackSearch
+        anchors.fill: parent
+        Keys.onPressed:  {
+            if (event.key === Qt.Key_Back) {
+                event.accepted = true
+                if (stackMess.depth > 1) {
+                    stackMess.pop()
 
-    Rectangle{
+                } else { swipe.currentIndex = 1}
+            }
+        }
+   initialItem:  Rectangle{
         gradient: Gradient{
             GradientStop { position: 0.0;color:"dimgrey"}
             GradientStop { position: 0.25;color:"gray"}
@@ -18,7 +29,10 @@ Page {
             GradientStop { position: 0.75;color:"silver"}
             GradientStop{ position: 1.0;color:"lightgrey"}
         }
-        anchors.fill: parent
+        x: 0
+        y: 0
+        width: wind.width
+        height: wind.height
         Rectangle{
             id: rec
             width: (2 * parent.width) / 2.5
@@ -32,7 +46,7 @@ Page {
                 background:
                     Rectangle{color: "transparent"}
                 id: search
-                icon.source: "qrc:/search.png"
+                icon.source: "qrc:/searchb.png"
                 icon.color: "teal"
                 y: rec.height / 2 - search.height / 2
                 width: 55
@@ -56,10 +70,10 @@ Page {
                 anchors.leftMargin: 45
                 anchors.right: parent.right
                 anchors.rightMargin: 45
-                placeholderText: "Search"
+                placeholderText: "Name, Surname or Nickname"
                 selectByMouse: true
                 maximumLength : 100
-                enabled: txt.text === " " ? false:true
+                //enabled: txt.text === " " ? false:true
                 background: Rectangle{
                     color: "transparent"
                 }
@@ -94,10 +108,20 @@ Page {
 
             RowLayout{
                 ToolButton{
+                    id:tool0
                     icon.source: "avatar.png"
                     text: qsTr("User")
                     icon.color: "teal"
-                    onClicked: txt.placeholderText = qsTr("Name, Surname or Nickname")
+                    font.pointSize: 18
+                    onClicked: {
+                        txt.placeholderText = qsTr("Name, Surname or Nickname")
+                        icon.color = "teal"
+                        font.pointSize = 18
+                        tool1.icon.color = "black"
+                        tool1.font.pointSize = 15
+                        //font.bold = "true"
+                        //font.underline = "true"
+                    }
                     background: Rectangle{
                         color: "transparent"
                     }
@@ -106,10 +130,20 @@ Page {
                 ToolSeparator{}
 
                 ToolButton{
-                    icon.source: "users.png"
+                    id: tool1
+                    icon.source: "group.png"
                     text: qsTr("Group")
-                    icon.color: "teal"
-                    onClicked: txt.placeholderText = qsTr("Group name")
+                    icon.color: "black"
+                    font.pointSize: 15
+                    onClicked: {
+                        txt.placeholderText = qsTr("Group name")
+                        icon.color = "teal"
+                        font.pointSize = 18
+                        tool0.icon.color = "black"
+                        tool0.font.pointSize = 15
+                        //font.bold = "true"
+                        //font.underline = "true"
+                    }
                     background: Rectangle{
                         color: "transparent"
                     }
@@ -140,39 +174,85 @@ Page {
             anchors.top: recentsearch.bottom
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: recomsearch.top
+            anchors.bottomMargin: 10
             width: (2 * parent.width) / 2.5
-            height: 100
+            height: wind.height / 3
             color: "transparent"
             ListModel{
                 id: mod0
                 ListElement{
-                    name: "Sunny"
+                    name: "Nare"
+                    picture: "qrc:/avatar.png"
                 }
                 ListElement{
                     name: "Jemasita"
+                    picture: "qrc:/avatar.png"
                 }
                 ListElement{
                     name: "Señorita"
+                    picture: "qrc:/avatar.png"
+                }
+                ListElement{
+                    name: "LoserForLife"
+                    picture: "qrc:/avatar.png"
+                }
+                ListElement{
+                    name: "Kolibri"
+                    picture: "qrc:/avatar.png"
+                }
+                ListElement{
+                    name: "You don't need to know my name"
+                    picture: "qrc:/avatar.png"
+                }
+                ListElement{
+                    name: "I don't have a name"
+                    picture: "qrc:/avatar.png"
+                }
+                ListElement{
+                    name: "Sunny"
+                    picture: "qrc:/avatar.png"
                 }
             }
+
             Component {
                 id: mod0del
-                Text {
-                    text: name
-                    font.pixelSize: 18
+                Rectangle{
+                    width: wind.width - 50
+                    height: 50
+                    color: "transparent"
+                    Image {
+                        id: img
+                        width: 30
+                        height: 30
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                        anchors.verticalCenter: parent.verticalCenter
+                        source: picture
+                    }
+
+                    Text {
+                        text: name
+                        font.pixelSize: 18
+                        anchors.left: img.right
+                        anchors.leftMargin: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: stackSearch.push(Qt.resolvedUrl("qrc:/Users_profile.qml"))
+                    }
                 }
             }
         }
-
 
         Rectangle {
             id:recomsearch
             height: 30
             width: (2 * parent.width) / 2.5
             anchors.horizontalCenter: parent.horizontalCenter
-            //y: parent.height / 2
-            anchors.top: recentsearch.bottom
-            anchors.topMargin: 120
+            y: wind.height / 2
             color: "transparent"
             Text {
                 text: "Recommended"
@@ -189,28 +269,59 @@ Page {
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             width: (2 * parent.width) / 2.5
-            height: 100
+            height: wind.height / 3
             color: "transparent"
             ListModel{
                 id: mod1
                 ListElement{
-                    pic: "qrc:/user.png"
+                    pic: "qrc:/avatar.png"
                     name: "Hrach"
                 }
                 ListElement{
-                    pic: "qrc:/user.png"
+                    pic: "qrc:/avatar.png"
                     name: "Narek"
                 }
                 ListElement{
-                    pic: "qrc:/user.png"
+                    pic: "qrc:/avatar.png"
                     name: "Mike"
                 }
+                ListElement{
+                    pic: "qrc:/avatar.png"
+                    name: "NarekJunior"
+                }
+                ListElement{
+                    pic: "qrc:/avatar.png"
+                    name: "Mafioso"
+                }
+                ListElement{
+                    pic: "qrc:/avatar.png"
+                    name: "Astgh"
+                }
             }
+
             Component {
                 id: mod1del
-                Text {
-                    text: name
-                    font.pixelSize: 18
+                Rectangle{
+                    width: wind.width - 50
+                    height: 50
+                    color: "transparent"
+                    Image {
+                        id: img
+                        width: 30
+                        height: 30
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5
+                        anchors.verticalCenter: parent.verticalCenter
+                        source: pic
+                    }
+
+                    Text {
+                        text: name
+                        font.pixelSize: 18
+                        anchors.left: img.right
+                        anchors.leftMargin: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
                 }
             }
         }
@@ -232,5 +343,4 @@ Page {
         }
     }
 }
-
-
+}
