@@ -45,8 +45,10 @@ class database {
 
 		virtual json::value deleteUser(std::string userId) = 0;
 
-		virtual bool removeUserConversation(std::string userId1, std::string userId2) = 0;
+		virtual bool userRemoveConversation(std::string userId1, std::string userId2) = 0;
 
+		virtual bool userRemoveMessage(std::string, std::string, std::string) = 0;
+	
 		virtual json::value userUpdateInfo(json::value user) = 0;
 		
 		virtual json::value changePassword(json::value ) = 0;
@@ -72,9 +74,9 @@ class database {
 
                 virtual bool removeMessage(json::value messageInfo) = 0;
 
-                virtual bool removeGroupConversation(std::string groupId) = 0;
+                virtual bool groupRemoveConversation(std::string groupId) = 0;
 
-		virtual bool removeMessageFromGroupConversation(std::string groupId, std::string messageId) = 0;
+		virtual bool groupRemoveMessage(std::string groupId, std::string messageId) = 0;
 		
 		virtual json::value getGroupInfo(std::string) = 0;
 		

@@ -4,7 +4,7 @@
 //#include <mongocxx/uri.hpp>
 #include <mongocxx/pool.hpp>
 #include <base/basic_controller.hpp>
-#include <messaging/messagingDbBase.hpp>
+#include <dbservice/database.hpp>
 #include <cpprest/http_client.h>
 //#include "mongoDb.hpp"
 
@@ -21,8 +21,8 @@ using namespace concurrency::streams;
 class Messaging : public BasicController, Controller {
         public:
                 bool checkServices();
-		messagingDbBase* m_db;
-                Messaging(std::string,messagingDbBase*);
+		database* m_db;
+                Messaging(std::string,database*);
                 virtual ~Messaging();
 
 
