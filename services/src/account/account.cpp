@@ -128,19 +128,19 @@ std::string getToken(){
 }
 
 http_response getUserInfo(std::string userId, http_client* DataBaseClient){
-	uri_builder uInfo("/getUserInfo?userId=" + userId);
+	uri_builder uInfo("/account/getUserInfo?userId=" + userId);
 	http_response userInfo = DataBaseClient->request(methods::GET, uInfo.to_string()).get();
 	return userInfo;
 }
 
 http_response getUserShortInfo(std::string userId, http_client* DataBaseClient){
-	uri_builder uInfo("/getUserShortInfo?userId=" + userId);
+	uri_builder uInfo("/account/getUserShortInfo?userId=" + userId);
 	http_response userShortInfo = DataBaseClient->request(methods::GET, uInfo.to_string()).get();
 	return userShortInfo;
 }
 
 std::string randUserFromGroup(std::string userId, std::string groupId, http_client* DataBaseClient){
-	uri_builder usersInfo("/getGroupUsers?groupId=" + groupId);
+	uri_builder usersInfo("/account/getGroupUsers?groupId=" + groupId);
 	http_response users = DataBaseClient->request(methods::GET, usersInfo.to_string()).get();
 	users.extract_json().
 	then([=](json::value members)
@@ -167,7 +167,7 @@ std::string randUserFromGroup(std::string userId, std::string groupId, http_clie
 }
 
 bool isUserInGroup(std::string userId, std::string groupId, http_client* DataBaseClient){
-	uri_builder isUserGroup("/isUserInGroup?userId=" + userId + "&groupId" + groupId);
+	uri_builder isUserGroup("/account/isUserInGroup?userId=" + userId + "&groupId" + groupId);
 	http_response resp = DataBaseClient->request(methods::GET, isUserGroup.to_string()).get();
 	resp.extract_json().
 	then([=](json::value status)
@@ -184,7 +184,7 @@ bool isUserInGroup(std::string userId, std::string groupId, http_client* DataBas
 }
 
 http_response getGroupShortInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
-	uri_builder gSInfo("/getGroupShortInfo?groupId=" + groupId);
+	uri_builder gSInfo("/account/getGroupShortInfo?groupId=" + groupId);
 	DataBaseClient->request(methods::GET, gSInfo.to_string()).
 	then([=](http_response groupShortInfo)
 	{
@@ -201,7 +201,7 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 				{
 					http_response resp;
 					json::value groupShortInfoResp;
-					groupShortInfoResp["status"] = json::value::string("Not Found");//status@ poxel
+					groupShortInfoResp["status"] = json::value::string("INVALID_GROUP");//status@ poxel
 					resp.set_body(groupShortInfoResp);
 					return resp;
 				}
@@ -215,7 +215,7 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 }
 
 http_response getGroupInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
-	uri_builder gInfo("/getGroupInfo?groupId=" + groupId);
+	uri_builder gInfo("/account/getGroupInfo?groupId=" + groupId);
 	DataBaseClient->request(methods::GET, gInfo.to_string()).
 	then([=](http_response groupInfo)
 	{
@@ -232,7 +232,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 				{
 					http_response resp;
 					json::value groupInfoResp;
-					groupInfoResp["status"] = json::value::string("Not Found");//status@ poxel
+					groupInfoResp["status"] = json::value::string("INVALID_GROUP");//status@ poxel
 					resp.set_body(groupInfoResp);
 					return resp;
 				}
@@ -248,7 +248,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 
 http_response userDelete(std::string userId, http_client* DataBaseClient){
 	json::value userDeleteInfo;
-	uri_builder userDelete_path(U("/userDelete"));
+	uri_builder userDelete_path(U("/account/userDelete"));
 	userDeleteInfo["userId"] = json::value::string(userId);
 	DataBaseClient->request(methods::POST, userDelete_path.to_string(), userDeleteInfo).
 	then([=](http_response status){
@@ -446,7 +446,7 @@ void Account::handleGet(http_request message) {
 void registration(http_request message , http_client* DataBaseClient, http_client* TokenDBClient){
         message.extract_json().then([=](json::value info)
 	{
-        std::string ml = "/check/mailAndLogin"; 
+        std::string ml = "/account/mailAndLogin"; 
         json::value login_mail;
         login_mail["email"] = json::value::string(info.at("email").as_string());
         login_mail["login"] = json::value::string(info.at("login").as_string());
@@ -511,7 +511,7 @@ void registration(http_request message , http_client* DataBaseClient, http_clien
 void signIn(http_request message, http_client* DataBaseClient, http_client* TokenDBClient){ 
 	message.extract_json().then([=](json::value request){
 	json::value signinInfo;
-	uri_builder signin_path(U("/signin/"));
+	uri_builder signin_path(U("/account/signin/"));
 	signinInfo["login"] = request.at("login");
 	signinInfo["password"] = request.at("password");
 	DataBaseClient->request(methods::POST,  signin_path.to_string(), signinInfo).
@@ -522,7 +522,7 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 		{
 			if (signinStatus_json["status"] == json::value::string("notFound"))
 			{
-				message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
+				message.reply(status_codes::OK, json::value::string("INVALID_LOGIN"));
 			}
 			else
 			{
@@ -533,16 +533,16 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 					{
 						if((max_attempt - attempt) == 1)
 						{
-							message.reply(status_codes::OK, json::value::string("Attention!!! You have one attempt left!!!"));
+							message.reply(status_codes::OK, json::value::string("LOGIN_LAST_ATTEMPT"));
 						}
 						else
 						{
-							message.reply(status_codes::OK, json::value::string("Login or Password is Wrong!!!"));
+							message.reply(status_codes::OK, json::value::string("INVALID_LOGIN"));
 						}
 					}
 					else
 					{
-						message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
+						message.reply(status_codes::OK, json::value::string("USER_BLOCKED"));
 					}
 				}
 				else
@@ -573,7 +573,7 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 						}
 						else
 						{
-							message.reply(status_codes::OK, json::value::string("Attempt failed!!!"));
+							message.reply(status_codes::OK, json::value::string("USER_BLOCKED"));
 						}
 					}
 				}
@@ -626,12 +626,17 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 							});
 						});
 					}
+					else
+					{
+						http_response groupDeleteResp = groupDelete(userId, groupId, DataBaseClient);
+						return groupDeleteResp;
+					}
 				}
 				else
 				{
 					if(isUserInGroup(userId, groupId, DataBaseClient))
 					{
-						uri_builder leaveGroup_path(U("/leaveGroup?userId="+userId+"&groupId="+groupId));
+						uri_builder leaveGroup_path(U("/account/groupRemoveUser?userId="+userId+"&groupId="+groupId));
 						DataBaseClient->request(methods::GET,  leaveGroup_path.to_string()).
 						then([message](http_response leaveGroup_response)
 						{
@@ -665,7 +670,7 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
                 gInfo.extract_json().
                 then([=](json::value groupInfo)
                 {
-                        if(userId == groupInfo.at("").as_string())
+                        if(userId == groupInfo.at("adminId").as_string())
                         {
                                 if(clientId == userId){
 
@@ -678,7 +683,7 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
                                 }
                                 else
                                 {
-                                        uri_builder groupRemoveUser_path(U("/leaveGroup?userId="+ clientId + "&groupId="+groupId));
+                                        uri_builder groupRemoveUser_path(U("/account/groupRemoveUser?userId="+ clientId + "&groupId="+groupId));
                                         DataBaseClient->request(methods::GET,  groupRemoveUser_path.to_string()).
                                         then([message](http_response userRemove_response)
                                         {
@@ -691,7 +696,7 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
                                         http_response resp;
                                         resp.set_status_code(status_codes::OK);
                                         json::value info;
-                                        info["error"] = json::value::string("you are not admin");
+                                        info["error"] = json::value::string("INVAILD_ADMIN_ID");
                                         resp.set_body(info);
                                         return resp;
                         }
