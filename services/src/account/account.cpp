@@ -162,6 +162,8 @@ std::string randUserFromGroup(std::string userId, std::string groupId, http_clie
 			}
 		}
 	});
+	std::string status = "NOT_FOUND_MEMBERS";
+	return status; 
 }
 
 bool isUserInGroup(std::string userId, std::string groupId, http_client* DataBaseClient){
@@ -267,6 +269,21 @@ http_response signOut(std::string userId, std::string token, http_client* TokenD
 	});
 }
 
+http_response groupDelete(std::string userId, std::string groupId, http_client* DataBaseClient){
+	http_response groupInfo = getGroupInfo(userId, groupId, DataBaseClient);
+	groupInfo.extract_json().
+	then([=](json::value groupInf)
+	{
+		if(groupInf.at("adminId").as_string() == userId)
+		{
+			uri_builder groupDelete_path(U("/account/groupDelete?groupId"+ groupId));
+			DataBaseClient->request(methods::GET , groupDelete_path.to_string()).
+			then([=](http_response status){
+				return status;
+			});
+		}
+	});
+}
 				 
 
 
@@ -391,6 +408,26 @@ void Account::handleGet(http_request message) {
 								}
 								else
 								{
+									if(path_first_request[1] == "deleteGroup")
+									{
+										std::string userId = "";
+										std::string groupId = "";
+										userId = i.find("userId")->second;
+										groupId = i.find("groupId")->second;
+										if(!(userId == ""))
+										{
+											if(!(groupId == ""))
+											{
+												auto deleteGroupInfo = groupDelete(userId,groupId, this->DataBaseClient);
+												message.reply(deleteGroupInfo);
+											}
+											else
+											{
+												message.reply(status_codes::NotFound);
+											}
+										}
+									
+									}
 									message.reply(status_codes::NotFound);
 								}
 							}
@@ -561,13 +598,34 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 			{
 				std::string adminId = UserInfo.at("adminId").as_string();
 				if(userId == adminId)
-				{
-					http_response resp;
-					resp.set_status_code(status_codes::OK);
-					json::value info;
-					info["error"] = json::value::string("change admin");
-					resp.set_body(info);
-					return resp;
+				{	
+					std::string newAdminId = randUserFromGroup(userId, groupId, DataBaseClient);
+					if(newAdminId != "NOT_FOUND_MEMBERS")
+					{ 
+						uri_builder userDelete_path(U("/account/changeGroupAdmin?groupId"+groupId+"&userId"+newAdminId));
+						DataBaseClient->request(methods::GET, userDelete_path.to_string()).
+						then([=](http_response status)
+						{
+							status.extract_json().
+							then([=](json::value statusJson)
+							{
+								if(statusJson.at("status").as_string() == "OK")
+								{
+									uri_builder leaveGroup_path(U("/groupRemoveUser?userId="+ userId + "&groupId="+groupId));
+									DataBaseClient->request(methods::GET,  leaveGroup_path.to_string()).
+									then([message](http_response leaveGroup_response)
+									{
+										return leaveGroup_response;
+									});
+								}
+								else
+								{
+									auto groupDeleteResp = groupDelete(userId, groupId, DataBaseClient);
+									return groupDeleteResp;
+								}
+							});
+						});
+					}
 				}
 				else
 				{
@@ -620,7 +678,7 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
                                 }
                                 else
                                 {
-                                        uri_builder groupRemoveUser_path(U("/groupRemoveUser?userId="+ userId + "&groupId="+groupId+"&clientId" + clientId));
+                                        uri_builder groupRemoveUser_path(U("/leaveGroup?userId="+ clientId + "&groupId="+groupId));
                                         DataBaseClient->request(methods::GET,  groupRemoveUser_path.to_string()).
                                         then([message](http_response userRemove_response)
                                         {
