@@ -54,6 +54,9 @@ class database {
 		//group related queries
 
                 virtual json::value getGroupUsers(std::string groupId) = 0;
+		
+                virtual json::value searchUsers(json::value) = 0;
+                virtual json::value searchGroups(json::value) = 0;
 
 		virtual json::value getGroupShortInfo(std::string groupId) = 0;
 		

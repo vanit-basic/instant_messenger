@@ -1027,3 +1027,32 @@ json::value MongoDB::changePassword(json::value request) {
 		response["status"] = json::value::string("INVALID_USER_ID");
 	return response;
 }
+
+json::value MongoDB::searchGroups(json::value request) {
+	auto response = json::value::object();
+	
+	web::json::array groupsId = request.at("groups").as_array();
+	//std::string group;
+	for (auto i = groupsId.begin(); i != groupsId.end(); ++i) {
+		std::string id = (*i).as_string();
+		auto doc = getGroupShortInfo(id);
+		response[id] = json::value::string(doc.to_string());
+	}
+
+	return response;
+}
+
+json::value MongoDB::searchUsers(json::value request) {
+	auto response = json::value::object();
+	
+	web::json::array usersId = request.at("users").as_array();
+	//std::string group;
+	for (auto i = usersId.begin(); i != usersId.end(); ++i) {
+		std::string id = (*i).as_string();
+		auto doc = getUserShortInfo(id);
+		response[id] = json::value::string(doc.to_string());
+	}
+
+	return response;
+}
+

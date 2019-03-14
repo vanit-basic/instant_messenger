@@ -93,6 +93,8 @@ int main()
         uri_builder setToken(U("/setToken"));
         uri_builder getGroupUsers(U("/account/getGroupUsers?groupId=g1"));
 
+	uri_builder searchUsers(U("/account/searchUsers"));
+
         uri_builder removeFromGroup(U("/account/removeFromGroup?groupId=g1&userId=u2"));
 
 	json::value Token;
@@ -126,6 +128,10 @@ int main()
 	checkMailAndLoginReq2["email"] = json::value::string("valodyan12@mail.ru");
 	checkMailAndLoginReq2["login"] = json::value::string("valodyan1215");
         
+	json::value searchUsersReq;
+	searchUsersReq["users"][0] = json::value::string("u1");
+	searchUsersReq["users"][1] = json::value::string("u2");
+	
 	json::value signInReq1;
         signInReq1["login"] = json::value::string("valodyan1212");
         signInReq1["password"] = json::value::string("Valodik90");
@@ -196,6 +202,10 @@ int main()
 */			
 			std::cout<<"///////////////////     CHANGE PASSWORD(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, changePassword, changePasswordReq);
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, searchUsers, searchUsersReq);
 			std::cout<<std::endl;
 	
 /* 			std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
