@@ -1048,3 +1048,52 @@ json::value MongoDB::changePassword(json::value request) {
 		response["status"] = json::value::string("INVALID_USER_ID");
 	return response;
 }
+
+json::value MongoDB::getUserConversations(std::string userId) {
+	
+}
+
+json::value MongoDB::getUsersConversation(std::string userId1, std::string userId2) {
+	
+}
+
+std::string MongoDB::userSendMessage(std::string from, std::string to, std::string message) {
+	auto c = poolDB->acquire();
+	auto coll = (*c)["messageDB"]["message"];	
+}
+
+bool MongoDB::userUpdateMessage(std::string from, std::string to, std::string newMessage) {
+	
+}
+
+bool MongoDB::userRemoveConversation(std::string userId1, std::string userId2) {
+	
+}
+
+bool MongoDB::userRemoveMessage(std::string userId, std::string clientId, std::string mId) {
+	
+}
+
+bool MongoDB::groupRemoveConversation(std::string groupId) {
+	
+}
+
+bool MongoDB::groupRemoveMessage(std::string groupId, std::string messageId) {
+	
+}
+
+std::string MongoDB::getGroupConversation(std::string groupId) {
+	
+}
+
+std::string MongoDB::groupSendMessage(std::string groupId, std::string from, std::string message) {
+	
+}
+
+bool MongoDB::groupUpdateMessage(std::string groupId, std::string messagId, std::string message) {
+	
+}
+
+
+
+
