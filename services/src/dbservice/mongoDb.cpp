@@ -142,7 +142,7 @@ json::value MongoDB::checkMailAndLogin(std::string mail, std::string login) { //
 	return response;
 }
 
-json::value MongoDB::signUp(json::value request) { //+
+json::value MongoDB::signUp(json::value request) { 
 	auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
         auto coll1 = (*c1)["infoDB"]["userInfo"];
@@ -212,11 +212,12 @@ json::value MongoDB::signUp(json::value request) { //+
 	response["login"] = json::value::string(login);
 	response["status"] = json::value::string("OK");
 
+	std::string time = date();
 	auto builder1 = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value2 = builder1
+		<< "_id" << id
 		<< "login" << login
 		<< "password" << password
-		<< "userId" << id
 		<< "visitCount" << 0
 		<< bsoncxx::builder::stream::finalize;
 	
@@ -224,7 +225,7 @@ json::value MongoDB::signUp(json::value request) { //+
 	return response;
 }
 
-json::value MongoDB::signIn(std::string login, std::string password) { //+
+json::value MongoDB::signIn(std::string login, std::string password) { 
 	auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
         auto coll1 = (*c1)["infoDB"]["userInfo"];
@@ -242,7 +243,7 @@ json::value MongoDB::signIn(std::string login, std::string password) { //+
 		bsoncxx::document::view docInfo = infoResult->view();
 
 
-		bsoncxx::document::element element = docInfo["_id"];
+		bsoncxx::document::element element = docInfo["userId"];
 		std::string id = element.get_utf8().value.to_string();
 		response = getUserInfo(id);
 
@@ -285,7 +286,6 @@ json::value MongoDB::getUserInfo(std::string id) {
 
 		bsoncxx::document::element element = doc["firstName"];
 		std::string firstName = element.get_utf8().value.to_string();
-		std::cout << firstName << std::endl;
 
 		element = doc["lastName"];
 		std::string lastName = element.get_utf8().value.to_string();
@@ -301,7 +301,6 @@ json::value MongoDB::getUserInfo(std::string id) {
 
 		element = doc["level"];
 		std::string level = std::to_string(element.get_int32().value);
-		std::cout << "LEVEL  " << level <<std::endl;
 		
 		element = doc["statistics"]["playedGames"];
 		std::string playedGames = std::to_string(element.get_int32().value);
@@ -317,7 +316,6 @@ json::value MongoDB::getUserInfo(std::string id) {
 
 		element = doc["statistics"]["don"];
 		std::string don = std::to_string(element.get_int32().value);
-		std::cout << "DON  " << don <<std::endl;
 		
 		element = doc["statistics"]["wins"];
 		std::string wins = std::to_string(element.get_int32().value);
@@ -408,7 +406,6 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 
 		element = doc["level"];
 		std::string level = std::to_string(element.get_int32().value);
-		std::cout << "LEVEL  " << level <<std::endl;
 		
 		element = doc["statistics"]["playedGames"];
 		std::string playedGames = std::to_string(element.get_int32().value);
@@ -424,7 +421,6 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 
 		element = doc["statistics"]["don"];
 		std::string don = std::to_string(element.get_int32().value);
-		std::cout << "DON  " << don <<std::endl;
 		
 		element = doc["statistics"]["wins"];
 		std::string wins = std::to_string(element.get_int32().value);
@@ -632,7 +628,7 @@ json::value MongoDB::deleteGroup(std::string groupId) {
                         for (const bsoncxx::array::element& uIds : subarray) {
                                 if (uIds.type() == type::k_utf8) {
                                         std::string uId = uIds.get_utf8().value.to_string();
-                                        coll1.update_one(document{} << "userId" << uId << finalize,
+                                        coll1.update_one(document{} << "_id" << uId << finalize,
                                                         document{} << "$pull" << open_document
                                                         << access << groupId << close_document << finalize);
                                  }
@@ -664,13 +660,11 @@ json::value MongoDB::isUserInGroup(std::string gid, std::string uid) {
                 bsoncxx::document::view doc = groupResult->view();
                 bsoncxx::document::element element = doc["members"];
 
-		std::cout << uid << std::endl;
                 if (element.type() == type::k_array) {
                         bsoncxx::array::view subarray{element.get_array().value};
                         for (const bsoncxx::array::element& userIds : subarray) {
                                 if (userIds.type() == type::k_utf8) {
 					std::string user = userIds.get_utf8().value.to_string();
-					std::cout << user << std::endl;
 					if (user.compare(uid) == 0) {
 						t = true;
                                     	}
@@ -722,7 +716,6 @@ json::value MongoDB::deleteUser(std::string id){
                         for (const bsoncxx::array::element& gIds : subarray) {
                                 if (gIds.type() == type::k_utf8) {
                                         std::string group = gIds.get_utf8().value.to_string();
-                                        std::cout << group << std::endl;
                                         coll3.update_one(document{} << "_id" << group << finalize,
                                                         document{} << "$pull" << open_document
                                                         << "members" << id << close_document <<finalize);
