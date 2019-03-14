@@ -1052,6 +1052,51 @@ json::value MongoDB::changePassword(json::value request) {
 	return response;
 }
 
+json::value MongoDB::getUserConversations(std::string userId) {
+	
+}
+
+json::value MongoDB::getUsersConversation(std::string userId1, std::string userId2) {
+	
+}
+
+std::string MongoDB::userSendMessage(std::string from, std::string to, std::string message) {
+	auto c = poolDB->acquire();
+	auto coll = (*c)["messageDB"]["message"];	
+}
+
+bool MongoDB::userUpdateMessage(std::string from, std::string to, std::string newMessage) {
+	
+}
+
+bool MongoDB::userRemoveConversation(std::string userId1, std::string userId2) {
+	
+}
+
+bool MongoDB::userRemoveMessage(std::string userId, std::string clientId, std::string mId) {
+	
+}
+
+bool MongoDB::groupRemoveConversation(std::string groupId) {
+	
+}
+
+bool MongoDB::groupRemoveMessage(std::string groupId, std::string messageId) {
+	
+}
+
+std::string MongoDB::getGroupConversation(std::string groupId) {
+	
+}
+
+std::string MongoDB::groupSendMessage(std::string groupId, std::string from, std::string message) {
+	
+}
+
+bool MongoDB::groupUpdateMessage(std::string groupId, std::string messagId, std::string message) {
+	
+}
+
 json::value MongoDB::searchGroups(json::value request) {
 	json::value response;
 	
@@ -1080,3 +1125,28 @@ json::value MongoDB::searchUsers(json::value request) {
 	return response;
 }
 
+
+json::value MongoDB::changeGroupAdmin(std::string groupId, std::string userId) {
+	auto c3 = poolMydb->acquire();
+        auto coll3 = (*c3)["infoDB"]["groupInfo"];
+	auto response = json::value::object();
+
+        bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll3.find_one(document{} << "_id" << groupId << finalize);
+
+	if (result) {
+		bsoncxx::document::view doc = result->view();
+        	
+		bsoncxx::document::element element = doc["userId"];
+		std::string userId = element.get_utf8().value.to_string();
+		coll3.update_one(document{} << "_id" << groupId << finalize,
+			document{} << "$set" << open_document <<
+			"adminId" << userId << close_document << finalize);
+		
+		response["status"] = json::value::string("OK");
+	} else {
+		response["status"] = json::value::string("NOT_OK");
+	}
+	
+	return response;
+}

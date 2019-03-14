@@ -91,6 +91,11 @@ void DbService::handleGet(http_request message) {
 				std::string userId = i.find("userId")->second;
                                 json::value response = m_db->groupRemoveUser(groupId, userId);
                                 message.reply(status_codes::OK, response);
+			} else if (path[1] == "changeGroupAdmin") {
+				std::string groupId = i.find("groupId")->second;
+				std::string userId = i.find("userId")->second;
+                                json::value response = m_db->changeGroupAdmin(groupId, userId);
+                                message.reply(status_codes::OK, response);
 			} else {
 				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 			}
