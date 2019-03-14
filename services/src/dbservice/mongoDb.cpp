@@ -160,7 +160,7 @@ json::value MongoDB::signUp(json::value request) {
 	
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value = builder
-		<< "userId" << id
+		<< "_id" << id
 		<< "firstName" << firstName
 		<< "lastName" << lastName
 		<< "email" << email
@@ -236,7 +236,7 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 		bsoncxx::document::view docInfo = infoResult->view();
 
 
-		bsoncxx::document::element element = docInfo["userId"];
+		bsoncxx::document::element element = docInfo["_id"];
 		std::string id = element.get_utf8().value.to_string();
 		response = getUserInfo(id);
 
@@ -272,7 +272,7 @@ json::value MongoDB::getUserInfo(std::string id) {
 	auto coll1 = (*c1)["infoDB"]["userInfo"];
 
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
-		coll1.find_one(document{} << "userId" << id << finalize);
+		coll1.find_one(document{} << "_id" << id << finalize);
 
 	if (result) {
 		bsoncxx::document::view doc = result->view();
@@ -386,7 +386,7 @@ json::value MongoDB::getUserShortInfo(std::string id) {
         auto coll1 = (*c1)["infoDB"]["userInfo"];
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll1.find_one(document{} << "userId" << id << finalize);
+                coll1.find_one(document{} << "_id" << id << finalize);
 
         if (result) {
 		bsoncxx::document::view doc = result->view();
@@ -470,7 +470,7 @@ json::value MongoDB::getGroupUsers(std::string groupId) {
 	auto response = json::value::object();
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll3.find_one(document{} << "groupId" << groupId << finalize);
+                coll3.find_one(document{} << "_id" << groupId << finalize);
 	
 	if (result) {
 		bsoncxx::document::view doc = result->view();
@@ -500,7 +500,7 @@ json::value MongoDB::getGroupShortInfo(std::string groupId) {
 	auto coll3 = (*c3)["infoDB"]["groupInfo"];
         auto response = json::value::object();
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll3.find_one(document{} << "groupId" << groupId << finalize);
+                coll3.find_one(document{} << "_id" << groupId << finalize);
 
         if (result) {
 		bsoncxx::document::view doc = result->view();
@@ -553,7 +553,7 @@ json::value MongoDB::userUpdateInfo(json::value user) {
 	std::string newLastname = user.at("lastName").as_string();
         
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll1.find_one(document{} << "userId" << id << finalize);
+                coll1.find_one(document{} << "_id" << id << finalize);
 
         if (result) {
 		bsoncxx::document::view doc = result->view();
@@ -562,7 +562,7 @@ json::value MongoDB::userUpdateInfo(json::value user) {
                 std::string firstName = element.get_utf8().value.to_string();
 
 		if (firstName.compare(newFirstname) != 0 && newFirstname.compare("") != 0) {
-			coll1.update_one(document{} << "userId" << id << finalize,
+			coll1.update_one(document{} << "_id" << id << finalize,
                       		document{} << "$set" << open_document <<
                       		"firstName" << newFirstname << close_document << finalize);	
 		}
@@ -571,7 +571,7 @@ json::value MongoDB::userUpdateInfo(json::value user) {
                 std::string lastName = element.get_utf8().value.to_string();
 
 		if (lastName.compare(newLastname) != 0 && newLastname.compare("") != 0) {
-			coll1.update_one(document{} << "userId" << id << finalize,
+			coll1.update_one(document{} << "_id" << id << finalize,
                       		document{} << "$set" << open_document <<
                       		"lastName" << newLastname << close_document << finalize);
 		}
@@ -580,7 +580,7 @@ json::value MongoDB::userUpdateInfo(json::value user) {
                 std::string nickName = element.get_utf8().value.to_string();
 		
 		if (nickName.compare(newNickname) != 0 && newNickname.compare("") != 0) {
-			coll1.update_one(document{} << "userId" << id << finalize,
+			coll1.update_one(document{} << "_id" << id << finalize,
                       		document{} << "$set" << open_document <<
                       		"nickName" << newNickname << close_document << finalize);
 		}
@@ -603,7 +603,7 @@ json::value MongoDB::groupDelete(std::string groupId) {
 	json::value response;
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result1 = 
-		coll3.find_one(document{} << "groupId" << groupId <<  finalize);
+		coll3.find_one(document{} << "_id" << groupId <<  finalize);
 
 	 if (result1) {
                 bsoncxx::document::view doc = result1->view();
@@ -624,7 +624,7 @@ json::value MongoDB::groupDelete(std::string groupId) {
                 }
 
 		bsoncxx::stdx::optional<mongocxx::result::delete_result> result2 =
-                        coll3.delete_one(document{} << "groupId" << groupId << finalize);
+                        coll3.delete_one(document{} << "_id" << groupId << finalize);
 	if (result2) {
 		response["status"] = json::value::string("OK"); 
 		}
@@ -641,7 +641,7 @@ json::value MongoDB::isUserInGroup(std::string gid, std::string uid) {
 	json::value response;
 
 	bsoncxx::stdx::optional<bsoncxx::document::value> groupResult =
-                coll3.find_one(document{} << "groupId" << gid << finalize);
+                coll3.find_one(document{} << "_id" << gid << finalize);
 
 	bool t = false;
         if (groupResult) {
@@ -683,7 +683,7 @@ json::value MongoDB::deleteUser(std::string id){
         json::value response;
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll1.find_one(document{} << "userId" << id << finalize);
+                coll1.find_one(document{} << "_id" << id << finalize);
 
         if (result) {
                 bsoncxx::document::view doc = result->view();
@@ -693,8 +693,7 @@ json::value MongoDB::deleteUser(std::string id){
                         for (const bsoncxx::array::element& gIds : subarray) {
                                 if (gIds.type() == type::k_utf8) {
                                         std::string group = gIds.get_utf8().value.to_string();
-                                        std::cout << group << std::endl;
-					coll3.update_one(document{} << "groupId" << group << finalize,
+					coll3.update_one(document{} << "_id" << group << finalize,
 							document{} << "$pull" << open_document
 							<< "members" << id << close_document <<finalize);
                                  }
@@ -708,7 +707,7 @@ json::value MongoDB::deleteUser(std::string id){
                                 if (gIds.type() == type::k_utf8) {
                                         std::string group = gIds.get_utf8().value.to_string();
                                         std::cout << group << std::endl;
-                                        coll3.update_one(document{} << "groupId" << group << finalize,
+                                        coll3.update_one(document{} << "_id" << group << finalize,
                                                         document{} << "$pull" << open_document
                                                         << "members" << id << close_document <<finalize);
                                 }
@@ -716,10 +715,10 @@ json::value MongoDB::deleteUser(std::string id){
                 }
 
                 bsoncxx::stdx::optional<mongocxx::result::delete_result> result1 =
-                        coll1.delete_one(document{} << "userId" << id << finalize);
+                        coll1.delete_one(document{} << "_id" << id << finalize);
 
                 bsoncxx::stdx::optional<mongocxx::result::delete_result> result2 =
-                        coll2.delete_one(document{} << "userId" << id << finalize);
+                        coll2.delete_one(document{} << "_id" << id << finalize);
 
                 if (result1 && result2) {
                         response["status"] = json::value::string("OK");
@@ -774,7 +773,7 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value = builder
-		<< "groupId" << id
+		<< "_id" << id
 		<< "groupName" << groupName
 		<< "avatar" << avatar
 		<< "access" << access
@@ -793,11 +792,11 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 
 	bsoncxx::stdx::optional<mongocxx::result::update> result;
 	if (access.compare("public") == 0) {
-			coll1.update_one(document{} << "userId" << userId << finalize,
+			coll1.update_one(document{} << "_id" << userId << finalize,
 			document{} << "$push" << open_document
 			<< "publicGroups" << id << close_document << finalize);
 	} else if (access.compare("private") == 0) {
-			coll1.update_one(document{} << "userId" << userId << finalize,
+			coll1.update_one(document{} << "_id" << userId << finalize,
 			document{} << "$push" << open_document
 			<< "privateGroups" << id << close_document << finalize);
 	}
@@ -825,7 +824,7 @@ json::value MongoDB::addUserToGroup(std::string userId, std::string groupId, std
 	json::value response;
 
 	bsoncxx::stdx::optional<bsoncxx::document::value> groupResult =
-		coll3.find_one(document{} << "groupId" << groupId << finalize);
+		coll3.find_one(document{} << "_id" << groupId << finalize);
 
 	if (groupResult) {
 		bsoncxx::document::view doc = groupResult->view();
@@ -835,17 +834,17 @@ json::value MongoDB::addUserToGroup(std::string userId, std::string groupId, std
 
 		bsoncxx::stdx::optional<mongocxx::result::update> result;
 		if (access.compare("public") == 0) {
-			coll1.update_one(document{} << "userId" << clientId << finalize,
+			coll1.update_one(document{} << "_id" << clientId << finalize,
 					document{} << "$push" << open_document
 					<< "publicGroups" << groupId << close_document << finalize);
 		} else if (access.compare("private") == 0) {
-			coll1.update_one(document{} << "userId" << clientId << finalize,
+			coll1.update_one(document{} << "_id" << clientId << finalize,
 					document{} << "$push" << open_document
 					<< "privateGroups" << groupId << close_document << finalize);
 		}
 
 		bsoncxx::stdx::optional<mongocxx::result::update> result1 =
-			coll3.update_one(document{} << "groupId" << groupId << finalize,
+			coll3.update_one(document{} << "_id" << groupId << finalize,
 					document{} << "$push" << open_document
 					<< "members" << clientId << close_document << finalize);
 
@@ -869,7 +868,7 @@ json::value MongoDB::groupRemoveUser(std::string groupId, std::string userId) {
         json::value response;
 
 	bsoncxx::stdx::optional<bsoncxx::document::value> groupResult =
-                coll3.find_one(document{} << "groupId" << groupId << finalize);
+                coll3.find_one(document{} << "_id" << groupId << finalize);
 
 	if (groupResult) {
 		auto isInGroup = isUserInGroup(groupId, userId);
@@ -882,18 +881,18 @@ json::value MongoDB::groupRemoveUser(std::string groupId, std::string userId) {
 
                 	bsoncxx::stdx::optional<mongocxx::result::update> result;
                 	if (access.compare("public") == 0) {
-                	        coll1.update_one(document{} << "userId" << userId << finalize,
+                	        coll1.update_one(document{} << "_id" << userId << finalize,
                 	        	document{} << "$pull" << open_document
                 	                << "publicGroups" << groupId << close_document << finalize);
 
 			} else if (access.compare("private") == 0) {
-        	                coll1.update_one(document{} << "userId" << userId << finalize,
+        	                coll1.update_one(document{} << "_id" << userId << finalize,
                 	        	document{} << "$pull" << open_document
                         	        << "privateGroups" << groupId << close_document << finalize);
                 	}
 			
 			bsoncxx::stdx::optional<mongocxx::result::update> result1 =
-				coll3.update_one(document{} << "groupId" << groupId << finalize,
+				coll3.update_one(document{} << "_id" << groupId << finalize,
 					document{} << "$pull" << open_document
                         		<< "members" << userId << close_document << finalize);
 			
@@ -918,7 +917,7 @@ json::value MongoDB::groupUpdateInfo(json::value request) {
         std::string newAvatar = request.at("newAvatar").as_string();
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll3.find_one(document{} << "groupId" << groupId << finalize);
+                coll3.find_one(document{} << "_id" << groupId << finalize);
 
         if (result) {
                 bsoncxx::document::view doc = result->view();
@@ -927,7 +926,7 @@ json::value MongoDB::groupUpdateInfo(json::value request) {
                 std::string name = element.get_utf8().value.to_string();
 
                 if (name.compare(newName) != 0 && newName.compare("") != 0) {
-                        coll3.update_one(document{} << "groupId" << groupId << finalize,
+                        coll3.update_one(document{} << "_id" << groupId << finalize,
                                 document{} << "$set" << open_document <<
         			"groupName" << newName << close_document << finalize);
 		}
@@ -935,7 +934,7 @@ json::value MongoDB::groupUpdateInfo(json::value request) {
 		element = doc["avatar"];
 		std::string avatar = element.get_utf8().value.to_string();
 		if (avatar.compare(newAvatar) != 0) {
-			coll3.update_one(document{} << "groupId" << groupId << finalize, 
+			coll3.update_one(document{} << "_id" << groupId << finalize, 
 					document{} << "$set" << open_document <<
 					"avatar" << newAvatar << close_document << finalize);
 		}
@@ -956,7 +955,7 @@ json::value MongoDB::getGroupInfo(std::string groupId) {
 	auto response = json::value::object();
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll3.find_one(document{} << "groupId" << groupId << finalize);
+                coll3.find_one(document{} << "_id" << groupId << finalize);
 	
 	if (result) {
 		bsoncxx::document::view doc = result->view();
@@ -1009,7 +1008,7 @@ json::value MongoDB::changePassword(json::value request) {
         std::string newPassword = request.at("newPassword").as_string();
 
         bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll2.find_one(document{} << "id" << user << finalize);
+                coll2.find_one(document{} << "_id" << user << finalize);
 	if (result) {
                 bsoncxx::document::view doc = result->view();
          	
@@ -1017,7 +1016,7 @@ json::value MongoDB::changePassword(json::value request) {
 		std::string pass = element.get_utf8().value.to_string();
 		
                 if (pass.compare(password) == 0 && pass.compare(newPassword) != 0) {
-                        coll2.update_one(document{} << "id" << user << finalize,
+                        coll2.update_one(document{} << "_id" << user << finalize,
                                 document{} << "$set" << open_document <<
         			"password" << newPassword << close_document << finalize);
 		}
