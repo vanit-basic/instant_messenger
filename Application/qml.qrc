@@ -52,5 +52,6 @@
         <file>glaz.png</file>
         <file>Help_Center.qml</file>
         <file>unmute.jpg</file>
+        <file>hrach.jpg</file>
     </qresource>
 </RCC>

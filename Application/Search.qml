@@ -39,11 +39,7 @@ Page {
                 height: 55
                 anchors.left: parent.left
                 anchors.leftMargin: 10
-                //                onClicked: {
-                //                    if(txt.text != " "){
-                //                        console.log("It's alright")
-                //                    }
-                //                }
+
             }
 
             TextField{
