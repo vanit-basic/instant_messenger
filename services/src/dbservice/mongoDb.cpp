@@ -1051,7 +1051,7 @@ json::value MongoDB::changePassword(json::value request) {
 		response["status"] = json::value::string("INVALID_USER_ID");
 	return response;
 }
-
+/*
 json::value MongoDB::getUserConversations(std::string userId) {
 	
 }
@@ -1096,7 +1096,7 @@ std::string MongoDB::groupSendMessage(std::string groupId, std::string from, std
 bool MongoDB::groupUpdateMessage(std::string groupId, std::string messagId, std::string message) {
 	
 }
-
+*/
 json::value MongoDB::searchGroups(json::value request) {
 	json::value response;
 	
