@@ -213,14 +213,14 @@ int main()
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq1);
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq2);
 			std::cout<<std::endl;
-*/
+
 			
 			std::cout<<"///////////////////     CHECK MAIL AND LOGIN(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			//postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
+			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
 			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq2);
 			std::cout<<std::endl;
 
-/*	
+	
 			std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, signIn, signInReq1);
 			postRequest(dbServiceClient, signIn, signInReq2);
@@ -238,15 +238,13 @@ int main()
 			std::cout<<"///////////////////     UPDATE GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, updateGroupInfo, updateGroupInfoReq);
                         std::cout<<std::endl;			
-
-			
-
+*/			
 			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserInfo1);
 			getRequest(dbServiceClient, getUserInfo2);
 			std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+/*			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserShortInfo1);
 			getRequest(dbServiceClient, getUserShortInfo2);
 			std::cout<<std::endl;

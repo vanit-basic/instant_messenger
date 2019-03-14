@@ -116,7 +116,7 @@ MongoDB::~MongoDB() {
 	delete [] this->poolDB;
 }
 
-json::value MongoDB::checkMailAndLogin(std::string mail, std::string login) {
+json::value MongoDB::checkMailAndLogin(std::string mail, std::string login) { //+
 	auto c1 = poolMydb->acquire();
 	auto coll1 = (*c1)["infoDB"]["userInfo"];
 	bsoncxx::stdx::optional<bsoncxx::document::value> mailResult =
@@ -128,21 +128,21 @@ json::value MongoDB::checkMailAndLogin(std::string mail, std::string login) {
 	auto response = json::value::object();
 
 	if(loginResult) {
-		response["status"] = json::value::string("ALREADY_TAKEN");
+		response["loginStatus"] = json::value::string("ALREADY_TAKEN");
 	} else {
-		response["status"] = json::value::string("NOT_USING");
+		response["loginStatus"] = json::value::string("NOT_USING");
 	}
 
 
 	if (mailResult) {
-		response["status"] = json::value::string("ALREADY_TAKEN");
+		response["mailStatus"] = json::value::string("ALREADY_TAKEN");
 	} else {
-		response["status"] = json::value::string("NOT_USING");
+		response["mailStatus"] = json::value::string("NOT_USING");
 	}
 	return response;
 }
 
-json::value MongoDB::signUp(json::value request) {
+json::value MongoDB::signUp(json::value request) { //+
 	auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
         auto coll1 = (*c1)["infoDB"]["userInfo"];
@@ -161,7 +161,7 @@ json::value MongoDB::signUp(json::value request) {
 	if (gender.compare("male")) {
 		path = "resources/male.png";
 	} else 
-		path = "resources/female";
+		path = "resources/female.png";
 	
 	auto builder = bsoncxx::builder::stream::document{};
 	bsoncxx::document::value doc_value = builder
@@ -224,7 +224,7 @@ json::value MongoDB::signUp(json::value request) {
 	return response;
 }
 
-json::value MongoDB::signIn(std::string login, std::string password) {
+json::value MongoDB::signIn(std::string login, std::string password) { //+
 	auto c1 = poolMydb->acquire();
         auto c2 = poolDB->acquire();
         auto coll1 = (*c1)["infoDB"]["userInfo"];
@@ -452,8 +452,8 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		response["lastName"] = json::value::string(lastName);
 		response["nickName"] = json::value::string(nickName);
 		response["publicGroups"] = json::value::array(gIDs);
-		response["level"] = json::value::string(level);
 		response["playedGames"] = json::value::string(playedGames);
+		response["level"] = json::value::string(level);
 		response["redCard"] = json::value::string(redCard);
 		response["blackCard"] = json::value::string(blackCard);
 		response["sheriff"] = json::value::string(sheriff);
@@ -950,10 +950,10 @@ json::value MongoDB::groupUpdateInfo(json::value request) {
 
 		element = doc["access"];
 		std::string access = element.get_utf8().value.to_string();
-                if (access.compare(newName) != 0 && newName.compare("") != 0) {
+                if (access.compare(newAccess) != 0 && newAccess.compare("") != 0) {
                         coll3.update_one(document{} << "_id" << groupId << finalize,
                                 document{} << "$set" << open_document <<
-        			"groupName" << newName << close_document << finalize);
+        			"access" << newAccess << close_document << finalize);
 		}
 
 		element = doc["avatar"];
