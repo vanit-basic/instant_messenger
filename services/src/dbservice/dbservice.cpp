@@ -86,7 +86,7 @@ void DbService::handleGet(http_request message) {
 				std::string groupId = i.find("groupId")->second;
                                 json::value response = m_db->getGroupInfo(groupId);
                                 message.reply(status_codes::OK, response);
-			} else if (path[1] == "removeFromGroup") {
+			} else if (path[1] == "groupRemoveUser") {
 				std::string groupId = i.find("groupId")->second;
 				std::string userId = i.find("userId")->second;
                                 json::value response = m_db->removeFromGroup(groupId, userId);
@@ -118,7 +118,7 @@ void DbService::handlePost(http_request message) {
 					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 				}
 			} else if (path[0] == "insert") {
-				if (path[1] == "registration") {
+				if (path[1] == "signIn") {
 					json::value response = m_db->registerUser(request);
 					message.reply(status_codes::OK, response);
 				
@@ -142,6 +142,10 @@ void DbService::handlePost(http_request message) {
 							} else 
 								if (path[1] == "changePassword") {
 									json::value response = m_db->changePassword(request);
+                                                        		message.reply(status_codes::OK, response);
+								}
+								 else if (path[1] == "searchUsers") {
+									json::value response = m_db->searchUsers(request);
                                                         		message.reply(status_codes::OK, response);
 								}
 					}

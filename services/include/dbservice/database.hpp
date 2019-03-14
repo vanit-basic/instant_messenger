@@ -27,9 +27,9 @@ class database {
 		//user related queries
 		virtual json::value checkMailAndLogin(std::string mail, std::string login) = 0;
 
-		virtual json::value registerUser(json::value user) = 0;
+		virtual json::value signUp(json::value user) = 0;
 		
-		virtual json::value loginUser(std::string login, std::string pass) = 0;
+		virtual json::value signIn(std::string login, std::string pass) = 0;
 		
 		virtual json::value getUserInfo(std::string userId) = 0;
 	
@@ -47,13 +47,17 @@ class database {
 
 		virtual bool removeUserConversation(std::string userId1, std::string userId2) = 0;
 
-		virtual json::value updateUserInfo(json::value user) = 0;
+		virtual json::value userUpdateInfo(json::value user) = 0;
 		
 		virtual json::value changePassword(json::value ) = 0;
 	
 		//group related queries
 
                 virtual json::value getGroupUsers(std::string groupId) = 0;
+		
+                virtual json::value searchUsers(json::value) = 0;
+
+                virtual json::value searchGroups(json::value) = 0;
 
 		virtual json::value getGroupShortInfo(std::string groupId) = 0;
 		
@@ -63,7 +67,7 @@ class database {
                 
 		virtual json::value addUserToGroup(std::string userId, std::string groupId, std::string clientId) = 0;
 
-                virtual json::value removeFromGroup(std::string, std::string) = 0;
+                virtual json::value groupRemoveUser(std::string, std::string) = 0;
 
                 virtual bool removeMessage(json::value messageInfo) = 0;
 
