@@ -96,6 +96,10 @@ void DbService::handleGet(http_request message) {
 				std::string userId = i.find("userId")->second;
                                 json::value response = m_db->changeGroupAdmin(groupId, userId);
                                 message.reply(status_codes::OK, response);
+			} else if (path[1] == "deleteGroup") {
+				std::string groupId = i.find("groupId")->second;
+                                json::value response = m_db->deleteGroup(groupId);
+                                message.reply(status_codes::OK, response);
 			} else {
 				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 			}

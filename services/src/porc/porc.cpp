@@ -159,8 +159,9 @@ int main()
         createGroupReq2["access"] = json::value::string("private");
 
         json::value updateGroupInfoReq;
-        updateGroupInfoReq["groupId"] = json::value::string("g10");
+        updateGroupInfoReq["groupId"] = json::value::string("g1");
         updateGroupInfoReq["newName"] = json::value::string("mafiaForever");
+        updateGroupInfoReq["newAccess"] = json::value::string("private");
         updateGroupInfoReq["newAvatar"] = json::value::string("base64_string1");
 
         json::value groupRemoveUserReq;
@@ -195,7 +196,7 @@ int main()
 			postRequest(tokenClient, checkToken, Token);
 			postRequest(tokenClient, deleteToken, Token);
 			std::cout<<std::endl;
-*/
+
 			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, registr, registrationRequest1);
 			postRequest(dbServiceClient, registr, registrationRequest2);
@@ -213,14 +214,14 @@ int main()
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq1);
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq2);
 			std::cout<<std::endl;
-
+*/
 			
 			std::cout<<"///////////////////     CHECK MAIL AND LOGIN(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
+			//postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
 			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq2);
 			std::cout<<std::endl;
 
-	
+/*	
 			std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, signIn, signInReq1);
 			postRequest(dbServiceClient, signIn, signInReq2);
@@ -295,7 +296,7 @@ int main()
 			getRequest(dbServiceClient, changeGroupAdmin1);
 			getRequest(dbServiceClient, changeGroupAdmin2);
 			std::cout<<std::endl;
-
+*/
 
 		} 
 		catch (http_exception e) {
