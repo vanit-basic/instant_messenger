@@ -65,9 +65,9 @@ int main()
         http_client messagingClient(NetworkUtils::hostURI("http://host_auto_ip4:6503/v1/mafclub/api"));
         
 	uri_builder test(U("/ServiceTest"));
-        uri_builder registr(U("/insert/signUp"));
-        uri_builder signIn(U("/check/signIn"));
-	uri_builder checkMailAndLogin(U("/check/mailAndLogin"));
+        uri_builder registr(U("/account/signUp"));
+        uri_builder signIn(U("/account/signIn"));
+	uri_builder checkMailAndLogin(U("/account/mailAndLogin"));
         uri_builder signOut(U("/account/signOut?clientId=u1"));
         
 	uri_builder getUserInfo1(U("/account/getUserInfo?userId=u1"));
@@ -190,7 +190,7 @@ int main()
 
 	http_request req(methods::GET);
 	req.headers().add(U("token"), U("112431574564"));
-	req.set_request_uri(U("Account/getUserInfo?clientId=u1"));
+	req.set_request_uri(U("account/getUserInfo?clientId=u1"));
         int count = 0;
 	do{
 		try {

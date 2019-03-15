@@ -251,7 +251,6 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 		bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
 			coll2.find_one(document{} << "login" << login << finalize);
 		if (loginPassResult) {
-			response["status"] = json::value::string("INVALID_PASSWORD");
 			std::string loginDate = date();
 			
 			bsoncxx::stdx::optional<bsoncxx::document::value> info =
@@ -265,6 +264,15 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 					<< finalize,
 					document{} << "$set" << open_document <<
 					"visitTime" << date() << close_document << finalize);
+			
+			bsoncxx::stdx::optional<bsoncxx::document::value> res =
+				coll2.find_one(document{} << "login" << login << finalize);
+				doc_view = res->view();
+				bsoncxx::document::element element = doc_view["visitCount"];
+				std::string attempt = element.get_utf8().value.to_string();
+			
+			response["attempt"] = json::value::string(attempt);
+			response["status"] = json::value::string("INVALID_PASSWORD");
 		} else {
 			response["status"] = json::value::string("INVALID_LOGIN");
 		}
