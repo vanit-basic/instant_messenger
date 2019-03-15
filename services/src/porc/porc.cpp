@@ -214,14 +214,14 @@ int main()
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq1);
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq2);
 			std::cout<<std::endl;
-*/
+
 			
 			std::cout<<"///////////////////     CHECK MAIL AND LOGIN(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			//postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
 			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq2);
 			std::cout<<std::endl;
 
-/*	
+	
 			std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, signIn, signInReq1);
 			postRequest(dbServiceClient, signIn, signInReq2);
@@ -236,11 +236,9 @@ int main()
 			postRequest(dbServiceClient, createGroup, createGroupReq2);
                         std::cout<<std::endl;			
 
-/*			std::cout<<"///////////////////     UPDATE GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, groupUpdateInfo, groupInfoReq);
+			std::cout<<"///////////////////     UPDATE GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, groupUpdateInfo, groupUpdateInfoReq);
                         std::cout<<std::endl;			
-*/
-			
 
 			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserInfo1);
@@ -255,12 +253,13 @@ int main()
 			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, deleteUser);
                         std::cout<<std::endl;
+*/
 
 			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getUserShortInfo1);
+			//getRequest(dbServiceClient, getUserShortInfo1);
 			getRequest(dbServiceClient, getUserShortInfo2);
 			std::cout<<std::endl; 
-
+/*
 			std::cout<<"///////////////////     DELETE GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, deleteGroup);
                         std::cout<<std::endl;
@@ -297,7 +296,6 @@ int main()
 			getRequest(dbServiceClient, changeGroupAdmin2);
 			std::cout<<std::endl;
 */
-
 		} 
 		catch (http_exception e) {
 			std::cerr<<"error  "<<e.what()<<std::endl;
