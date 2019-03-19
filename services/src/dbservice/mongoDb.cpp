@@ -135,9 +135,9 @@ json::value MongoDB::checkMailAndLogin(std::string mail, std::string login) { //
 
 
 	if (mailResult) {
-		response["mailStatus"] = json::value::string("ALREADY_TAKEN");
+		response["emailStatus"] = json::value::string("ALREADY_TAKEN");
 	} else {
-		response["mailStatus"] = json::value::string("NOT_USING");
+		response["emailStatus"] = json::value::string("NOT_USING");
 	}
 	return response;
 }
@@ -1104,8 +1104,8 @@ json::value MongoDB::searchGroups(json::value request) {
 	web::json::array groupsId = request.at("groups").as_array();
 	for (auto i = groupsId.begin(); i != groupsId.end(); ++i) {
 		std::string id = (*i).as_string();
-		auto doc = getGroupShortInfo(id);
-		response[id] = json::value::string(doc.to_string());
+		response[id] = getGroupShortInfo(id);
+		std::cout<<response.as_string()<<std::endl;
 	}
 
 	return response;
@@ -1117,10 +1117,8 @@ json::value MongoDB::searchUsers(json::value request) {
 	web::json::array usersId = request.at("users").as_array();
 	for (auto i = usersId.begin(); i != usersId.end(); ++i) {
 		std::string id = (*i).as_string();
-		auto doc = getUserShortInfo(id);
-		response[id] = json::value::string(doc.to_string());
+		response[id] = getUserShortInfo(id);
 	}
-
 	return response;
 }
 

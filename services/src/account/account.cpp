@@ -103,18 +103,18 @@ bool Account::checkServices()
         bool status = false;
         bool DbServStatus = false;
         bool tokDbServStatus = false;
-/*        DbServStatus = ServiceStart(DataBaseClient, "Database");
+        DbServStatus = ServiceStart(DataBaseClient, "Database");
         if(DbServStatus){
-                this->setEndpoint(accountUri);
-		status = true;}
-      {          tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");
+      		tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");
+	}
         if (tokDbServStatus)
         {
                 this->setEndpoint(accountUri);
                 status = true;
-        }*/
-	this->setEndpoint(accountUri);
-        return true;
+        }
+	//this->setEndpoint(accountUri);
+        //return true;
+	return status;
 }
 
 
@@ -172,7 +172,7 @@ bool isUserInGroup(std::string userId, std::string groupId, http_client* DataBas
 	resp.extract_json().
 	then([=](json::value status)
 	{
-		if(status.at("status") == true)
+		if(status.at("status").as_string() == "IN_GROUP")
 		{
 			return true;
 		}
@@ -201,7 +201,7 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 				{
 					http_response resp;
 					json::value groupShortInfoResp;
-					groupShortInfoResp["status"] = json::value::string("INVALID_GROUP");//status@ poxel
+					groupShortInfoResp["status"] = json::value::string("INVALID_GROUP_ID");//status@ poxel
 					resp.set_body(groupShortInfoResp);
 					return resp;
 				}
@@ -232,7 +232,7 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 				{
 					http_response resp;
 					json::value groupInfoResp;
-					groupInfoResp["status"] = json::value::string("INVALID_GROUP");//status@ poxel
+					groupInfoResp["status"] = json::value::string("INVALID_GROUP_ID");//status@ poxel
 					resp.set_body(groupInfoResp);
 					return resp;
 				}
@@ -248,12 +248,8 @@ http_response getGroupInfo(std::string userId, std::string groupId, http_client*
 
 http_response userDelete(std::string userId, http_client* DataBaseClient){
 	json::value userDeleteInfo;
-	uri_builder userDelete_path(U("/account/userDelete"));
-	userDeleteInfo["userId"] = json::value::string(userId);
-	DataBaseClient->request(methods::POST, userDelete_path.to_string(), userDeleteInfo).
-	then([=](http_response status){
-		return status;
-	});
+	uri_builder userDelete_path(U("/account/deleteUser?userId" + userId));
+	return DataBaseClient->request(methods::GET, userDelete_path.to_string()).get();
 }
 
 
@@ -276,11 +272,16 @@ http_response groupDelete(std::string userId, std::string groupId, http_client* 
 	{
 		if(groupInf.at("adminId").as_string() == userId)
 		{
-			uri_builder groupDelete_path(U("/account/groupDelete?groupId"+ groupId));
-			DataBaseClient->request(methods::GET , groupDelete_path.to_string()).
-			then([=](http_response status){
-				return status;
-			});
+			uri_builder groupDelete_path(U("/account/deleteGroup?groupId"+ groupId));
+			return DataBaseClient->request(methods::GET , groupDelete_path.to_string()).get();
+		}
+		else
+		{
+			http_response resp;
+			json::value res;
+			res["status"] = json::value::string("INVALID_ADMIN_ID");
+			resp.set_body(res);
+			return resp;
 		}
 	});
 }
@@ -288,6 +289,7 @@ http_response groupDelete(std::string userId, std::string groupId, http_client* 
 
 
 void Account::handleGet(http_request message) {
+	std::cout<<message.to_string()<<std::endl;
 	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
 	std::map<std::string, std::string>::iterator it;
 
@@ -355,14 +357,14 @@ void Account::handleGet(http_request message) {
 				}
 				else
 				{
-					if (path_first_request[1] == "userDelete")
+					if (path_first_request[1] == "deleteUser")
 					{	
 						std::string userId = "";
 						userId = i.find("userId")->second;
 						if(!(userId == ""))
 						{
-							auto resp = userDelete(userId, this->DataBaseClient);
-							message.reply(resp);
+							//auto resp = userDelete(userId, this->DataBaseClient);
+							message.reply(userDelete(userId, this->DataBaseClient));
 							}
 						else
 						{
@@ -412,8 +414,8 @@ void Account::handleGet(http_request message) {
 									{
 										std::string userId = "";
 										std::string groupId = "";
-										userId = i.find("userId")->second;
-										groupId = i.find("groupId")->second;
+										userId = i["userId"];
+										groupId = i["groupId"];
 										if(!(userId == ""))
 										{
 											if(!(groupId == ""))
@@ -443,7 +445,7 @@ void Account::handleGet(http_request message) {
 	}
 }
 
-void registration(http_request message , http_client* DataBaseClient, http_client* TokenDBClient){
+void registration(http_request message , http_client* DataBaseClient, http_client* TokenDBClient) {
         message.extract_json().then([=](json::value info)
 	{
         std::string ml = "/account/mailAndLogin"; 
@@ -457,7 +459,7 @@ void registration(http_request message , http_client* DataBaseClient, http_clien
 			mail_login.extract_json().
 			then([=](json::value mail_login_json)
 			{
-				if(mail_login_json.at("mailStatus").as_string() == "notUsing" && mail_login_json.at("loginStatus").as_string() == "notUsing")
+				if(mail_login_json.at("emailStatus").as_string() == "NOT_USING" && mail_login_json.at("loginStatus").as_string() == "NOT_USING")
 				{
 					DataBaseClient->request(message).
 					then([=](http_response registration_response)
@@ -465,10 +467,10 @@ void registration(http_request message , http_client* DataBaseClient, http_clien
 						registration_response.extract_json().
 						then([=](json::value regInfo)
 						{
-							if("SUCCESSFULLY_REGISTERED" == regInfo.at("status").as_string())
+							if("OK" == regInfo.at("status").as_string())
 							{
 								std::string token = getToken();
-								uri_builder token_uri("/SetToken/");
+								uri_builder token_uri("/setToken/");
 								json::value token_json;
 								token_json["token"] = json::value::string(token);
 								token_json["userId"] = json::value::string(regInfo.at("userId").as_string());
@@ -493,13 +495,13 @@ void registration(http_request message , http_client* DataBaseClient, http_clien
 				else
 				{
 					json::value error;
-					if("alreadyTaken" ==  mail_login_json.at("mailStatus").as_string())
+					if("ALREADY_TAKEN" ==  mail_login_json.at("emailStatus").as_string())
 					{
-						error["email"] = json::value::string(U("Invalid"));
+						error["emailStatus"] = json::value::string(U("INVALID_EMAIL"));
 					}
-					if("alreadyTaken" ==  mail_login_json.at("loginStatus").as_string())
+					if("ALREADY_TAKEN" ==  mail_login_json.at("loginStatus").as_string())
 					{
-						error["login"] = json::value::string(U("Invalid"));
+						error["loginStatus"] = json::value::string(U("INVALID_LOGIN"));
 					}
 						message.reply(status_codes::OK, error);
 				}		
@@ -520,13 +522,13 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 		signinStatus.extract_json().
 		then([=](json::value signinStatus_json)
 		{
-			if (signinStatus_json["status"] == json::value::string("notFound"))
+			if (signinStatus_json["status"] == json::value::string("INVALID_LOGIN"))
 			{
 				message.reply(status_codes::OK, json::value::string("INVALID_LOGIN"));
 			}
 			else
 			{
-				if(signinStatus_json["status"] == json::value::string("wrong"))
+				if(signinStatus_json["status"] == json::value::string("INVALID_PASSWORD"))
 				{
 					int attempt = std::stoi(signinStatus_json["attempt"].as_string());
 					if(max_attempt > attempt)
@@ -559,7 +561,7 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 							{
 								json::value userInfo = userInf;
 								std::string token = getToken();
-								uri_builder token_uri("/SetToken/");
+								uri_builder token_uri("/setToken/");
 								json::value token_json;
 								token_json["token"] = json::value::string(token);
 								token_json["id"] = json::value::string(id);
@@ -714,6 +716,7 @@ http_response createGroup(http_request message, http_client* DataBaseClient)
 }
 
 void Account::handlePost(http_request message) {
+	std::cout<<message.to_string()<<std::endl;
 	auto path_first_request = requestPath(message);
 	if ( path_first_request[1] == "registration") 
 	{

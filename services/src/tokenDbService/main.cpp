@@ -12,7 +12,7 @@ int main (int argc, char** argv) {
         else{
                 InterruptHandler::hookSIGINT();
                 std::string path = std::string(argv[1]);
-                database* m = new MongoTokenDb(path);
+                tokenDatabase* m = new MongoTokenDb(path);
                 tokenDbService server(path, m);
                         try {
                                 // wait for server initialization...

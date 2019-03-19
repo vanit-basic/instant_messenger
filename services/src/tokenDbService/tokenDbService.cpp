@@ -22,7 +22,7 @@ bool tokenDbService::getUri(std::string path) {
         }
 }
 
-tokenDbService::tokenDbService(std::string path, database* m) : BasicController() {
+tokenDbService::tokenDbService(std::string path, tokenDatabase* m) : BasicController() {
         if(getUri(path)) {
                 this->setEndpoint(tokenDbServiceUri);
         }
