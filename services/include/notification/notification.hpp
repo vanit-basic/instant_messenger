@@ -1,34 +1,35 @@
 #ifndef NOTIFICATION_HPP
 #define NOTIFICATION_HPP
 
-#include <base/basic_controller.hpp>
-#include <cpprest/http_client.h>
+#include <string>
 
-#include <cpprest/filestream.h>
-#include <bsoncxx/json.hpp>
-#include <mongocxx/client.hpp>
-#include <mongocxx/stdx.hpp>
-#include <mongocxx/uri.hpp>
 #include <mongocxx/pool.hpp>
-#include <bsoncxx/builder/stream/document.hpp>
-#include <mongocxx/instance.hpp>
+#include <base/basic_controller.hpp>
+#include <dbservice/database.hpp>
 #include <cpprest/http_client.h>
-#include <cpprest/filestream.h>
-#include <bsoncxx/types.hpp>
 
-class Notification {
-	public:
-		Notification(){}
-		~Notification(){}
-	public:
-		virtual json::value userJoinGroup(json::value) = 0;
-		virtual json::value userAcceptInvitation(json::value) = 0;
-		virtual json::value groupInviteUser(json::value) = 0;
-		virtual json::value groupAccepyUser(json::value) = 0;
-		virtual json::value newMessage(json::value) = 0;
-		virtual json::value messageFromService(json::value) = 0;
-		virtual json::value groupRemoveUser(json::value) = 0;
-		virtual json::value userLeaveGroup(json::value) = 0;
+#include <cpprest/filestream.h>
+
+using namespace cfx;
+using namespace utility;
+using namespace web;
+using namespace web::http;
+using namespace web::http::client;
+using namespace concurrency::streams;
+
+class Notification : public BasicController, Controller {
+        public:
+                bool checkServices();
+                database* m_db;
+                Notification(std::string, database*);
+                virtual ~Notification();
+
+        private:
+                std::string messagingUri;
+                bool createClients(std::string path);
+                void handleGet(http_request message) override;
+                void handlePost(http_request message) override;
+                void initRestOpHandlers() override;
 };
 
-#endif
+#endif;

@@ -16,13 +16,13 @@
 #include <notification/notification.hpp>
 #include <notification/mongoDB.hpp>
 
-bool NotDB::createPool(std::string path) {
+bool Notification::createClient(std::string path) {
         std::ifstream configFile(path);
         json::value config;
         if (configFile.is_open()) {
                 configFile >> config;
                 configFile.close();
-                this->poolDB = new mongocxx::pool (mongocxx::uri{config.at("mongodbserver").as_string()});
+                this->poolDB = new mongocxx::pool (mongocxx::uri{config.at("notification").as_string()});
                 return true;
         } else {
                 std::cerr << "ConfigFile is not exist!!!" << std::endl;
@@ -30,34 +30,15 @@ bool NotDB::createPool(std::string path) {
         }
 }
 
-NotDB::NotDB(std::string path) {
-        static int count = 0;
+Notification::Notification(std::string path, database* mongo) {
+/*      static int count = 0;
         if (count < 1) {
                 ++count;
                 mongocxx::instance instance{};
-        }
-        createPool(path);
-
-	
+        }*/
+	this->m_db = mongo;
+        this->createClient(path);
 }
 
-NotDB::~NotDB() {
-        delete[] this->poolDB;
+Notification::~Notification() {
 }
-
-json::value NotDB::userJoinGroup(json::value) {}
-
-json::value NotDB::userAcceptInvitation(json::value) {}
-
-json::value NotDB::groupInviteUser(json::value) {}
-
-json::value NotDB::groupAccepyUser(json::value) {}
-
-json::value NotDB::newMessage(json::value) {}
-
-json::value NotDB::messageFromService(json::value) {}
-
-json::value NotDB::groupRemoveUser(json::value) {}
-
-json::value NotDB::userLeaveGroup(json::value) {}
-
