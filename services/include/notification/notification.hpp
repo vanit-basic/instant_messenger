@@ -26,7 +26,7 @@ class Notification : public BasicController, Controller {
 
         private:
                 std::string messagingUri;
-                bool createClients(std::string path);
+                bool createClient(std::string path);
                 void handleGet(http_request message) override;
                 void handlePost(http_request message) override;
                 void initRestOpHandlers() override;

@@ -22,7 +22,7 @@
 
 class NotMongo: public NotDB {
 	private: 
-		mongocxx::pool* poolDB;
+		mongocxx::pool* poolDB
 		bool createPool(std::string);
         public:
                 NotDB();
@@ -31,7 +31,7 @@ class NotMongo: public NotDB {
 		virtual json::value userJoinGroup(json::value);
                 virtual json::value userAcceptInvitation(json::value);
                 virtual json::value groupInviteUser(json::value);
-                virtual json::value groupAccepyUser(json::value);
+                virtual json::value groupAcceptUser(json::value);
                 virtual json::value newMessage(json::value);
 		virtual json::value messageFromService(json::value);
                 virtual json::value groupRemoveUser(json::value);
