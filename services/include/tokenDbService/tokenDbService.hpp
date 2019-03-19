@@ -4,7 +4,7 @@
 
 #include <base/basic_controller.hpp>
 #include <cpprest/http_client.h>
-#include <dbservice/database.hpp>
+#include <tokenDbService/tokenDatabase.hpp>
 
 using namespace cfx;
 using namespace utility;
@@ -16,10 +16,10 @@ using namespace concurrency::streams;
 class tokenDbService : public BasicController, Controller 
 {
 	public:
-		tokenDbService(std::string, database*);
+		tokenDbService(std::string, tokenDatabase*);
 		virtual ~tokenDbService() {}
 	private:
-		database* db;
+		tokenDatabase* db;
 		std::string tokenDbServiceUri;
 		bool getUri(std::string path);
 		void handleGet(http_request message) override;

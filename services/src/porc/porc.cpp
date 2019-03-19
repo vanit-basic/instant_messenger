@@ -133,8 +133,8 @@ int main()
 	checkMailAndLoginReq2["login"] = json::value::string("valodyan1215");
         
 	json::value searchUsersReq;
-	searchUsersReq["users"][0] = json::value::string("u1");
-	searchUsersReq["users"][1] = json::value::string("u2");
+	searchUsersReq["users"][0] = json::value::string("u9");
+	searchUsersReq["users"][1] = json::value::string("u10");
 	
 	json::value searchGroupsReq;
 	searchGroupsReq["groups"][0] = json::value::string("g1");
@@ -202,20 +202,20 @@ int main()
 			postRequest(tokenClient, deleteToken, Token);
 			std::cout<<std::endl;
 
-		+	std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
+		+*/	std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, registr, registrationRequest1);
 			postRequest(dbServiceClient, registr, registrationRequest2);
 			std::cout<<std::endl;
 			
-		+	std::cout<<"///////////////////     CHANGE PASSWORD(DB  SERVICE) TEST      /////////////////"<<std::endl;
+/*		+	std::cout<<"///////////////////     CHANGE PASSWORD(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, changePassword, changePasswordReq);
 			std::cout<<std::endl;
 			
-		+	std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
+		+*/	std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, searchUsers, searchUsersReq);
 			std::cout<<std::endl;
 	
-		+	std::cout<<"///////////////////     SEARCH GROUPS (DB  SERVICE) TEST      /////////////////"<<std::endl;
+/*		+	std::cout<<"///////////////////     SEARCH GROUPS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, searchGroups, searchGroupsReq);
 			std::cout<<std::endl;
 	
