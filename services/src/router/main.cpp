@@ -20,8 +20,10 @@ int main(int argc, const char * argv[])
 		std::string path = std::string(argv[1]);
 
 		Router server(path);
+		std::cout<<__LINE__<<std::endl;
 		if(server.checkServices())
 		{
+		std::cout<<__LINE__<<std::endl;
 			try {
 				server.accept().wait();
 				std::cout << "Router start " << std::endl;

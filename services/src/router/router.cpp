@@ -9,7 +9,7 @@
 #include <router/router.hpp>
 
 Action Router::actionFromString(std::string actionName) {
-    if(actionName == "registration") {
+    if(actionName == "signUp") {
         return Registration;
     } else if(actionName == "signIn") {
         return SignIn;
@@ -22,15 +22,15 @@ Action Router::actionFromString(std::string actionName) {
 
 ServiceType Router::serviceTypeFromString(std::string serviceName) {
 
-    if(serviceName == "Account") {
+    if(serviceName == "account") {
         return AccountService;
-    } else if(serviceName == "Messaging") {
+    } else if(serviceName == "messaging") {
         return MessagingService;
-    } else if(serviceName == "Search") {
+    } else if(serviceName == "search") {
         return SearchService;
-    } else if(serviceName == "Game") {
+    } else if(serviceName == "game") {
         return GameService;
-    } else if(serviceName == "Notification") {
+    } else if(serviceName == "notification") {
         return NotificationsService;
     } else {
         return UnknownService;
@@ -103,7 +103,7 @@ bool Router::createClients(std::string path)
 }
 
 bool ServiceStart (http_client* client, std::string serviceName) {
-    uri_builder builder(U("/account/userDelete?clientId=12"));
+    uri_builder builder(U("/ServiceTest/"));
     std::error_code error;
 
     int count = 0;
@@ -149,7 +149,9 @@ bool Router::checkServices()
     bool notifServStatus = false;
     bool searchServStatus = false;
     bool tokDbServStatus = false;
+    std::cout<<"checkServices  "<<__LINE__<<std::endl;
     accServStatus = ServiceStart(AccountClient, "Account");
+    std::cout<<"checkServices  "<<__LINE__<<std::endl;
     /*	qani der patrast chen bolor MikroServicener@ toxnel vorpes comment
 
         if(accServStatus){
@@ -170,10 +172,13 @@ bool Router::checkServices()
         return status;
      */
     if (accServStatus){
-        //		convServStatus = ServiceStart(ConversationClient, "Messaging");}
-        //	if (convServStatus){
+    std::cout<<"checkServices  "<<__LINE__<<std::endl;
+        		tokDbServStatus = ServiceStart(TokenDbClient, "TokenDB");}
+        	if (tokDbServStatus){
+    std::cout<<"checkServices  "<<__LINE__<<std::endl;
         this->setEndpoint(routerUri);}
-return accServStatus;
+    std::cout<<"checkServices  "<<__LINE__<<std::endl;
+return tokDbServStatus;
 }
 
 Router::Router(std::string path)
@@ -315,7 +320,7 @@ void replyToInvalidRequest(RequestStatus status, http_request request) {
 }
 
 void Router::handleGet(http_request message) {
-
+	std::cout<<message.to_string()<<std::endl;
     auto urlPath  = requestPath(message);
     RequestStatus status = validateRequest(message, urlPath, TokenDbClient);
     if(status != RequestStatusValid) return replyToInvalidRequest(status, message);
@@ -332,23 +337,39 @@ void Router::handleGet(http_request message) {
 }
 
 void Router::handlePost(http_request message) {
+	std::cout<<message.to_string()<<std::endl;
     auto urlPath  = requestPath(message);
     //TODO add path validation before using it
     std::string actionName = urlPath[1];
+    std::cout<<"router post "<<__LINE__<<std::endl;
     Action action = actionFromString(actionName);
+    std::cout<<"router action "<<action<<__LINE__<<std::endl;
     bool authorized = isAuthorizedAction(action);
-
-    RequestStatus status = validateRequest(message, urlPath, TokenDbClient, authorized);
+    RequestStatus status;
+    std::cout<<"router post "<<__LINE__<<std::endl;
+	if(authorized)
+	{
+    		status = validateRequest(message, urlPath, TokenDbClient, authorized);
+	}
+	else
+	{
+		status = RequestStatusValid;
+	}
+    std::cout<<"router post "<<__LINE__<<std::endl;
     if(status != RequestStatusValid)
     { 
+    std::cout<<"router post "<<__LINE__<<std::endl;
 	    return replyToInvalidRequest(status, message);
     }
 
     std::string serviceName = urlPath[0];
+    std::cout<<"router post "<<__LINE__<<std::endl;
 
     ServiceType servType = serviceTypeFromString(serviceName);
+    std::cout<<"router post "<<__LINE__<<std::endl;
     http_client *service = serviceClient(servType);
 
+    std::cout<<"router post "<<__LINE__<<std::endl;
     service->request(message).then([message](http_response response){
             message.reply(response);
             });

@@ -120,7 +120,7 @@ bool Account::checkServices()
 
 
 std::string getToken(){
-	
+	std::cout<<"getToken"<<std::endl;
 	srand(time(NULL));
         int temp = rand()% 100000000000;
         std::string token = std::to_string(temp);
@@ -446,13 +446,15 @@ void Account::handleGet(http_request message) {
 }
 
 void registration(http_request message , http_client* DataBaseClient, http_client* TokenDBClient) {
-        message.extract_json().then([=](json::value info)
+        http_request message1 = message;
+	message.extract_json().then([=](json::value info)
 	{
         std::string ml = "/account/mailAndLogin"; 
         json::value login_mail;
         login_mail["email"] = json::value::string(info.at("email").as_string());
         login_mail["login"] = json::value::string(info.at("login").as_string());
         uri_builder get_mail_login(U(ml));
+        uri_builder r(U("/account/signUp"));
         DataBaseClient->request(methods::POST, get_mail_login.to_string(), login_mail).
 		then([=](http_response mail_login)
 		{
@@ -461,7 +463,7 @@ void registration(http_request message , http_client* DataBaseClient, http_clien
 			{
 				if(mail_login_json.at("emailStatus").as_string() == "NOT_USING" && mail_login_json.at("loginStatus").as_string() == "NOT_USING")
 				{
-					DataBaseClient->request(message).
+					DataBaseClient->request(methods::POST, r.to_string(), info).
 					then([=](http_response registration_response)
 					{
 						registration_response.extract_json().
@@ -718,7 +720,7 @@ http_response createGroup(http_request message, http_client* DataBaseClient)
 void Account::handlePost(http_request message) {
 	std::cout<<message.to_string()<<std::endl;
 	auto path_first_request = requestPath(message);
-	if ( path_first_request[1] == "registration") 
+	if ( path_first_request[1] == "signUp") 
 	{
 		registration(message, this -> DataBaseClient, this -> TokenDBClient);
 	}

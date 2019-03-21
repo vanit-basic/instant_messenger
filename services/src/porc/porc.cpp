@@ -203,19 +203,19 @@ int main()
 			std::cout<<std::endl;
 
 		+*/	std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, registr, registrationRequest1);
-			postRequest(dbServiceClient, registr, registrationRequest2);
+			postRequest(routerClient, registr, registrationRequest1);
+			postRequest(routerClient, registr, registrationRequest2);
 			std::cout<<std::endl;
 			
 /*		+	std::cout<<"///////////////////     CHANGE PASSWORD(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, changePassword, changePasswordReq);
 			std::cout<<std::endl;
 			
-		+*/	std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
+		+	std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, searchUsers, searchUsersReq);
 			std::cout<<std::endl;
 	
-/*		+	std::cout<<"///////////////////     SEARCH GROUPS (DB  SERVICE) TEST      /////////////////"<<std::endl;
+		+	std::cout<<"///////////////////     SEARCH GROUPS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, searchGroups, searchGroupsReq);
 			std::cout<<std::endl;
 	
