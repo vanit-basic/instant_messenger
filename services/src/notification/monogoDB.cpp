@@ -16,46 +16,46 @@
 
 #include <notification/mongoDB.hpp>
 
-bool NotMongo::createPool(std::string) {
+bool NotificationMongo::createPool(std::string) {
 	
 }
 
-NotMongo::NotMongo() {
+NotificationMongo::NotificationMongo() {
 
 }
 
-NotMongo::~NotMongo() {
+NotifiactionMongo::~NotificationMongo() {
 	
 }
 
-json::value NotMongo::userJoinGroup(json::value) {
+json::value NotificationMongo::userJoinGroup(json::value) {
 	
 }
 
-json::value NotMongo::userAcceptInvitation(json::value) {
+json::value NotificationMongo::userAcceptInvitation(json::value) {
 	
 }
 
-json::value NotMongo::groupInviteUser(json::value) {
+json::value NotificationMongo::groupInviteUser(json::value) {
 	
 }
 
-json::value NotMongo::groupAccepyUser(json::value) {
+json::value NotificationMongo::groupAccepyUser(json::value) {
 	 
 }
 
-json::value NotMongo::newMessage(json::value) {
+json::value NotificationMongo::newMessage(json::value) {
 	
 }
 
-json::value NotMongo::messageFromService(json::value) {
+json::value NotificationMongo::messageFromService(json::value) {
 	 
 }
 
-json::value NotMongo::groupRemoveUser(json::value) {
+json::value NotificationMongo::groupRemoveUser(json::value) {
 	
 }
 
-json::value NotMongo::userLeaveGroup(json::value) {
+json::value NotificationMongo::userLeaveGroup(json::value) {
 	
 }

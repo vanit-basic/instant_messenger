@@ -20,13 +20,13 @@
 #include <notification/notification.hpp>
 
 
-class NotMongo: public NotDB {
+class NotificationMongo: public NotificationDB {
 	private: 
 		mongocxx::pool* poolDB
 		bool createPool(std::string);
         public:
-                NotDB();
-                ~NotDB();
+                NotificationMongo();
+                ~NotificationMongo();
                 
 		virtual json::value userJoinGroup(json::value);
                 virtual json::value userAcceptInvitation(json::value);
