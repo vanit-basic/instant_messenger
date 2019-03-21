@@ -72,6 +72,7 @@ Page {
             anchors.verticalCenter:parent.verticalCenter
             anchors.left: our_story.right
             anchors.leftMargin: 10
+            color: "#03a3a3"
         }
         Rectangle{
             height: 2
@@ -79,6 +80,7 @@ Page {
             anchors.verticalCenter:parent.verticalCenter
             anchors.right: our_story.left
             anchors.rightMargin: 10
+            color: "#03a3a3"
         }
         Text{
             id:our_story
