@@ -17,6 +17,6 @@ class tokenDatabase {
                 virtual bool setToken(json::value) = 0;
                 virtual bool checkToken(json::value) = 0;
                 virtual bool deleteToken(json::value) = 0;
-                tokenDatabase();
-                ~tokenDatabase();
+                tokenDatabase(){};
+                ~tokenDatabase(){};
 };
