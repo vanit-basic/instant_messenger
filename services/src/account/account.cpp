@@ -118,12 +118,14 @@ bool Account::checkServices()
 }
 
 
-
+	
+static int temp = 0;
 std::string getToken(){
 	std::cout<<"getToken"<<std::endl;
 	srand(time(NULL));
-        int temp = rand()% 100000000000;
-        std::string token = std::to_string(temp);
+//	int temp = rand()% 100000000000;
+	++temp;
+	std::string token = std::to_string(temp);
 	return token;
 }
 
@@ -446,8 +448,8 @@ void Account::handleGet(http_request message) {
 }
 
 void registration(http_request message , http_client* DataBaseClient, http_client* TokenDBClient) {
-        http_request message1 = message;
-	message.extract_json().then([=](json::value info)
+        http_request message1 = http_request(message);
+	message1.extract_json().then([=](json::value info)
 	{
         std::string ml = "/account/mailAndLogin"; 
         json::value login_mail;
@@ -463,9 +465,11 @@ void registration(http_request message , http_client* DataBaseClient, http_clien
 			{
 				if(mail_login_json.at("emailStatus").as_string() == "NOT_USING" && mail_login_json.at("loginStatus").as_string() == "NOT_USING")
 				{
+				std::cout<<__LINE__<<std::endl;
 					DataBaseClient->request(methods::POST, r.to_string(), info).
 					then([=](http_response registration_response)
 					{
+						std::cout<<__LINE__<<std::endl;
 						registration_response.extract_json().
 						then([=](json::value regInfo)
 						{

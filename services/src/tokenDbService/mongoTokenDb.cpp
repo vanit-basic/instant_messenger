@@ -67,6 +67,7 @@ bool MongoTokenDb::checkToken(json::value info)
 	std::string token;
 	try
 	{
+
 		id = info.at("userId").as_string();
 		token = info.at("token").as_string();
 		auto client = clientPool->acquire();

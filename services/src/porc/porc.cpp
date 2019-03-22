@@ -19,26 +19,15 @@ using namespace web::http;
 using namespace web::http::client;
 using namespace concurrency::streams;
 
-/*
-                "account":"http://host_auto_ip4:6502/v1/mafclub/api",
+void Request(http_client client, http_request req)
+{
+	client.request(req).then([](http_response response){
+			response.extract_json().then([](json::value message){
+					std::cout<<message.to_string()<<std::endl;
+					}).wait();
+			}).wait();
+}
 
-                "messaging":"http://host_auto_ip4:6503/v1/mafclub/api",
-
-                "router":"http://host_auto_ip4:6504/v1/mafclub/api",
-
-                "game":"http://host_auto_ip4:6505/v1/mafclub/api",
-
-                "search":"http://host_auto_ip4:6506/v1/mafclub/api",
-
-                "tokendbservice":"http://host_auto_ip4:6507/v1/mafclub/api",
-
-                "dbservice":"http://host_auto_ip4:6508/v1/mafclub/api",
-
-                "notification":"http://host_auto_ip4:6509/v1/mafclub/api",
-
-                "mongodbserver" : "mongodb://localhost:27017",
-
-*/
 void postRequest(http_client client, uri_builder uri, json::value value)
 {
 	client.request(methods::POST, uri.to_string(), value).then([](http_response response){
@@ -58,7 +47,8 @@ void getRequest(http_client client, uri_builder uri)
 }
 int main()
 {
-        http_client dbServiceClient(NetworkUtils::hostURI("http://host_auto_ip4:6508/v1/mafclub/api"));
+        
+	http_client dbServiceClient(NetworkUtils::hostURI("http://host_auto_ip4:6508/v1/mafclub/api"));
         http_client tokenClient(NetworkUtils::hostURI("http://host_auto_ip4:6507/v1/mafclub/api"));
         http_client routerClient(NetworkUtils::hostURI("http://host_auto_ip4:6504/v1/mafclub/api"));
         http_client accountClient(NetworkUtils::hostURI("http://host_auto_ip4:6502/v1/mafclub/api"));
@@ -71,7 +61,7 @@ int main()
         uri_builder signOut(U("/account/signOut?clientId=u1"));
         
 	uri_builder getUserInfo1(U("/account/getUserInfo?userId=u1"));
-        uri_builder getUserInfo2(U("/account/getUserInfo?userId=u2"));
+	uri_builder getUserInfo2(U("/account/getUserInfo?userId=u2"));
         
 	uri_builder getUserShortInfo1(U("/account/getUserShortInfo?userId=u1"));
 	uri_builder getUserShortInfo2(U("/account/getUserShortInfo?userId=u2"));
@@ -103,7 +93,7 @@ int main()
 
 	json::value Token;
 	Token["userId"] = json::value::string("u1");
-	Token["token"] = json::value::string("asdasdasdasdasd54564asd");
+	Token["token"] = json::value::string("1");
 	
 	json::value registrationRequest1;
         registrationRequest1["firstName"] = json::value::string("Valod");
@@ -187,7 +177,25 @@ int main()
         updateUserInfoReq2["lastName"] = json::value::string("Valodyan");
         updateUserInfoReq2["avatar"] = json::value::string("base64_string");
         updateUserInfoReq2["nickName"] = json::value::string("Jon90");
-
+// REGISTRATION REQUEST	
+	uri regUri("/account/signUp");
+	http_request userRegistration1(methods::POST);
+	userRegistration1.set_body(registrationRequest1);
+	userRegistration1.set_request_uri(regUri);
+	http_request userRegistration2(methods::POST);
+	userRegistration2.set_body(registrationRequest2);
+	userRegistration2.set_request_uri(regUri);
+// GET USER INFO REQUEST
+	http_request getUserInfoRequest1(methods::GET);
+	uri getUserInfoUri1("/account/getUserInfo?userId=u1");
+	getUserInfoRequest1.set_request_uri(getUserInfoUri1);
+	getUserInfoRequest1.headers().add("token", "1");
+	http_request getUserInfoRequest2(methods::GET);
+	uri getUserInfoUri2("/account/getUserInfo?userId=u2");
+	getUserInfoRequest2.set_request_uri(getUserInfoUri2);
+	getUserInfoRequest2.headers().add("token", "2");
+//	
+	
 	http_request req(methods::GET);
 	req.headers().add(U("token"), U("112431574564"));
 	req.set_request_uri(U("account/getUserInfo?clientId=u1"));
@@ -196,62 +204,46 @@ int main()
 		try {
                         ++count;
 /*
-			std::cout<<"///////////////////      TOKEN  DB  SERVICE TEST      /////////////////"<<std::endl;
-			postRequest(tokenClient, setToken, Token);
-			postRequest(tokenClient, checkToken, Token);
-			postRequest(tokenClient, deleteToken, Token);
+			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			Request(routerClient, userRegistration1);
+			Request(routerClient, userRegistration2);
 			std::cout<<std::endl;
-
-		+*/	std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(routerClient, registr, registrationRequest1);
-			postRequest(routerClient, registr, registrationRequest2);
-			std::cout<<std::endl;
-			
-/*		+	std::cout<<"///////////////////     CHANGE PASSWORD(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, changePassword, changePasswordReq);
+*/			
+			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			Request(routerClient, getUserInfoRequest1);
+			Request(routerClient, getUserInfoRequest2);
 			std::cout<<std::endl;
 			
-		+	std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, searchUsers, searchUsersReq);
-			std::cout<<std::endl;
-	
-		+	std::cout<<"///////////////////     SEARCH GROUPS (DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, searchGroups, searchGroupsReq);
-			std::cout<<std::endl;
-	
- 		+	std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+/* 			std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq1);
 			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq2);
 			std::cout<<std::endl;
 			
-		+	std::cout<<"///////////////////     CHECK MAIL AND LOGIN(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
-			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq2);
-			std::cout<<std::endl;
-
-		+	std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, signIn, signInReq1);
-			postRequest(dbServiceClient, signIn, signInReq2);		
-
-		+	std::cout<<"///////////////////     Is USER In GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, isUserInGroup);
-			std::cout<<std::endl;
-
-		+	std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, createGroup, createGroupReq1);
-			postRequest(dbServiceClient, createGroup, createGroupReq2);
-                        std::cout<<std::endl;			
-
-		+	std::cout<<"///////////////////     UPDATE GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, groupUpdateInfo, groupUpdateInfoReq);
-                        std::cout<<std::endl;			
-			
-		+	std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserInfo1);
 			getRequest(dbServiceClient, getUserInfo2);
 			std::cout<<std::endl;
-		
-		+	std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+
+			std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, signIn, signInReq1);
+			postRequest(dbServiceClient, signIn, signInReq2);		
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, createGroup, createGroupReq1);
+			postRequest(dbServiceClient, createGroup, createGroupReq2);
+                        std::cout<<std::endl;
+
+			std::cout<<"///////////////////     UPDATE GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, groupUpdateInfo, groupUpdateInfoReq);
+                        std::cout<<std::endl;
+
+			std::cout<<"///////////////////     ADD USER TO GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
+                        getRequest(dbServiceClient, addUserToGroup1);
+			getRequest(dbServiceClient, addUserToGroup2);
+                        std::cout<<std::endl;
+
+			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getUserShortInfo1);
 			getRequest(dbServiceClient, getUserShortInfo2);
 			std::cout<<std::endl;
@@ -259,39 +251,58 @@ int main()
 			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         getRequest(dbServiceClient, deleteUser);
                         std::cout<<std::endl;
-
-		+	std::cout<<"///////////////////     DELETE GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
-                        getRequest(dbServiceClient, deleteGroup);
-                        std::cout<<std::endl;
-	
-		+	std::cout<<"///////////////////     GET GROUP USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getGroupUsers);
-			std::cout<<std::endl;
-
-		+	std::cout<<"///////////////////     GET GROUP SHORT INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getGroupShortInfo);
-			std::cout<<std::endl;
 			
-		+	std::cout<<"///////////////////     GET GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     GET GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupInfo);
 			std::cout<<std::endl;
 			
-		+	std::cout<<"///////////////////     REMOVE FROM GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     GET GROUP SHORT INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			getRequest(dbServiceClient, getGroupShortInfo);
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     REMOVE FROM GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, removeFromGroup);
 			//getRequest(dbServiceClient, removeFromGroup);
 			std::cout<<std::endl;
-
-		+	std::cout<<"///////////////////     GET GROUP USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getGroupUsers);
+*/
+/*			std::cout<<"///////////////////     CHANGE PASSWORD(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, changePassword, changePasswordReq);
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, searchUsers, searchUsersReq);
+			std::cout<<std::endl;
+	
+			std::cout<<"///////////////////     SEARCH GROUPS (DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, searchGroups, searchGroupsReq);
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     CHECK MAIL AND LOGIN(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq1);
+			postRequest(dbServiceClient, checkMailAndLogin, checkMailAndLoginReq2);
 			std::cout<<std::endl;
 
-		+	std::cout<<"///////////////////     ADD USER TO GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
-                        getRequest(dbServiceClient, addUserToGroup1);
-			getRequest(dbServiceClient, addUserToGroup2);
+			std::cout<<"///////////////////     Is USER In GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			getRequest(dbServiceClient, isUserInGroup);
+			std::cout<<std::endl;
+
+			std::cout<<"///////////////////     DELETE GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
+                        getRequest(dbServiceClient, deleteGroup);
+                        std::cout<<std::endl;
+	
+			std::cout<<"///////////////////     GET GROUP USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
+			getRequest(dbServiceClient, getGroupUsers);
+			std::cout<<std::endl;
 			
-		+	std::cout<<"///////////////////     CHANGE GROUP ADMIN (DB  SERVICE) TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     CHANGE GROUP ADMIN (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, changeGroupAdmin1);
 			getRequest(dbServiceClient, changeGroupAdmin2);
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////      TOKEN  DB  SERVICE TEST      /////////////////"<<std::endl;
+			postRequest(tokenClient, setToken, Token);
+			postRequest(tokenClient, checkToken, Token);
+			postRequest(tokenClient, deleteToken, Token);
 			std::cout<<std::endl;
 */
 		} 
