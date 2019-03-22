@@ -79,7 +79,7 @@ class MongoDB : public database {
 	
 		virtual json::value getGroupUsers(std::string groupId);
 		
-		virtual json::value createGroup(json::value groupInfo);
+		virtual json::value createGroup(json::value groupInfo, std::string userId);
 
                 virtual json::value deleteGroup(std::string groupId);
                 

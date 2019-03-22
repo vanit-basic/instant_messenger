@@ -47,49 +47,22 @@ void getRequest(http_client client, uri_builder uri)
 }
 int main()
 {
+        http_client routerClient(NetworkUtils::hostURI("http://host_auto_ip4:6504/v1/mafclub/api"));
         
 	http_client dbServiceClient(NetworkUtils::hostURI("http://host_auto_ip4:6508/v1/mafclub/api"));
         http_client tokenClient(NetworkUtils::hostURI("http://host_auto_ip4:6507/v1/mafclub/api"));
-        http_client routerClient(NetworkUtils::hostURI("http://host_auto_ip4:6504/v1/mafclub/api"));
         http_client accountClient(NetworkUtils::hostURI("http://host_auto_ip4:6502/v1/mafclub/api"));
         http_client messagingClient(NetworkUtils::hostURI("http://host_auto_ip4:6503/v1/mafclub/api"));
         
-	uri_builder test(U("/ServiceTest"));
-        uri_builder registr(U("/account/signUp"));
-        uri_builder signIn(U("/account/signIn"));
-	uri_builder checkMailAndLogin(U("/account/mailAndLogin"));
-        uri_builder signOut(U("/account/signOut?clientId=u1"));
-        
-	uri_builder getUserInfo1(U("/account/getUserInfo?userId=u1"));
-	uri_builder getUserInfo2(U("/account/getUserInfo?userId=u2"));
-        
-	uri_builder getUserShortInfo1(U("/account/getUserShortInfo?userId=u1"));
-	uri_builder getUserShortInfo2(U("/account/getUserShortInfo?userId=u2"));
 
 	uri_builder isUserInGroup(U("/account/isUserInGroup?groupId=g1&userId=u1"));
-	uri_builder addUserToGroup1(U("/account/addUserToGroup?userId=u1&groupId=g1&clientId=u2"));
-	uri_builder addUserToGroup2(U("/account/addUserToGroup?userId=u2&groupId=g2&clientId=u1"));
-        uri_builder deleteUser(U("/account/deleteUser?userId=u1"));
-        uri_builder deleteGroup(U("/account/deleteGroup?groupId=g1&userId=u1"));
-        uri_builder createGroup(U("/account/createGroup"));
-        uri_builder getGroupInfo(U("/account/getGroupInfo?clientId=u1&groupId=g2"));
-        uri_builder getGroupShortInfo(U("/account/getGroupShortInfo?clientId=u1&groupId=g2"));
-        uri_builder groupRemoveUser(U("/account/groupRemoveUser"));
-      	uri_builder updateUserInfo(U("/account/userUpdateInfo"));
         uri_builder changePassword(U("/account/changePassword"));
-      	uri_builder groupUpdateInfo(U("/account/groupUpdateInfo"));
         uri_builder checkToken(U("/checkToken"));
         uri_builder deleteToken(U("/deleteToken"));
         uri_builder setToken(U("/setToken"));
         uri_builder getGroupUsers(U("/account/getGroupUsers?groupId=g1"));
-        
-	uri_builder changeGroupAdmin1(U("/account/changeGroupAdmin?groupId=g1&userId=u2"));
-	uri_builder changeGroupAdmin2(U("/account/changeGroupAdmin?groupId=g2&userId=u1"));
-
 	uri_builder searchUsers(U("/account/searchUsers"));
 	uri_builder searchGroups(U("/account/searchGroups"));
-
-        uri_builder removeFromGroup(U("/account/groupRemoveUser?groupId=g1&userId=u2"));
 
 	json::value Token;
 	Token["userId"] = json::value::string("u1");
@@ -145,12 +118,10 @@ int main()
 
 	json::value createGroupReq1;
         createGroupReq1["groupName"] = json::value::string("Best");
-        createGroupReq1["userId"] = json::value::string("u1");
         createGroupReq1["access"] = json::value::string("public");
 
 	json::value createGroupReq2;
         createGroupReq2["groupName"] = json::value::string("Mafia");
-        createGroupReq2["userId"] = json::value::string("u2");
         createGroupReq2["access"] = json::value::string("private");
 
         json::value groupUpdateInfoReq;
@@ -177,15 +148,16 @@ int main()
         updateUserInfoReq2["lastName"] = json::value::string("Valodyan");
         updateUserInfoReq2["avatar"] = json::value::string("base64_string");
         updateUserInfoReq2["nickName"] = json::value::string("Jon90");
-// REGISTRATION REQUEST	
-	uri regUri("/account/signUp");
+
+// 	REGISTRATION REQUEST	
+	uri registrationUri("/account/signUp");
 	http_request userRegistration1(methods::POST);
 	userRegistration1.set_body(registrationRequest1);
-	userRegistration1.set_request_uri(regUri);
+	userRegistration1.set_request_uri(registrationUri);
 	http_request userRegistration2(methods::POST);
 	userRegistration2.set_body(registrationRequest2);
-	userRegistration2.set_request_uri(regUri);
-// GET USER INFO REQUEST
+	userRegistration2.set_request_uri(registrationUri);
+//	GET USER INFO REQUEST
 	http_request getUserInfoRequest1(methods::GET);
 	uri getUserInfoUri1("/account/getUserInfo?userId=u1");
 	getUserInfoRequest1.set_request_uri(getUserInfoUri1);
@@ -194,82 +166,194 @@ int main()
 	uri getUserInfoUri2("/account/getUserInfo?userId=u2");
 	getUserInfoRequest2.set_request_uri(getUserInfoUri2);
 	getUserInfoRequest2.headers().add("token", "2");
-//	
-	
-	http_request req(methods::GET);
-	req.headers().add(U("token"), U("112431574564"));
-	req.set_request_uri(U("account/getUserInfo?clientId=u1"));
+//	UPDATE USER INFO REQUEST	
+	http_request updateUserInfoRequest(methods::POST);
+	uri updateUserInfoUri("/account/userUpdateInfo?userId=u1");
+	updateUserInfoRequest.set_request_uri(updateUserInfoUri);
+	updateUserInfoRequest.headers().add("token", "1");
+	updateUserInfoRequest.set_body(updateUserInfoReq1);
+//	GET USER SHORT INFO REQUEST	
+	http_request getUserShortInfoRequest(methods::GET);
+	uri getUserShortInfoUri("/account/getUserShortInfo?userId=u1&clientId=u2");
+	getUserShortInfoRequest.set_request_uri(getUserShortInfoUri);
+	getUserShortInfoRequest.headers().add("token", "1");
+//	SIGN IN REQUEST
+	uri signInUri("/account/signIn");
+	http_request signInRequest1(methods::POST);
+	signInRequest1.set_request_uri(signInUri);
+	signInRequest1.set_body(signInReq1);
+	http_request signInRequest2(methods::POST);
+	signInRequest2.set_request_uri(signInUri);
+	signInRequest2.set_body(signInReq2);
+//	CREATE GROUP REQUEST
+	http_request createGroupRequest1(methods::POST);
+	uri createGroupUri1("/account/createGroup?userId=u1");
+	createGroupRequest1.set_request_uri(createGroupUri1);
+	createGroupRequest1.set_body(createGroupReq1);
+	createGroupRequest1.headers().add("token", "1");
+	http_request createGroupRequest2(methods::POST);
+	uri createGroupUri2("/account/createGroup?userId=u2");
+	createGroupRequest2.set_request_uri(createGroupUri2);
+	createGroupRequest2.set_body(createGroupReq2);
+	createGroupRequest2.headers().add("token", "2");
+//	UPDATE GROUP INFO REQUEST
+	http_request updateGroupInfoRequest1(methods::POST);
+	uri updateGroupInfoUri1("/account/groupUpdateInfo?userId=u1");
+	updateGroupInfoRequest1.set_request_uri(updateGroupInfoUri1);
+	updateGroupInfoRequest1.set_body(groupUpdateInfoReq);
+	updateGroupInfoRequest1.headers().add("token", "1");
+	http_request updateGroupInfoRequest2(methods::POST);
+	uri updateGroupInfoUri2("/account/groupUpdateInfo?userId=u2");
+	updateGroupInfoRequest2.set_request_uri(updateGroupInfoUri2);
+	updateGroupInfoRequest2.set_body(groupUpdateInfoReq);
+	updateGroupInfoRequest2.headers().add("token", "2");
+//	ADD USER TO GROUP REQUEST
+	http_request addUserToGroupRequest1(methods::GET);
+	uri addUserToGroupUri1("/account/addUserToGroup?userId=u1&groupId=g1&clientId=u2");
+	addUserToGroupRequest1.set_request_uri(addUserToGroupUri1);
+	addUserToGroupRequest1.headers().add("token", "1");
+	http_request addUserToGroupRequest2(methods::GET);
+	uri addUserToGroupUri2("/account/addUserToGroup?userId=u2&groupId=g1&clientId=u1");
+	addUserToGroupRequest1.set_request_uri(addUserToGroupUri2);
+	addUserToGroupRequest1.headers().add("token", "2");
+//	GET GROUP INFO REQUEST
+	http_request getGroupInfoRequest1(methods::GET);
+	uri getGroupInfoUri1("/account/getGroupInfo?userId=u1&groupId=g1");
+	getGroupInfoRequest1.headers().add("token", "1");
+	http_request getGroupInfoRequest2(methods::GET);
+	uri getGroupInfoUri2("/account/getGroupInfo?userId=u1&groupId=g2");
+	getGroupInfoRequest1.headers().add("token", "1");
+//	REMOVE FROM GROUP REQUEST
+	http_request removeFromGroupRequest1(methods::GET);
+	uri removeFromGroupUri1("/account/groupRemoveUser?groupId=g1&userId=u1&clientId=u2");
+	removeFromGroupRequest1.set_request_uri(removeFromGroupUri1);
+	removeFromGroupRequest1.headers().add("token", "1");
+	http_request removeFromGroupRequest2(methods::GET);
+	uri removeFromGroupUri2("/account/groupRemoveUser?groupId=g2&userId=u1&clientId=u2");
+	removeFromGroupRequest2.set_request_uri(removeFromGroupUri2);
+	removeFromGroupRequest2.headers().add("token", "1");
+//	GET GROUP SHORT INFO REQUEST
+	http_request getGroupShortInfoRequest1(methods::GET);
+	uri getGroupShortInfoUri1("/account/getGroupShortInfo?userId=u1&groupId=g1");
+	getGroupShortInfoRequest1.set_request_uri(getGroupShortInfoUri1);
+	getGroupShortInfoRequest1.headers().add("token", "1");
+	http_request getGroupShortInfoRequest2(methods::GET);
+	uri getGroupShortInfoUri2("/account/getGroupShortInfo?userId=u1&groupId=g2");
+	getGroupShortInfoRequest2.set_request_uri(getGroupShortInfoUri2);
+	getGroupShortInfoRequest2.headers().add("token", "1");
+//	LEAVE GROUP REQUEST
+	http_request leaveGroupRequest(methods::GET);
+	uri leaveGroupUri("/account/leaveGroup?userId=u2&groupId=g3");
+	leaveGroupRequest.set_request_uri(leaveGroupUri);
+	leaveGroupRequest.headers().add("token", "2");
+//	CHANGE GROUP ADMIN REQUEST
+	http_request changeGroupAdminRequest(methods::GET);
+	uri changeGroupAdminUri("/account/changeGroupAdmin?groupId=g2&userId=u2&clientId=u1");
+	changeGroupAdminRequest.set_request_uri(changeGroupAdminUri);
+	changeGroupAdminRequest.headers().add("token", "2");
+//	DELETE GROUP REQUEST
+	http_request deleteGroupRequest(methods::GET);
+	uri deleteGroupUri("/account/deleteGroup?groupId=g1&userId=u1");
+	deleteGroupRequest.set_request_uri(deleteGroupUri);
+	deleteGroupRequest.headers().add("token", "1");
+
+//	CHANGE PASSWORD REQUEST  AVELACNEL-----------------------------------------------
+
+//	DELETE USER REQUEST
+	http_request deleteUserRequest(methods::GET);
+	uri deleteUserUri("account/deleteUser?userId=u2");
+	deleteUserRequest.set_request_uri(deleteUserUri);
+	deleteUserRequest.headers().add("token", "2");
+//	SIGN OUT REQUEST
+	http_request signOutRequest(methods::GET);
+	uri signOutUri("account/signOut?userId=u1");
+	signOutRequest.set_request_uri(signOutUri);
+	signOutRequest.headers().add("token", "1");
+
         int count = 0;
 	do{
 		try {
                         ++count;
-/*
-			std::cout<<"///////////////////     REGISTRATION(DB  SERVICE) TEST      /////////////////"<<std::endl;
+
+			std::cout<<"///////////////////     REGISTRATION TEST      /////////////////"<<std::endl;
 			Request(routerClient, userRegistration1);
 			Request(routerClient, userRegistration2);
 			std::cout<<std::endl;
-*/			
-			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
+			
+			std::cout<<"///////////////////     GET USER INFO TEST      /////////////////"<<std::endl;
 			Request(routerClient, getUserInfoRequest1);
 			Request(routerClient, getUserInfoRequest2);
 			std::cout<<std::endl;
 			
-/* 			std::cout<<"///////////////////     UPDATE USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq1);
-			postRequest(dbServiceClient, updateUserInfo, updateUserInfoReq2);
+ 			std::cout<<"///////////////////     UPDATE USER INFO TEST      /////////////////"<<std::endl;
+			Request(routerClient, updateUserInfoRequest);
 			std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     GET USER INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getUserInfo1);
-			getRequest(dbServiceClient, getUserInfo2);
-			std::cout<<std::endl;
-
-			std::cout<<"///////////////////     SIGN IN(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, signIn, signInReq1);
-			postRequest(dbServiceClient, signIn, signInReq2);		
+			std::cout<<"///////////////////     GET USER SHORT INFO TEST      /////////////////"<<std::endl;
+			Request(routerClient, getUserShortInfoRequest);
 			std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     CREATE GROUP(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, createGroup, createGroupReq1);
-			postRequest(dbServiceClient, createGroup, createGroupReq2);
+			std::cout<<"///////////////////     SIGN IN TEST      /////////////////"<<std::endl;
+			Request(routerClient, signInRequest1);
+			Request(routerClient, signInRequest2);		
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     CREATE GROUP TEST      /////////////////"<<std::endl;
+			Request(routerClient, createGroupRequest1);
+			Request(routerClient, createGroupRequest2);
+			Request(routerClient, createGroupRequest2);
                         std::cout<<std::endl;
 
-			std::cout<<"///////////////////     UPDATE GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, groupUpdateInfo, groupUpdateInfoReq);
+			std::cout<<"///////////////////     UPDATE GROUP INFO TEST      /////////////////"<<std::endl;
+			Request(routerClient, updateGroupInfoRequest1);
+			Request(routerClient, updateGroupInfoRequest2);
                         std::cout<<std::endl;
 
-			std::cout<<"///////////////////     ADD USER TO GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
-                        getRequest(dbServiceClient, addUserToGroup1);
-			getRequest(dbServiceClient, addUserToGroup2);
+			std::cout<<"///////////////////     ADD USER TO GROUP TEST      /////////////////"<<std::endl;
+                        Request(routerClient, addUserToGroupRequest1);
+			Request(routerClient, addUserToGroupRequest2);
                         std::cout<<std::endl;
 
-			std::cout<<"///////////////////     GET USER SHORTINFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getUserShortInfo1);
-			getRequest(dbServiceClient, getUserShortInfo2);
+			std::cout<<"///////////////////     GET GROUP INFO TEST      /////////////////"<<std::endl;
+			Request(routerClient, getGroupInfoRequest1);
+			Request(routerClient, getGroupInfoRequest2);
 			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     REMOVE FROM GROUP TEST      /////////////////"<<std::endl;
+			Request(routerClient, removeFromGroupRequest1);
+			Request(routerClient, removeFromGroupRequest2);
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     LEAVE GROUP TEST      /////////////////"<<std::endl;
+			Request(routerClient, leaveGroupRequest);
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     GET GROUP SHORT INFO TEST      /////////////////"<<std::endl;
+			Request(routerClient, getGroupShortInfoRequest1);
+			Request(routerClient, getGroupShortInfoRequest2);
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     CHANGE GROUP ADMIN TEST      /////////////////"<<std::endl;
+			Request(routerClient, changeGroupAdminRequest);
+			std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     DELETE GROUP TEST      /////////////////"<<std::endl;
+                        Request(routerClient, deleteGroupRequest);
+                        std::cout<<std::endl;			
 
-			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
-                        getRequest(dbServiceClient, deleteUser);
-                        std::cout<<std::endl;
-			
-			std::cout<<"///////////////////     GET GROUP INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getGroupInfo);
-			std::cout<<std::endl;
-			
-			std::cout<<"///////////////////     GET GROUP SHORT INFO(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, getGroupShortInfo);
-			std::cout<<std::endl;
-			
-			std::cout<<"///////////////////     REMOVE FROM GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, removeFromGroup);
-			//getRequest(dbServiceClient, removeFromGroup);
-			std::cout<<std::endl;
-*/
 /*			std::cout<<"///////////////////     CHANGE PASSWORD(DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, changePassword, changePasswordReq);
 			std::cout<<std::endl;
+*/			
+			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
+                        Request(routerClient, deleteUserRequest);
+                        std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     Sign Out  TEST      /////////////////"<<std::endl;
+                        Request(routerClient, signOutRequest);
+                        std::cout<<std::endl;
+			
+/*			std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, searchUsers, searchUsersReq);
 			std::cout<<std::endl;
 	
@@ -286,17 +370,8 @@ int main()
 			getRequest(dbServiceClient, isUserInGroup);
 			std::cout<<std::endl;
 
-			std::cout<<"///////////////////     DELETE GROUP (DB  SERVICE) TEST      /////////////////"<<std::endl;
-                        getRequest(dbServiceClient, deleteGroup);
-                        std::cout<<std::endl;
-	
 			std::cout<<"///////////////////     GET GROUP USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			getRequest(dbServiceClient, getGroupUsers);
-			std::cout<<std::endl;
-			
-			std::cout<<"///////////////////     CHANGE GROUP ADMIN (DB  SERVICE) TEST      /////////////////"<<std::endl;
-			getRequest(dbServiceClient, changeGroupAdmin1);
-			getRequest(dbServiceClient, changeGroupAdmin2);
 			std::cout<<std::endl;
 			
 			std::cout<<"///////////////////      TOKEN  DB  SERVICE TEST      /////////////////"<<std::endl;

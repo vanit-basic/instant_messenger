@@ -64,7 +64,7 @@ class database {
 
 		virtual json::value getGroupShortInfo(std::string groupId) = 0;
 		
-		virtual json::value createGroup(json::value groupInfo) = 0;
+		virtual json::value createGroup(json::value groupInfo, std::string userId) = 0;
 
                 virtual json::value deleteGroup(std::string groupId) = 0;
                 

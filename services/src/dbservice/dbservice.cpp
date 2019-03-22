@@ -66,7 +66,7 @@ void DbService::handleGet(http_request message) {
                                 json::value response = m_db->addUserToGroup(userId, groupId, clientId);
                                 message.reply(status_codes::OK, response);
 			} else if (path[1] == "getUserShortInfo") {
-				std::string userId = i.find("userId")->second;
+				std::string userId = i.find("clientId")->second;
                                 json::value response = m_db->getUserShortInfo(userId);
                                 message.reply(status_codes::OK, response);
 			} else if (path[1] == "isUserInGroup") {
@@ -88,12 +88,12 @@ void DbService::handleGet(http_request message) {
                                 message.reply(status_codes::OK, response);
 			} else if (path[1] == "groupRemoveUser") {
 				std::string groupId = i.find("groupId")->second;
-				std::string userId = i.find("userId")->second;
+				std::string userId = i.find("clientId")->second;
                                 json::value response = m_db->groupRemoveUser(groupId, userId);
                                 message.reply(status_codes::OK, response);
 			} else if (path[1] == "changeGroupAdmin") {
 				std::string groupId = i.find("groupId")->second;
-				std::string userId = i.find("userId")->second;
+				std::string userId = i.find("clientId")->second;
                                 json::value response = m_db->changeGroupAdmin(groupId, userId);
                                 message.reply(status_codes::OK, response);
 			} else if (path[1] == "deleteGroup") {
@@ -109,8 +109,10 @@ void DbService::handleGet(http_request message) {
 
 void DbService::handlePost(http_request message) {
 	std::cout<< message.to_string()<<std::endl;
-	message.extract_json().then([message, this](json::value request) {
+	std::map<utility::string_t, utility::string_t>  UriInfo = uri::split_query(message.request_uri().query());
+	message.extract_json().then([message, UriInfo, this](json::value request) {
 			std::cout<<request.to_string()<<std::endl;
+			std::string userId = UriInfo.find("userId")->second;
 			auto path = requestPath(message);
 			if (!path.empty()) {
 			if (path[0] == "account") {
@@ -129,7 +131,7 @@ void DbService::handlePost(http_request message) {
 			message.reply(status_codes::OK, response);
 
 			} else if (path[1] == "createGroup") {
-			json::value response = m_db->createGroup(request);
+			json::value response = m_db->createGroup(request, userId);
 			message.reply(status_codes::OK, response);
 			} else if (path[1] == "userUpdateInfo") {
 				json::value response = m_db->userUpdateInfo(request);

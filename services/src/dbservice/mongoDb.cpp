@@ -775,7 +775,7 @@ std::string generateGroupID(mongocxx::collection collection) {
 }
 
 
-json::value MongoDB::createGroup(json::value groupInfo) {
+json::value MongoDB::createGroup(json::value groupInfo, std::string userId) {
 	auto c1 = poolMydb->acquire();
 	auto c3 = poolMydb->acquire();
 	auto coll1 = (*c1)["infoDB"]["userInfo"];
@@ -783,7 +783,7 @@ json::value MongoDB::createGroup(json::value groupInfo) {
 	json::value response;
 
 	std::string groupName = groupInfo.at("groupName").as_string();
-        std::string userId = groupInfo.at("userId").as_string();
+//        std::string userId = groupInfo.at("userId").as_string();
         std::string access = groupInfo.at("access").as_string();
 	std::string id = generateGroupID(coll3);
 	std::string path = "resources/group.png";
