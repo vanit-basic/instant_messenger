@@ -149,9 +149,7 @@ bool Router::checkServices()
     bool notifServStatus = false;
     bool searchServStatus = false;
     bool tokDbServStatus = false;
-    std::cout<<"checkServices  "<<__LINE__<<std::endl;
     accServStatus = ServiceStart(AccountClient, "Account");
-    std::cout<<"checkServices  "<<__LINE__<<std::endl;
     /*	qani der patrast chen bolor MikroServicener@ toxnel vorpes comment
 
         if(accServStatus){
@@ -172,12 +170,9 @@ bool Router::checkServices()
         return status;
      */
     if (accServStatus){
-    std::cout<<"checkServices  "<<__LINE__<<std::endl;
         		tokDbServStatus = ServiceStart(TokenDbClient, "TokenDB");}
         	if (tokDbServStatus){
-    std::cout<<"checkServices  "<<__LINE__<<std::endl;
         this->setEndpoint(routerUri);}
-    std::cout<<"checkServices  "<<__LINE__<<std::endl;
 return tokDbServStatus;
 }
 
@@ -233,7 +228,7 @@ bool isAuthorizedAction (Action action) {
 
 bool checkToken (std::string id, std::string token, http_client* tokenService) {
     json::value tokenInfo;
-    tokenInfo["id"] = json::value::string(id);
+    tokenInfo["userId"] = json::value::string(id);
     tokenInfo["token"] = json::value::string(token);
     uri_builder checkToken_path(U("/checkToken"));
     http_response tokenStatus = tokenService->request(methods::POST, checkToken_path.to_string(), tokenInfo).get();
@@ -341,12 +336,9 @@ void Router::handlePost(http_request message) {
     auto urlPath  = requestPath(message);
     //TODO add path validation before using it
     std::string actionName = urlPath[1];
-    std::cout<<"router post "<<__LINE__<<std::endl;
     Action action = actionFromString(actionName);
-    std::cout<<"router action "<<action<<__LINE__<<std::endl;
     bool authorized = isAuthorizedAction(action);
     RequestStatus status;
-    std::cout<<"router post "<<__LINE__<<std::endl;
 	if(authorized)
 	{
     		status = validateRequest(message, urlPath, TokenDbClient, authorized);
@@ -355,21 +347,14 @@ void Router::handlePost(http_request message) {
 	{
 		status = RequestStatusValid;
 	}
-    std::cout<<"router post "<<__LINE__<<std::endl;
     if(status != RequestStatusValid)
     { 
-    std::cout<<"router post "<<__LINE__<<std::endl;
 	    return replyToInvalidRequest(status, message);
     }
 
     std::string serviceName = urlPath[0];
-    std::cout<<"router post "<<__LINE__<<std::endl;
-
     ServiceType servType = serviceTypeFromString(serviceName);
-    std::cout<<"router post "<<__LINE__<<std::endl;
     http_client *service = serviceClient(servType);
-
-    std::cout<<"router post "<<__LINE__<<std::endl;
     service->request(message).then([message](http_response response){
             message.reply(response);
             });
