@@ -46,7 +46,7 @@ void DbService::handleGet(http_request message) {
 	auto path = requestPath(message);
 	if (!(path.empty())) {
 	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
-		if (path[0] == "ServiceTest"){
+		if (path[0] == "ServiceTest") {
 			message.reply(status_codes::OK, "DbService_Start");
 		} else if (path[0] == "account") {
 			if (path[1] == "getUserInfo") {
