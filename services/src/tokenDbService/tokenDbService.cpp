@@ -33,9 +33,12 @@ void tokenDbService::handleGet(http_request message)
 {
 	message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 }
+
+static int requestCount = 0;
 void tokenDbService::handlePost(http_request message)
 {
-	std::cout<<"Request"<<std::endl;
+	++requestCount;
+	std::cout<<"Request N  "<<requestCount<<std::endl;
 	//std::cout<<"message  " <<message.to_string()<<std::endl;
 	message.extract_json().then([message, this](json::value info){
 		auto path = requestPath(message);

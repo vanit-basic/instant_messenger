@@ -215,35 +215,36 @@ http_response getGroupShortInfo(std::string userId, std::string groupId, http_cl
 	});
 }
 
-http_response getGroupInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
+json::value getGroupInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
+	std::cout<<__LINE__<<std::endl;
 	uri_builder gInfo("/account/getGroupInfo?groupId=" + groupId);
-	DataBaseClient->request(methods::GET, gInfo.to_string()).
-	then([=](http_response groupInfo)
+	http_response groupInfo = DataBaseClient->request(methods::GET, gInfo.to_string()).get();
+	std::cout<<__LINE__<<std::endl;
+	json::value grIn = groupInfo.extract_json().get();
+	std::cout<<"group info   "<<grIn.to_string()<<std::endl;
+	if(grIn.at("access").as_string() == "private")
 	{
-		groupInfo.extract_json().
-		then([=](json::value groupInf)
+	std::cout<<__LINE__<<std::endl;
+		if(isUserInGroup(userId, groupId, DataBaseClient))
 		{
-			if(groupInf.at("access").as_string() == "private")
-			{
-				if(isUserInGroup(userId, groupId, DataBaseClient))
-				{
-					return groupInfo;
-				}
-				else
-				{
-					http_response resp;
-					json::value groupInfoResp;
-					groupInfoResp["status"] = json::value::string("INVALID_GROUP_ID");//status@ poxel
-					resp.set_body(groupInfoResp);
-					return resp;
-				}
-			}
-			else
-			{
-				return groupInfo;
-			}
-		});
-	});
+			std::cout<<__LINE__<<std::endl;
+			groupInfo.set_body(grIn);
+			std::cout<<__LINE__<<std::endl;
+			return grIn;
+		}
+		else
+		{
+	std::cout<<__LINE__<<std::endl;
+			json::value groupInfoResp;
+			groupInfoResp["status"] = json::value::string("INVALID_GROUP_ID");
+			return groupInfoResp;
+		}
+	}
+	else
+	{
+		std::cout<<__LINE__<<std::endl;
+		return grIn;
+	}
 }
 
 
@@ -262,10 +263,7 @@ http_response signOut(std::string userId, std::string token, http_client* TokenD
 }
 
 http_response groupDelete(std::string userId, std::string groupId, http_client* DataBaseClient){
-	http_response groupInfo = getGroupInfo(userId, groupId, DataBaseClient);
-	groupInfo.extract_json().
-	then([=](json::value groupInf)
-	{
+	json::value groupInf = getGroupInfo(userId, groupId, DataBaseClient);
 		if(groupInf.at("adminId").as_string() == userId)
 		{
 			uri_builder groupDelete_path(U("/account/deleteGroup?groupId"+ groupId));
@@ -279,7 +277,6 @@ http_response groupDelete(std::string userId, std::string groupId, http_client* 
 			resp.set_body(res);
 			return resp;
 		}
-	});
 }
 				 
 
@@ -290,10 +287,7 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 		std::string groupId = infoMap["groupId"];
 		if(isUserInGroup(userId, groupId, DataBaseClient))
 		{
-			auto groupUserInfo = getGroupInfo(userId, groupId, DataBaseClient);
-			groupUserInfo.extract_json().
-			then([=](json::value UserInfo)
-			{
+			json::value UserInfo = getGroupInfo(userId, groupId, DataBaseClient);
 				std::string adminId = UserInfo.at("adminId").as_string();
 				if(userId == adminId)
 				{	
@@ -351,7 +345,6 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 						return resp;
 					}
 				}
-			});
 		}
 }
 
@@ -361,10 +354,7 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
                 std::string userId = infoMap["userId"];
                 std::string groupId = infoMap["groupId"];
                 std::string clientId = infoMap["clientId"];
-                auto gInfo = getGroupInfo(clientId ,groupId, DataBaseClient);
-                gInfo.extract_json().
-                then([=](json::value groupInfo)
-                {
+		json::value groupInfo = getGroupInfo(clientId ,groupId, DataBaseClient);
                         if(userId == groupInfo.at("adminId").as_string())
                         {
                                 if(clientId == userId){
@@ -395,11 +385,10 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
                                         resp.set_body(info);
                                         return resp;
                         }
-                });
 }
 
 void Account::handleGet(http_request message) {
-	std::cout<<message.to_string()<<std::endl;
+	//std::cout<<message.to_string()<<std::endl;
 	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
 	std::map<std::string, std::string>::iterator it;
 
@@ -435,8 +424,11 @@ void Account::handleGet(http_request message) {
 			std::string groupId = i.find("groupId")->second;
 			if(!(groupId == ""))
 			{
-				auto groupInfo = getGroupInfo(userId,groupId, this->DataBaseClient);
-				message.reply(groupInfo);
+			std::cout<<__LINE__<<std::endl;
+			json::value response = getGroupInfo(userId,groupId, DataBaseClient);
+			std::cout<<__LINE__<<std::endl;
+			std::cout<<"uxarkeluc araj  "<<response<<std::endl;
+				message.reply(status_codes::OK, response);
 			}
 			else
 			{

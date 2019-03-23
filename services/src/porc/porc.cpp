@@ -117,8 +117,8 @@ int main()
 	changePasswordReq["newPassword"] = json::value::string("Valod90");
 
 	json::value createGroupReq1;
-        createGroupReq1["groupName"] = json::value::string("Best");
         createGroupReq1["userId"] = json::value::string("u1");
+        createGroupReq1["groupName"] = json::value::string("Best");
         createGroupReq1["access"] = json::value::string("public");
 
 	json::value createGroupReq2;
@@ -126,7 +126,12 @@ int main()
         createGroupReq2["groupName"] = json::value::string("Mafia");
         createGroupReq2["access"] = json::value::string("private");
 
-        json::value groupUpdateInfoReq;
+	json::value createGroupReq3;
+        createGroupReq3["userId"] = json::value::string("u2");
+        createGroupReq3["groupName"] = json::value::string("Mafia");
+        createGroupReq3["access"] = json::value::string("private");
+        
+	json::value groupUpdateInfoReq;
         groupUpdateInfoReq["groupId"] = json::value::string("g1");
         groupUpdateInfoReq["newName"] = json::value::string("mafiaForever");
         groupUpdateInfoReq["newAccess"] = json::value::string("private");
@@ -193,15 +198,18 @@ int main()
 	signInRequest2.set_body(signInReq2);
 //	CREATE GROUP REQUEST
 	http_request createGroupRequest1(methods::POST);
-	uri createGroupUri1("/account/createGroup");
-	createGroupRequest1.set_request_uri(createGroupUri1);
+	uri createGroupUri("/account/createGroup");
+	createGroupRequest1.set_request_uri(createGroupUri);
 	createGroupRequest1.set_body(createGroupReq1);
 	createGroupRequest1.headers().add("token", "1");
 	http_request createGroupRequest2(methods::POST);
-	uri createGroupUri2("/account/createGroup");
-	createGroupRequest2.set_request_uri(createGroupUri2);
+	createGroupRequest2.set_request_uri(createGroupUri);
 	createGroupRequest2.set_body(createGroupReq2);
 	createGroupRequest2.headers().add("token", "2");
+	http_request createGroupRequest3(methods::POST);
+	createGroupRequest3.set_request_uri(createGroupUri);
+	createGroupRequest3.set_body(createGroupReq2);
+	createGroupRequest3.headers().add("token", "2");
 //	UPDATE GROUP INFO REQUEST
 	http_request updateGroupInfoRequest1(methods::POST);
 	uri updateGroupInfoUri1("/account/groupUpdateInfo?userId=u1");
@@ -225,10 +233,12 @@ int main()
 //	GET GROUP INFO REQUEST
 	http_request getGroupInfoRequest1(methods::GET);
 	uri getGroupInfoUri1("/account/getGroupInfo?userId=u1&groupId=g1");
+	getGroupInfoRequest1.set_request_uri(getGroupInfoUri1);
 	getGroupInfoRequest1.headers().add("token", "1");
 	http_request getGroupInfoRequest2(methods::GET);
 	uri getGroupInfoUri2("/account/getGroupInfo?userId=u1&groupId=g2");
-	getGroupInfoRequest1.headers().add("token", "1");
+	getGroupInfoRequest2.set_request_uri(getGroupInfoUri2);
+	getGroupInfoRequest2.headers().add("token", "1");
 //	REMOVE FROM GROUP REQUEST
 	http_request removeFromGroupRequest1(methods::GET);
 	uri removeFromGroupUri1("/account/groupRemoveUser?groupId=g1&userId=u1&clientId=u2");
@@ -285,7 +295,7 @@ int main()
 			Request(routerClient, userRegistration1);
 			Request(routerClient, userRegistration2);
 			std::cout<<std::endl;
-			
+/*			
 			std::cout<<"///////////////////     GET USER INFO TEST      /////////////////"<<std::endl;
 			Request(routerClient, getUserInfoRequest1);
 			Request(routerClient, getUserInfoRequest2);
@@ -308,18 +318,18 @@ int main()
 			Request(routerClient, signInRequest1);
 			Request(routerClient, signInRequest2);		
 			std::cout<<std::endl;
-			
+*/			
 			std::cout<<"///////////////////     CREATE GROUP TEST      /////////////////"<<std::endl;
+			Request(routerClient, createGroupRequest2);
 			Request(routerClient, createGroupRequest1);
-			Request(routerClient, createGroupRequest2);
-			Request(routerClient, createGroupRequest2);
+			Request(routerClient, createGroupRequest3);
                         std::cout<<std::endl;
 
 			std::cout<<"///////////////////     GET GROUP INFO TEST      /////////////////"<<std::endl;
 			Request(routerClient, getGroupInfoRequest1);
 			Request(routerClient, getGroupInfoRequest2);
 			std::cout<<std::endl;
-			
+/*			
 			std::cout<<"///////////////////     ADD USER TO GROUP TEST      /////////////////"<<std::endl;
                         Request(routerClient, addUserToGroupRequest1);
 			Request(routerClient, addUserToGroupRequest2);
@@ -369,7 +379,7 @@ int main()
 			std::cout<<"///////////////////     Delete user(DB  SERVICE) TEST      /////////////////"<<std::endl;
                         Request(routerClient, deleteUserRequest);
                         std::cout<<std::endl;
-			
+*/			
 /*			std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, searchUsers, searchUsersReq);
 			std::cout<<std::endl;

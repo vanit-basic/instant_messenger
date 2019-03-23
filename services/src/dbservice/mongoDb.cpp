@@ -251,11 +251,9 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 		response["status"] = json::value::string("OK");
 
 	} else {
-		std::cout<<"mongo sign in   "<<__LINE__<<std::endl;
 		bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
 			coll2.find_one(document{} << "login" << login << finalize);
 		if (loginPassResult) {
-		std::cout<<"mongo sign in   "<<__LINE__<<std::endl;
 			std::string loginDate = date();
 			
 			bsoncxx::stdx::optional<bsoncxx::document::value> info =
@@ -264,7 +262,6 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 			coll2.update_one(document{} << "login" << login << finalize,
 					document{} << "$inc" << open_document <<
 					"visitCount" << 1 << close_document << finalize);
-
 			coll2.update_one(document{} << "login" << login
 					<< finalize,
 					document{} << "$set" << open_document <<
@@ -274,12 +271,10 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 				coll2.find_one(document{} << "login" << login << finalize);
 				doc_view = res->view();
 				bsoncxx::document::element element = doc_view["visitCount"];
-				std::string attempt = element.get_utf8().value.to_string();
-			
+				std::string attempt = std::to_string(element.get_int32().value);
 			response["attempt"] = json::value::string(attempt);
 			response["status"] = json::value::string("INVALID_PASSWORD");
 		} else {
-		std::cout<<"mongo sign in   "<<__LINE__<<std::endl;
 			response["status"] = json::value::string("INVALID_LOGIN");
 		}
 	}
@@ -1003,6 +998,9 @@ json::value MongoDB::getGroupInfo(std::string groupId) {
 		element = doc["avatar"];
 		std::string avatar = element.get_utf8().value.to_string();
 		
+		element = doc["access"];
+		std::string access = element.get_utf8().value.to_string();
+
 		element = doc["members"];
                 std::vector <json::value> uIDs;
                 if (element.type() == type::k_array) {
@@ -1021,6 +1019,7 @@ json::value MongoDB::getGroupInfo(std::string groupId) {
 		response["adminId"] = json::value::string(adminId);
 		response["createDate"] = json::value::string(createDate);
 		response["members"] = json::value::array(uIDs);	
+		response["access"] = json::value::string(access);
 		response["status"] = json::value::string("OK");
 	} else {
 		response["status"] = json::value::string("INVALID_GROUP_ID");

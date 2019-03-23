@@ -243,6 +243,7 @@ RequestStatus validateRequest  (http_request request, std::vector<std::string> u
 {
     std::string id = extractID(request);
     std::string token = extractToken(request);
+    std::cout<<"id   "<<id<<"  token  "<<token<<std::endl;
     if("" == token) {
         return RequestStatusTokenMissing;
     } 
@@ -312,11 +313,13 @@ void replyToInvalidRequest(RequestStatus status, http_request request) {
     resp.set_body(info);
     request.reply(resp);
 }
-
+static int requestCount = 0;
 void Router::handleGet(http_request message) {
-	std::cout<<message.to_string()<<std::endl;
+	++requestCount;
+	std::cout<<"Request N  "<<requestCount<<std::endl;
+	//std::cout<<message.to_string()<<std::endl;
     auto urlPath  = requestPath(message);
-    RequestStatus status = validateRequest(message, urlPath, TokenDbClient);
+    RequestStatus status = validateRequest(message, urlPath, TokenDbClient, true);
     if(status != RequestStatusValid) return replyToInvalidRequest(status, message);
 
     std::string action = urlPath[1];
@@ -331,7 +334,7 @@ void Router::handleGet(http_request message) {
 }
 
 void Router::handlePost(http_request message) {
-	std::cout<<message.to_string()<<std::endl;
+//	std::cout<<message.to_string()<<std::endl;
     auto urlPath  = requestPath(message);
     //TODO add path validation before using it
     std::string actionName = urlPath[1];

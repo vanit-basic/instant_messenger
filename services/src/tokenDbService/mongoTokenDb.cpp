@@ -67,10 +67,10 @@ bool MongoTokenDb::checkToken(json::value info)
 	std::string token;
 	try
 	{
-
+		auto client = clientPool->acquire();
 		id = info.at("userId").as_string();
 		token = info.at("token").as_string();
-		auto client = clientPool->acquire();
+		std::cout<<"id   "<<id<<"   token  "<<token<<std::endl;
 		mongocxx::database db = (*client)["tokenDb"];
 		mongocxx::collection coll = db["token"];
 		bsoncxx::stdx::optional<bsoncxx::document::value> result = coll.find_one(document{} << id << token << finalize);
