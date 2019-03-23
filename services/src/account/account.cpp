@@ -646,28 +646,29 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 				{
 					if(signinStatus_json["status"] == json::value::string("OK"))
 					{
-		std::cout<<__LINE__<<std::endl;
 						int attempt = std::stoi(signinStatus_json["attempt"].as_string());
-		std::cout<<__LINE__<<std::endl;
 						if(max_attempt > attempt)
 						{
 							std::string id = signinStatus_json["userId"].as_string();
-							http_response res = getUserInfo(id, DataBaseClient);//hanel
+							http_response res = getUserInfo(id, DataBaseClient);
 							res.extract_json().
 							then([=](json::value userInf)
 							{
 								json::value userInfo = userInf;
 								std::string token = getToken();
-								uri_builder token_uri("/setToken/");
+								uri_builder token_uri("/setToken");
 								json::value token_json;
 								token_json["token"] = json::value::string(token);
-								token_json["id"] = json::value::string(id);
-								TokenDBClient -> request(methods::POST, token_uri.to_string(), token_json).
-								then([message, &userInfo, id, token](http_response token_response)
+								token_json["userId"] = json::value::string(id);
+								http_response token_resp = TokenDBClient -> request(methods::POST, token_uri.to_string(), token_json).get();
+								json::value tok_res = token_resp.extract_json().get();
+								if(tok_res["status"] == json::value::string("OK"))
 								{
 									userInfo["token"] = json::value::string(token);
 									message.reply(status_codes::OK, userInfo);
-								});
+								}
+								else
+								{message.reply(status_codes::OK, json::value::string("TokenDb dead"));}
 							});
 						}
 						else

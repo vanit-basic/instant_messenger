@@ -231,39 +231,28 @@ json::value MongoDB::signIn(std::string login, std::string password) {
         auto coll1 = (*c1)["infoDB"]["userInfo"];
         auto coll2 = (*c2)["passDB"]["signin"];
 	json::value response;
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
 		coll2.find_one(document{} << "login" << login
 				<< "password" << password << finalize);
 
 	if (result) {
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
+		
 		bsoncxx::stdx::optional<bsoncxx::document::value> infoResult =
 			coll1.find_one(document{} << "login" << login << finalize);
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
 		bsoncxx::document::view doc = result->view();
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
+		bsoncxx::document::element element1 = doc["visitCount"];
 		bsoncxx::document::view docInfo = infoResult->view();
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
 		bsoncxx::document::element element = docInfo["_id"];
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
 		std::string id = element.get_utf8().value.to_string();
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
 		response = getUserInfo(id);
-		bsoncxx::stdx::optional<bsoncxx::document::value> res =
-			coll2.find_one(document{} << "login" << login << finalize);
-		bsoncxx::document::view doc_view = res->view();
-		element = doc_view["visitCount"];
-		std::string attempt = element.get_utf8().value.to_string();	
+		std::string attempt = std::to_string(element1.get_int32().value);
 		response["attempt"] = json::value::string(attempt);
 		response["status"] = json::value::string("OK");
 
 	} else {
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
 		bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
 			coll2.find_one(document{} << "login" << login << finalize);
 		if (loginPassResult) {
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
 			std::string loginDate = date();
 			
 			bsoncxx::stdx::optional<bsoncxx::document::value> info =
@@ -287,12 +276,9 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 			response["attempt"] = json::value::string(attempt);
 			response["status"] = json::value::string("INVALID_PASSWORD");
 		} else {
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
 			response["status"] = json::value::string("INVALID_LOGIN");
 		}
 	}
-	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
-
 	return response;
 }
 
