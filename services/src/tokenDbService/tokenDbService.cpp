@@ -35,7 +35,8 @@ void tokenDbService::handleGet(http_request message)
 }
 void tokenDbService::handlePost(http_request message)
 {
-	std::cout<<"message  " <<message.to_string()<<std::endl;
+	std::cout<<"Request"<<std::endl;
+	//std::cout<<"message  " <<message.to_string()<<std::endl;
 	message.extract_json().then([message, this](json::value info){
 		auto path = requestPath(message);
 		json::value response;
@@ -55,7 +56,7 @@ void tokenDbService::handlePost(http_request message)
 		{
 			if(path[0] == "deleteToken")
 			{
-				if((this->db)->deleteToken(info))
+				if(db->deleteToken(info))
 				{
 					response["status"] = json::value::string("OK");
 				}

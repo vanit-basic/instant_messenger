@@ -135,9 +135,8 @@ http_response getUserInfo(std::string userId, http_client* DataBaseClient){
 	return userInfo;
 }
 
-http_response getUserShortInfo(std::string userId, http_client* DataBaseClient){
-	uri_builder uInfo("/account/getUserShortInfo?userId=" + userId);
-	http_response userShortInfo = DataBaseClient->request(methods::GET, uInfo.to_string()).get();
+http_response getUserShortInfo(http_request message, http_client* DataBaseClient){
+	http_response userShortInfo = DataBaseClient->request(message).get();
 	return userShortInfo;
 }
 
@@ -259,11 +258,7 @@ http_response signOut(std::string userId, std::string token, http_client* TokenD
 	json::value userIdInfo;
 	userIdInfo["userId"] = json::value::string(userId);
 	userIdInfo["token"] = json::value::string(token);
-	TokenDb->request(methods::POST, deleteToken.to_string(), userIdInfo).
-	then([=](http_response status)
-	{
-		return status;		
-	});
+	return TokenDb->request(methods::POST, deleteToken.to_string(), userIdInfo).get();
 }
 
 http_response groupDelete(std::string userId, std::string groupId, http_client* DataBaseClient){
@@ -433,28 +428,15 @@ void Account::handleGet(http_request message) {
 		{
 			if(path_first_request[1] == "getUserShortInfo")
 			{
-				std::string userId = "";
-				userId = i.find("userId")->second;
-				if(!(userId == ""))
-				{
-					auto userShortInfo = getUserShortInfo(userId, this -> DataBaseClient);
-					message.reply(userShortInfo);
-				}
-				else
-				{
-					message.reply(status_codes::NotFound);
-				}
+				auto userShortInfo = getUserShortInfo(message, this -> DataBaseClient);
+				message.reply(userShortInfo);
 			}
 			else
 			{
 				if(path_first_request[1] == "getGroupInfo")
 				{
-					std::string userId = "";
-					std::string groupId = "";
-					userId = i.find("userId")->second;
-					groupId = i.find("groupId")->second;
-					if(!(userId == ""))
-					{
+					std::string userId = i.find("userId")->second;
+					std::string groupId = i.find("groupId")->second;
 						if(!(groupId == ""))
 						{
 							auto groupInfo = getGroupInfo(userId,groupId, this->DataBaseClient);
@@ -464,43 +446,22 @@ void Account::handleGet(http_request message) {
 						{
 							message.reply(status_codes::NotFound);
 						}
-					}
-					else
-					{
-						message.reply(status_codes::NotFound);
-					}
 				}
 				else
 				{
 					if (path_first_request[1] == "deleteUser")
 					{	
-						std::string userId = "";
-						userId = i.find("userId")->second;
-						if(!(userId == ""))
-						{
-							message.reply(userDelete(userId, this->DataBaseClient));
-							}
-						else
-						{
-							message.reply(status_codes::NotFound);
-						}
+						std::string userId = i.find("userId")->second;
+						message.reply(userDelete(userId, this->DataBaseClient));
 					}
 					else
 					{
 						if(path_first_request[1] == "signOut")
 						{
-							std::string userId = "";
-							std::string token = message.headers().operator[]("token");
-							userId = i.find("userId")->second;
-							if(!(userId == ""))
-							{
-								auto resp = signOut(userId, token, this->TokenDBClient);
-								message.reply(resp);
-							}
-							else
-							{
-								message.reply(status_codes::NotFound);
-							}
+							std::string userId = i.find("userId")->second;
+							std::string token = message.headers()["token"];
+							http_response resp = signOut(userId, token, this->TokenDBClient);
+							message.reply(resp);
 						}
 						else
 						{
@@ -644,7 +605,7 @@ void registration(http_request message , http_client* DataBaseClient, http_clien
 void signIn(http_request message, http_client* DataBaseClient, http_client* TokenDBClient){ 
 	message.extract_json().then([=](json::value request){
 	json::value signinInfo;
-	uri_builder signin_path(U("/account/signin/"));
+	uri_builder signin_path(U("/account/signIn/"));
 	signinInfo["login"] = request.at("login");
 	signinInfo["password"] = request.at("password");
 	DataBaseClient->request(methods::POST,  signin_path.to_string(), signinInfo).
@@ -653,14 +614,17 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 		signinStatus.extract_json().
 		then([=](json::value signinStatus_json)
 		{
+		std::cout<<__LINE__<<std::endl;
 			if (signinStatus_json["status"] == json::value::string("INVALID_LOGIN"))
 			{
+		std::cout<<__LINE__<<std::endl;
 				message.reply(status_codes::OK, json::value::string("INVALID_LOGIN"));
 			}
 			else
 			{
 				if(signinStatus_json["status"] == json::value::string("INVALID_PASSWORD"))
 				{
+		std::cout<<__LINE__<<std::endl;
 					int attempt = std::stoi(signinStatus_json["attempt"].as_string());
 					if(max_attempt > attempt)
 					{
@@ -682,7 +646,9 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 				{
 					if(signinStatus_json["status"] == json::value::string("OK"))
 					{
+		std::cout<<__LINE__<<std::endl;
 						int attempt = std::stoi(signinStatus_json["attempt"].as_string());
+		std::cout<<__LINE__<<std::endl;
 						if(max_attempt > attempt)
 						{
 							std::string id = signinStatus_json["userId"].as_string();
@@ -732,35 +698,22 @@ void Account::handlePost(http_request message) {
 	{
 		registration(message, this -> DataBaseClient, this -> TokenDBClient);
 	}
-	else
-	{
-		if( path_first_request[1] == "signin")
+	else if( path_first_request[1] == "signIn")
 		{
 			signIn(message, DataBaseClient, TokenDBClient);
 		}
-		else
-		{
-			if(path_first_request[1] == "userUpdateInfo")
+		else if(path_first_request[1] == "userUpdateInfo")
 			{
-				this->DataBaseClient->request(message).
-				then([message](http_response response)
-				{
-					message.reply(response);
+			DataBaseClient->request(message).then([message](http_response response){
+						message.reply(response);
 				});
 			}
-			else
-			{
-				if(path_first_request[1] == "groupUpdateInfo")
+			else if(path_first_request[1] == "groupUpdateInfo")
 				{
-					this->DataBaseClient->request(message).
-					then([message](http_response response)
-					{
+					http_response response = this->DataBaseClient->request(message).get();
 						message.reply(response);
-					});
 				}
-				else
-				{
-						if(path_first_request[1] == "createGroup")
+				else if(path_first_request[1] == "createGroup")
 						{
 							auto resp = createGroup(message, this -> DataBaseClient);
 							message.reply(resp);
@@ -769,8 +722,4 @@ void Account::handlePost(http_request message) {
 						{
 								message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 						}
-				}
-			}
-		}
-	}
 }

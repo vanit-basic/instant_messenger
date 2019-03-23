@@ -205,11 +205,10 @@ std::string extractToken(http_request message){
 
 std::string extractID (http_request message){
     if(message.method() == web::http::methods::POST) {
-        //Copy request because we can extarct json only once
-        http_request messageCopy(message);
-        json::value info = messageCopy.extract_json().get();
+        json::value info = message.extract_json().get();
         json::value id = info.at("userId");
-        if(! id.is_null()) {
+	message.set_body(info);
+	if(! id.is_null()) {
             return id.as_string();
         }
     } else {
