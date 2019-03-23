@@ -250,6 +250,12 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 		std::string id = element.get_utf8().value.to_string();
 	std::cout<<"mongo signIn  "<<__LINE__<<std::endl;
 		response = getUserInfo(id);
+		bsoncxx::stdx::optional<bsoncxx::document::value> res =
+			coll2.find_one(document{} << "login" << login << finalize);
+		bsoncxx::document::view doc_view = res->view();
+		element = doc_view["visitCount"];
+		std::string attempt = element.get_utf8().value.to_string();	
+		response["attempt"] = json::value::string(attempt);
 		response["status"] = json::value::string("OK");
 
 	} else {
