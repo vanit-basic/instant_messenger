@@ -118,9 +118,11 @@ int main()
 
 	json::value createGroupReq1;
         createGroupReq1["groupName"] = json::value::string("Best");
+        createGroupReq1["userId"] = json::value::string("u1");
         createGroupReq1["access"] = json::value::string("public");
 
 	json::value createGroupReq2;
+        createGroupReq2["userId"] = json::value::string("u2");
         createGroupReq2["groupName"] = json::value::string("Mafia");
         createGroupReq2["access"] = json::value::string("private");
 
@@ -191,12 +193,12 @@ int main()
 	signInRequest2.set_body(signInReq2);
 //	CREATE GROUP REQUEST
 	http_request createGroupRequest1(methods::POST);
-	uri createGroupUri1("/account/createGroup?userId=u1");
+	uri createGroupUri1("/account/createGroup");
 	createGroupRequest1.set_request_uri(createGroupUri1);
 	createGroupRequest1.set_body(createGroupReq1);
 	createGroupRequest1.headers().add("token", "1");
 	http_request createGroupRequest2(methods::POST);
-	uri createGroupUri2("/account/createGroup?userId=u2");
+	uri createGroupUri2("/account/createGroup");
 	createGroupRequest2.set_request_uri(createGroupUri2);
 	createGroupRequest2.set_body(createGroupReq2);
 	createGroupRequest2.headers().add("token", "2");
@@ -304,7 +306,7 @@ int main()
 			
 			std::cout<<"///////////////////     SIGN IN TEST      /////////////////"<<std::endl;
 			Request(routerClient, signInRequest1);
-//			Request(routerClient, signInRequest2);		
+			Request(routerClient, signInRequest2);		
 			std::cout<<std::endl;
 			
 			std::cout<<"///////////////////     CREATE GROUP TEST      /////////////////"<<std::endl;
@@ -318,14 +320,14 @@ int main()
 			Request(routerClient, getGroupInfoRequest2);
 			std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     UPDATE GROUP INFO TEST      /////////////////"<<std::endl;
-			Request(routerClient, updateGroupInfoRequest1);
-			Request(routerClient, updateGroupInfoRequest2);
-                        std::cout<<std::endl;
-
 			std::cout<<"///////////////////     ADD USER TO GROUP TEST      /////////////////"<<std::endl;
                         Request(routerClient, addUserToGroupRequest1);
 			Request(routerClient, addUserToGroupRequest2);
+                        std::cout<<std::endl;
+			
+			std::cout<<"///////////////////     UPDATE GROUP INFO TEST      /////////////////"<<std::endl;
+			Request(routerClient, updateGroupInfoRequest1);
+			Request(routerClient, updateGroupInfoRequest2);
                         std::cout<<std::endl;
 
 			std::cout<<"///////////////////     REMOVE FROM GROUP TEST      /////////////////"<<std::endl;

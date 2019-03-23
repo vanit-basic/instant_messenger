@@ -424,111 +424,79 @@ void Account::handleGet(http_request message) {
 				message.reply(status_codes::NotFound);
 			}
 		}
-		else
-		{
-			if(path_first_request[1] == "getUserShortInfo")
+		else if(path_first_request[1] == "getUserShortInfo")
 			{
 				auto userShortInfo = getUserShortInfo(message, this -> DataBaseClient);
 				message.reply(userShortInfo);
 			}
+		else if(path_first_request[1] == "getGroupInfo")
+		{
+			std::string userId = i.find("userId")->second;
+			std::string groupId = i.find("groupId")->second;
+			if(!(groupId == ""))
+			{
+				auto groupInfo = getGroupInfo(userId,groupId, this->DataBaseClient);
+				message.reply(groupInfo);
+			}
 			else
 			{
-				if(path_first_request[1] == "getGroupInfo")
-				{
-					std::string userId = i.find("userId")->second;
-					std::string groupId = i.find("groupId")->second;
-						if(!(groupId == ""))
-						{
-							auto groupInfo = getGroupInfo(userId,groupId, this->DataBaseClient);
-							message.reply(groupInfo);
-						}
-						else
-						{
-							message.reply(status_codes::NotFound);
-						}
-				}
-				else
-				{
-					if (path_first_request[1] == "deleteUser")
-					{	
-						std::string userId = i.find("userId")->second;
-						message.reply(userDelete(userId, this->DataBaseClient));
-					}
-					else
-					{
-						if(path_first_request[1] == "signOut")
-						{
-							std::string userId = i.find("userId")->second;
-							std::string token = message.headers()["token"];
-							http_response resp = signOut(userId, token, this->TokenDBClient);
-							message.reply(resp);
-						}
-						else
-						{
-							if(path_first_request[1] == "getGroupShortInfo")
-							{
-								std::string userId = "";
-								std::string groupId = "";
-								userId = i.find("userId")->second;
-								groupId = i.find("groupId")->second;
-								if(!(userId == ""))
-								{
-									if(!(groupId == ""))
-									{
-										auto groupShortInfo = getGroupShortInfo(userId,groupId, this->DataBaseClient);
-										message.reply(groupShortInfo);
-									}
-									else
-									{
-										message.reply(status_codes::NotFound);
-									}
-								}
-								else
-								{
-									if(path_first_request[1] == "deleteGroup")
-									{
-										std::string userId = "";
-										std::string groupId = "";
-										userId = i["userId"];
-										groupId = i["groupId"];
-										if(!(userId == ""))
-										{
-											if(!(groupId == ""))
-											{
-												auto deleteGroupInfo = groupDelete(userId,groupId, this->DataBaseClient);
-												message.reply(deleteGroupInfo);
-											}
-											else
-											{
-												if(path_first_request[1] == "groupRemoveUser")
-												{
-													auto resp = groupRemoveUser(message, this -> DataBaseClient);
-													message.reply(resp);
-												}
-												else
-												{
-												if(path_first_request[1] == "leaveGroup")
-												{
-												auto resp = leaveGroup(message, this -> DataBaseClient);
-												message.reply(resp);
-												}
-												else
-												{
-												message.reply(status_codes::NotFound);
-												}
-												}
-											}
-										}
-									
-									}
-									message.reply(status_codes::NotFound);
-								}
-							}
-						}
-					}
-				}
+				message.reply(status_codes::NotFound);
 			}
 		}
+		else if (path_first_request[1] == "deleteUser")
+		{	
+			std::string userId = i.find("userId")->second;
+			message.reply(userDelete(userId, this->DataBaseClient));
+		}
+		else if(path_first_request[1] == "signOut")
+		{
+			std::string userId = i.find("userId")->second;
+			std::string token = message.headers()["token"];
+			http_response resp = signOut(userId, token, this->TokenDBClient);
+			message.reply(resp);
+		}
+		else if(path_first_request[1] == "getGroupShortInfo")
+		{
+			std::string userId = "";
+			std::string groupId = "";
+			userId = i.find("userId")->second;
+			groupId = i.find("groupId")->second;
+			if(!(groupId == ""))
+			{
+				auto groupShortInfo = getGroupShortInfo(userId,groupId, this->DataBaseClient);
+				message.reply(groupShortInfo);
+			}
+			else
+			{
+				message.reply(status_codes::NotFound);
+			}
+		}
+		else if(path_first_request[1] == "deleteGroup")
+		{
+			std::string userId = "";
+			std::string groupId = "";
+			userId = i["userId"];
+			groupId = i["groupId"];
+			if(!(groupId == ""))
+			{
+				auto deleteGroupInfo = groupDelete(userId,groupId, this->DataBaseClient);
+				message.reply(deleteGroupInfo);
+			}
+		}
+		else if(path_first_request[1] == "groupRemoveUser")
+		{
+			auto resp = groupRemoveUser(message, this -> DataBaseClient);
+			message.reply(resp);
+		}
+		else if(path_first_request[1] == "leaveGroup")
+		{
+			auto resp = leaveGroup(message, this -> DataBaseClient);
+			message.reply(resp);
+		}
+			else
+			{
+				message.reply(status_codes::NotFound);
+			}
 	}
 	else
 	{
@@ -614,17 +582,14 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 		signinStatus.extract_json().
 		then([=](json::value signinStatus_json)
 		{
-		std::cout<<__LINE__<<std::endl;
 			if (signinStatus_json["status"] == json::value::string("INVALID_LOGIN"))
 			{
-		std::cout<<__LINE__<<std::endl;
 				message.reply(status_codes::OK, json::value::string("INVALID_LOGIN"));
 			}
 			else
 			{
 				if(signinStatus_json["status"] == json::value::string("INVALID_PASSWORD"))
 				{
-		std::cout<<__LINE__<<std::endl;
 					int attempt = std::stoi(signinStatus_json["attempt"].as_string());
 					if(max_attempt > attempt)
 					{
@@ -685,11 +650,7 @@ void signIn(http_request message, http_client* DataBaseClient, http_client* Toke
 
 http_response createGroup(http_request message, http_client* DataBaseClient)
 {
-		DataBaseClient->request(message). 
-		then([message](http_response createGroup_response) 
-		{ 
-			return createGroup_response; 
-		}); 
+	return DataBaseClient->request(message).get();
 }
 
 void Account::handlePost(http_request message) {
@@ -716,8 +677,7 @@ void Account::handlePost(http_request message) {
 				}
 				else if(path_first_request[1] == "createGroup")
 						{
-							auto resp = createGroup(message, this -> DataBaseClient);
-							message.reply(resp);
+							message.reply(createGroup(message, DataBaseClient));
 						}
 						else
 						{

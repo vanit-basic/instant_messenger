@@ -237,6 +237,7 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 
 	if (result) {
 		
+		std::cout<<"mongo sign in   "<<__LINE__<<std::endl;
 		bsoncxx::stdx::optional<bsoncxx::document::value> infoResult =
 			coll1.find_one(document{} << "login" << login << finalize);
 		bsoncxx::document::view doc = result->view();
@@ -250,9 +251,11 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 		response["status"] = json::value::string("OK");
 
 	} else {
+		std::cout<<"mongo sign in   "<<__LINE__<<std::endl;
 		bsoncxx::stdx::optional<bsoncxx::document::value> loginPassResult =
 			coll2.find_one(document{} << "login" << login << finalize);
 		if (loginPassResult) {
+		std::cout<<"mongo sign in   "<<__LINE__<<std::endl;
 			std::string loginDate = date();
 			
 			bsoncxx::stdx::optional<bsoncxx::document::value> info =
@@ -276,9 +279,11 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 			response["attempt"] = json::value::string(attempt);
 			response["status"] = json::value::string("INVALID_PASSWORD");
 		} else {
+		std::cout<<"mongo sign in   "<<__LINE__<<std::endl;
 			response["status"] = json::value::string("INVALID_LOGIN");
 		}
 	}
+		std::cout<<"mongo sign in   "<<__LINE__<<std::endl;
 	return response;
 }
 
