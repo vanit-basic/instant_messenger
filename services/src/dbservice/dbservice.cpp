@@ -122,9 +122,7 @@ void DbService::handlePost(http_request message) {
 			} else if (path[1] == "signIn") {
 			std::string login = request.at("login").as_string();
 			std::string pass = request.at("password").as_string();
-			std::cout<<"login  "<<login<<"  password   "<<pass<<std::endl;
 			json::value response = m_db->signIn(login, pass);
-			std::cout<<"response  "<<response.to_string()<<std::endl;
 			message.reply(status_codes::OK, response);
 			} else if (path[1] == "signUp") {
 			json::value response = m_db->signUp(request);

@@ -243,7 +243,6 @@ RequestStatus validateRequest  (http_request request, std::vector<std::string> u
 {
     std::string id = extractID(request);
     std::string token = extractToken(request);
-    std::cout<<"id   "<<id<<"  token  "<<token<<std::endl;
     if("" == token) {
         return RequestStatusTokenMissing;
     } 

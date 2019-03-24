@@ -168,73 +168,54 @@ std::string randUserFromGroup(std::string userId, std::string groupId, http_clie
 }
 
 bool isUserInGroup(std::string userId, std::string groupId, http_client* DataBaseClient){
-	uri_builder isUserGroup("/account/isUserInGroup?userId=" + userId + "&groupId" + groupId);
+	uri_builder isUserGroup("/account/isUserInGroup?userId=" + userId + "&groupId=" + groupId);
 	http_response resp = DataBaseClient->request(methods::GET, isUserGroup.to_string()).get();
-	resp.extract_json().
-	then([=](json::value status)
+	json::value status = resp.extract_json().get();
+	if(status.at("status").as_string() == "IN_GROUP")
 	{
-		if(status.at("status").as_string() == "IN_GROUP")
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+json::value getGroupShortInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
+	uri_builder gSInfo("/account/getGroupShortInfo?groupId=" + groupId);
+	json::value groupShortInfo = (DataBaseClient->request(methods::GET, gSInfo.to_string()).get()).extract_json().get();
+	if(groupShortInfo.at("access").as_string() == "private")
+	{
+		if(isUserInGroup(userId, groupId, DataBaseClient))
 		{
-			return true;
+			return groupShortInfo;
 		}
 		else
 		{
-			return false;
+			json::value groupShortInfoResp;
+			groupShortInfoResp["status"] = json::value::string("INVALID_GROUP_ID");
+			return groupShortInfoResp;
 		}
-	});
-}
-
-http_response getGroupShortInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
-	uri_builder gSInfo("/account/getGroupShortInfo?groupId=" + groupId);
-	DataBaseClient->request(methods::GET, gSInfo.to_string()).
-	then([=](http_response groupShortInfo)
+	}
+	else
 	{
-		groupShortInfo.extract_json().
-		then([=](json::value groupShortInf)
-		{
-			if(groupShortInf.at("access").as_string() == "private")
-			{
-				if(isUserInGroup(userId, groupId, DataBaseClient))
-				{
-					return groupShortInfo;
-				}
-				else
-				{
-					http_response resp;
-					json::value groupShortInfoResp;
-					groupShortInfoResp["status"] = json::value::string("INVALID_GROUP_ID");//status@ poxel
-					resp.set_body(groupShortInfoResp);
-					return resp;
-				}
-			}
-			else
-			{
-				return groupShortInfo;
-			}
-		});
-	});
+		return groupShortInfo;
+	}
 }
 
 json::value getGroupInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
-	std::cout<<__LINE__<<std::endl;
 	uri_builder gInfo("/account/getGroupInfo?groupId=" + groupId);
 	http_response groupInfo = DataBaseClient->request(methods::GET, gInfo.to_string()).get();
-	std::cout<<__LINE__<<std::endl;
 	json::value grIn = groupInfo.extract_json().get();
-	std::cout<<"group info   "<<grIn.to_string()<<std::endl;
 	if(grIn.at("access").as_string() == "private")
 	{
-	std::cout<<__LINE__<<std::endl;
 		if(isUserInGroup(userId, groupId, DataBaseClient))
 		{
-			std::cout<<__LINE__<<std::endl;
 			groupInfo.set_body(grIn);
-			std::cout<<__LINE__<<std::endl;
 			return grIn;
 		}
 		else
 		{
-	std::cout<<__LINE__<<std::endl;
 			json::value groupInfoResp;
 			groupInfoResp["status"] = json::value::string("INVALID_GROUP_ID");
 			return groupInfoResp;
@@ -242,15 +223,13 @@ json::value getGroupInfo(std::string userId, std::string groupId, http_client* D
 	}
 	else
 	{
-		std::cout<<__LINE__<<std::endl;
 		return grIn;
 	}
 }
 
 
-http_response userDelete(std::string userId, http_client* DataBaseClient){
-	uri_builder userDelete_path(U("/account/deleteUser?userId" + userId));
-	return DataBaseClient->request(methods::GET, userDelete_path.to_string()).get();
+http_response userDelete(http_request message, http_client* DataBaseClient){
+	return DataBaseClient->request(message).get();
 }
 
 
@@ -386,8 +365,10 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
                                         return resp;
                         }
 }
-
+static int reqCount = 0;
 void Account::handleGet(http_request message) {
+	++reqCount;
+	std::cout<<"Request N  "<<reqCount<<std::endl;
 	//std::cout<<message.to_string()<<std::endl;
 	std::map<utility::string_t, utility::string_t>  i = uri::split_query(message.request_uri().query());
 	std::map<std::string, std::string>::iterator it;
@@ -414,20 +395,17 @@ void Account::handleGet(http_request message) {
 			}
 		}
 		else if(path_first_request[1] == "getUserShortInfo")
-			{
-				auto userShortInfo = getUserShortInfo(message, this -> DataBaseClient);
-				message.reply(userShortInfo);
-			}
+		{
+			auto userShortInfo = getUserShortInfo(message, this -> DataBaseClient);
+			message.reply(userShortInfo);
+		}
 		else if(path_first_request[1] == "getGroupInfo")
 		{
 			std::string userId = i.find("userId")->second;
 			std::string groupId = i.find("groupId")->second;
 			if(!(groupId == ""))
 			{
-			std::cout<<__LINE__<<std::endl;
 			json::value response = getGroupInfo(userId,groupId, DataBaseClient);
-			std::cout<<__LINE__<<std::endl;
-			std::cout<<"uxarkeluc araj  "<<response<<std::endl;
 				message.reply(status_codes::OK, response);
 			}
 			else
@@ -437,8 +415,7 @@ void Account::handleGet(http_request message) {
 		}
 		else if (path_first_request[1] == "deleteUser")
 		{	
-			std::string userId = i.find("userId")->second;
-			message.reply(userDelete(userId, this->DataBaseClient));
+			message.reply(userDelete(message, DataBaseClient));
 		}
 		else if(path_first_request[1] == "signOut")
 		{
@@ -455,8 +432,8 @@ void Account::handleGet(http_request message) {
 			groupId = i.find("groupId")->second;
 			if(!(groupId == ""))
 			{
-				auto groupShortInfo = getGroupShortInfo(userId,groupId, this->DataBaseClient);
-				message.reply(groupShortInfo);
+				json::value groupShortInfo = getGroupShortInfo(userId,groupId, this->DataBaseClient);
+				message.reply(status_codes::OK, groupShortInfo);
 			}
 			else
 			{
@@ -485,14 +462,26 @@ void Account::handleGet(http_request message) {
 			auto resp = leaveGroup(message, this -> DataBaseClient);
 			message.reply(resp);
 		}
+		else if(path_first_request[1] == "addUserToGroup")
+		{
+			std::string groupId = i.find("groupId")->second;
+			if(!(groupId == ""))
+			{
+			message.reply(DataBaseClient->request(message).get());
+			}
 			else
 			{
 				message.reply(status_codes::NotFound);
 			}
+		}
+		else
+		{
+			message.reply(status_codes::NotFound);
+		}
 	}
 	else
 	{
-		message.reply(status_codes::NotFound);
+		message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
 	}
 }
 
@@ -646,33 +635,41 @@ http_response createGroup(http_request message, http_client* DataBaseClient)
 }
 
 void Account::handlePost(http_request message) {
-	std::cout<<message.to_string()<<std::endl;
+	++reqCount;
+	std::cout<<"Request N  "<<reqCount<<std::endl;
+	//std::cout<<message.to_string()<<std::endl;
 	auto path_first_request = requestPath(message);
-	if ( path_first_request[1] == "signUp") 
+	if (!(path_first_request.empty())) 
 	{
-		registration(message, this -> DataBaseClient, this -> TokenDBClient);
-	}
-	else if( path_first_request[1] == "signIn")
+		if (path_first_request[1] == "signUp") 
+		{
+			registration(message, this -> DataBaseClient, this -> TokenDBClient);
+		}
+		else if( path_first_request[1] == "signIn")
 		{
 			signIn(message, DataBaseClient, TokenDBClient);
 		}
 		else if(path_first_request[1] == "userUpdateInfo")
-			{
-			DataBaseClient->request(message).then([message](http_response response){
-						message.reply(response);
-				});
-			}
-			else if(path_first_request[1] == "groupUpdateInfo")
-				{
-					http_response response = this->DataBaseClient->request(message).get();
-						message.reply(response);
-				}
-				else if(path_first_request[1] == "createGroup")
-						{
-							message.reply(createGroup(message, DataBaseClient));
-						}
-						else
-						{
-								message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
-						}
+		{
+			message.reply(DataBaseClient->request(message).get());
+		}
+		else if(path_first_request[1] == "groupUpdateInfo")
+		{
+			std::cout<<"groupUpdateInfo\n";
+			http_response response = this->DataBaseClient->request(message).get();
+			message.reply(response);
+		}
+		else if(path_first_request[1] == "createGroup")
+		{
+			message.reply(createGroup(message, DataBaseClient));
+		}
+		else
+		{
+			message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
+		}
+	}
+	else
+	{
+		message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
+	}
 }

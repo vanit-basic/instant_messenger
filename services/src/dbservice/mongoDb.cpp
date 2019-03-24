@@ -237,7 +237,6 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 
 	if (result) {
 		
-		std::cout<<"mongo sign in   "<<__LINE__<<std::endl;
 		bsoncxx::stdx::optional<bsoncxx::document::value> infoResult =
 			coll1.find_one(document{} << "login" << login << finalize);
 		bsoncxx::document::view doc = result->view();
@@ -278,7 +277,6 @@ json::value MongoDB::signIn(std::string login, std::string password) {
 			response["status"] = json::value::string("INVALID_LOGIN");
 		}
 	}
-		std::cout<<"mongo sign in   "<<__LINE__<<std::endl;
 	return response;
 }
 
@@ -1109,7 +1107,6 @@ json::value MongoDB::searchGroups(json::value request) {
 	for (auto i = groupsId.begin(); i != groupsId.end(); ++i) {
 		std::string id = (*i).as_string();
 		response[id] = getGroupShortInfo(id);
-		std::cout<<response.as_string()<<std::endl;
 	}
 
 	return response;
