@@ -121,7 +121,6 @@ bool Account::checkServices()
 	
 static int temp = 0;
 std::string getToken(){
-	std::cout<<"getToken"<<std::endl;
 	srand(time(NULL));
 //	int temp = rand()% 100000000000;
 	++temp;
