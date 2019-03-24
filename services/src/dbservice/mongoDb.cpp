@@ -522,7 +522,7 @@ json::value MongoDB::getGroupShortInfo(std::string groupId) {
                 
 		element = doc["avatar"];
                 std::string avatar = element.get_utf8().value.to_string();
-
+		response["access"] = json::value::string(access);
                 response["groupId"] = json::value::string(groupId);
                 response["groupName"] = json::value::string(groupName);
                 response["avatar"] = json::value::string(avatar);

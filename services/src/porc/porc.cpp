@@ -298,7 +298,7 @@ int main()
 	do{
 		try {
                         ++count;
-
+/*
 			std::cout<<"///////////////////     REGISTRATION TEST      /////////////////"<<std::endl;
 			Request(routerClient, userRegistration1);
 			Request(routerClient, userRegistration2);
@@ -318,7 +318,7 @@ int main()
 			Request(routerClient, getUserShortInfoRequest2);
 			std::cout<<std::endl;
 			
-/*			std::cout<<"///////////////////     Sign Out  TEST      /////////////////"<<std::endl;
+*//*			std::cout<<"///////////////////     Sign Out  TEST      /////////////////"<<std::endl;
                         Request(routerClient, signOutRequest);
                         std::cout<<std::endl;
 			
@@ -327,7 +327,7 @@ int main()
 			Request(routerClient, signInRequest2);		
 			std::cout<<std::endl;
 */			
-			std::cout<<"///////////////////     CREATE GROUP TEST      /////////////////"<<std::endl;
+/*			std::cout<<"///////////////////     CREATE GROUP TEST      /////////////////"<<std::endl;
 			Request(routerClient, createGroupRequest1);
 			Request(routerClient, createGroupRequest2);
 			Request(routerClient, createGroupRequest3);
@@ -357,17 +357,17 @@ int main()
 			Request(routerClient, getGroupInfoRequest1);
 			Request(routerClient, getGroupInfoRequest2);
 			std::cout<<std::endl;
-			
+*//*			
 			std::cout<<"///////////////////     LEAVE GROUP TEST      /////////////////"<<std::endl;
 			Request(routerClient, leaveGroupRequest);
 			std::cout<<std::endl;
-			
+*/			
 			std::cout<<"///////////////////     GET GROUP SHORT INFO TEST      /////////////////"<<std::endl;
 			Request(routerClient, getGroupShortInfoRequest1);
 			Request(routerClient, getGroupShortInfoRequest2);
 			std::cout<<std::endl;
- /*			
-			std::cout<<"///////////////////     CHANGE GROUP ADMIN TEST      /////////////////"<<std::endl;
+			
+/*			std::cout<<"///////////////////     CHANGE GROUP ADMIN TEST      /////////////////"<<std::endl;
 			Request(routerClient, changeGroupAdminRequest);
 			std::cout<<std::endl;
 			

@@ -79,6 +79,7 @@ void DbService::handleGet(http_request message) {
                                 json::value response = m_db->getGroupUsers(groupId);
                                 message.reply(status_codes::OK, response);								
 			} else if (path[1] == "getGroupShortInfo") {
+				std::cout<<"getGroupShortInfo/n";
 				std::string groupId = i.find("groupId")->second;
                                 json::value response = m_db->getGroupShortInfo(groupId);
                                 message.reply(status_codes::OK, response);

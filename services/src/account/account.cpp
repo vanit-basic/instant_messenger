@@ -168,30 +168,37 @@ std::string randUserFromGroup(std::string userId, std::string groupId, http_clie
 }
 
 bool isUserInGroup(std::string userId, std::string groupId, http_client* DataBaseClient){
+	std::cout<<"isuseringroup  usId  "<< userId<<"   grId  "<<groupId<<std::endl;
 	uri_builder isUserGroup("/account/isUserInGroup?userId=" + userId + "&groupId=" + groupId);
-	http_response resp = DataBaseClient->request(methods::GET, isUserGroup.to_string()).get();
-	json::value status = resp.extract_json().get();
+	json::value status = (DataBaseClient->request(methods::GET, isUserGroup.to_string()).get()).extract_json().get();
 	if(status.at("status").as_string() == "IN_GROUP")
 	{
+		std::cout<<__LINE__<<std::endl;
 		return true;
 	}
 	else
 	{
+		std::cout<<__LINE__<<std::endl;
 		return false;
 	}
 }
 
-json::value getGroupShortInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
+json::value getGroupShortInfo(http_request message,std::string userId, std::string groupId, http_client* DataBaseClient){
 	uri_builder gSInfo("/account/getGroupShortInfo?groupId=" + groupId);
-	json::value groupShortInfo = (DataBaseClient->request(methods::GET, gSInfo.to_string()).get()).extract_json().get();
+			std::cout<<__LINE__<<std::endl;
+	json::value groupShortInfo = (DataBaseClient->request(message).get()).extract_json().get();
+			std::cout<<__LINE__<<std::endl;
 	if(groupShortInfo.at("access").as_string() == "private")
 	{
+			std::cout<<__LINE__<<std::endl;
 		if(isUserInGroup(userId, groupId, DataBaseClient))
 		{
+			std::cout<<__LINE__<<std::endl;
 			return groupShortInfo;
 		}
 		else
 		{
+			std::cout<<__LINE__<<std::endl;
 			json::value groupShortInfoResp;
 			groupShortInfoResp["status"] = json::value::string("INVALID_GROUP_ID");
 			return groupShortInfoResp;
@@ -199,30 +206,35 @@ json::value getGroupShortInfo(std::string userId, std::string groupId, http_clie
 	}
 	else
 	{
+			std::cout<<__LINE__<<std::endl;
 		return groupShortInfo;
 	}
 }
 
 json::value getGroupInfo(std::string userId, std::string groupId, http_client* DataBaseClient){
 	uri_builder gInfo("/account/getGroupInfo?groupId=" + groupId);
-	http_response groupInfo = DataBaseClient->request(methods::GET, gInfo.to_string()).get();
-	json::value grIn = groupInfo.extract_json().get();
+	std::cout<<__LINE__<<std::endl;
+	json::value grIn = (DataBaseClient->request(methods::GET, gInfo.to_string()).get()).extract_json().get();
+	std::cout<<__LINE__<<std::endl;
 	if(grIn.at("access").as_string() == "private")
 	{
+	std::cout<<__LINE__<<std::endl;
 		if(isUserInGroup(userId, groupId, DataBaseClient))
 		{
-			groupInfo.set_body(grIn);
+	std::cout<<__LINE__<<std::endl;
 			return grIn;
 		}
 		else
 		{
 			json::value groupInfoResp;
 			groupInfoResp["status"] = json::value::string("INVALID_GROUP_ID");
+	std::cout<<__LINE__<<std::endl;
 			return groupInfoResp;
 		}
 	}
 	else
 	{
+	std::cout<<__LINE__<<std::endl;
 		return grIn;
 	}
 }
@@ -242,18 +254,24 @@ http_response signOut(std::string userId, std::string token, http_client* TokenD
 }
 
 http_response groupDelete(std::string userId, std::string groupId, http_client* DataBaseClient){
+	std::cout<<__LINE__<<std::endl;
 	json::value groupInf = getGroupInfo(userId, groupId, DataBaseClient);
+	std::cout<<__LINE__<<std::endl;
 		if(groupInf.at("adminId").as_string() == userId)
 		{
+	std::cout<<__LINE__<<std::endl;
 			uri_builder groupDelete_path(U("/account/deleteGroup?groupId"+ groupId));
+	std::cout<<__LINE__<<std::endl;
 			return DataBaseClient->request(methods::GET , groupDelete_path.to_string()).get();
 		}
 		else
 		{
+	std::cout<<__LINE__<<std::endl;
 			http_response resp;
 			json::value res;
 			res["status"] = json::value::string("INVALID_ADMIN_ID");
 			resp.set_body(res);
+	std::cout<<__LINE__<<std::endl;
 			return resp;
 		}
 }
@@ -261,45 +279,45 @@ http_response groupDelete(std::string userId, std::string groupId, http_client* 
 
 http_response leaveGroup(http_request message,http_client* DataBaseClient)
 {
+	std::cout<<__LINE__<<std::endl;
 	std::map<utility::string_t, utility::string_t>  infoMap = uri::split_query(message.request_uri().query());
 		std::string userId = infoMap["userId"];
 		std::string groupId = infoMap["groupId"];
+	std::cout<<__LINE__<<std::endl;
+	std::cout<<"usId   "<<userId<<"   grId  "<<groupId<<std::endl;
 		if(isUserInGroup(userId, groupId, DataBaseClient))
 		{
+	std::cout<<__LINE__<<std::endl;
 			json::value UserInfo = getGroupInfo(userId, groupId, DataBaseClient);
 				std::string adminId = UserInfo.at("adminId").as_string();
 				if(userId == adminId)
 				{	
+	std::cout<<__LINE__<<std::endl;
 					std::string newAdminId = randUserFromGroup(userId, groupId, DataBaseClient);
 					if(newAdminId != "NOT_FOUND_MEMBERS")
 					{ 
-						uri_builder userDelete_path(U("/account/changeGroupAdmin?groupId"+groupId+"&clientId"+newAdminId));
-						DataBaseClient->request(methods::GET, userDelete_path.to_string()).
-						then([=](http_response status)
+	std::cout<<__LINE__<<std::endl;
+						uri_builder userDelete_path(U("/account/changeGroupAdmin?groupId="+groupId+"&clientId="+newAdminId));
+						json::value statusJson = (DataBaseClient->request(methods::GET, userDelete_path.to_string()).get()).extract_json().get();
+						if(statusJson.at("status").as_string() == "OK")
 						{
-							status.extract_json().
-							then([=](json::value statusJson)
-							{
-								if(statusJson.at("status").as_string() == "OK")
-								{
-									uri_builder leaveGroup_path(U("/groupRemoveUser?clientId="+ userId + "&groupId="+groupId));
-									DataBaseClient->request(methods::GET,  leaveGroup_path.to_string()).
-									then([message](http_response leaveGroup_response)
-									{
-										return leaveGroup_response;
-									});
-								}
-								else
-								{
-									auto groupDeleteResp = groupDelete(userId, groupId, DataBaseClient);
-									return groupDeleteResp;
-								}
-							});
-						});
+	std::cout<<__LINE__<<std::endl;
+							uri_builder leaveGroup_path(U("/groupRemoveUser?clientId="+ userId + "&groupId="+groupId));
+							return DataBaseClient->request(methods::GET,  leaveGroup_path.to_string()).get();
+						}
+						else
+						{
+	std::cout<<__LINE__<<std::endl;
+							auto groupDeleteResp = groupDelete(userId, groupId, DataBaseClient);
+	std::cout<<__LINE__<<std::endl;
+							return groupDeleteResp;
+						}
 					}
 					else
 					{
+	std::cout<<__LINE__<<std::endl;
 						http_response groupDeleteResp = groupDelete(userId, groupId, DataBaseClient);
+	std::cout<<__LINE__<<std::endl;
 						return groupDeleteResp;
 					}
 				}
@@ -307,20 +325,19 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 				{
 					if(isUserInGroup(userId, groupId, DataBaseClient))
 					{
+	std::cout<<__LINE__<<std::endl;
 						uri_builder leaveGroup_path(U("/account/groupRemoveUser?clientId="+userId+"&groupId="+groupId));
-						DataBaseClient->request(methods::GET,  leaveGroup_path.to_string()).
-						then([message](http_response leaveGroup_response)
-						{
-							return leaveGroup_response;
-						});
+						return DataBaseClient->request(methods::GET,  leaveGroup_path.to_string()).get();
 					}
 					else
 					{
+	std::cout<<__LINE__<<std::endl;
 						http_response resp;
 						resp.set_status_code(status_codes::OK);
 						json::value info;
 						info["status"] = json::value::string("GROUP_NOT_FOUND");
 						resp.set_body(info);
+	std::cout<<__LINE__<<std::endl;
 						return resp;
 					}
 				}
@@ -330,40 +347,36 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 http_response groupRemoveUser (http_request message, http_client* DataBaseClient)
 {
 	std::map<utility::string_t, utility::string_t>  infoMap = uri::split_query(message.request_uri().query());
-                std::string userId = infoMap["userId"];
-                std::string groupId = infoMap["groupId"];
-                std::string clientId = infoMap["clientId"];
-		json::value groupInfo = getGroupInfo(clientId ,groupId, DataBaseClient);
-                        if(userId == groupInfo.at("adminId").as_string())
-                        {
-                                if(clientId == userId){
+	std::string userId = infoMap["userId"];
+	std::string groupId = infoMap["groupId"];
+	std::string clientId = infoMap["clientId"];
+	json::value groupInfo = getGroupInfo(clientId ,groupId, DataBaseClient);
+	if(userId == groupInfo.at("adminId").as_string())
+	{
+		if(clientId == userId){
 
-                                        http_response resp;
-                                        resp.set_status_code(status_codes::OK);
-                                        json::value info;
-                                        info["error"] = json::value::string("change admin");
-                                        resp.set_body(info);
-                                        return resp;
-                                }
-                                else
-                                {
-                                        uri_builder groupRemoveUser_path(U("/account/groupRemoveUser?clientId="+ clientId + "&groupId="+groupId));
-                                        DataBaseClient->request(methods::GET,  groupRemoveUser_path.to_string()).
-                                        then([message](http_response userRemove_response)
-                                        {
-                                        return userRemove_response;
-                                        });
-                                }
-                        }
-                        else
-                        {
-                                        http_response resp;
-                                        resp.set_status_code(status_codes::OK);
-                                        json::value info;
-                                        info["error"] = json::value::string("INVAILD_ADMIN_ID");
-                                        resp.set_body(info);
-                                        return resp;
-                        }
+			http_response resp;
+			resp.set_status_code(status_codes::OK);
+			json::value info;
+			info["error"] = json::value::string("change admin");
+			resp.set_body(info);
+			return resp;
+		}
+		else
+		{
+			uri_builder groupRemoveUser_path(U("/account/groupRemoveUser?clientId="+ clientId + "&groupId="+groupId));
+			return (DataBaseClient->request(methods::GET,  groupRemoveUser_path.to_string()).get());
+		}
+	}
+	else
+	{
+		http_response resp;
+		resp.set_status_code(status_codes::OK);
+		json::value info;
+		info["error"] = json::value::string("INVAILD_ADMIN_ID");
+		resp.set_body(info);
+		return resp;
+	}
 }
 static int reqCount = 0;
 void Account::handleGet(http_request message) {
@@ -426,17 +439,22 @@ void Account::handleGet(http_request message) {
 		}
 		else if(path_first_request[1] == "getGroupShortInfo")
 		{
+			std::cout<<__LINE__<<std::endl;
 			std::string userId = "";
 			std::string groupId = "";
 			userId = i.find("userId")->second;
 			groupId = i.find("groupId")->second;
+			std::cout<<"usId  "<<userId<<"  grId  "<<groupId<<std::endl;
 			if(!(groupId == ""))
 			{
-				json::value groupShortInfo = getGroupShortInfo(userId,groupId, this->DataBaseClient);
+			std::cout<<__LINE__<<std::endl;
+				json::value groupShortInfo = getGroupShortInfo(message, userId, groupId, DataBaseClient);
+			std::cout<<__LINE__<<std::endl;
 				message.reply(status_codes::OK, groupShortInfo);
 			}
 			else
 			{
+			std::cout<<__LINE__<<std::endl;
 				message.reply(status_codes::NotFound);
 			}
 		}
@@ -655,7 +673,6 @@ void Account::handlePost(http_request message) {
 		}
 		else if(path_first_request[1] == "groupUpdateInfo")
 		{
-			std::cout<<"groupUpdateInfo\n";
 			http_response response = this->DataBaseClient->request(message).get();
 			message.reply(response);
 		}
