@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include <usr_interrupt_handler.hpp>
 #include <runtime_utils.hpp>
 
@@ -8,8 +10,6 @@ using namespace cfx;
 
 int main(int argc, const char * argv[])
 {
-	InterruptHandler::hookSIGINT();
-
 	if(argc < 2)
 	{ 
 		std::cerr << "Config file is not specified" << std::endl;
@@ -18,6 +18,7 @@ int main(int argc, const char * argv[])
 	else
 	{
 		std::string path = std::string(argv[1]);
+		InterruptHandler::hookSIGINT();
 
 		Router server(path);
 		if(server.checkServices())

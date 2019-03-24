@@ -23,7 +23,6 @@ int main(int argc, const char * argv[])
         	Account server(path);
                 if(server.checkServices())
                 {
-
                         try {
                                 server.accept().wait();
                                 std::cout << "Account service start " << std::endl;

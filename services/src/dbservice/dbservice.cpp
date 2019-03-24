@@ -111,7 +111,6 @@ void DbService::handleGet(http_request message) {
 void DbService::handlePost(http_request message) {
 	std::cout<< message.to_string()<<std::endl;
 	message.extract_json().then([message, this](json::value request) {
-			std::cout<<request.to_string()<<std::endl;
 			auto path = requestPath(message);
 			if (!path.empty()) {
 			if (path[0] == "account") {

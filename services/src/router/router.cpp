@@ -316,7 +316,6 @@ static int requestCount = 0;
 void Router::handleGet(http_request message) {
 	++requestCount;
 	std::cout<<"Request N  "<<requestCount<<std::endl;
-	//std::cout<<message.to_string()<<std::endl;
     auto urlPath  = requestPath(message);
     RequestStatus status = validateRequest(message, urlPath, TokenDbClient, true);
     if(status != RequestStatusValid) return replyToInvalidRequest(status, message);
@@ -325,7 +324,7 @@ void Router::handleGet(http_request message) {
     std::string serviceName = urlPath[0];
 
     ServiceType servType = serviceTypeFromString(serviceName);
-    http_client *service = serviceClient(servType);//??????????????????
+    http_client *service = serviceClient(servType);
 
     service->request(message).then([message](http_response response){
             message.reply(response);
@@ -333,7 +332,8 @@ void Router::handleGet(http_request message) {
 }
 
 void Router::handlePost(http_request message) {
-//	std::cout<<message.to_string()<<std::endl;
+	++requestCount;
+	std::cout<<"Request N  "<<requestCount<<std::endl;
     auto urlPath  = requestPath(message);
     //TODO add path validation before using it
     std::string actionName = urlPath[1];
