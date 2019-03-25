@@ -310,11 +310,6 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 										return leaveGroup_response;
 									});
 								}
-								else
-								{
-									auto groupDeleteResp = groupDelete(userId, groupId, DataBaseClient);
-									return groupDeleteResp;
-								}
 							});
 						});
 					}
@@ -326,25 +321,22 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 				}
 				else
 				{
-					if(isUserInGroup(userId, groupId, DataBaseClient))
-					{
 						uri_builder leaveGroup_path(U("/account/groupRemoveUser?clientId="+userId+"&groupId="+groupId));
 						DataBaseClient->request(methods::GET,  leaveGroup_path.to_string()).
 						then([message](http_response leaveGroup_response)
 						{
 							return leaveGroup_response;
 						});
-					}
-					else
-					{
-						http_response resp;
-						resp.set_status_code(status_codes::OK);
-						json::value info;
-						info["status"] = json::value::string("GROUP_NOT_FOUND");
-						resp.set_body(info);
-						return resp;
-					}
 				}
+		}
+		else
+		{
+			http_response resp;
+			resp.set_status_code(status_codes::OK);
+			json::value info;
+			info["status"] = json::value::string("INVALID_GROUP_ID");
+			resp.set_body(info);
+			return resp;
 		}
 }
 
