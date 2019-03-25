@@ -667,6 +667,11 @@ void Account::handlePost(http_request message) {
 		{
 			message.reply(createGroup(message, DataBaseClient));
 		}
+		else if(path_first_request[1] == "changePassword")
+		{
+			std::cout<<"changePassword "<<std::endl;
+			message.reply(DataBaseClient->request(message).get());
+		}
 		else
 		{
 			message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));

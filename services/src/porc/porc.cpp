@@ -111,11 +111,16 @@ int main()
         signInReq2["login"] = json::value::string("valodyan");
         signInReq2["password"] = json::value::string("Valodik9"); 
         
-	json::value changePasswordReq;
-	changePasswordReq["userId"] = json::value::string("u1");
-	changePasswordReq["password"] = json::value::string("Valodik90");
-	changePasswordReq["newPassword"] = json::value::string("Valod90");
+	json::value changePasswordReq1;
+	changePasswordReq1["userId"] = json::value::string("u1");
+	changePasswordReq1["password"] = json::value::string("Valodik90");
+	changePasswordReq1["newPassword"] = json::value::string("Valod90");
 
+	json::value changePasswordReq2;
+	changePasswordReq2["userId"] = json::value::string("u2");
+	changePasswordReq2["password"] = json::value::string("Vaasdasdasd");
+	changePasswordReq2["newPassword"] = json::value::string("Valod90");
+	
 	json::value createGroupReq1;
         createGroupReq1["userId"] = json::value::string("u1");
         createGroupReq1["groupName"] = json::value::string("Best");
@@ -282,6 +287,15 @@ int main()
 	deleteGroupRequest.headers().add("token", "1");
 
 //	CHANGE PASSWORD REQUEST  AVELACNEL-----------------------------------------------
+	http_request changePasswordRequest1(methods::POST);
+	uri changePasswordUri("/account/changePassword");
+	changePasswordRequest1.set_request_uri(changePasswordUri);
+	changePasswordRequest1.set_body(changePasswordReq1);
+	changePasswordRequest1.headers().add("token", "1");
+	http_request changePasswordRequest2(methods::POST);
+	changePasswordRequest2.set_request_uri(changePasswordUri);
+	changePasswordRequest2.set_body(changePasswordReq2);
+	changePasswordRequest2.headers().add("token", "2");
 
 //	DELETE USER REQUEST
 	http_request deleteUserRequest(methods::GET);
@@ -381,12 +395,13 @@ int main()
 			Request(routerClient, getUserInfoRequest2);
 			std::cout<<std::endl;
 						
-/*			std::cout<<"///////////////////     LEAVE GROUP TEST      /////////////////"<<std::endl;
-			Request(routerClient, leaveGroupRequest);
+			std::cout<<"///////////////////     CHANGE PASSWORD TEST      /////////////////"<<std::endl;
+			Request(routerClient, changePasswordRequest1);
+			Request(routerClient, changePasswordRequest2);
 			std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     CHANGE PASSWORD(DB  SERVICE) TEST      /////////////////"<<std::endl;
-			postRequest(dbServiceClient, changePassword, changePasswordReq);
+/*			std::cout<<"///////////////////     LEAVE GROUP TEST      /////////////////"<<std::endl;
+			Request(routerClient, leaveGroupRequest);
 			std::cout<<std::endl;
 			
 			std::cout<<"///////////////////     CHANGE GROUP ADMIN TEST      /////////////////"<<std::endl;
