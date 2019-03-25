@@ -397,7 +397,7 @@ int main()
 			Request(routerClient, getGroupInfoRequest2);
 			Request(routerClient, getGroupInfoRequest3);
 			std::cout<<std::endl;
-			
+/*			
 			std::cout<<"///////////////////     REMOVE FROM GROUP TEST      /////////////////"<<std::endl;
 			Request(routerClient, removeFromGroupRequest1);
 			Request(routerClient, removeFromGroupRequest2);
@@ -411,7 +411,7 @@ int main()
                         Request(routerClient, deleteUserRequest);
                         std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     GET USER INFO TEST      /////////////////"<<std::endl;
+*/			std::cout<<"///////////////////     GET USER INFO TEST      /////////////////"<<std::endl;
 			Request(routerClient, getUserInfoRequest1);
 			Request(routerClient, getUserInfoRequest2);
 			std::cout<<std::endl;
@@ -422,11 +422,17 @@ int main()
 			Request(routerClient, getGroupInfoRequest3);
 			std::cout<<std::endl;
 			
-/*			std::cout<<"///////////////////     LEAVE GROUP TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     LEAVE GROUP TEST      /////////////////"<<std::endl;
 			Request(routerClient, leaveGroupRequest);
 			std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     GET GROUP INFO TEST      /////////////////"<<std::endl;
+			Request(routerClient, getGroupInfoRequest1);
+			Request(routerClient, getGroupInfoRequest2);
+			Request(routerClient, getGroupInfoRequest3);
+			std::cout<<std::endl;
+			
+/*			std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, searchUsers, searchUsersReq);
 			std::cout<<std::endl;
 	
