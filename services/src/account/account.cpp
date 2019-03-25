@@ -340,14 +340,26 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 		}
 }
 
-http_response addUserToGroup(http_request message, std::string userId, std::string groupId, http_client* DataBaseClient)
+http_response addUserToGroup(http_request message, std::string userId, std::string groupId, std::string clientId, http_client* DataBaseClient)
 {
 	json::value groupInfo = getGroupInfo(userId ,groupId, DataBaseClient);
 	if("OK" == groupInfo.at("status").as_string())
 	{
 		if(userId == groupInfo.at("adminId").as_string())
 		{
+			if(isUserInGroup(clientId, groupId, DataBaseClient))
+			{
+				http_response resp;
+				json::value status;
+				status["status"] = json::value::string("USER_IS_ALREADY_IN_GROUP");
+				resp.set_status_code(status_codes::OK);
+				resp.set_body(status);
+				return resp;
+			}
+			else
+			{
 			return DataBaseClient->request(message).get();
+			}
 		}
 		else
 		{
@@ -537,11 +549,15 @@ void Account::handleGet(http_request message) {
 		}
 		else if(path_first_request[1] == "addUserToGroup")
 		{
-			std::string groupId = i.find("groupId")->second;
-			std::string userId = i.find("userId")->second;
-			if(!(groupId == ""))
+			std::string clientId = "";
+			std::string groupId = "";
+			std::string userId = "";
+			clientId = i.find("clientId")->second;
+			groupId = i.find("groupId")->second;
+			userId = i.find("userId")->second;
+			if(!(groupId == "" || clientId == ""))
 			{
-				message.reply(addUserToGroup(message, userId, groupId, DataBaseClient));
+				message.reply(addUserToGroup(message, userId, groupId, clientId, DataBaseClient));
 			}
 			else
 			{
