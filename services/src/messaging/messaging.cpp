@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <network_utils.hpp>
 #include <messaging/messaging.hpp>
-json::value stringTojson(/*std::string message*/){
+/*json::value stringTojson(std::string message){
 	json::value str=web::json::value::parse({action:"getGroupConversation"});
 	std::cout<<str<<std::endl;
 	//return str;
@@ -75,13 +75,13 @@ bool Messaging::checkServices()
         bool DbServStatus = false;
         bool tokDbServStatus = false;
         //DbServStatus = ServiceStart(DataBaseClient, "Messaging Database");
-        /*if(DbServStatus){
+        if(DbServStatus){
                 tokDbServStatus = ServiceStart(TokenDBClient, "TokenDatabase");}
         if (tokDbServStatus)
         {
                 this->setEndpoint(messagingUri);
                 status = true;
-        }*/
+        }
         this->setEndpoint(messagingUri);
         return true;
 }
@@ -94,29 +94,36 @@ void Messaging::initRestOpHandlers() {
 
 http_response userRemoveMessage(std::string userId, std::string clientId, std::string messageId, database* DataBaseClient){
  	auto resp = DataBaseClient->userRemoveMessage(userId, clientId, messageId);
+	return resp;
 }
 http_response userRemoveConversation(std::string userId,std::string clientId, database* DataBaseClient){
  	auto resp = DataBaseClient->userRemoveConversation(userId, clientId);
+	return resp;
 }
 
 http_response getUsersConversation(std::string userId, std::string clientId, database* DataBaseClient){
  	auto resp = DataBaseClient->getUsersConversation(userId, clientId);
+	return resp;
 }
 
 http_response getUserConversations(std::string userId, database* DataBaseClient){
  	auto resp = DataBaseClient->getUserConversations(userId);
+	return resp;
 }
 
 http_response getGroupConversation(std::string userId, std::string groupId, database* DataBaseClient){
  	auto resp = DataBaseClient->getGroupConversation(groupId);
+	return resp;
 }
 
 http_response groupRemoveConversation(std::string userId, std::string groupId, database* DataBaseClient){
  	auto resp = DataBaseClient->groupRemoveConversation(groupId);
+	return resp;
 }
 
 http_response groupRemoveMessage(std::string userId,std::string groupId , std::string messageId , database* DataBaseClient){
  	auto resp = DataBaseClient->groupRemoveMessage(groupId, messageId);
+	return resp;
 }
 
 
@@ -201,27 +208,17 @@ void Messaging::handleGet(http_request message) {
 }
 
 http_response userUpdateMessage (json::value req, database* DataBaseClient){
-		uri_builder userUpdateMessage_path(U("/userUpdateMessage/"));
-		DataBaseClient->request(methods::POST, userUpdateMessage_path.to_string(), req).
-		then([=](http_response status){
-			return status;
-		});
+	auto resp = DataBaseClient->userUpdateMessage(from, to, message);
+	return resp;
 }
 
 http_response userSendMessage (json::value req, database* DataBaseClient){
-		uri_builder userSendMessage_path(U("/userSendMessage/"));
-		DataBaseClient->request(methods::POST, userSendMessage_path.to_string(), req).
-		then([=](http_response status){
-			return status;
-		});
+	auto resp = DataBaseClient->userSendMessage(from, to, message);
+	return resp;
 }
 
 http_response groupUpdateMessage (json::value req, database* DataBaseClient){
-		uri_builder groupUpdateMessage_path(U("/groupUpdateMessage/"));
-		DataBaseClient->request(methods::POST, groupUpdateMessage_path.to_string(), req).
-		then([=](http_response status){
-			return status;
-		});
+	DataBaseClient->groupUpdateMessage_path.to_string();
 }
 
 http_response groupSendMessage (json::value req, database* DataBaseClient){
@@ -267,4 +264,4 @@ void Messaging::handlePost(http_request message) {
 			}
 		}
 	});
-}
+} */
