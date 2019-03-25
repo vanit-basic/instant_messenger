@@ -252,6 +252,10 @@ int main()
 	uri getGroupInfoUri2("/account/getGroupInfo?userId=u1&groupId=g2");
 	getGroupInfoRequest2.set_request_uri(getGroupInfoUri2);
 	getGroupInfoRequest2.headers().add("token", "1");
+	http_request getGroupInfoRequest3(methods::GET);
+	uri getGroupInfoUri3("/account/getGroupInfo?userId=u2&groupId=g2");
+	getGroupInfoRequest3.set_request_uri(getGroupInfoUri3);
+	getGroupInfoRequest3.headers().add("token", "2");
 //	REMOVE FROM GROUP REQUEST
 	http_request removeFromGroupRequest1(methods::GET);
 	uri removeFromGroupUri1("/account/groupRemoveUser?groupId=g1&userId=u1&clientId=u2");
@@ -272,21 +276,25 @@ int main()
 	getGroupShortInfoRequest2.headers().add("token", "1");
 //	LEAVE GROUP REQUEST
 	http_request leaveGroupRequest(methods::GET);
-	uri leaveGroupUri("/account/leaveGroup?userId=u2&groupId=g3");
+	uri leaveGroupUri("/account/leaveGroup?userId=u2&groupId=g1");
 	leaveGroupRequest.set_request_uri(leaveGroupUri);
 	leaveGroupRequest.headers().add("token", "2");
 //	CHANGE GROUP ADMIN REQUEST
-	http_request changeGroupAdminRequest(methods::GET);
-	uri changeGroupAdminUri("/account/changeGroupAdmin?groupId=g2&userId=u2&clientId=u1");
-	changeGroupAdminRequest.set_request_uri(changeGroupAdminUri);
-	changeGroupAdminRequest.headers().add("token", "2");
+	http_request changeGroupAdminRequest1(methods::GET);
+	uri changeGroupAdminUri1("/account/changeGroupAdmin?groupId=g2&userId=u2&clientId=u1");
+	changeGroupAdminRequest1.set_request_uri(changeGroupAdminUri1);
+	changeGroupAdminRequest1.headers().add("token", "2");
+	http_request changeGroupAdminRequest2(methods::GET);
+	uri changeGroupAdminUri2("/account/changeGroupAdmin?groupId=g1&userId=u2&clientId=u2");
+	changeGroupAdminRequest2.set_request_uri(changeGroupAdminUri2);
+	changeGroupAdminRequest2.headers().add("token", "2");
 //	DELETE GROUP REQUEST
 	http_request deleteGroupRequest(methods::GET);
-	uri deleteGroupUri("/account/deleteGroup?groupId=g1&userId=u1");
+	uri deleteGroupUri("/account/deleteGroup?groupId=g3&userId=u2");
 	deleteGroupRequest.set_request_uri(deleteGroupUri);
-	deleteGroupRequest.headers().add("token", "1");
+	deleteGroupRequest.headers().add("token", "2");
 
-//	CHANGE PASSWORD REQUEST  AVELACNEL-----------------------------------------------
+//	CHANGE PASSWORD REQUEST  
 	http_request changePasswordRequest1(methods::POST);
 	uri changePasswordUri("/account/changePassword");
 	changePasswordRequest1.set_request_uri(changePasswordUri);
@@ -350,6 +358,7 @@ int main()
 			std::cout<<"///////////////////     GET GROUP INFO TEST      /////////////////"<<std::endl;
 			Request(routerClient, getGroupInfoRequest1);
 			Request(routerClient, getGroupInfoRequest2);
+			Request(routerClient, getGroupInfoRequest3);
 			std::cout<<std::endl;
 			
 			std::cout<<"///////////////////     ADD USER TO GROUP TEST      /////////////////"<<std::endl;
@@ -370,6 +379,7 @@ int main()
 			std::cout<<"///////////////////     GET GROUP INFO TEST      /////////////////"<<std::endl;
 			Request(routerClient, getGroupInfoRequest1);
 			Request(routerClient, getGroupInfoRequest2);
+			Request(routerClient, getGroupInfoRequest3);
 			std::cout<<std::endl;
 			
 			std::cout<<"///////////////////     GET GROUP SHORT INFO TEST      /////////////////"<<std::endl;
@@ -388,6 +398,7 @@ int main()
 			std::cout<<"///////////////////     GET GROUP INFO TEST      /////////////////"<<std::endl;
 			Request(routerClient, getGroupInfoRequest1);
 			Request(routerClient, getGroupInfoRequest2);
+			Request(routerClient, getGroupInfoRequest3);
 			std::cout<<std::endl;
 			
 			std::cout<<"///////////////////     GET USER INFO TEST      /////////////////"<<std::endl;
@@ -400,12 +411,19 @@ int main()
 			Request(routerClient, changePasswordRequest2);
 			std::cout<<std::endl;
 			
-/*			std::cout<<"///////////////////     LEAVE GROUP TEST      /////////////////"<<std::endl;
-			Request(routerClient, leaveGroupRequest);
+			std::cout<<"///////////////////     CHANGE GROUP ADMIN TEST      /////////////////"<<std::endl;
+			Request(routerClient, changeGroupAdminRequest1);
+			Request(routerClient, changeGroupAdminRequest2);
 			std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     CHANGE GROUP ADMIN TEST      /////////////////"<<std::endl;
-			Request(routerClient, changeGroupAdminRequest);
+			std::cout<<"///////////////////     GET GROUP INFO TEST      /////////////////"<<std::endl;
+			Request(routerClient, getGroupInfoRequest1);
+			Request(routerClient, getGroupInfoRequest2);
+			Request(routerClient, getGroupInfoRequest3);
+			std::cout<<std::endl;
+			
+/*			std::cout<<"///////////////////     LEAVE GROUP TEST      /////////////////"<<std::endl;
+			Request(routerClient, leaveGroupRequest);
 			std::cout<<std::endl;
 			
 			std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;

@@ -412,6 +412,35 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
 		return resp;
 	}
 }
+
+http_response changeGroupAdmin(http_request message, std::string userId, std::string groupId, http_client* DataBaseClient)
+{
+	json::value groupInfo = getGroupInfo(userId ,groupId, DataBaseClient);
+	if("OK" == groupInfo.at("status").as_string())
+	{
+		if(userId == groupInfo.at("adminId").as_string())
+		{
+			return DataBaseClient->request(message).get();
+		}
+		else
+		{
+			http_response resp;
+			json::value status;
+			status["status"] = json::value::string("YOU_ARE_NOT_ADMIN");
+			resp.set_status_code(status_codes::OK);
+			resp.set_body(status);
+			return resp;
+		}
+	}
+	else
+	{
+		http_response resp;
+		resp.set_status_code(status_codes::OK);
+		resp.set_body(groupInfo);
+		return resp;
+	}
+}
+
 static int reqCount = 0;
 void Account::handleGet(http_request message) {
 	++reqCount;
@@ -513,6 +542,19 @@ void Account::handleGet(http_request message) {
 			if(!(groupId == ""))
 			{
 				message.reply(addUserToGroup(message, userId, groupId, DataBaseClient));
+			}
+			else
+			{
+				message.reply(status_codes::NotFound);
+			}
+		}
+		else if(path_first_request[1] == "changeGroupAdmin")
+		{
+			std::string groupId = i.find("groupId")->second;
+			std::string userId = i.find("userId")->second;
+			if(!(groupId == ""))
+			{
+				message.reply(changeGroupAdmin(message, userId, groupId, DataBaseClient));
 			}
 			else
 			{
@@ -639,6 +681,38 @@ http_response createGroup(http_request message, http_client* DataBaseClient)
 	return DataBaseClient->request(message).get();
 }
 
+http_response updateGroupInfo(http_request message, http_client* DataBaseClient)
+{
+	json::value info = message.extract_json().get();
+	std::string userId = info.at("userId").as_string();
+	std::string groupId = info.at("groupId").as_string();
+	json::value groupInfo = getGroupInfo(userId ,groupId, DataBaseClient);
+	if("OK" == groupInfo.at("status").as_string())
+	{
+		if(userId == groupInfo.at("adminId").as_string())
+		{
+			return DataBaseClient->request(message).get();
+		}
+		else
+		{
+			http_response resp;
+			json::value status;
+			status["status"] = json::value::string("YOU_ARE_NOT_ADMIN");
+			resp.set_status_code(status_codes::OK);
+			resp.set_body(status);
+			return resp;
+		}
+	}
+	else
+	{
+		http_response resp;
+		resp.set_status_code(status_codes::OK);
+		resp.set_body(groupInfo);
+		return resp;
+	}
+
+}
+
 void Account::handlePost(http_request message) {
 	++reqCount;
 	std::cout<<"Request N  "<<reqCount<<std::endl;
@@ -660,8 +734,7 @@ void Account::handlePost(http_request message) {
 		}
 		else if(path_first_request[1] == "groupUpdateInfo")
 		{
-			http_response response = this->DataBaseClient->request(message).get();
-			message.reply(response);
+			message.reply(updateGroupInfo(message, DataBaseClient));
 		}
 		else if(path_first_request[1] == "createGroup")
 		{
@@ -669,7 +742,6 @@ void Account::handlePost(http_request message) {
 		}
 		else if(path_first_request[1] == "changePassword")
 		{
-			std::cout<<"changePassword "<<std::endl;
 			message.reply(DataBaseClient->request(message).get());
 		}
 		else
