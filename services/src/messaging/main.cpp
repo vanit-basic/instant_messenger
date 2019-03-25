@@ -7,7 +7,7 @@ using namespace cfx;
 
 int main(int argc, const char * argv[])
 {
-	if(argc < 2)
+/*	if(argc < 2)
 	{
 		std::cerr << "Config file is not specified" << std::endl;
 		exit (-1);
@@ -36,7 +36,7 @@ int main(int argc, const char * argv[])
 				RuntimeUtils::printStackTrace();
 			}
 		}
-	}
+	} */
 	return 0;
 }
 
