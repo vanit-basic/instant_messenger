@@ -136,7 +136,9 @@ void DbService::handlePost(http_request message) {
 				json::value response = m_db->userUpdateInfo(request);
 				message.reply(status_codes::OK, response);
 			} else if (path[1] == "groupUpdateInfo") {
+				std::cout<<"minchev update Mane"<<std::endl;
 				json::value response = m_db->groupUpdateInfo(request);
+				std::cout<<"update Mane))  "<<std::endl;
 				message.reply(status_codes::OK, response);
 			} else if (path[1] == "changePassword") {
 				json::value response = m_db->changePassword(request);
