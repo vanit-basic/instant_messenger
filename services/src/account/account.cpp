@@ -691,6 +691,8 @@ http_response updateGroupInfo(http_request message, http_client* DataBaseClient)
 	{
 		if(userId == groupInfo.at("adminId").as_string())
 		{
+			std::cout<<__LINE__<<std::endl;
+			message.set_body(info);
 			return DataBaseClient->request(message).get();
 		}
 		else
@@ -734,6 +736,7 @@ void Account::handlePost(http_request message) {
 		}
 		else if(path_first_request[1] == "groupUpdateInfo")
 		{
+			std::cout<<__LINE__<<std::endl;
 			message.reply(updateGroupInfo(message, DataBaseClient));
 		}
 		else if(path_first_request[1] == "createGroup")
