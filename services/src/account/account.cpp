@@ -340,6 +340,34 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 		}
 }
 
+http_response addUserToGroup(http_request message, std::string userId, std::string groupId, http_client* DataBaseClient)
+{
+	json::value groupInfo = getGroupInfo(userId ,groupId, DataBaseClient);
+	if("OK" == groupInfo.at("status").as_string())
+	{
+		if(userId == groupInfo.at("adminId").as_string())
+		{
+			return DataBaseClient->request(message).get();
+		}
+		else
+		{
+			http_response resp;
+			json::value status;
+			status["status"] = json::value::string("YOU_ARE_NOT_ADMIN");
+			resp.set_status_code(status_codes::OK);
+			resp.set_body(status);
+			return resp;
+		}
+	}
+	else
+	{
+		http_response resp;
+		resp.set_status_code(status_codes::OK);
+		resp.set_body(groupInfo);
+		return resp;
+	}
+}
+
 http_response groupRemoveUser (http_request message, http_client* DataBaseClient)
 {
 	std::map<utility::string_t, utility::string_t>  infoMap = uri::split_query(message.request_uri().query());
@@ -371,7 +399,7 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
 			http_response resp;
 			resp.set_status_code(status_codes::OK);
 			json::value info;
-			info["error"] = json::value::string("INVAILD_ADMIN_ID");
+			info["error"] = json::value::string("INVALID_ADMIN_ID");
 			resp.set_body(info);
 			return resp;
 		}
@@ -481,9 +509,10 @@ void Account::handleGet(http_request message) {
 		else if(path_first_request[1] == "addUserToGroup")
 		{
 			std::string groupId = i.find("groupId")->second;
+			std::string userId = i.find("userId")->second;
 			if(!(groupId == ""))
 			{
-			message.reply(DataBaseClient->request(message).get());
+				message.reply(addUserToGroup(message, userId, groupId, DataBaseClient));
 			}
 			else
 			{
