@@ -79,6 +79,7 @@ void DbService::handleGet(http_request message) {
                                 json::value response = m_db->getGroupUsers(groupId);
                                 message.reply(status_codes::OK, response);								
 			} else if (path[1] == "getGroupShortInfo") {
+				std::cout<<"getGroupShortInfo/n";
 				std::string groupId = i.find("groupId")->second;
                                 json::value response = m_db->getGroupShortInfo(groupId);
                                 message.reply(status_codes::OK, response);
@@ -109,53 +110,50 @@ void DbService::handleGet(http_request message) {
 
 void DbService::handlePost(http_request message) {
 	std::cout<< message.to_string()<<std::endl;
-	message.extract_json().then([message, this](json::value request) {
-			std::cout<<request.to_string()<<std::endl;
-			auto path = requestPath(message);
-			if (!path.empty()) {
-			if (path[0] == "account") {
+	json::value request = message.extract_json().get();
+	auto path = requestPath(message);
+	if (!path.empty()) {
+		if (path[0] == "account") {
 			if (path[1] == "mailAndLogin") {
-			std::string mail = request.at("email").as_string();
-			std::string login = request.at("login").as_string();
-			json::value response = m_db->checkMailAndLogin(mail, login);
-			message.reply(status_codes::OK, response);
+				std::string mail = request.at("email").as_string();
+				std::string login = request.at("login").as_string();
+				json::value response = m_db->checkMailAndLogin(mail, login);
+				message.reply(status_codes::OK, response);
 			} else if (path[1] == "signIn") {
-			std::string login = request.at("login").as_string();
-			std::string pass = request.at("password").as_string();
-			std::cout<<"login  "<<login<<"  password   "<<pass<<std::endl;
-			json::value response = m_db->signIn(login, pass);
-			std::cout<<"response  "<<response.to_string()<<std::endl;
-			message.reply(status_codes::OK, response);
+				std::string login = request.at("login").as_string();
+				std::string pass = request.at("password").as_string();
+				json::value response = m_db->signIn(login, pass);
+				message.reply(status_codes::OK, response);
 			} else if (path[1] == "signUp") {
-			json::value response = m_db->signUp(request);
-			message.reply(status_codes::OK, response);
+				json::value response = m_db->signUp(request);
+				message.reply(status_codes::OK, response);
 
 			} else if (path[1] == "createGroup") {
-			std::string userId = request.at("userId").as_string();
-			json::value response = m_db->createGroup(request, userId);
-			message.reply(status_codes::OK, response);
+				std::string userId = request.at("userId").as_string();
+				json::value response = m_db->createGroup(request, userId);
+				message.reply(status_codes::OK, response);
 			} else if (path[1] == "userUpdateInfo") {
 				json::value response = m_db->userUpdateInfo(request);
 				message.reply(status_codes::OK, response);
 			} else if (path[1] == "groupUpdateInfo") {
-					json::value response = m_db->groupUpdateInfo(request);
-					message.reply(status_codes::OK, response);
-				} else if (path[1] == "changePassword") {
-						json::value response = m_db->changePassword(request);
-						message.reply(status_codes::OK, response);
-					}
-					else if (path[1] == "searchUsers") {
-						json::value response = m_db->searchUsers(request);
-						message.reply(status_codes::OK, response);
-					} else if (path[1] == "searchGroups") {
-						json::value response = m_db->searchGroups(request);
-						message.reply(status_codes::OK, response);
-					}
-			} else {
-				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-			}
-			} else {
-				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
-			}
-	});
+				json::value response = m_db->groupUpdateInfo(request);
+				message.reply(status_codes::OK, response);
+			} else if (path[1] == "changePassword") {
+				json::value response = m_db->changePassword(request);
+				message.reply(status_codes::OK, response);
+			}else if (path[1] == "searchUsers") {
+				json::value response = m_db->searchUsers(request);
+				message.reply(status_codes::OK, response);
+			} else if (path[1] == "searchGroups") {
+				json::value response = m_db->searchGroups(request);
+				message.reply(status_codes::OK, response);
+				}else {
+					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+				}
+		}else {
+			message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+		}
+	} else {
+		message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+	}
 }
