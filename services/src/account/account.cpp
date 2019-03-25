@@ -313,11 +313,7 @@ http_response leaveGroup(http_request message,http_client* DataBaseClient)
 				else
 				{
 						uri_builder leaveGroup_path(U("/account/groupRemoveUser?clientId="+userId+"&groupId="+groupId));
-						DataBaseClient->request(methods::GET,  leaveGroup_path.to_string()).
-						then([message](http_response leaveGroup_response)
-						{
-							return leaveGroup_response;
-						});
+						return DataBaseClient->request(methods::GET,  leaveGroup_path.to_string()).get();
 				}
 		}
 		else
