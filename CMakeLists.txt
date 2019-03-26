@@ -63,6 +63,13 @@ add_executable("messaging"
 	./services/src/base/basic_controller.cpp
 	./utilities/network_utils.cpp)
 
+add_executable("notification" 		
+	./services/src/notification/main.cpp
+	./services/src/notification/monogoDB.cpp
+	./services/src/notification/notification.cpp
+	./services/src/base/basic_controller.cpp
+	./utilities/network_utils.cpp)
+
 add_executable("porc" 		
 	./services/src/porc/porc.cpp
 	./services/src/base/basic_controller.cpp

@@ -8,13 +8,18 @@
 #include <mongocxx/stdx.hpp>
 #include <mongocxx/uri.hpp>
 #include <mongocxx/pool.hpp>
+#include <mongocxx/instance.hpp>
+#include <notification/mongoDB.hpp>
+#include <bsoncxx/builder/basic/array.hpp>
 #include <bsoncxx/builder/stream/document.hpp>
 #include <mongocxx/instance.hpp>
 #include <cpprest/http_client.h>
-#include <cpprest/filestream.h>
 #include <bsoncxx/types.hpp>
 
-#include <notification/mongoDB.hpp>
+#include <bsoncxx/types/value.hpp>
+#include <bsoncxx/document/value.hpp>
+#include <bsoncxx/builder/basic/array.hpp>
+#include <bsoncxx/array/view.hpp>
 
 bool NotificationMongo::createPool(std::string path) {
 	std::ifstream configFile(path);
