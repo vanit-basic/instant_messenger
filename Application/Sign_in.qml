@@ -6,7 +6,38 @@ import QtQuick.Controls 2.3
 Page{
     id: wind
     focus: true
+    function getFriends() {
+        var request = new XMLHttpRequest()
 
+           //console.log(request)
+
+           request.open('POST', 'http://127.0.1.1:6504/v1/mafclub/api/account/signIn')
+        request.setRequestHeader('Content-Type', 'application/json')
+        var params = {
+
+            "login" : login.text,
+            "password" : password.text
+
+        }
+           var data = JSON.stringify(params)
+           request.setRequestHeader('Content-Length', data.length)
+        request.send(data)
+console.log(data)
+           request.onreadystatechange = function() {
+
+               if (request.readyState === XMLHttpRequest.DONE) {
+
+                   if (request.status && request.status === 200) {
+                       console.log("response", request.responseText)
+                       var result = JSON.parse(request.responseText)
+
+                   } else {
+                       console.log("HTTP:", request.status, request.statusText)
+                   }
+               }
+           }
+
+       }
     Rectangle{
         width: wind.width
         height: wind.height
@@ -346,7 +377,11 @@ Page{
                         opacity: 0.75
                     }
                     enabled: login.text == "" || password.text == "" ?false:true
-                    onClicked: Class.sign_inn("sdrysdydfy")
+                    onPressed: {
+                        stack.push(Qt.resolvedUrl("Home.qml"))
+                        getFriends()
+
+                    }
                 }
                 Button{
                     background: Rectangle{

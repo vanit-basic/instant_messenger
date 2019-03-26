@@ -8,6 +8,33 @@ import QtQuick.Controls.Material 2.1
 
 Page{
     id:wind
+    function getFriends() {
+        var request = new XMLHttpRequest()
+
+           //console.log(request)
+var params = 'http://127.0.1.1:6504/v1/mafclub/api/account/signOut?userId=u1'
+           request.open('GET',params )
+        request.setRequestHeader('token', '3')
+
+//           var data = JSON.stringify(params)
+//           request.setRequestHeader('Content-Length', data.length)
+        request.send()
+
+           request.onreadystatechange = function() {
+
+               if (request.readyState === XMLHttpRequest.DONE) {
+
+                   if (request.status && request.status === 200) {
+                       console.log("response", request.responseText)
+                       var result = JSON.parse(request.responseText)
+
+                   } else {
+                       console.log("HTTP:", request.status, request.statusText)
+                   }
+               }
+           }
+
+       }
     Drawer {
         id: drawer
         width:  wind.width-rectangle.x-tab_stat.width+50
@@ -408,7 +435,8 @@ Page{
                         font.pointSize: 15
                     }
                     onClicked:{                       
-                        stack.clear()                       
+                          getFriends()
+                        stack.push(Qt.resolvedUrl("Sign_in.qml"))
                     }
                 }
             }
