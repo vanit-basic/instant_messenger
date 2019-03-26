@@ -45,61 +45,82 @@ NotifiactionMongo::~NotificationMongo() {
 
 json::value NotificationMongo::userJoinGroup(std::string uid, std::string gid) {
 	auto c1 = poolDB->acquire();			
-	auto c2 = poolDB->acquire();			
-	auto coll1 = (*c1)["notification"]["joinGroup"];
-	auto coll2 = (*c2)["infoDB"]["groupInfo"];
+	auto coll1 = (*c1)["notificationDB"]["joinGroup"];
 	json::value response;
 
-	bsoncxx::stdx::optional<bsoncxx::document::value> groupResult =
-		coll2.find_one(document{} << "_id" << gid << finalize);
+	bsoncxx::stdx::optional<bsoncxx::document::value> result =
+		coll1.find_one(document{} << "_id" << uid << finalize);
 
-	bool t = false;
-	if (groupResult) {
-		bsoncxx::document::view doc = groupResult->view();
-		bsoncxx::document::element element = doc["members"];
-		if (element.type() == type::k_array) {
-			bsoncxx::array::view subarray{element.get_array().value};
-			for (const bsoncxx::array::element& userIds : subarray) {
-				if (userIds.type() == type::k_utf8) {
-					std::string user = userIds.get_utf8().value.to_string();
-					if (user.compare(uid) == 0) {
-						t = true;
+	if (result) {
+		bsoncxx::document::view doc = result->view();
+                bsoncxx::document::element element = doc["groups"];
+
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& groups : subarray) {
+                                if (groups.type() == type::k_utf8) {
+                                        std::string group = groups.get_utf8().value.to_string();
+                                        if (group.compare(gid) == 0) {
+                                               	json::value response["status"] = json::value::string("ALREADY_SENDED");
+						return response;
 					}
-				}
-			}
-		}
+                                }
+                        }
+                }
+		
+		result = coll1.update_one(document{} << "_id" << uid << finalize,
+		document{} << "$push" << open_document
+		<< "groups" << gid << close_document << finalize);
+		json::value response["status"] = json::value::string("OK");
 
-		if (t) {
-			response["status"] = json::value::string("IN_GROUP");
-		} else {
-			response["status"] = json::value::string("OK");	
-			auto builder = bsoncxx::builder::stream::document{};
-        		bsoncxx::document::value doc_value = builder		
-			<< "userId" << uid
-			<< "groupId" << gid
-			<< bsoncxx::builder::stream::finalize;
-			coll1.insert_one(std::move(doc_value));	
-		}
 	} else {
-		response["status"] = json::value::string("INVALID_GROUP_ID");
-	}
+		auto builder = bsoncxx::builder::stream::document{};
+	        bsoncxx::document::value doc_value = builder
+		<< "_id" << uid
+                << "groups" << open_array << gid << close_array
+                << bsoncxx::builder::stream::finalize;
+		auto result = coll1.insert_one(std::move(doc_value));
 
-//		
+		json::value response["status"] = json::value::string("OK");
+	}
+	
+	return response;
 }
 
-json::value NotificationMongo::userAcceptInvitation(std::string user, std::string group) {
+json::value NotificationMongo::userAcceptInvitation(std::string uid, std::string gid) {
 	auto c1 = poolDB->acquire();
-        auto c2 = poolDB->acquire();
         auto coll1 = (*c1)["notification"]["groupInvite"];
-        auto coll2 = (*c2)["infoDB"]["groupInfo"];
         json::value response;
 
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll1.find_one(document{} << "groupId" << group << finalize);
+                coll1.find_one(document{} << "_id" << gid << finalize);
 	
 	if (result) {
-		bsoncxx::stdx::optional<mongocxx::result::delete_result> result2 =
-                        coll1.delete_one(document{} << "groupId" << group << finalize);
+		bsoncxx::document::view doc = result->view();
+                bsoncxx::document::element element = doc["users"];
+
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& users : subarray) {
+                                if (users.type() == type::k_utf8) {
+                                        std::string user = users.get_utf8().value.to_string();
+                                        if (user.compare(uid) == 0) {
+						result = coll1.update_one(document{} << "_id" << gid << finalize,
+							document{} << "$push" << open_document
+							<< "users" << uid << close_document << finalize);
+						json::value response["status"] = json::value::string("OK");
+						return response;
+					}
+                                }
+                        }
+                }
+		
+		json::value response["status"] = json::value::string("INVALID_GROUP");
+	} else {
+		json::value response["status"] = json::value::string("INVALID_GROUP");
+	}
+
+	return response;
 }
 
 json::value NotificationMongo::groupInviteUser(json::value) {
