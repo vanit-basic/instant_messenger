@@ -83,8 +83,6 @@ json::value NotificationMongo::userJoinGroup(std::string uid, std::string gid) {
 	} else {
 		response["status"] = json::value::string("INVALID_GROUP_ID");
 	}
-
-//		
 }
 
 json::value NotificationMongo::userAcceptInvitation(std::string user, std::string group) {
@@ -95,19 +93,84 @@ json::value NotificationMongo::userAcceptInvitation(std::string user, std::strin
         json::value response;
 
 	bsoncxx::stdx::optional<bsoncxx::document::value> result =
-                coll1.find_one(document{} << "groupId" << group << finalize);
+                coll1.find_one(document{} << "_id" << group << finalize);
 	
 	if (result) {
-		bsoncxx::stdx::optional<mongocxx::result::delete_result> result2 =
-                        coll1.delete_one(document{} << "groupId" << group << finalize);
+                }
+
 }
 
-json::value NotificationMongo::groupInviteUser(json::value) {
-	
+json::value NotificationMongo::groupInviteUser(std::string user, std::string group) {
+	auto c = poolDB->acquire();
+	auto coll = (*c)["notificationDB"]["groupInvite"];
+	json::value response;
+
+	bsoncxx::stdx::optional<bsoncxx::document::value> result =
+		coll.find_one(document{} << "_id" << group << finalize);
+
+	if (result) {
+		bsoncxx::document::view doc = result->view();
+		bsoncxx::document::element element = doc["users"];
+		if (element.type() == type::k_array) {
+			bsoncxx::array::view subarray{element.get_array().value};
+			for (const bsoncxx::array::element& uId : subarray) {
+				if (uId.type() == type::k_utf8) {
+					std::string userId = uId.get_utf8().value.to_string();
+					if (user.compare(userId) == 0) {
+						response["status"] = json::value::string("ALREADY_SENDED");
+						return response; 
+					} 
+				}
+			}
+		}
+		coll1.update_one(document{} << "_id" << group << finalize,
+			document{} << "$push" << open_document
+			<< "users" << user << close_document << finalize);
+		response["status"] = json::value::string("OK");
+	} else {
+		auto builder = bsoncxx::builder::stream::document{};
+	        bsoncxx::document::value doc_value = builder
+                << "_id" << group
+		<< "users" << open_array 
+		<< user << close_array
+		<< bsoncxx::builder::stream::finalize;
+		auto result = coll1.insert_one(std::move(doc_value));
+		response["status"] = json::value::string("OK");
+	}
+	return response;
 }
 
-json::value NotificationMongo::groupAcceptUser(json::value) {
-	 
+json::value NotificationMongo::groupAcceptUser(std::string user, std::string group) {
+	auto c = poolDB->acquire();
+        auto coll = (*c)["notificationDB"]["joinGroup"];
+        json::value response;
+
+        bsoncxx::stdx::optional<bsoncxx::document::value> result =
+                coll.find_one(document{} << "_id" << user << finalize);
+
+        if (result) {
+                bsoncxx::document::view doc = result->view();
+                bsoncxx::document::element element = doc["groups"];
+                if (element.type() == type::k_array) {
+                        bsoncxx::array::view subarray{element.get_array().value};
+                        for (const bsoncxx::array::element& gId : subarray) {
+                                if (gId.type() == type::k_utf8) {
+                                        std::string groupId = gId.get_utf8().value.to_string();
+                                        if (group.compare(groupId) == 0) {
+						coll1.update_one(document{} << "_id" << user << finalize,
+                                                        document{} << "$pull" << open_document
+                                                        << "groups" << group << close_document << finalize);
+                                                response["status"] = json::value::string("OK");
+						return response;
+                                        } 
+                                }
+                        }
+                }
+		response["status"] = json::value::string("INVALID_USER_ID");
+        } else {
+		response["status"] = json::value::string("INVALID_USER_ID");
+	}
+        return response;
 }
 
 json::value NotificationMongo::newMessage(json::value) {

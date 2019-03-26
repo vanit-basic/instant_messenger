@@ -28,10 +28,10 @@ class NotificationMongo: public NotificationDB {
                 NotificationMongo();
                 ~NotificationMongo();
                 
-		virtual json::value userJoinGroup(json::value);
-                virtual json::value userAcceptInvitation(json::value);
-                virtual json::value groupInviteUser(json::value);
-                virtual json::value groupAcceptUser(json::value);
+		virtual json::value userJoinGroup(std::string, std::string);
+                virtual json::value userAcceptInvitation(std::string, std::string);
+                virtual json::value groupInviteUser(std::string, std::string);
+                virtual json::value groupAcceptUser(std::string. std::string);
                 virtual json::value newMessage(json::value);
 		virtual json::value messageFromService(json::value);
                 virtual json::value groupRemoveUser(json::value);
