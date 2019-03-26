@@ -1,5 +1,5 @@
-#ifndef NOTDB_HPP
-#define NOTDB_HPP
+#ifndef NOTIFICATIONDB_HPP
+#define NOTIFICATIONDB_HPP
 
 #include <base/basic_controller.hpp>
 #include <cpprest/http_client.h>

@@ -9,7 +9,6 @@
 #include <mongocxx/uri.hpp>
 #include <mongocxx/pool.hpp>
 #include <mongocxx/instance.hpp>
-#include <notification/mongoDB.hpp>
 #include <bsoncxx/builder/basic/array.hpp>
 #include <bsoncxx/builder/stream/document.hpp>
 #include <mongocxx/instance.hpp>
@@ -20,6 +19,30 @@
 #include <bsoncxx/document/value.hpp>
 #include <bsoncxx/builder/basic/array.hpp>
 #include <bsoncxx/array/view.hpp>
+
+#include <cstdint>
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <fstream>
+#include <stdio.h>
+#include <thread>
+
+#include <notification/mongoDB.hpp>
+
+using bsoncxx::builder::stream::open_array;
+using bsoncxx::builder::stream::close_array;
+using bsoncxx::builder::stream::open_document;
+using bsoncxx::builder::stream::close_document;
+using bsoncxx::builder::stream::document;
+using bsoncxx::builder::stream::finalize;
+using bsoncxx::type;
+using namespace cfx;
+using namespace utility;
+using namespace web;
+using namespace web::http;
+using namespace web::http::client;
+using namespace concurrency::streams;
 
 bool NotificationMongo::createPool(std::string path) {
 	std::ifstream configFile(path);
@@ -44,7 +67,7 @@ NotificationMongo::NotificationMongo(std::string path) {
 	createPool(path);
 }
 
-NotifiactionMongo::~NotificationMongo() {
+NotificationMongo::~NotificationMongo() {
 	delete[] this->poolDB;	
 }
 
