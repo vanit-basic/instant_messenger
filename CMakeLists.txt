@@ -126,3 +126,5 @@ target_link_libraries("tokenDbService" ${LIBRARIES_SEARCH_PATHS})
 target_link_libraries("porc" ${LIBRARIES_SEARCH_PATHS})
 
 target_link_libraries("search" ${LIBRARIES_SEARCH_PATHS})
+
+target_link_libraries("notification" ${LIBRARIES_SEARCH_PATHS})
