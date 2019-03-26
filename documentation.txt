@@ -250,7 +250,7 @@ userUpdateInfo {
 			"firstName" : "Valod",
 			"lastname" : "Valodyan",
 			"avatar" : "base64_string",
-			"nickname" : "Valod"  // can be changed only once
+			"nickname" : "Valod"  
 		}
 
 	response {
@@ -417,16 +417,36 @@ groupUpdateInfo {
     }
 }
 
+changeGroupAdmin {
+	request {
+        	uri - uri/account/removeFromGroup
+		header - token
+        body - {
+		"groupId" : "g156",
+                "userId" : "u12",
+                "clientId" : "u23" // new admin id
+        	}
+    	}
+	
+	response {
+                "status" : "OK"
+
+                "status" : "INVALID_ADMIN_ID" 
+                "status" : "INVALID_GROUP_ID" 
+                "status" : "INVALID_USER_ID" 
+	}
+}
+
 groupRemoveUser {
-    request {
-        uri - uri/account/removeFromGroup
-	header - token
+	request {
+        	uri - uri/account/removeFromGroup
+		header - token
         body - {
 		"groupId" : "g156",
                 "userId" : "u12",
                 "clientId" : "u23" // who will be removed
-        }
-    }
+        	}
+    	}
 
     response {
                 "status" : "OK"
