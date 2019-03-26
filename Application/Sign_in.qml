@@ -8,10 +8,7 @@ Page{
     focus: true
     function getFriends() {
         var request = new XMLHttpRequest()
-
-           //console.log(request)
-
-           request.open('POST', 'http://127.0.1.1:6504/v1/mafclub/api/account/signIn')
+                   request.open('POST', 'http://127.0.1.1:6504/v1/mafclub/api/account/signIn')
         request.setRequestHeader('Content-Type', 'application/json')
         var params = {
 
@@ -24,13 +21,10 @@ Page{
         request.send(data)
 console.log(data)
            request.onreadystatechange = function() {
-
                if (request.readyState === XMLHttpRequest.DONE) {
-
                    if (request.status && request.status === 200) {
                        console.log("response", request.responseText)
                        var result = JSON.parse(request.responseText)
-
                    } else {
                        console.log("HTTP:", request.status, request.statusText)
                    }

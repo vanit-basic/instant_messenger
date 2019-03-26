@@ -57,5 +57,6 @@
         <file>cancel.png</file>
         <file>group.png</file>
         <file>Users_profile.qml</file>
+        <file>Request_response.js</file>
     </qresource>
 </RCC>

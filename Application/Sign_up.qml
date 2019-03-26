@@ -15,9 +15,6 @@ Page {
 
     function getFriends() {
         var request = new XMLHttpRequest()
-
-           //console.log(request)
-
            request.open('POST', 'http://127.0.1.1:6504/v1/mafclub/api/account/signUp')
         request.setRequestHeader('Content-Type', 'application/json')
         var params = {
