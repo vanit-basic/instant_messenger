@@ -89,17 +89,17 @@ json::value NotificationMongo::userJoinGroup(std::string uid, std::string gid) {
                                 if (groups.type() == type::k_utf8) {
                                         std::string group = groups.get_utf8().value.to_string();
                                         if (group.compare(gid) == 0) {
-                                               	json::value response["status"] = json::value::string("ALREADY_SENDED");
+                                               	response["status"] = json::value::string("ALREADY_SENDED");
 						return response;
 					}
                                 }
                         }
                 }
 		
-		result = coll1.update_one(document{} << "_id" << uid << finalize,
-		document{} << "$push" << open_document
-		<< "groups" << gid << close_document << finalize);
-		json::value response["status"] = json::value::string("OK");
+		coll1.update_one(document{} << "_id" << uid << finalize,
+			document{} << "$push" << open_document
+			<< "groups" << gid << close_document << finalize);
+			response["status"] = json::value::string("OK");
 
 	} else {
 		auto builder = bsoncxx::builder::stream::document{};
@@ -109,7 +109,7 @@ json::value NotificationMongo::userJoinGroup(std::string uid, std::string gid) {
                 << bsoncxx::builder::stream::finalize;
 		auto result = coll1.insert_one(std::move(doc_value));
 
-		json::value response["status"] = json::value::string("OK");
+		response["status"] = json::value::string("OK");
 	}
 	
 	return response;
@@ -133,19 +133,19 @@ json::value NotificationMongo::userAcceptInvitation(std::string uid, std::string
                                 if (users.type() == type::k_utf8) {
                                         std::string user = users.get_utf8().value.to_string();
                                         if (user.compare(uid) == 0) {
-						result = coll1.update_one(document{} << "_id" << gid << finalize,
+						coll1.update_one(document{} << "_id" << gid << finalize,
 							document{} << "$push" << open_document
 							<< "users" << uid << close_document << finalize);
-						json::value response["status"] = json::value::string("OK");
+						response["status"] = json::value::string("OK");
 						return response;
 					}
                                 }
                         }
                 }
 		
-		json::value response["status"] = json::value::string("INVALID_GROUP");
+		response["status"] = json::value::string("INVALID_GROUP");
 	} else {
-		json::value response["status"] = json::value::string("INVALID_GROUP");
+		response["status"] = json::value::string("INVALID_GROUP");
 	}
 
 	return response;
@@ -174,7 +174,7 @@ json::value NotificationMongo::groupInviteUser(std::string user, std::string gro
 				}
 			}
 		}
-		coll1.update_one(document{} << "_id" << group << finalize,
+		coll.update_one(document{} << "_id" << group << finalize,
 			document{} << "$push" << open_document
 			<< "users" << user << close_document << finalize);
 		response["status"] = json::value::string("OK");
@@ -185,7 +185,7 @@ json::value NotificationMongo::groupInviteUser(std::string user, std::string gro
 		<< "users" << open_array 
 		<< user << close_array
 		<< bsoncxx::builder::stream::finalize;
-		auto result = coll1.insert_one(std::move(doc_value));
+		auto result = coll.insert_one(std::move(doc_value));
 		response["status"] = json::value::string("OK");
 	}
 	return response;
@@ -208,7 +208,7 @@ json::value NotificationMongo::groupAcceptUser(std::string user, std::string gro
                                 if (gId.type() == type::k_utf8) {
                                         std::string groupId = gId.get_utf8().value.to_string();
                                         if (group.compare(groupId) == 0) {
-						coll1.update_one(document{} << "_id" << user << finalize,
+						coll.update_one(document{} << "_id" << user << finalize,
                                                         document{} << "$pull" << open_document
                                                         << "groups" << group << close_document << finalize);
                                                 response["status"] = json::value::string("OK");

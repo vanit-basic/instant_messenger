@@ -17,7 +17,7 @@
 #include <cpprest/filestream.h>
 #include <bsoncxx/types.hpp>
 
-#include <notification/notification.hpp>
+#include <notification/notificationDB.hpp>
 
 
 class NotificationMongo: public NotificationDB {
