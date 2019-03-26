@@ -13,7 +13,6 @@ getAllStatusDescriptions {
 		"LOGIN_LAST_ATTEMPT" : "After enyering wrong passord you will block for 2 hours",
 		"USER_BLOCKED" : "Your account is blocked for 2 hours",
        		"INVALID_CODE" : "The code you entered is incorrect",
-		"INVALID_FIELD_CHANGE" : "This field cannot be changed",
 		"INVAILD_ADMIN_ID" : "Only admin can delete group or update group info or delete member of the group",
 		"INVALID_GROUP_ID" : "The client is not a member of the group or this is a private group",
 		"INVALID_MEMBER_OF_GROUP" : "You are not a member of this group",
@@ -54,6 +53,14 @@ signUp {
                         "birthDate" : "12.12.1990",
 			"login" : "v.valodyan",
 			"level" : 0,
+			"playedGames" : 0,
+			"redCard" : 0,
+			"blackCard" : 0,
+			"sheriff" : 0,
+			"don" : 0,
+			"wins" : 0,
+			"fails" : 0,
+			"killed" : 0,
                         "status" : "OK"
 
                         "status" : "INVALID_EMAIL",
@@ -77,11 +84,20 @@ signIn {
                         "lastName" : "Valodyan",
 			"nickname" : "Valod", 
 			"avatar" : "base64_string",
-			"groups" : ["g21", "g53", "g70"],
+			"publicGroups" : ["g5", "g24", "g32"],
+			"privateGroups" : ["g1", "g12", "g27"],
                         "gender" : "male",
                         "email" : "v.valodyan@msil.com",
                         "birthDate" : "12.12.1990",
 			"level" : 1,
+			"playedGames" : 5,
+			"redCard" : 3,
+			"blackCard" : 2,
+			"sheriff" : 1,
+			"don" : 0,
+			"wins" : 2,
+			"fails" : 3,
+			"killed" : 1,
                         "status" : "OK"
 
                         "status" : "INVALID_LOGIN"
@@ -143,6 +159,8 @@ newPassword {
                         "gender" : "male",
                         "email" : "v.valodyan@msil.com",
                         "birthDate" : "12.12.1990",
+			"publicGroups" : ["g5", "g24", "g32"],
+			"privateGroups" : ["g1", "g12", "g27"],
 			"level" : 2,
 			"status" : "OK"
 
@@ -176,21 +194,22 @@ getUserInfo {
 		"avatar" : "base64_string",
                 "login" : "v.valodyan",
                 "gender" : "male",
-		"groups" : ["g5", "g24", "g32"],
+		"publicGroups" : ["g5", "g24", "g32"],
+		"privateGroups" : ["g1", "g12", "g27"],
                 "email" : "v.valodyan@mail.com",
                 "birthDate" : "12.12.1990",
 		"level" : 2,
-		"statistics" : {
-			"playedGames" : 10,
-			"redCard" : 6,
-			"blackCard" : 4,
-			"sheriff" : 2,
-			"don" : 1,
-			"wins" : 6,
-			"fails" : 4,
-			"killed" : 4
-		}
+		"playedGames" : 10,
+		"redCard" : 6,
+		"blackCard" : 4,
+		"sheriff" : 2,
+		"don" : 1,
+		"wins" : 6,
+		"fails" : 4,
+		"killed" : 4,
 		"status" : "OK"
+                        
+		"status" : "INVALID_USER_ID"
         }
 }
 
@@ -209,19 +228,17 @@ getUserShortInfo {
 			"birthdate" : "12.12.1993",
 			"groups" : ["g5", "g24"], // only public groups
 			"level" : 2,
-			"statistics" : {
-                        	"playedGames" : 10,
-                        	"redCard" : 6,
-                        	"blackCard" : 4,
-                        	"sheriff" : 2,
-                        	"don" : 1,
-                        	"wins" : 6,
-                        	"fails" : 4,
-                        	"killed" : 4
-                	}
+                        "playedGames" : 10,
+                        "redCard" : 6,
+                        "blackCard" : 4,
+                        "sheriff" : 2,
+                        "don" : 1,
+                        "wins" : 6,
+                        "fails" : 4,
+                        "killed" : 4,
 			"status" : "OK"
 
-                        "status" : "INVALID_ID"
+                        "status" : "INVALID_USER_ID"
 }
 
 userUpdateInfo {
@@ -229,7 +246,7 @@ userUpdateInfo {
 		uri - uri/account/updateUserInfo
 		header - token
 		body - {
-			"userId" : "",
+			"userId" : "u123",
 			"firstName" : "Valod",
 			"lastname" : "Valodyan",
 			"avatar" : "base64_string",
@@ -237,13 +254,28 @@ userUpdateInfo {
 		}
 
 	response {
-                        "firstName" : "Valod",
-                        "lastName" : "Valodyan",
+			"userId" : "u123"
+			"firstName" : "Valod",
+        	        "lastName" : "Valodyan",
+			"nickname" : "Valod",
 			"avatar" : "base64_string",
-			"nickname" : "Valod"
-			"status" : "OK"
+                	"login" : "v.valodyan",
+                	"gender" : "male",
+			"publicGroups" : ["g5", "g24", "g32"],
+			"privateGroups" : ["g1", "g12", "g27"],
+                	"email" : "v.valodyan@mail.com",
+                	"birthDate" : "12.12.1990",
+			"level" : 2,
+			"playedGames" : 10,
+			"redCard" : 6,
+			"blackCard" : 4,
+			"sheriff" : 2,
+			"don" : 1,
+			"wins" : 6,
+			"fails" : 4,
+			"killed" : 4,
 
-                        "status" : "INVALID_FIELD_CHANGE" 
+                        "status" : "INVALID_USER_ID" 
 	}
 }
 
@@ -261,12 +293,13 @@ changePassword {
 	response {
 			"status" : "OK"
 
+			"status" : "INVALID_USER_ID",
 			"status" : "INVALID_PASSWORD",
 			"status" : "INVALID_NEW_PASSWORD",
 	}
 }
 
-userDelete {
+deleteUser {
         request {
                 uri - uri/account/deleteUser?userId=u123
                 header - token
@@ -274,21 +307,23 @@ userDelete {
 
         response {
                 "status" : "OK"
+
+		"status" : "INVALID_USER_ID"
         }
 }
 
-groupCreate {
-    request {
+createGroup {
+	request {
         	uri - uri/account/createGroup
 		header - token
-        body - {
+	body - {
                 "groupName" : "Best",
                 "userId" : "u123",
                 "access" : "private"
-        }
-    }
+        	}
+    	}
 
-    response {
+	response {
         	"groupId" : "g212",
         	"groupName" : "Best",
         	"adminId" : "u123",
@@ -296,10 +331,12 @@ groupCreate {
 		"avatar" : "base64_string",
         	"access" : "private",
 		"status" : "OK"
-    }
+
+		"status" : "INTERNAL_ERROR" 
+	}
 }
 
-groupDelete {
+deleteGroup {
     request {
         	uri - uri/account/deleteGroup?userId=u542&groupId=g123
 		header - token
@@ -307,7 +344,9 @@ groupDelete {
 
     response {
         	"status" : "OK"
+
 		"status" : "INVAILD_ADMIN_ID" 
+		"status" : "INVALID_GROUP_ID"
     }
 }
 
@@ -321,7 +360,7 @@ getGroupInfo {
 			"groupId" : "g12",
 			"groupName" : "ChkaMerNmany",
                         "adminId" : "u10",
-                        "usersQuantity" : "13",
+                        "access" : "public",
                         "avatar" : "base64_string",
 			"members" : ["u12", "u54", "u59", "u78"],
                         "createDate" : "13.12.2018",
@@ -341,7 +380,7 @@ getGroupShortInfo {
         response {
 			"groupId" : "g12",
 			"groupName" : "ChkaMerNmany",
-                        "usersQuantity" : "4",
+                        "members" : ["u4", "u9", "u15"],
                         "avatar" : "base64_string",
 			"access" : "public",
         		"status" : "OK"
@@ -359,18 +398,22 @@ groupUpdateInfo {
                 	"groupId" : "g123",
 			"userId" : "u231",
                 	"name" : "MafiaForever",
-                	"avatar" : "base64_string"
+                	"avatar" : "base64_string",
+			"access" : "private"
             	}
     }
 
     response {
 		"groupId" : "g123",
-        	"name" : "MafiaForever",
+		"groupName" : "ChkaMerNmany",
         	"adminId" : "u231",
         	"avatar" : "base64_string"
+                "members" : ["u4", "u9", "u15"],
+		"access" : "private",
         	"status" : "OK"
-                        
+        
 		"status" : "INVAILD_ADMIN_ID" 
+		"status" : "INVAILD_GROUP_ID" 
     }
 }
 
@@ -387,95 +430,13 @@ groupRemoveUser {
 
     response {
                 "status" : "OK"
+
                 "status" : "INVALID_ADMIN_ID" 
+                "status" : "INVALID_USER_ID" 
+                "status" : "INVALID_GROUP_ID" 
     }
 }
 
-
-getUserConversations {
-        request {
-        	uri - uri/account/getUserConversations?userId=u123
-                header - token
-	}
-
-        response {
-		{ 
-       		 	"userId" : "u12",
-        		"firstName" : "Valod",
-        		"lastName" : "Valodyan",
-        		"lastMessage" : "barev",
-			"avatar" : "base64_string"
-		}
-       		{
-			"userId" : "u23",
-        		"firstName" : "Heriq",
-        		"lastName" : "Heriqyan",
-        		"lastMessage" : "hajox",
-			"avatar" : "base64_string"
-		}
-			"status" : "OK"
-
-        		"status" : "CONVERSATIONS_NOT_FOUND"
-}
-
-getUserConversation {
-        request {
-  		uri - uri/account/getUserConversation
-		header - token
-        	body - {
-			"userId" : "u123",
-			"clientId" : "u21"
-		}
-        }
-
-        response {
-		{
-			"userId" : "u21",
-			"messageId" : "m12",
-			"date" : "19.12.2018",
-			"message" : "hazar barev"
-		}
-		{
-			"userId" : "u123",
-			"messageId" : "m110",
-			"date" : "18.01.2019",
-			"message" : "erkuhazar barev"
-		}
-			"status" : "OK"
-
-        		"status" : "CONVERSATION_NOT_FOUND"
-}
-
-getGroupConversation {
-	request {
-		uri - uri/account/getGroupConversation?userId=u123&groupId=g15
-		header - token
-	}
-
-	response {
-		{
-			"messageId" : "m12",
-	 		"userId" : "u1",
-	  		"date" : "19.12.2018",
-	  		"message" : "Hazar barev"
-		}
-		{
-	  		"messageId" : "m11",
-	  		"userId" : "u3",
-	  		"date" : "19.12.2018",
-	 	 	"message" : "vonc eq?"
-		}
-		{
-	  		"messageId" : "m12",
-	  		"userId" : "u4",
-	  		"date" : "19.12.2018",
-	  		"message" : "lav enq!"
-		}
-		"status" : "OK"
-
-		"status" : "INVALID_MEMBER_OF_GROUP" 
-	}
-}
 
 *****************************************************************************
 
@@ -613,6 +574,91 @@ groupRemoveMessage {
 
 		"status" : "INVALID_MESSAGE_DELETE_REQUEST"
         }
+}
+
+getUserConversations {
+        request {
+        	uri - uri/account/getUserConversations?userId=u123
+                header - token
+	}
+
+        response {
+		{ 
+       		 	"userId" : "u12",
+        		"firstName" : "Valod",
+        		"lastName" : "Valodyan",
+        		"lastMessage" : "barev",
+			"avatar" : "base64_string"
+		}
+       		{
+			"userId" : "u23",
+        		"firstName" : "Heriq",
+        		"lastName" : "Heriqyan",
+        		"lastMessage" : "hajox",
+			"avatar" : "base64_string"
+		}
+			"status" : "OK"
+
+        		"status" : "CONVERSATIONS_NOT_FOUND"
+}
+
+getUserConversation {
+        request {
+  		uri - uri/account/getUserConversation
+		header - token
+        	body - {
+			"userId" : "u123",
+			"clientId" : "u21"
+		}
+        }
+
+        response {
+		{
+			"userId" : "u21",
+			"messageId" : "m12",
+			"date" : "19.12.2018",
+			"message" : "hazar barev"
+		}
+		{
+			"userId" : "u123",
+			"messageId" : "m110",
+			"date" : "18.01.2019",
+			"message" : "erkuhazar barev"
+		}
+			"status" : "OK"
+
+        		"status" : "CONVERSATION_NOT_FOUND"
+}
+
+getGroupConversation {
+	request {
+		uri - uri/account/getGroupConversation?userId=u123&groupId=g15
+		header - token
+	}
+
+	response {
+		{
+			"messageId" : "m12",
+	 		"userId" : "u1",
+	  		"date" : "19.12.2018",
+	  		"message" : "Hazar barev"
+		}
+		{
+	  		"messageId" : "m11",
+	  		"userId" : "u3",
+	  		"date" : "19.12.2018",
+	 	 	"message" : "vonc eq?"
+		}
+		{
+	  		"messageId" : "m12",
+	  		"userId" : "u4",
+	  		"date" : "19.12.2018",
+	  		"message" : "lav enq!"
+		}
+		"status" : "OK"
+
+		"status" : "INVALID_MEMBER_OF_GROUP" 
+	}
 }
 
 *************************************************************************
