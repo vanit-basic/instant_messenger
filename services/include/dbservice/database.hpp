@@ -58,9 +58,9 @@ class database {
 
                 virtual json::value getGroupUsers(std::string groupId) = 0;
 		
-                virtual json::value searchUsers(json::value) = 0;
+                virtual json::value getUsersShortInfos(json::value) = 0;
 
-                virtual json::value searchGroups(json::value) = 0;
+                virtual json::value getGroupsShortInfos(json::value) = 0;
 
 		virtual json::value getGroupShortInfo(std::string groupId) = 0;
 		
@@ -87,6 +87,10 @@ class database {
 	        virtual std::string groupSendMessage(std::string groupId, std::string from, std::string message) = 0;
  
 		virtual bool groupUpdateMessage(std::string groupId, std::string messagId, std::string message) = 0; 
+
+		virtual json::value searchUsers (json::value) = 0;
+
+		virtual json::value searchGroups (json::value) = 0;
 
 	public:
 		virtual json::value isUserInGroup(std::string, std::string) = 0;

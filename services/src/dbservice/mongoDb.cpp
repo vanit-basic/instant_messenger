@@ -781,7 +781,6 @@ json::value MongoDB::createGroup(json::value groupInfo, std::string userId) {
 	json::value response;
 
 	std::string groupName = groupInfo.at("groupName").as_string();
-//        std::string userId = groupInfo.at("userId").as_string();
         std::string access = groupInfo.at("access").as_string();
 	std::string id = generateGroupID(coll3);
 	std::string path = "resources/group.png";
@@ -802,8 +801,6 @@ json::value MongoDB::createGroup(json::value groupInfo, std::string userId) {
 
 	bsoncxx::stdx::optional<mongocxx::result::insert_one> result1 =
 		coll3.insert_one(view);
-
-
 
 	bsoncxx::stdx::optional<mongocxx::result::update> result;
 	if (access.compare("public") == 0) {
@@ -966,7 +963,7 @@ json::value MongoDB::groupUpdateInfo(json::value request) {
 		response["status"] = json::value::string("OK");
 
         } else {
-                response["status"] = json::value::string("INVALID_USER_ID");
+                response["status"] = json::value::string("INVALID_GROUP_ID");
         }
 
         return response;
@@ -1043,10 +1040,14 @@ json::value MongoDB::changePassword(json::value request) {
 		bsoncxx::document::element element = doc["password"];
 		std::string pass = element.get_utf8().value.to_string();
 		
-                if (pass.compare(password) == 0 && pass.compare(newPassword) != 0) {
-                        coll2.update_one(document{} << "_id" << user << finalize,
-                                document{} << "$set" << open_document <<
-        			"password" << newPassword << close_document << finalize);
+                if (pass.compare(password) == 0) { 
+			if (pass.compare(newPassword) != 0) {
+                        	coll2.update_one(document{} << "_id" << user << finalize,
+                                	document{} << "$set" << open_document <<
+        				"password" << newPassword << close_document << finalize);
+			}
+			response["status"] = json::value::string("INVALID_PASSWORD"); 
+			return response;
 		}
 		response["status"] = json::value::string("OK");
 	}
@@ -1054,53 +1055,8 @@ json::value MongoDB::changePassword(json::value request) {
 		response["status"] = json::value::string("INVALID_USER_ID");
 	return response;
 }
-/*
-json::value MongoDB::getUserConversations(std::string userId) {
-	
-}
 
-json::value MongoDB::getUsersConversation(std::string userId1, std::string userId2) {
-	
-}
-
-std::string MongoDB::userSendMessage(std::string from, std::string to, std::string message) {
-	auto c = poolDB->acquire();
-	auto coll = (*c)["messageDB"]["message"];	
-}
-
-bool MongoDB::userUpdateMessage(std::string from, std::string to, std::string newMessage) {
-	
-}
-
-bool MongoDB::userRemoveConversation(std::string userId1, std::string userId2) {
-	
-}
-
-bool MongoDB::userRemoveMessage(std::string userId, std::string clientId, std::string mId) {
-	
-}
-
-bool MongoDB::groupRemoveConversation(std::string groupId) {
-	
-}
-
-bool MongoDB::groupRemoveMessage(std::string groupId, std::string messageId) {
-	
-}
-
-std::string MongoDB::getGroupConversation(std::string groupId) {
-	
-}
-
-std::string MongoDB::groupSendMessage(std::string groupId, std::string from, std::string message) {
-	
-}
-
-bool MongoDB::groupUpdateMessage(std::string groupId, std::string messagId, std::string message) {
-	
-}
-*/
-json::value MongoDB::searchGroups(json::value request) {
+json::value MongoDB::getGroupsShortInfos(json::value request) {
 	json::value response;
 	
 	web::json::array groupsId = request.at("groups").as_array();
@@ -1112,7 +1068,7 @@ json::value MongoDB::searchGroups(json::value request) {
 	return response;
 }
 
-json::value MongoDB::searchUsers(json::value request) {
+json::value MongoDB::getUsersShortInfos(json::value request) {
 	json::value response;
 	
 	web::json::array usersId = request.at("users").as_array();
@@ -1141,8 +1097,15 @@ json::value MongoDB::changeGroupAdmin(std::string groupId, std::string userId) {
 		
 		response["status"] = json::value::string("OK");
 	} else {
-		response["status"] = json::value::string("NOT_OK");
+		response["status"] = json::value::string("INVALID_GROUP_ID");
 	}
-	
 	return response;
 }
+
+json::value MongoDB::searchUsers(json::value request)
+{
+
+}
+
+json::value MongoDB::searchGroups(json::value request)
+{}

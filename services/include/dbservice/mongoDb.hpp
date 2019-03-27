@@ -83,8 +83,9 @@ class MongoDB : public database {
 
                 virtual json::value deleteGroup(std::string groupId);
                 
-		virtual json::value searchUsers(json::value);
-		virtual json::value searchGroups(json::value);
+		virtual json::value getUsersShortInfos(json::value);
+
+		virtual json::value getGroupsShortInfos(json::value);
 
 		virtual json::value addUserToGroup(std::string userId, std::string groupId, std::string cleintId);
 
@@ -101,6 +102,10 @@ class MongoDB : public database {
 		virtual std::string groupSendMessage(std::string groupId, std::string from, std::string message){};
 
 		virtual bool groupUpdateMessage(std::string groupId, std::string messagId, std::string message) {};
+
+		json::value searchUsers (json::value);
+		
+		json::value searchGroups (json::value);
 		
 		MongoDB(std::string);
 		~MongoDB();

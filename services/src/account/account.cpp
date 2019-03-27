@@ -412,14 +412,26 @@ http_response groupRemoveUser (http_request message, http_client* DataBaseClient
 	}
 }
 
-http_response changeGroupAdmin(http_request message, std::string userId, std::string groupId, http_client* DataBaseClient)
+http_response changeGroupAdmin(http_request message, std::string userId, std::string groupId, std::string clientId, http_client* DataBaseClient)
 {
 	json::value groupInfo = getGroupInfo(userId ,groupId, DataBaseClient);
 	if("OK" == groupInfo.at("status").as_string())
 	{
 		if(userId == groupInfo.at("adminId").as_string())
 		{
-			return DataBaseClient->request(message).get();
+			if(isUserInGroup(clientId, groupId, DataBaseClient))
+			{
+				return DataBaseClient->request(message).get();
+			}
+			else
+			{
+				http_response resp;
+				json::value status;
+				status["status"] = json::value::string("INVALID_MEMBER_OF_GROUP");
+				resp.set_status_code(status_codes::OK);
+				resp.set_body(status);
+				return resp;
+			}
 		}
 		else
 		{
@@ -555,9 +567,10 @@ void Account::handleGet(http_request message) {
 		{
 			std::string groupId = i.find("groupId")->second;
 			std::string userId = i.find("userId")->second;
-			if(!(groupId == ""))
+			std::string clientId = i.find("clientId")->second;
+			if(!(groupId == "" || clientId == ""))
 			{
-				message.reply(changeGroupAdmin(message, userId, groupId, DataBaseClient));
+				message.reply(changeGroupAdmin(message, userId, groupId, clientId, DataBaseClient));
 			}
 			else
 			{

@@ -17,21 +17,21 @@
 #include <cpprest/filestream.h>
 #include <bsoncxx/types.hpp>
 
-#include <notification/notification.hpp>
+#include <notification/notificationDB.hpp>
 
 
 class NotificationMongo: public NotificationDB {
 	private: 
-		mongocxx::pool* poolDB
+		mongocxx::pool* poolDB;
 		bool createPool(std::string);
         public:
-                NotificationMongo();
+                NotificationMongo(std::string path);
                 ~NotificationMongo();
                 
-		virtual json::value userJoinGroup(json::value);
-                virtual json::value userAcceptInvitation(json::value);
-                virtual json::value groupInviteUser(json::value);
-                virtual json::value groupAcceptUser(json::value);
+		virtual json::value userJoinGroup(std::string, std::string);
+                virtual json::value userAcceptInvitation(std::string, std::string);
+                virtual json::value groupInviteUser(std::string, std::string);
+                virtual json::value groupAcceptUser(std::string, std::string);
                 virtual json::value newMessage(json::value);
 		virtual json::value messageFromService(json::value);
                 virtual json::value groupRemoveUser(json::value);
