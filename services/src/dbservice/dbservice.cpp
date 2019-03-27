@@ -143,11 +143,11 @@ void DbService::handlePost(http_request message) {
 			} else if (path[1] == "changePassword") {
 				json::value response = m_db->changePassword(request);
 				message.reply(status_codes::OK, response);
-			}else if (path[1] == "searchUsers") {
-				json::value response = m_db->searchUsers(request);
+			}else if (path[1] == "getUsersShortInfos") {
+				json::value response = m_db->getUsersShortInfos(request);
 				message.reply(status_codes::OK, response);
-			} else if (path[1] == "searchGroups") {
-				json::value response = m_db->searchGroups(request);
+			} else if (path[1] == "getGroupsShortInfos") {
+				json::value response = m_db->getGroupsShortInfos(request);
 				message.reply(status_codes::OK, response);
 				}else {
 					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));

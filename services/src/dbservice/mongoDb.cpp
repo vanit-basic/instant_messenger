@@ -1056,7 +1056,7 @@ json::value MongoDB::changePassword(json::value request) {
 	return response;
 }
 
-json::value MongoDB::searchGroups(json::value request) {
+json::value MongoDB::getGroupsShortInfos(json::value request) {
 	json::value response;
 	
 	web::json::array groupsId = request.at("groups").as_array();
@@ -1068,7 +1068,7 @@ json::value MongoDB::searchGroups(json::value request) {
 	return response;
 }
 
-json::value MongoDB::searchUsers(json::value request) {
+json::value MongoDB::getUsersShortInfos(json::value request) {
 	json::value response;
 	
 	web::json::array usersId = request.at("users").as_array();

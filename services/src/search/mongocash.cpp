@@ -36,13 +36,21 @@ MongoCashDb::~MongoCashDb()
         delete [] this->clientPool;
 }
 
-bool MongoCashDb::setInfo(json::value info)
+bool MongoCashDb::setInfo(json::value info, int object)
 {
 	bool status = false;
 	try
 	{
 		auto client = clientPool->acquire();
-		auto coll = (*client)["CashDb"]["userIds"];
+		mongocxx::collection coll;
+		if(object == 0)
+		{
+			coll = (*client)["CashDb"]["userIds"];
+		}
+		else
+		{
+			coll = (*client)["CashDb"]["groupIds"];
+		}
 		std::string jsonString = info.as_string();
 		bsoncxx::document::value inf = bsoncxx::from_json(jsonString);
 		coll.insert_one(std::move(inf));
@@ -55,13 +63,21 @@ bool MongoCashDb::setInfo(json::value info)
 	return status;
 }
 
-json::value MongoCashDb::getInfo(std::string key, std::string from, std::string get)
+json::value MongoCashDb::getInfo(std::string key, std::string from, std::string get, int object)
 {
 	json::value info;
 	try
 	{
 		auto client = clientPool->acquire();
-		auto coll = (*client)["CashDb"]["userIds"];
+		mongocxx::collection coll;
+		if(object == 0)
+		{
+			coll = (*client)["CashDb"]["userIds"];
+		}
+		else
+		{
+			coll = (*client)["CashDb"]["groupIds"];
+		}
 		int x = std::stoi(from);
 		int y = std::stoi(get);
 		auto distinct_results = coll.distinct(key, {});
@@ -88,7 +104,14 @@ json::value MongoCashDb::getInfo(std::string key, std::string from, std::string 
 					mass[i] = json::value::string(((subarray.find(x+i))->get_utf8().value.to_string()));
 				}
 				info["status"] = json::value::string("OK");
-				info["users"] = json::value::array(mass);
+				if(object == 0)
+				{
+					info["users"] = json::value::array(mass);
+				}
+				else
+				{
+					info["groups"] = json::value::array(mass);
+				}
 			}
 			else
 			{

@@ -37,8 +37,8 @@ using namespace concurrency::streams;
 class MongoCashDb : public cashDatabase
 {
 	public:
-		virtual bool setInfo(json::value info);
-		virtual json::value getInfo(std::string key, std::string from, std::string to);
+		bool setInfo(json::value info, int object) override;
+		json::value getInfo(std::string key, std::string from, std::string get, int object) override;
 		MongoCashDb(std::string path);
 		~MongoCashDb();
 	private:

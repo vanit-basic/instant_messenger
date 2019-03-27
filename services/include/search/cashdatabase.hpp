@@ -16,8 +16,8 @@ using namespace concurrency::streams;
 class cashDatabase
 {
 	public:
-		virtual bool setInfo(json::value info) = 0;
-		virtual json::value getInfo(std::string key, std::string from, std::string to) = 0;
+		virtual bool setInfo(json::value info, int object) = 0;
+		virtual json::value getInfo(std::string key, std::string from, std::string get, int object) = 0;
 		cashDatabase(){}
 		~cashDatabase(){}
 };
