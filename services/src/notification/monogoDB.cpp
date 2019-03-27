@@ -81,7 +81,7 @@ json::value NotificationMongo::userJoinGroup(std::string uid, std::string gid) {
 
 	if (result) {
 		bsoncxx::document::view doc = result->view();
-                bsoncxx::document::element element = doc["groups"];
+                bsoncxx::document::element element = doc["pending"];
 
                 if (element.type() == type::k_array) {
                         bsoncxx::array::view subarray{element.get_array().value};
@@ -98,8 +98,7 @@ json::value NotificationMongo::userJoinGroup(std::string uid, std::string gid) {
 		
 		coll1.update_one(document{} << "_id" << uid << finalize,
 			document{} << "$push" << open_document
-			<< "groups" << gid << close_document << finalize);
-			response["status"] = json::value::string("OK");
+			<< "pending" << gid << close_document << finalize);
 
 	} else {
 		auto builder = bsoncxx::builder::stream::document{};
@@ -112,9 +111,9 @@ json::value NotificationMongo::userJoinGroup(std::string uid, std::string gid) {
                 << bsoncxx::builder::stream::finalize;
 		auto result = coll1.insert_one(std::move(doc_value));
 
-		response["status"] = json::value::string("OK");
 	}
 	
+	response["status"] = json::value::string("OK");
 	return response;
 }
 
@@ -191,7 +190,6 @@ json::value NotificationMongo::groupInviteUser(std::string user, std::string gro
 		coll.update_one(document{} << "_id" << group << finalize,
 			document{} << "$push" << open_document
 			<< "pending" << user << close_document << finalize);
-		response["status"] = json::value::string("OK");
 	} else {
 		auto builder = bsoncxx::builder::stream::document{};
 	        bsoncxx::document::value doc_value = builder
@@ -203,8 +201,8 @@ json::value NotificationMongo::groupInviteUser(std::string user, std::string gro
 		<< "reject" << open_array << close_array
 		<< bsoncxx::builder::stream::finalize;
 		auto result = coll.insert_one(std::move(doc_value));
-		response["status"] = json::value::string("OK");
 	}
+	response["status"] = json::value::string("OK");
 	return response;
 }
 
@@ -218,7 +216,7 @@ json::value NotificationMongo::groupAcceptUser(std::string user, std::string gro
 
         if (result) {
                 bsoncxx::document::view doc = result->view();
-                bsoncxx::document::element element = doc["groups"];
+                bsoncxx::document::element element = doc["sent"];
                 if (element.type() == type::k_array) {
                         bsoncxx::array::view subarray{element.get_array().value};
                         for (const bsoncxx::array::element& gId : subarray) {
