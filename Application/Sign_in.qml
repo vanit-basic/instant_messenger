@@ -2,36 +2,12 @@ import QtQuick 2.12
 import QtQuick.Window 2.2
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Controls 2.3
-//import io.qt.examples.Engine 1.0
+import "Request_response.js" as Logic
 Page{
     id: wind
     focus: true
-    function getFriends() {
-        var request = new XMLHttpRequest()
-                   request.open('POST', 'http://127.0.1.1:6504/v1/mafclub/api/account/signIn')
-        request.setRequestHeader('Content-Type', 'application/json')
-        var params = {
-
-            "login" : login.text,
-            "password" : password.text
-
-        }
-           var data = JSON.stringify(params)
-           request.setRequestHeader('Content-Length', data.length)
-        request.send(data)
-console.log(data)
-           request.onreadystatechange = function() {
-               if (request.readyState === XMLHttpRequest.DONE) {
-                   if (request.status && request.status === 200) {
-                       console.log("response", request.responseText)
-                       var result = JSON.parse(request.responseText)
-                   } else {
-                       console.log("HTTP:", request.status, request.statusText)
-                   }
-               }
-           }
-
-       }
+    property var ob
+    Component.onCompleted: ob = new Logic.Account()
     Rectangle{
         width: wind.width
         height: wind.height
@@ -372,8 +348,9 @@ console.log(data)
                     }
                     enabled: login.text == "" || password.text == "" ?false:true
                     onPressed: {
+                        ob.signIn(login.text, password.text)
                         stack.push(Qt.resolvedUrl("Home.qml"))
-                        getFriends()
+
 
                     }
                 }

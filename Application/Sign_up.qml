@@ -3,6 +3,7 @@ import QtQuick.Window 2.2
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.12
 import QtQuick.Controls 2.5
+import "Request_response.js" as Logic
 Page {
     focus: true
     id:wind
@@ -13,39 +14,8 @@ Page {
     property variant month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     property var years: [2005,2004,2003,2002,2001,2000,1999,1998,1997,1996,1995,1994,1993,1992,1991,1990,1989,1988,1987,1986,1985,1984,1983,1982,1981,1980,1979,1978,1977,1976,1975,1974,1973,1972,1971,1970,1969,1968,1967,1966,1965,1964,1963,1962,1961,1960,1959,1958,1957,1956,1955,1954,1953,1952,1951,1950,1949]
 
-    function getFriends() {
-        var request = new XMLHttpRequest()
-           request.open('POST', 'http://127.0.1.1:6504/v1/mafclub/api/account/signUp')
-        request.setRequestHeader('Content-Type', 'application/json')
-        var params = {
-            "firstName" : enter_name.text,
-            "lastName" : enter_surname.text,
-            "gender" : "male",
-            "email" : enter_email.text,
-            "birthDate" : slaq.text,
-            "login" : enter_login.text,
-            "password" : enter_password.text
-
-        }
-           var data = JSON.stringify(params)
-           request.setRequestHeader('Content-Length', data.length)
-        request.send(data)
-console.log(data)
-           request.onreadystatechange = function() {
-
-               if (request.readyState === XMLHttpRequest.DONE) {
-console.log(request.status,"ccccccccc")
-                   if (request.status && request.status === 200) {
-                       console.log("response", request.responseText,"  aaaaaaaaa")
-                       var result = JSON.parse(request.responseText)
-
-                   } else {
-                       console.log("HTTP:", request.status, request.statusText,"bbbbbbbbbbb")
-                   }
-               }
-           }
-
-       }
+    property var ob
+    Component.onCompleted: ob = new Logic.Account()
     Rectangle{
         width: Screen.width
         height: Screen.height
@@ -529,8 +499,9 @@ console.log(request.status,"ccccccccc")
                             anchors.horizontalCenterOffset: 0
                             enabled: true
                             onPressed: {
+                                ob.signUp(enter_name.text, enter_surname.text,"male" , enter_email.text,slaq.text, enter_login.text, enter_password.text)
                                 stack.push(Qt.resolvedUrl("Home.qml"))
-                                getFriends()
+
 
                             }
                             //enabled: username.text === "" || surname.text === "" || mail.text === "" || u_pass.text === "" || repass.text === ""  ?false:true

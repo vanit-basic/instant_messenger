@@ -3,10 +3,11 @@ import QtQuick.Window 2.2
 import QtQuick.Controls 2.3
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.12
-
+import "Request_response.js" as Logic
 Page {
     id:wind
-
+    property var ob
+    Component.onCompleted: ob = new Logic.Account()
     MouseArea {
         anchors.fill: parent
         onPressed: {Qt.inputMethod.hide()}
@@ -258,8 +259,12 @@ Page {
                 opacity: enabled ? 1: 0.5
                 text: "Save changes"
                 enabled: (currentp.text === "" ||newp.text === "" || confirm_pass.text === "" )?false:true
-                onClicked: stack00.pop()
+                onClicked: {
+                    ob.changePassword("1", "u1", currentp.text, newp.text)
+                    stack00.pop()
             }
+            }
+
         }
     }
 }

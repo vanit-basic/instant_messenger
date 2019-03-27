@@ -5,26 +5,11 @@ import QtQuick.Controls 2.3
 import QtGraphicalEffects 1.12
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.Material 2.1
-
+import "Request_response.js" as Logic
 Page{
     id:wind
-    function getFriends() {
-        var request = new XMLHttpRequest()
-        var params = 'http://127.0.1.1:6504/v1/mafclub/api/account/signOut?userId=u1'
-           request.open('GET',params )
-        request.setRequestHeader('token', '3')
-        request.send()
-        request.onreadystatechange = function() {
-               if (request.readyState === XMLHttpRequest.DONE) {
-                   if (request.status && request.status === 200) {
-                       console.log("response", request.responseText)
-                       var result = JSON.parse(request.responseText)
-                   } else {
-                       console.log("HTTP:", request.status, request.statusText)
-                   }
-               }
-           }
-       }
+    property var ob
+    Component.onCompleted: ob = new Logic.Account()
     Drawer {
         id: drawer
         width:  wind.width-rectangle.x-tab_stat.width+50
@@ -425,7 +410,7 @@ Page{
                         font.pointSize: 15
                     }
                     onClicked:{                       
-                          getFriends()
+                         ob.signOut("u1", "6")
                         stack.push(Qt.resolvedUrl("Sign_in.qml"))
                     }
                 }
