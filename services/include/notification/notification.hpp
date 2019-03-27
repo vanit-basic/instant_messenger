@@ -32,4 +32,4 @@ class Notification : public BasicController, Controller {
                 void initRestOpHandlers() override;
 };
 
-#endif;
+#endif
