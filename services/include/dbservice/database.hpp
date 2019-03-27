@@ -88,6 +88,10 @@ class database {
  
 		virtual bool groupUpdateMessage(std::string groupId, std::string messagId, std::string message) = 0; 
 
+		virtual json::value searchUsers (json::value) = 0;
+
+		virtual json::value searchGroups (json::value) = 0;
+
 	public:
 		virtual json::value isUserInGroup(std::string, std::string) = 0;
 		database() {}

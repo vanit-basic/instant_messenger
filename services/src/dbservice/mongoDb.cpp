@@ -1101,3 +1101,9 @@ json::value MongoDB::changeGroupAdmin(std::string groupId, std::string userId) {
 	}
 	return response;
 }
+
+json::value MongoDB::searchUsers(json::value request)
+{}
+
+json::value MongoDB::searchGroups(json::value request)
+{}

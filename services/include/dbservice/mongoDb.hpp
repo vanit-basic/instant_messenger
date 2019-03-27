@@ -102,6 +102,10 @@ class MongoDB : public database {
 		virtual std::string groupSendMessage(std::string groupId, std::string from, std::string message){};
 
 		virtual bool groupUpdateMessage(std::string groupId, std::string messagId, std::string message) {};
+
+		json::value searchUsers (json::value);
+		
+		json::value searchGroups (json::value);
 		
 		MongoDB(std::string);
 		~MongoDB();

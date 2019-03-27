@@ -150,12 +150,25 @@ void DbService::handlePost(http_request message) {
 				json::value response = m_db->getGroupsShortInfos(request);
 				message.reply(status_codes::OK, response);
 				}else {
-					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+					message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 				}
 		}else {
-			message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+			if (path[0] == "search") {
+				if (path[1] == "searchUsers") {
+					json::value response = m_db->searchUsers(request);
+					message.reply(status_codes::OK, response);
+				} else if (path[1] == "searchGroups") {
+					json::value response = m_db->searchGroups(request);
+					message.reply(status_codes::OK, response);
+					}else {
+						message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
+					}
+			}
+			else{
+				message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
+			}
 		}
 	} else {
-		message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+		message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 	}
 }
