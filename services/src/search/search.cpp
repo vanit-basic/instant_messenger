@@ -98,14 +98,14 @@ void Search::handlePost(http_request message)
 {
 	auto path = requestPath(message);
 	json::value fields = message.extract_json().get();
-	if (!(path.empty()))
+	if (!(path.empty() || fields["from"].is_null() || fields["get"].is_null()))
 	{
-		json::value info;
+		std::string from = fields.at("from").as_string();
+		std::string get = fields.at("get").as_string();
 		std::string userId = fields.at("userId").as_string();
+		json::value info;
 		if(path[1] == "user")
 		{
-			std::string from = fields.at("from").as_string();
-			std::string get = fields.at("get").as_string();
 			std::string field1 = "";
 			std::string field2 = "";
 			std::string field3 = "";
@@ -147,8 +147,6 @@ void Search::handlePost(http_request message)
 		{
 			if(path[1] == "group")
 			{
-				std::string from = fields.at("from").as_string();
-				std::string get = fields.at("get").as_string();
 				std::string groupName = "";
 				if(!fields["field1"].is_null())
 				{
