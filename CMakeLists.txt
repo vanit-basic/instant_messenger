@@ -11,6 +11,14 @@ if(UNIX) # Darwing or Linux
 	find_package(libbsoncxx REQUIRED)
 	find_package(OpenSSL 1.0.1 REQUIRED)
 	find_package(cpprestsdk REQUIRED)
+
+	#qt libraries
+	find_package(Qt5Core REQUIRED)
+	find_package(Qt5Network REQUIRED)
+	find_package(Qt5WebSockets REQUIRED)
+
+
+
 	set(OPENSSL_VERSION "1.0.1")
 
 elseif(WIN32) # Windows systems including Win64.
@@ -25,7 +33,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	set(CMAKE_CXX_FLAGS "-arch x86_64 -std=c++11 -stdlib=libc++ -DBOOST_LOG_DYN_LINK -Wno-deprecated-declarations")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	message("-- configuring gcc options")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -DBOOST_LOG_DYN_LINK")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -DBOOST_LOG_DYN_LINK -DQT_NO_DEBUG -DQT_WEBSOCKETS_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -pipe -O2 -Wall -W -D_REENTRANT -fPIC")
 endif()
 
 # Project construction ...
@@ -60,6 +68,7 @@ add_executable("account"
 add_executable("messaging" 		
 	./services/src/messaging/main.cpp
 	./services/src/messaging/messaging.cpp
+	./services/src/messaging/echoserver.cpp
 	./services/src/base/basic_controller.cpp
 	./utilities/network_utils.cpp)
 
@@ -89,14 +98,20 @@ set(SERVICES_INCLUDE_DIR "./services/include")
 set(UTILITIES_INCLUDE_DIR "./utilities")
 set(EXCEPTIONS_INCLUDE_DIR "exceptions")
 find_path(CPPRESTSDK_INCLUDE_DIR cpprest)
-set(HEADER_SEARCH_PATHS ${CPPRESTSDK_INCLUDE_DIR} ${SERVICES_INCLUDE_DIR} ${UTILITIES_INCLUDE_DIR} ${EXCEPTIONS_INCLUDE_DIR} ${LIBMONGOCXX_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR})
+set(QT_HEADERS "/usr/include/x86_64-linux-gnu/qt5")
+set(HEADER_SEARCH_PATHS ${CPPRESTSDK_INCLUDE_DIR} ${SERVICES_INCLUDE_DIR} ${UTILITIES_INCLUDE_DIR} ${EXCEPTIONS_INCLUDE_DIR} ${LIBMONGOCXX_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR} ${QT_HEADERS})
 message(bson ${LIBMONGOCXX_INCLUDE_DIRS})
+
+
+#/usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWebSockets -isystem /usr/include/x86_64-linux-gnu/qt5/QtNetwork -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore
+
+set (QT_LIB_PATH "/usr/lib/x86_64-linux-gnu/libQt5Core.so;/usr/lib/x86_64-linux-gnu/libQt5WebSockets.so;/usr/lib/x86_64-linux-gnu/libQt5Network.so")
 
 # library search paths ...
 find_library(CPPRESTSDK_LIBRARY cpprest)
 set(OPENSSL_LIBS "${OPENSSL_LIBRARIES}")
 
-set(LIBRARIES_SEARCH_PATHS ${CPPRESTSDK_LIBRARY} ${OPENSSL_LIBS} ${Boost_LIBRARIES} ${LIBMONGOCXX_LIBRARIES} ${LIBBSONCXX_LIBRARIES})
+set(LIBRARIES_SEARCH_PATHS ${CPPRESTSDK_LIBRARY} ${OPENSSL_LIBS} ${Boost_LIBRARIES} ${LIBMONGOCXX_LIBRARIES} ${LIBBSONCXX_LIBRARIES} ${QT_LIB_PATH})
 
 message(LIBRARIES_SEARCH_PATHS " ${LIBRARIES_SEARCH_PATHS}")
 
