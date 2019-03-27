@@ -7,9 +7,12 @@
 #include <dbservice/database.hpp>
 #include <cpprest/http_client.h>
 //#include "mongoDb.hpp"
-
 #include <cpprest/filestream.h>
 
+#include <QtCore/QObject>
+#include <QtCore/QList>
+#include <QtCore/QByteArray>
+#include <messaging/echoserver.hpp>
 
 using namespace cfx;
 using namespace utility;
@@ -21,17 +24,18 @@ using namespace concurrency::streams;
 class Messaging : public BasicController, Controller {
         public:
                 bool checkServices();
+		http_client* AccountClient;
 		database* m_db;
-                Messaging(std::string,database*);
-                virtual ~Messaging();
+		EchoServer* wsQt;
+                Messaging(int, const char**,database*,EchoServer*);
+              	
+	      	 ~Messaging();
 
 
         private:
                 std::string messagingUri;
-                bool createClients(std::string path);
-                void handleGet(http_request message) override;
-                void handlePost(http_request message) override;
-                void initRestOpHandlers() override;
+                bool createClients(int, const char**);
+		
 };
 
 
