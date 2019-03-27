@@ -109,7 +109,7 @@ int main()
 
 	json::value signInReq2;
         signInReq2["login"] = json::value::string("valodyan");
-        signInReq2["password"] = json::value::string("Valodik9"); 
+        signInReq2["password"] = json::value::string("Valodik90"); 
         
 	json::value changePasswordReq1;
 	changePasswordReq1["userId"] = json::value::string("u1");
@@ -326,7 +326,7 @@ int main()
 			Request(routerClient, userRegistration2);
 			std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     GET USER INFO TEST      /////////////////"<<std::endl;
+	/*		std::cout<<"///////////////////     GET USER INFO TEST      /////////////////"<<std::endl;
 			Request(routerClient, getUserInfoRequest1);
 			Request(routerClient, getUserInfoRequest2);
 			std::cout<<std::endl;
@@ -340,15 +340,15 @@ int main()
 			Request(routerClient, getUserShortInfoRequest2);
 			std::cout<<std::endl;
 			
-/*			std::cout<<"///////////////////     Sign Out  TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     Sign Out  TEST      /////////////////"<<std::endl;
                         Request(routerClient, signOutRequest);
                         std::cout<<std::endl;
-			
+*/			
 			std::cout<<"///////////////////     SIGN IN TEST      /////////////////"<<std::endl;
 			Request(routerClient, signInRequest1);
 			Request(routerClient, signInRequest2);		
 			std::cout<<std::endl;
-*/			
+/*			
 			std::cout<<"///////////////////     CREATE GROUP TEST      /////////////////"<<std::endl;
 			Request(routerClient, createGroupRequest1);
 			Request(routerClient, createGroupRequest2);
@@ -381,13 +381,13 @@ int main()
 			Request(routerClient, getGroupShortInfoRequest1);
 			Request(routerClient, getGroupShortInfoRequest2);
 			std::cout<<std::endl;
-			
+*/			
 			std::cout<<"///////////////////     CHANGE PASSWORD TEST      /////////////////"<<std::endl;
 			Request(routerClient, changePasswordRequest1);
 			Request(routerClient, changePasswordRequest2);
 			std::cout<<std::endl;
 			
-			std::cout<<"///////////////////     CHANGE GROUP ADMIN TEST      /////////////////"<<std::endl;
+/*			std::cout<<"///////////////////     CHANGE GROUP ADMIN TEST      /////////////////"<<std::endl;
 			Request(routerClient, changeGroupAdminRequest1);
 			Request(routerClient, changeGroupAdminRequest2);
 			std::cout<<std::endl;
@@ -397,7 +397,7 @@ int main()
 			Request(routerClient, getGroupInfoRequest2);
 			Request(routerClient, getGroupInfoRequest3);
 			std::cout<<std::endl;
-/*			
+		
 			std::cout<<"///////////////////     REMOVE FROM GROUP TEST      /////////////////"<<std::endl;
 			Request(routerClient, removeFromGroupRequest1);
 			Request(routerClient, removeFromGroupRequest2);
@@ -411,7 +411,7 @@ int main()
                         Request(routerClient, deleteUserRequest);
                         std::cout<<std::endl;
 			
-*/			std::cout<<"///////////////////     GET USER INFO TEST      /////////////////"<<std::endl;
+			std::cout<<"///////////////////     GET USER INFO TEST      /////////////////"<<std::endl;
 			Request(routerClient, getUserInfoRequest1);
 			Request(routerClient, getUserInfoRequest2);
 			std::cout<<std::endl;
@@ -431,7 +431,7 @@ int main()
 			Request(routerClient, getGroupInfoRequest2);
 			Request(routerClient, getGroupInfoRequest3);
 			std::cout<<std::endl;
-			
+*/			
 /*			std::cout<<"///////////////////     SEARCH USERS (DB  SERVICE) TEST      /////////////////"<<std::endl;
 			postRequest(dbServiceClient, searchUsers, searchUsersReq);
 			std::cout<<std::endl;

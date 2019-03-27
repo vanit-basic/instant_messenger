@@ -16,9 +16,8 @@ if(UNIX) # Darwing or Linux
 	find_package(Qt5Core REQUIRED)
 	find_package(Qt5Network REQUIRED)
 	find_package(Qt5WebSockets REQUIRED)
-
-
-
+	
+	
 	set(OPENSSL_VERSION "1.0.1")
 
 elseif(WIN32) # Windows systems including Win64.

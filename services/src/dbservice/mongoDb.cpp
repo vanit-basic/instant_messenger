@@ -1045,11 +1045,11 @@ json::value MongoDB::changePassword(json::value request) {
                         	coll2.update_one(document{} << "_id" << user << finalize,
                                 	document{} << "$set" << open_document <<
         				"password" << newPassword << close_document << finalize);
+				response["status"] = json::value::string("OK");
 			}
-			response["status"] = json::value::string("INVALID_PASSWORD"); 
 			return response;
-		}
-		response["status"] = json::value::string("OK");
+		} else
+			response["status"] = json::value::string("INVALID_PASSWORD"); 
 	}
 	else
 		response["status"] = json::value::string("INVALID_USER_ID");

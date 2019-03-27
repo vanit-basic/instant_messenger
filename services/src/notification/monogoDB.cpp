@@ -137,15 +137,15 @@ json::value NotificationMongo::userAcceptInvitation(std::string uid, std::string
                                         std::string user = users.get_utf8().value.to_string();
 					if (user.compare(uid) == 0) {
 						coll1.update_one(document{} << "_id" << gid << finalize,
-								document{} << "$push" << open_document
-								<< "sent" << uid << close_document << finalize);
+							document{} << "$pull" << open_document
+							<< "sent" << uid << close_document << finalize);
 						if (status.compare("accept") == 0) {
 							coll1.update_one(document{} << "_id" << gid << finalize,
-								document{} << "$pull" << open_document
+								document{} << "$push" << open_document
 								<< "accept" << uid << close_document << finalize);
 						} else {
 							coll1.update_one(document{} << "_id" << gid << finalize,
-								document{} << "$pull" << open_document
+								document{} << "$push" << open_document
 								<< "reject" << uid << close_document << finalize);
 						
 						}
