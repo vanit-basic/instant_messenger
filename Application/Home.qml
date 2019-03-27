@@ -1,12 +1,16 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Window 2.2
+import "Request_response.js" as Logic
 ApplicationWindow {
     visible: true
     width: Screen.width
     height: Screen.height
 title: qsTr("MafClub")
     id:home
+    property var ob
+    Component.onCompleted: ob = new Logic.Account()
+
     footer:TabBar{
         height: 44
         id:tab

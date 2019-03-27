@@ -4,8 +4,11 @@ import QtGraphicalEffects 1.12
 import QtQuick.Controls 2.5
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.3
+import "Request_response.js" as Logic
 Page{
     id:homePage
+    property var ob
+    Component.onCompleted: ob = new Logic.Account()
     StackView{
         anchors.fill: parent
         id:stack00
@@ -54,7 +57,9 @@ Page{
                     width: 50
                     height: 50
                     text: "+"
-                    onClicked:{ stack00.push(Qt.resolvedUrl("MyProfile.qml")); notpopup.close() }
+                    onClicked:{ stack00.push(Qt.resolvedUrl("MyProfile.qml")); notpopup.close()
+                    ob.getUserInfo ("u1", "1")
+                    }
                 }
                 Popup{
                     id:notpopup
@@ -160,7 +165,10 @@ Page{
                     anchors.leftMargin: 20
                     MouseArea{
                         anchors.fill: parent
-                        onClicked: { stack00.push(Qt.resolvedUrl("MyProfile.qml")); notpopup.close() }
+                        onClicked: { stack00.push(Qt.resolvedUrl("MyProfile.qml")); notpopup.close()
+                        ob.getUserInfo ("u1", "1")
+
+                        }
                     }
                 }
                 ProgressBar {
