@@ -3,8 +3,11 @@ import QtQuick.Window 2.2
 import QtQuick.Controls 2.3
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.12
+import "Request_response.js" as Logic
 Page {
     id:wind
+    property var ob
+    Component.onCompleted: ob = new Logic.Account()
     MouseArea {
         anchors.fill: parent
         onClicked:  {Qt.inputMethod.hide()}
@@ -239,7 +242,10 @@ Page {
                             font.family: "Courier"
                             font.capitalization: Font.Capitalize
                             enabled: (edit_name.text === "" || edit_surname.text === "" || edit_nickname.text === "" )?false:true
-                            onClicked: stack00.pop()
+                            onClicked: {
+                                ob.userUpdateInfo("1", "u3", edit_name.text, edit_surname.text, "roundButton", edit_nickname.text)
+                                stack00.pop()
+                            }
                         }
                     }
                 }
