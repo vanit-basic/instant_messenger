@@ -55,7 +55,7 @@ bool MongoCashDb::setInfo(json::value info)
 	return status;
 }
 
-json::value MongoCashDb::getInfo(std::string key, std::string from, std::string to)
+json::value MongoCashDb::getInfo(std::string key, std::string from, std::string get)
 {
 	json::value info;
 	try
@@ -63,7 +63,7 @@ json::value MongoCashDb::getInfo(std::string key, std::string from, std::string 
 		auto client = clientPool->acquire();
 		auto coll = (*client)["CashDb"]["userIds"];
 		int x = std::stoi(from);
-		int y = std::stoi(to);
+		int y = std::stoi(get);
 		auto distinct_results = coll.distinct(key, {});
 		if (distinct_results.begin() != distinct_results.end())
 		{
@@ -85,7 +85,6 @@ json::value MongoCashDb::getInfo(std::string key, std::string from, std::string 
 				std::vector<json::value> mass(y);
 				for(int i = 0; i < y; ++i)
 				{
-
 					mass[i] = json::value::string(((subarray.find(x+i))->get_utf8().value.to_string()));
 				}
 				info["status"] = json::value::string("OK");

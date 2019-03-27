@@ -105,7 +105,7 @@ void Search::handlePost(http_request message)
 		if(path[1] == "user")
 		{
 			std::string from = fields.at("from").as_string();
-			std::string to = fields.at("to").as_string();
+			std::string get = fields.at("get").as_string();
 			std::string field1 = "";
 			std::string field2 = "";
 			std::string field3 = "";
@@ -121,27 +121,26 @@ void Search::handlePost(http_request message)
 					}
 				}
 				message.set_body(fields);
-				info = cashDb -> getInfo(field1 + field2 + field3, from, to);
+				info = cashDb -> getInfo(field1 + field2 + field3, from, get);
 				uri_builder usersInfo("/getUsersShortInfos");
 				
 				if(info.at("status").as_string() == "OK")
 				{
 					info.erase("status");
 					message.reply(DataBaseClient->request(methods::POST, usersInfo.to_string(), info).get());
-					message.reply(response);
 				}
 				if(info.at("status").as_string() == "NOT_FOUND")
 				{
 					json:: value Ids = DataBaseClient->request(message).get().extract_json().get();
 					cashDb -> setInfo(Ids);
 					info.erase("status");
-					info = cashDb -> getInfo(firstName + lastName + nickName, from, to);
+					info = cashDb -> getInfo(field1 + field2 + field3, from, get);
 					message.reply(DataBaseClient->request(methods::POST, usersInfo.to_string(), info).get());
 				}
 			}
 			else
 			{
-				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+				message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 			}
 		}
 		else
@@ -149,12 +148,12 @@ void Search::handlePost(http_request message)
 			if(path[1] == "group")
 			{
 				std::string from = fields.at("from").as_string();
-				std::string to = fields.at("to").as_string();
+				std::string get = fields.at("get").as_string();
 				std::string groupName = "";
 				if(!fields["field1"].is_null())
 				{
 					groupName = fields.at("field1").as_string();
-					info = cashDb -> getInfo(groupName, from, to);
+					info = cashDb -> getInfo(groupName, from, get);
 					uri_builder groupsInfo("/getGroupsShortInfos");
 					if(info.at("status").as_string() == "OK")
 					{
@@ -169,24 +168,23 @@ void Search::handlePost(http_request message)
 						json:: value Ids = response.extract_json().get();
 						cashDb -> setInfo(Ids);
 						info.erase("status");
-						info = cashDb -> getInfo(groupName, from, to);
-						http_response groupsInfos = DataBaseClient->request(methods::POST, groupsInfo.to_string(), info).get();
-						message.reply(groupsInfos);
+						info = cashDb -> getInfo(groupName, from, get);
+						message.reply(DataBaseClient->request(methods::POST, groupsInfo.to_string(), info).get());
 					}
 				}
 				else
 				{
-					message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+					message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 				}
 			}
 			else
 			{
-				message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+				message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 			}
 		}
 	}
 	else
 	{
-		message.reply(status_codes::NotImplemented, responseNotImpl(methods::GET));
+		message.reply(status_codes::NotImplemented, responseNotImpl(methods::POST));
 	}
 }
