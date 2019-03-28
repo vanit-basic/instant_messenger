@@ -243,7 +243,7 @@ getUserShortInfo {
 
 userUpdateInfo {
 	request {
-		uri - uri/account/updateUserInfo
+		uri - uri/account/userUpdateInfo
 		header - token
 		body - {
 			"userId" : "u123",
