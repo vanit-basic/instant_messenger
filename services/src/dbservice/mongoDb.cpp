@@ -336,8 +336,6 @@ json::value MongoDB::getUserInfo(std::string id) {
 		element = doc["email"];
 		std::string mail = element.get_utf8().value.to_string();
 
-		element = doc["login"];
-		std::string login = element.get_utf8().value.to_string();
 
 		element = doc["publicGroups"];
                 std::vector <json::value> gIDs;
@@ -381,7 +379,6 @@ json::value MongoDB::getUserInfo(std::string id) {
 		response["fails"] = json::value::string(fails);
 		response["killed"] = json::value::string(killed);
 		response["email"] = json::value::string(mail);
-		response["login"] = json::value::string(login);
 		response["status"] = json::value::string("OK");
 
 	} else {

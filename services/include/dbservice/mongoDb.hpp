@@ -55,7 +55,7 @@ class MongoDB : public database {
 
 		virtual json::value userUpdateInfo(json::value user);
 
-		virtual bool userRemoveConversation(std::string userId1, std::string userId2){};
+/*		virtual bool userRemoveConversation(std::string userId1, std::string userId2){};
 
 		virtual json::value getUserConversations(std::string userId){};
 		
@@ -65,7 +65,7 @@ class MongoDB : public database {
 
 		virtual bool userRemoveMessage(std::string userId, std::string clientId, std::string mId){};
 
-		virtual bool userUpdateMessage(std::string from, std::string to, std::string messageInfo){};
+		virtual bool userUpdateMessage(std::string from, std::string to, std::string messageInfo){};*/
 	
 		virtual json::value changePassword(json::value);
 
@@ -93,7 +93,7 @@ class MongoDB : public database {
 		
 		virtual json::value groupUpdateInfo(json::value groupInfo);
                
-                virtual bool groupRemoveConversation(std::string groupId){};
+/*              virtual bool groupRemoveConversation(std::string groupId){};
 
 		virtual bool groupRemoveMessage(std::string groupId, std::string messageId){};
 		
@@ -101,7 +101,7 @@ class MongoDB : public database {
 
 		virtual std::string groupSendMessage(std::string groupId, std::string from, std::string message){};
 
-		virtual bool groupUpdateMessage(std::string groupId, std::string messagId, std::string message) {};
+		virtual bool groupUpdateMessage(std::string groupId, std::string messagId, std::string message) {};*/
 
 		json::value searchUsers (json::value);
 		

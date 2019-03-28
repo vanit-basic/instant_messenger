@@ -22,8 +22,7 @@ bool Notification::createClient(std::string path) {
 	if (configFile.is_open()) {
 		configFile >> config;
 		configFile.close();
-		this->poolDB = new mongocxx::pool (mongocxx::uri{config.at("notification").as_string()});
-		//this->notificationUri = config.at("notification").as_string();
+		
 		return true;
 	} else {
 		std::cerr << "ConfigFile is not exist!!!" << std::endl;

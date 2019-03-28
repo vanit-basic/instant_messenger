@@ -29,6 +29,7 @@ class NotificationMongo: public NotificationDB {
                 ~NotificationMongo();
                 
 		virtual json::value userJoinGroup(std::string, std::string);
+		virtual json::value pendToSend(std::string, std::string);
                 virtual json::value userAcceptInvitation(std::string, std::string, std::string);
                 virtual json::value groupInviteUser(std::string, std::string);
                 virtual json::value groupAcceptUser(std::string, std::string, std::string);

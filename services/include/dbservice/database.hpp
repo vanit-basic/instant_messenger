@@ -34,8 +34,10 @@ class database {
 		virtual json::value getUserInfo(std::string userId) = 0;
 	
 		virtual json::value getUserShortInfo(std::string userId) = 0;
+		
+		virtual json::value deleteUser(std::string userId) = 0;
 
-		virtual json::value getUserConversations(std::string userId) = 0;
+/*		virtual json::value getUserConversations(std::string userId) = 0;
 		
 		virtual json::value getUsersConversation(std::string userId1, std::string userId2) = 0;
   
@@ -43,11 +45,9 @@ class database {
 
 		virtual std::string userSendMessage(std::string from, std::string to, std::string message) = 0;
 		
-		virtual json::value deleteUser(std::string userId) = 0;
-
 		virtual bool userRemoveConversation(std::string userId1, std::string userId2) = 0;
 
-		virtual bool userRemoveMessage(std::string, std::string, std::string) = 0;
+		virtual bool userRemoveMessage(std::string, std::string, std::string) = 0;*/
 	
 		virtual json::value userUpdateInfo(json::value user) = 0;
 		
@@ -71,22 +71,22 @@ class database {
 		virtual json::value addUserToGroup(std::string userId, std::string groupId, std::string clientId) = 0;
 
                 virtual json::value groupRemoveUser(std::string, std::string) = 0;
+		
+		virtual json::value getGroupInfo(std::string) = 0;
 
-//              virtual bool removeMessage(json::value messageInfo) = 0;
+		virtual json::value groupUpdateInfo(json::value groupInfo) = 0;
+              
+/*              virtual bool removeMessage(json::value messageInfo) = 0;
 
                 virtual bool groupRemoveConversation(std::string groupId) = 0;
 		
 		virtual bool groupRemoveMessage(std::string groupId, std::string messageId) = 0;
 		
-		virtual json::value getGroupInfo(std::string) = 0;
-		
 		virtual std::string getGroupConversation(std::string groupID) = 0;
 		
-		virtual json::value groupUpdateInfo(json::value groupInfo) = 0;
-
 	        virtual std::string groupSendMessage(std::string groupId, std::string from, std::string message) = 0;
  
-		virtual bool groupUpdateMessage(std::string groupId, std::string messagId, std::string message) = 0; 
+		virtual bool groupUpdateMessage(std::string groupId, std::string messagId, std::string message) = 0; */
 
 		virtual json::value searchUsers (json::value) = 0;
 

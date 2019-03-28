@@ -1,7 +1,6 @@
 #include <base/basic_controller.hpp>
 #include <cpprest/http_client.h>
 
-#include <string>
 #include <cpprest/filestream.h>
 #include <bsoncxx/json.hpp>
 #include <mongocxx/client.hpp>
@@ -27,6 +26,8 @@
 #include <fstream>
 #include <stdio.h>
 #include <thread>
+#include <iostream>
+#include <vector>
 
 #include <notification/mongoDB.hpp>
 
@@ -105,7 +106,7 @@ json::value NotificationMongo::userJoinGroup(std::string uid, std::string gid) {
 	        bsoncxx::document::value doc_value = builder
 		<< "_id" << uid
                 << "pending" << open_array << gid << close_array
-		<< "send" << open_array << close_array
+		<< "sent" << open_array << close_array
 		<< "accept" << open_array << close_array
 		<< "reject" << open_array << close_array
                 << bsoncxx::builder::stream::finalize;
@@ -155,12 +156,8 @@ json::value NotificationMongo::userAcceptInvitation(std::string uid, std::string
                                 }
                         }
                 }
-		
-		response["status"] = json::value::string("INVALID_GROUP");
-	} else {
-		response["status"] = json::value::string("INVALID_GROUP");
 	}
-
+	response["status"] = json::value::string("INVALID_GROUP");
 	return response;
 }
 
@@ -241,25 +238,67 @@ json::value NotificationMongo::groupAcceptUser(std::string user, std::string gro
                                 }
                         }
                 }
-		response["status"] = json::value::string("INVALID_USER_ID");
-        } else {
-		response["status"] = json::value::string("INVALID_USER_ID");
 	}
+	response["status"] = json::value::string("INVALID_USER_ID");
         return response;
 }
 
+
+json::value NotificationMongo::pendToSend(std::string coll, std::string id) {
+	auto c = poolDB->acquire();
+        auto coll1 = (*c)["notificationDB"][coll];
+        json::value response;
+
+	bsoncxx::stdx::optional<bsoncxx::document::value> result =
+		coll1.find_one(document{} << "_id" << id << finalize);
+
+	if (result) {
+		bsoncxx::document::view doc = result->view();
+                bsoncxx::document::element element = doc["pending"];
+
+		std::vector<json::value> ids;
+		if (element.type() == type::k_array) {
+			bsoncxx::array::view subarray{element.get_array().value};
+			for (const bsoncxx::array::element& key : subarray) {
+				if (key.type() == type::k_utf8) {
+					std::string elem = key.get_utf8().value.to_string();
+					ids.push_back(json::value::string(elem));
+				}
+			}
+		}
+
+		for (std::vector<json::value>::iterator iter = ids.begin(); iter != ids.end(); ++iter) {
+			std::string element = (*iter).serialize();
+			coll1.update_one(document{} << "_id" << id << finalize,
+				document{} << "$push" << open_document
+				<< "sent" << element << close_document << finalize);
+		}
+
+		response["status"] = json::value::string("OK");
+	} else {
+		response["status"] = json::value::string("INVALID_ID");	
+	}
+
+	return response;
+}
+
+
 json::value NotificationMongo::newMessage(json::value) {
-	
+	json::value response;
+	return response;
 }
 
 json::value NotificationMongo::messageFromService(json::value) {
-	 
+	json::value response;
+	return response;
 }
 
 json::value NotificationMongo::groupRemoveUser(json::value) {
-	
+	json::value response;
+	return response;
 }
 
 json::value NotificationMongo::userLeaveGroup(json::value) {
-	
+	json::value response;
+	return response;
 }

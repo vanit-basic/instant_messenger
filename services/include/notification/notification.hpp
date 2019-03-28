@@ -20,16 +20,18 @@ using namespace concurrency::streams;
 class Notification : public BasicController, Controller {
         public:
                 bool checkServices();
+		http_client* AccountClient;
                 database* m_db;
+
                 Notification(std::string, database*);
                 virtual ~Notification();
 
         private:
-                std::string messagingUri;
+                std::string notificationUri;
                 bool createClient(std::string path);
+/* 		void handlePost(http_request message) override;
                 void handleGet(http_request message) override;
-                void handlePost(http_request message) override;
-                void initRestOpHandlers() override;
+                void initRestOpHandlers() override;*/
 };
 
 #endif

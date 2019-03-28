@@ -5,6 +5,6 @@
 using namespace web;
 using namespace cfx;
 
-int main(int argc, const char * argv[]) {
+int main() {
 	return 0;
 }
