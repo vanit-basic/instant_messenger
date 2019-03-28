@@ -46,12 +46,11 @@ signUp {
                         "userId" : "u1",
                         "firstName" : "Valod",
                         "lastName" : "Valodyan",
-			"nickname" : "Valod",
+			"nickName" : "Valod",
                         "gender" : "male",
 			"avatar" : "base64_string",
                         "email" : "v.valodyan@mail.com",
                         "birthDate" : "12.12.1990",
-			"login" : "v.valodyan",
 			"level" : 0,
 			"playedGames" : 0,
 			"redCard" : 0,
@@ -82,7 +81,7 @@ signIn {
                         "userId" : "u1",
                         "firstName" : "Valod",
                         "lastName" : "Valodyan",
-			"nickname" : "Valod", 
+			"nickName" : "Valod", 
 			"avatar" : "base64_string",
 			"publicGroups" : ["g5", "g24", "g32"],
 			"privateGroups" : ["g1", "g12", "g27"],
@@ -190,9 +189,8 @@ getUserInfo {
 		"userId" : "u123"
 		"firstName" : "Valod",
                 "lastName" : "Valodyan",
-		"nickname" : "Valod",
+		"nickName" : "Valod",
 		"avatar" : "base64_string",
-                "login" : "v.valodyan",
                 "gender" : "male",
 		"publicGroups" : ["g5", "g24", "g32"],
 		"privateGroups" : ["g1", "g12", "g27"],
@@ -222,11 +220,11 @@ getUserShortInfo {
 	             	"userId" : "u438" 
                         "firstName" : "Heriqnaz",
                         "lastName" : "Heriqyan",
-			"nickname" : "Heriq",
+			"nickName" : "Heriq",
 			"avatar" : "base64_string",
 			"gender" : "female",
-			"birthdate" : "12.12.1993",
-			"groups" : ["g5", "g24"], // only public groups
+			"birthDate" : "12.12.1993",
+			"publicGroups" : ["g5", "g24"],
 			"level" : 2,
                         "playedGames" : 10,
                         "redCard" : 6,
@@ -248,18 +246,17 @@ userUpdateInfo {
 		body - {
 			"userId" : "u123",
 			"firstName" : "Valod",
-			"lastname" : "Valodyan",
+			"lastName" : "Valodyan",
 			"avatar" : "base64_string",
-			"nickname" : "Valod"  
+			"nickName" : "Valod"  
 		}
 
 	response {
 			"userId" : "u123"
 			"firstName" : "Valod",
         	        "lastName" : "Valodyan",
-			"nickname" : "Valod",
+			"nickName" : "Valod",
 			"avatar" : "base64_string",
-                	"login" : "v.valodyan",
                 	"gender" : "male",
 			"publicGroups" : ["g5", "g24", "g32"],
 			"privateGroups" : ["g1", "g12", "g27"],
@@ -695,7 +692,7 @@ searchUser {
 			"userId" : "u195",
 			"firstName" : "Valod",
 			"lastName" : "Valodyan",
-			"nickname" : "Valod",
+			"nickName" : "Valod",
 			"avatar" : "base64_string",
 			"gender" : "male",
                 	"birthDate" : "12.12.1990",
