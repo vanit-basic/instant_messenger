@@ -209,7 +209,6 @@ json::value MongoDB::signUp(json::value request) {
 	response["wins"] = json::value::string("0");
 	response["fails"] = json::value::string("0");
 	response["killed"] = json::value::string("0");
-	response["login"] = json::value::string(login);
 	response["status"] = json::value::string("OK");
 
 	std::string time = date();
@@ -408,6 +407,9 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		element = doc["nickName"];
                 std::string nickName = element.get_utf8().value.to_string();
 
+		element = doc["birthDate"];
+		std::string birthDate = element.get_utf8().value.to_string();
+		
 		element = doc["level"];
 		std::string level = std::to_string(element.get_int32().value);
 		
@@ -451,6 +453,7 @@ json::value MongoDB::getUserShortInfo(std::string id) {
 		response["firstName"] = json::value::string(firstName);
 		response["lastName"] = json::value::string(lastName);
 		response["nickName"] = json::value::string(nickName);
+		response["birthDate"] = json::value::string(birthDate);
 		response["publicGroups"] = json::value::array(gIDs);
 		response["playedGames"] = json::value::string(playedGames);
 		response["level"] = json::value::string(level);
