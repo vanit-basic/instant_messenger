@@ -99,6 +99,7 @@ Page {
                             id:enter_name
                             width: parent.width-rec_repass.width
                             height: 20
+                            text: "Valod"
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
@@ -134,6 +135,7 @@ Page {
                             id:enter_surname
                             width: parent.width-rec_repass.width
                             height: 20
+                            text: "Valodyan"
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
@@ -167,6 +169,7 @@ Page {
                             id:enter_email
                             width: parent.width-rec_repass.width
                             height: 20
+                            text: "Valod@mail.ru"
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true
@@ -346,6 +349,7 @@ Page {
                             id:enter_login
                             width: parent.width-rec_repass.width
                             height: 20
+                            text: "Miqo1994"
                             color: "white"
                             anchors.bottom: parent.bottom
                             clip: true

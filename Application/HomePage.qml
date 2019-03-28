@@ -58,7 +58,7 @@ Page{
                     height: 50
                     text: "+"
                     onClicked:{ stack00.push(Qt.resolvedUrl("MyProfile.qml")); notpopup.close()
-                    ob.getUserInfo ("u1", "1")
+                    //ob.getUserInfo ("u1", "1")
                     }
                 }
                 Popup{
@@ -166,7 +166,7 @@ Page{
                     MouseArea{
                         anchors.fill: parent
                         onClicked: { stack00.push(Qt.resolvedUrl("MyProfile.qml")); notpopup.close()
-                        ob.getUserInfo ("u1", "1")
+                        //ob.getUserInfo ("u1", "1")
 
                         }
                     }

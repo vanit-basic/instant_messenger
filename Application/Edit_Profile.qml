@@ -243,7 +243,7 @@ Page {
                             font.capitalization: Font.Capitalize
                             enabled: (edit_name.text === "" || edit_surname.text === "" || edit_nickname.text === "" )?false:true
                             onClicked: {
-                                ob.userUpdateInfo("1", "u3", edit_name.text, edit_surname.text, "roundButton", edit_nickname.text)
+                                ob.userUpdateInfo("1", "u1", edit_name.text, edit_surname.text, "roundButton", edit_nickname.text)
                                 stack00.pop()
                             }
                         }

@@ -410,7 +410,7 @@ Page{
                         font.pointSize: 15
                     }
                     onClicked:{                       
-                         ob.signOut("u1", "6")
+                         ob.signOut("u1", "1")
                         stack.push(Qt.resolvedUrl("Sign_in.qml"))
                     }
                 }

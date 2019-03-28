@@ -17,6 +17,7 @@ function Account (){
         var data = JSON.stringify(params)
         request.setRequestHeader('Content-Length', data.length)
         request.send(data)
+        console.log(data)
         request.onreadystatechange = function() {
 
             if (request.readyState === XMLHttpRequest.DONE) {
@@ -68,6 +69,7 @@ function Account (){
         var request = new XMLHttpRequest()
         var params = 'http://127.0.1.1:6504/v1/mafclub/api/account/signOut?userId='+userId
         request.open('GET',params )
+
         request.setRequestHeader('token', token)
         request.send()
         request.onreadystatechange = function() {
@@ -132,16 +134,16 @@ function Account (){
     }
 
     this.userUpdateInfo = function (token,userId,firstName, lastName, avatar, nickname) {
-        var request = new XMLHttpRequest()
-        var url = 'http://127.0.1.1:6504/v1/mafclub/api/account/updateUserInfo'
-        request.open('POST', url)
+        var request = new XMLHttpRequest() 
+        request.open('POST', 'http://127.0.1.1:6504/v1/mafclub/api/account/userUpdateInfo')
+        request.setRequestHeader('Content-Type', 'application/json')
         request.setRequestHeader('token', token)
         var params = {
             "userId" : userId,
             "firstName" : firstName,
-            "lastname" : lastName,
+            "lastName" : lastName,
             "avatar" : avatar,
-            "nickname" : nickname
+            "nickName" : nickname
         }
         var data = JSON.stringify(params)
         request.setRequestHeader('Content-Length', data.length)
@@ -165,15 +167,25 @@ function Account (){
     this.changePassword = function (token, userId, password, newPassword) {
         var request = new XMLHttpRequest()
         request.open('POST', 'http://127.0.1.1:6504/v1/mafclub/api/account/changePassword')
+        request.setRequestHeader('Content-Type', 'application/json')
         request.setRequestHeader('token', token)
         var params = {
             "userId" : userId,
             "password" : password,
             "newPassword" : newPassword
+//            "firstName" : "Valod",
+//            "lastName" : "Valodyan",
+//            "gender" : "male",
+//            "email" : "Valod@mail.ru",
+//            "birthDate" : "1  January  2005",
+//            "login" : "Miqo1994",
+//            "password" : "Miqo1994"
         }
         var data = JSON.stringify(params)
         request.setRequestHeader('Content-Length', data.length)
         request.send(data)
+        console.log(data)
+        console.log(token)
         request.onreadystatechange = function() {
 
             if (request.readyState === XMLHttpRequest.DONE) {
@@ -195,7 +207,7 @@ function Account (){
 
 
         request.open('POST','http://127.0.1.1:6504/v1/mafclub/api/account/createGroup')
-
+        request.setRequestHeader('Content-Type', 'application/json')
         request.setRequestHeader('token', token)
         var params = {
             "groupName" : groupName,
@@ -277,7 +289,7 @@ function Account (){
     }
     this.groupUpdateInfo = function (groupId,userId,name,avatar) {
         var request = new XMLHttpRequest()
-        request.open('GET', 'http://127.0.1.1:6504/v1/mafclub/api/account/updateGroupInfo')
+        request.open('POST', 'http://127.0.1.1:6504/v1/mafclub/api/account/updateGroupInfo')
         request.setRequestHeader('Content-Type', 'application/json')
         var params = {
             "groupId" : groupId,
@@ -305,7 +317,7 @@ function Account (){
     }
     this.groupRemoveUser = function (groupId,userId,clientId) {
         var request = new XMLHttpRequest()
-        request.open('GET', 'http://127.0.1.1:6504/v1/mafclub/api/account/removeFromGroup')
+        request.open('POST', 'http://127.0.1.1:6504/v1/mafclub/api/account/removeFromGroup')
         request.setRequestHeader('Content-Type', 'application/json')
         var params = {
             "groupId" : groupId,
