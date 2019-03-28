@@ -22,9 +22,9 @@ class NotificationDB {
 		~NotificationDB(){}
 	public:
 		virtual json::value userJoinGroup(std::string, std::string) = 0;
-		virtual json::value userAcceptInvitation(std::string, std::string) = 0;
+		virtual json::value userAcceptInvitation(std::string, std::string, std::string) = 0;
 		virtual json::value groupInviteUser(std::string, std::string) = 0;
-		virtual json::value groupAccepyUser(std::string, std::string) = 0;
+		virtual json::value groupAccepyUser(std::string, std::string, std::string) = 0;
 		virtual json::value newMessage(json::value) = 0;
 		virtual json::value messageFromService(json::value) = 0;
 		virtual json::value groupRemoveUser(json::value) = 0;
