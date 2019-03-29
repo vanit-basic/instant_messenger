@@ -58,5 +58,6 @@
         <file>group.png</file>
         <file>Users_profile.qml</file>
         <file>Request_response.js</file>
+        <file>Database.js</file>
     </qresource>
 </RCC>
