@@ -67,7 +67,6 @@ add_executable("account"
 add_executable("messaging" 		
 	./services/src/messaging/main.cpp
 	./services/src/messaging/messaging.cpp
-	./services/src/messaging/echoserver.cpp
 	./services/src/base/basic_controller.cpp
 	./utilities/network_utils.cpp)
 

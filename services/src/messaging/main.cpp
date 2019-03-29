@@ -2,10 +2,15 @@
 #include <usr_interrupt_handler.hpp>
 #include <runtime_utils.hpp>
 #include <messaging/messaging.hpp>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QCommandLineParser>
+#include <QtCore/QCommandLineOption>
+#include <QtCore/QObject>
+
 using namespace web;
 using namespace cfx;
 
-int main(int argc, const char * argv[])
+int main(int argc, char * argv[])
 {
 /*	if(argc < 2)
 	{
@@ -37,6 +42,29 @@ int main(int argc, const char * argv[])
 			}
 		}
 	} */
-	return 0;
+
+    QCoreApplication a(argc, argv);
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("QtWebSockets example: echoserver");
+    parser.addHelpOption();
+
+    QCommandLineOption dbgOption(QStringList() << "d" << "debug",
+            QCoreApplication::translate("main", "Debug output [default: off]."));
+    parser.addOption(dbgOption);
+    QCommandLineOption portOption(QStringList() << "p" << "port",
+            QCoreApplication::translate("main", "Port for echoserver [default: 1205]."),
+            QCoreApplication::translate("main", "port"), QLatin1Literal("1205"));
+    parser.addOption(portOption);
+    parser.process(a);
+    bool debug = parser.isSet(dbgOption);
+    int port = parser.value(portOption).toInt();
+
+    //EchoServer *server = new EchoServer(quint16(port));
+    Messaging* server(quint16(port));
+ //   QObject::connect(server, &EchoServer::closed, &a, &QCoreApplication::quit);
+
+    return a.exec();
+
 }
 
