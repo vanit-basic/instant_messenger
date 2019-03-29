@@ -2,10 +2,10 @@
 #include <QQmlApplicationEngine>
 #include "backend.h"
 #include <QQmlContext>
-
+#include <QDebug>
 int main(int argc, char *argv[] )
 {
-    bool a = false;
+    bool a = true;
      QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
@@ -25,7 +25,7 @@ int main(int argc, char *argv[] )
 
 
         engine.rootContext()->setContextProperty("Class", ob);
-
+    qDebug() << engine.offlineStoragePath();
     if (engine.rootObjects().isEmpty())
         return -1;
 

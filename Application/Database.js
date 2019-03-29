@@ -8,6 +8,7 @@ function DbManager(dbObject){
     }
 
     this.setUserInfo = function(info){
+        console.log(info,"dbbbbbbbbbbbbbbbb")
         var data = JSON.parse(info)
         this.db.transaction(
                  function(tx) {

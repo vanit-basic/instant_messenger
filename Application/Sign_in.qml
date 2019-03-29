@@ -2,12 +2,15 @@ import QtQuick 2.12
 import QtQuick.Window 2.2
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Controls 2.3
+import QtQuick.LocalStorage 2.0
 import "Request_response.js" as Logic
+import "Database.js" as Data
 Page{
     id: wind
     focus: true
     property var ob
-    Component.onCompleted: ob = new Logic.Account()
+
+    Component.onCompleted:{ ob = new Logic.Account();  var db = new Data.DbManager(LocalStorage.openDatabaseSync("Mydb", "1.0", "LocalDatabase", 100000))}
     Rectangle{
         width: wind.width
         height: wind.height

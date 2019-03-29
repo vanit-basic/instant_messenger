@@ -3,7 +3,9 @@ import QtQuick.Window 2.2
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.12
 import QtQuick.Controls 2.5
+import QtQuick.LocalStorage 2.0
 import "Request_response.js" as Logic
+import "Database.js" as Data
 Page {
     focus: true
     id:wind
@@ -15,7 +17,8 @@ Page {
     property var years: [2005,2004,2003,2002,2001,2000,1999,1998,1997,1996,1995,1994,1993,1992,1991,1990,1989,1988,1987,1986,1985,1984,1983,1982,1981,1980,1979,1978,1977,1976,1975,1974,1973,1972,1971,1970,1969,1968,1967,1966,1965,1964,1963,1962,1961,1960,1959,1958,1957,1956,1955,1954,1953,1952,1951,1950,1949]
 
     property var ob
-    Component.onCompleted: ob = new Logic.Account()
+    property var db
+    Component.onCompleted:{ ob = new Logic.Account();db = new Data.DbManager(LocalStorage.openDatabaseSync("Mydb", "1.0", "LocalDatabase", 100000))}
     Rectangle{
         width: Screen.width
         height: Screen.height
@@ -503,7 +506,10 @@ Page {
                             anchors.horizontalCenterOffset: 0
                             enabled: true
                             onPressed: {
-                                ob.signUp(enter_name.text, enter_surname.text,"male" , enter_email.text,slaq.text, enter_login.text, enter_password.text)
+                                var aaa = ob.signUp(enter_name.text, enter_surname.text,"male" , enter_email.text,slaq.text, enter_login.text, enter_password.text)
+                                console.log(aaa,"ssssssssssssssssssssssssssssssssssss")
+                                db.setUserInfo(aaa)
+
                                 stack.push(Qt.resolvedUrl("Home.qml"))
 
 
